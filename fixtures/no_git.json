@@ -1,0 +1,5 @@
+{
+  "cwd": "/tmp",
+  "context_window": { "total_input_tokens": 1200, "total_output_tokens": 300, "used_percentage": 12.0 },
+  "model": { "display_name": "Sonnet 4.6" }
+}

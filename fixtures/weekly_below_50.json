@@ -1,0 +1,7 @@
+{
+  "context_window": { "total_input_tokens": 5000, "total_output_tokens": 1000, "used_percentage": 20.0 },
+  "rate_limits": {
+    "five_hour": { "used_percentage": 30.0, "resets_at": 1900000000 },
+    "seven_day": { "used_percentage": 30.0, "resets_at": 1905000000 }
+  }
+}

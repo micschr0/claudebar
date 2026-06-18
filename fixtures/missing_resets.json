@@ -1,0 +1,5 @@
+{
+  "context_window": { "total_input_tokens": 10000, "total_output_tokens": 2000, "used_percentage": 40.0 },
+  "rate_limits": { "five_hour": { "used_percentage": 55.0 } },
+  "model": { "display_name": "Opus 4.8" }
+}

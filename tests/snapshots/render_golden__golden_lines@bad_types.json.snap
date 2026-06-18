@@ -1,0 +1,6 @@
+---
+source: tests/render_golden.rs
+expression: render_fixture(&json)
+input_file: fixtures/bad_types.json
+---
+\e[38;5;33m ~/work\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰍛\e[0m \e[38;5;221m━━━━\e[38;5;238m╌╌\e[0m \e[38;5;221m67%\e[0m \e[38;5;245m⬡\e[0m \e[38;5;117m35.0k\e[0m \e[38;5;238m\e[0m  \e[38;5;245m↺\e[0m \e[38;5;73m2h46m\e[0m \e[38;5;238m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mOpus 4.8\e[0m

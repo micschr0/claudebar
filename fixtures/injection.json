@@ -1,0 +1,5 @@
+{
+  "cwd": "/home/me/\u001b[31mevil/proj\u0007\r\n",
+  "context_window": { "total_input_tokens": 1000, "total_output_tokens": 200, "used_percentage": 10.0 },
+  "model": { "display_name": "Evil\u001b[5mModel" }
+}

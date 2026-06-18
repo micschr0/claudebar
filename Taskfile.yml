@@ -1,0 +1,70 @@
+version: "3"
+
+tasks:
+  build:
+    desc: Debug build
+    cmd: cargo build
+
+  build-release:
+    desc: Optimized release build
+    cmd: cargo build --release
+
+  build-minimal:
+    desc: Release build without TUI (render-only)
+    cmd: cargo build --release --no-default-features
+
+  test:
+    desc: Run tests
+    cmd: cargo test
+
+  test-update:
+    desc: Update insta snapshots
+    cmd: cargo insta review
+    deps: [test]
+
+  lint:
+    desc: Clippy + shellcheck
+    cmds:
+      - cargo clippy -- -D warnings
+      - shellcheck statusline-command.sh
+
+  syntax:
+    desc: Syntax-check the bash script (no deps needed)
+    cmd: bash -n statusline-command.sh
+
+  bench:
+    desc: Performance benchmark + SLO guard
+    cmd: bash scripts/benchmark.sh
+
+  render:
+    desc: "Render a fixture: task render -- typical"
+    cmd: cat "fixtures/{{.CLI_ARGS | default \"typical\"}}.json" | cargo run --quiet -- render
+
+  render-all:
+    desc: Render all fixtures
+    cmd: |
+      for f in fixtures/*.json; do
+        name=$(basename "$f" .json)
+        printf '\n--- %s ---\n' "$name"
+        cat "$f" | cargo run --quiet -- render
+      done
+
+  screenshots:
+    desc: Regenerate all screenshots (requires Docker + fonts)
+    cmd: python3 scripts/gen_screenshots.py
+
+  screenshots-svg:
+    desc: Regenerate animated SVG only (no Docker needed)
+    cmd: python3 scripts/gen_screenshots.py --svg
+
+  screenshots-strips:
+    desc: Regenerate README strip images only
+    cmd: python3 scripts/gen_screenshots.py --strips
+
+  install:
+    desc: Install claudebar into ~/.claude
+    cmd: bash install.sh
+
+  demo-repos:
+    desc: Create demo git repos used by screenshot generator
+    cmd: bash scripts/make_demo_repos.sh

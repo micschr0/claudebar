@@ -1,0 +1,6 @@
+{
+  "cwd": "/home/me/work",
+  "context_window": { "total_input_tokens": "35000", "total_output_tokens": true, "used_percentage": "67" },
+  "rate_limits": { "five_hour": { "used_percentage": "abc", "resets_at": 1900000000 } },
+  "model": { "display_name": "Opus 4.8" }
+}

@@ -1,0 +1,6 @@
+---
+source: tests/render_golden.rs
+expression: render_fixture(&json)
+input_file: fixtures/weekly_at_50.json
+---
+\e[38;5;245m󰍛\e[0m \e[38;5;221m━━━━\e[38;5;238m╌╌\e[0m \e[38;5;221m72%\e[0m \e[38;5;245m⬡\e[0m \e[38;5;117m59.0k\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰔟\e[0m \e[38;5;221m━━━\e[38;5;238m╌╌╌\e[0m \e[38;5;221m60%\e[0m \e[38;5;245m↺\e[0m \e[38;5;73m2h46m\e[0m \e[38;5;245m󰃭\e[0m \e[38;5;221m━━━\e[38;5;238m╌╌╌\e[0m \e[38;5;221m64%\e[0m \e[38;5;245m↺\e[0m \e[38;5;73m57d23h\e[0m \e[38;5;238m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mOpus 4.8\e[0m

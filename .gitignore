@@ -1,0 +1,27 @@
+# Local-only Claude Code project context — intentionally kept out of the
+# public repo. Claude Code still reads it from disk on every session.
+CLAUDE.md
+
+# OS / editor cruft
+.DS_Store
+
+# HTML screenshot sources are generated to /tmp/ at runtime — never in repo
+
+# Backup files created by the install skill
+*.backup
+
+# Python cache from gen_screenshots.py
+__pycache__/
+*.pyc
+
+# CI benchmark artifact
+benchmark-report.txt
+
+# Rust build output
+/target
+
+# insta snapshot review leftovers
+*.snap.new
+
+# Agent worktrees
+.claude/

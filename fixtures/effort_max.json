@@ -1,0 +1,5 @@
+{
+  "context_window": { "total_input_tokens": 8000, "total_output_tokens": 2000, "used_percentage": 31.0 },
+  "model": { "display_name": "Opus 4.8" },
+  "effort": { "level": "max" }
+}

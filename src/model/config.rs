@@ -1,0 +1,174 @@
+//! User configuration: which segments, in what order, which theme & style,
+//! and the numeric thresholds. Persisted as TOML.
+//!
+//! Config-less operation uses [`Config::default`], which reproduces the original
+//! bash look exactly: Tokyo Night palette, Powerline style, all five segments in
+//! their historical order.
+
+use serde::{Deserialize, Serialize};
+use std::path::{Path, PathBuf};
+
+/// The five renderable segments. `Vec<SegmentKind>` in [`Config`] encodes both
+/// *which* are enabled (presence) and their *order* (render order).
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[serde(rename_all = "kebab-case")]
+pub enum SegmentKind {
+    Directory,
+    Git,
+    Context,
+    RateLimits,
+    Model,
+}
+
+impl SegmentKind {
+    /// All segments in canonical (default) order.
+    pub const ALL: [SegmentKind; 5] = [
+        SegmentKind::Directory,
+        SegmentKind::Git,
+        SegmentKind::Context,
+        SegmentKind::RateLimits,
+        SegmentKind::Model,
+    ];
+
+    /// Human label for the TUI list.
+    pub fn label(self) -> &'static str {
+        match self {
+            SegmentKind::Directory => "Directory",
+            SegmentKind::Git => "Git",
+            SegmentKind::Context => "Context",
+            SegmentKind::RateLimits => "Rate limits",
+            SegmentKind::Model => "Model",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(default)]
+pub struct Thresholds {
+    /// Bar turns warn-colored at or above this percent.
+    pub warn: u16,
+    /// Bar turns crit-colored at or above this percent.
+    pub crit: u16,
+    /// The weekly rate-limit window is only shown once usage reaches this percent.
+    pub weekly_show_at: u16,
+    /// Width, in cells, of every progress bar.
+    pub bar_width: u8,
+}
+
+impl Default for Thresholds {
+    fn default() -> Self {
+        Self {
+            warn: 50,
+            crit: 80,
+            weekly_show_at: 50,
+            bar_width: 6,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(default)]
+pub struct Config {
+    pub theme: String,
+    pub style: String,
+    pub segments: Vec<SegmentKind>,
+    pub thresholds: Thresholds,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            theme: "tokyo-night".into(),
+            style: "powerline".into(),
+            segments: SegmentKind::ALL.to_vec(),
+            thresholds: Thresholds::default(),
+        }
+    }
+}
+
+impl Config {
+    /// Standard config path: `$XDG_CONFIG_HOME/claudebar/config.toml`,
+    /// falling back to `$HOME/.config/claudebar/config.toml`.
+    pub fn default_path() -> Option<PathBuf> {
+        let base = std::env::var_os("XDG_CONFIG_HOME")
+            .map(PathBuf::from)
+            .filter(|p| !p.as_os_str().is_empty())
+            .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".config")))?;
+        Some(base.join("claudebar").join("config.toml"))
+    }
+
+    /// Load config from `path`. A missing file yields `Config::default()`
+    /// (config-less operation is a supported, first-class state). A present but
+    /// malformed file is a real error the caller should surface.
+    pub fn load(path: &Path) -> Result<Config, ConfigError> {
+        match std::fs::read_to_string(path) {
+            Ok(s) => toml::from_str(&s).map_err(|e| ConfigError::Parse(e.to_string())),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(Config::default()),
+            Err(e) => Err(ConfigError::Io(e.to_string())),
+        }
+    }
+
+    /// Load from the explicit path if given, else the default path, else default.
+    pub fn load_or_default(explicit: Option<&Path>) -> Config {
+        let path = explicit.map(PathBuf::from).or_else(Config::default_path);
+        match path {
+            Some(p) => Config::load(&p).unwrap_or_default(),
+            None => Config::default(),
+        }
+    }
+
+    /// Serialize to pretty TOML, creating parent dirs.
+    pub fn save(&self, path: &Path) -> Result<(), ConfigError> {
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent).map_err(|e| ConfigError::Io(e.to_string()))?;
+        }
+        let body = toml::to_string_pretty(self).map_err(|e| ConfigError::Parse(e.to_string()))?;
+        std::fs::write(path, body).map_err(|e| ConfigError::Io(e.to_string()))
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum ConfigError {
+    #[error("config i/o error: {0}")]
+    Io(String),
+    #[error("config parse error: {0}")]
+    Parse(String),
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn default_matches_bash_layout() {
+        let c = Config::default();
+        assert_eq!(c.theme, "tokyo-night");
+        assert_eq!(c.style, "powerline");
+        assert_eq!(c.segments, SegmentKind::ALL.to_vec());
+        assert_eq!(c.thresholds.warn, 50);
+        assert_eq!(c.thresholds.crit, 80);
+    }
+
+    #[test]
+    fn roundtrips_through_toml() {
+        let c = Config::default();
+        let s = toml::to_string_pretty(&c).unwrap();
+        let back: Config = toml::from_str(&s).unwrap();
+        assert_eq!(c, back);
+    }
+
+    #[test]
+    fn partial_toml_fills_defaults() {
+        // serde(default) means a sparse file is still valid.
+        let c: Config = toml::from_str(r#"theme = "nord""#).unwrap();
+        assert_eq!(c.theme, "nord");
+        assert_eq!(c.style, "powerline");
+        assert_eq!(c.segments, SegmentKind::ALL.to_vec());
+    }
+
+    #[test]
+    fn segments_kebab_case() {
+        let c: Config = toml::from_str(r#"segments = ["rate-limits", "git"]"#).unwrap();
+        assert_eq!(c.segments, vec![SegmentKind::RateLimits, SegmentKind::Git]);
+    }
+}

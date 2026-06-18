@@ -1,0 +1,6 @@
+---
+source: tests/render_golden.rs
+expression: render_fixture(&json)
+input_file: fixtures/no_git.json
+---
+\e[38;5;33m /tmp\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰍛\e[0m \e[38;5;114m━\e[38;5;238m╌╌╌╌╌\e[0m \e[38;5;114m12%\e[0m \e[38;5;245m⬡\e[0m \e[38;5;117m1.5k\e[0m \e[38;5;238m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mSonnet 4.6\e[0m

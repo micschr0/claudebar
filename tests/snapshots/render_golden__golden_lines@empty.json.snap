@@ -1,0 +1,6 @@
+---
+source: tests/render_golden.rs
+expression: render_fixture(&json)
+input_file: fixtures/empty.json
+---
+
