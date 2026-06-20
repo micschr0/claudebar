@@ -6,12 +6,13 @@ set -euo pipefail
 REPO="https://raw.githubusercontent.com/micschr0/claudebar/main"
 SCRIPT_DEST="$HOME/.claude/statusline-command.sh"
 BIN_DEST="$HOME/.claude/claudebar"
-SETTINGS="$HOME/.claude/settings.json"
+SETTINGS="${SETTINGS:-$HOME/.claude/settings.json}"
 
 # Directory this script lives in, when run from a checkout (empty under `curl | bash`).
 SRC_DIR=""
 case "$0" in
   */*) SRC_DIR=$(cd "$(dirname "$0")" 2>/dev/null && pwd || true) ;;
+  *)   [ -f "${PWD}/Cargo.toml" ] && SRC_DIR="$PWD" ;;
 esac
 
 TMPDIR_WORK=$(mktemp -d)

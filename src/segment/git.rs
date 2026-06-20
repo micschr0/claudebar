@@ -113,6 +113,7 @@ impl Segment for Git {
         // `## ` line while exiting non-zero, and bash renders it.
         let git_out = match Command::new("git")
             .args([
+                "--no-optional-locks",
                 "-C",
                 cwd,
                 "-c",
@@ -120,7 +121,6 @@ impl Segment for Git {
                 "status",
                 "--branch",
                 "--porcelain",
-                "--no-optional-locks",
             ])
             .stderr(std::process::Stdio::null())
             .output()
