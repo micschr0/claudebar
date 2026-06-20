@@ -65,3 +65,4 @@ vendor/
 coverage/
 .cache/
 tmp/
+.planning/

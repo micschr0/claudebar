@@ -16,8 +16,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Commit Pending Themes** - Commit 10 untracked theme files so CI can run a clean build (completed 2026-06-20)
 - [x] **Phase 2: GitHub Actions CI** - Add ci.yml running check/lint/test on every push and PR (completed 2026-06-20)
 - [x] **Phase 3: Release Pipeline** - Add release.yml producing prebuilt binaries for 4 targets on tag push (completed 2026-06-20)
-- [ ] **Phase 4: Install Script** - Rewrite install.sh with OS/arch detection, binary download, and SHA256 verification
-- [ ] **Phase 5: Documentation Polish** - Update README to reflect all 16 themes, segments, TUI, and one-command install
+- [x] **Phase 4: Install Script** - Rewrite install.sh with OS/arch detection, binary download, and SHA256 verification (completed 2026-06-20)
+- [x] **Phase 5: Documentation Polish** - Update README to reflect all 16 themes, segments, TUI, and one-command install (completed 2026-06-20)
 
 ## Phase Details
 
@@ -90,10 +90,11 @@ Plans:
   3. On a machine with no cargo, `install.sh` falls back to installing `statusline-command.sh` with a clear message
   4. Each fallback stage prints a descriptive message explaining what it tried and why it is falling back
 
-**Plans**: 1 plan
+**Plans**: 1/1 plans complete
 
 Plans:
-- [ ] 04-01-PLAN.md — Rewrite install.sh: three-tier fallback chain (prebuilt binary + SHA256 → cargo → bash script)
+
+- [x] 04-01-PLAN.md — Rewrite install.sh: three-tier fallback chain (prebuilt binary + SHA256 → cargo → bash script)
 
 ### Phase 5: Documentation Polish
 
@@ -108,8 +109,12 @@ Plans:
   3. All 16 themes and all 5 styles are listed by name in the README
   4. The `dev-context` segment and TUI key bindings are documented, with a TUI screenshot or demo
 
-**Plans**: TBD
+**Plans**: 1/1 plans complete
 **UI hint**: yes
+
+Plans:
+
+- [x] 05-01-PLAN.md — Update README: animated SVG hero, 16 themes, segment table, three-tier install, TUI key bindings
 
 ## Progress
 
@@ -118,5 +123,5 @@ Plans:
 | 1. Commit Pending Themes | 1/1 | Complete   | 2026-06-20 |
 | 2. GitHub Actions CI | 1/1 | Complete   | 2026-06-20 |
 | 3. Release Pipeline | 1/1 | Complete   | 2026-06-20 |
-| 4. Install Script | 0/TBD | Not started | - |
-| 5. Documentation Polish | 0/TBD | Not started | - |
+| 4. Install Script | 1/1 | Complete   | 2026-06-20 |
+| 5. Documentation Polish | 1/1 | Complete   | 2026-06-20 |
