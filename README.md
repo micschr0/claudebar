@@ -1,5 +1,7 @@
 # claudebar
 
+[![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
+
 A claudebar for Claude Code — context usage, rate limits, and git state on every turn.
 
 <img src="screenshots/skynet.png" width="860" alt="Easter egg">
