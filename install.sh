@@ -138,7 +138,7 @@ download_prebuilt() {
 
   curl -fsSL "$sums_url" -o "${TMPDIR_WORK}/SHA256SUMS.txt"
   if ! verify_checksum "${TMPDIR_WORK}/${archive}" "$archive" "${TMPDIR_WORK}/SHA256SUMS.txt"; then
-    return 1
+    exit 1
   fi
 
   tar -xf "${TMPDIR_WORK}/${archive}" -C "${TMPDIR_WORK}/"
