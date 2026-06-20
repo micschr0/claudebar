@@ -246,7 +246,7 @@ fn render_section_header(section_idx: usize, app: &App, width: u16) -> Line<'sta
     let prefix = "── ";
     let fill_count = (width as usize)
         .saturating_sub(prefix.len() + title.chars().count() + badge.chars().count() + 1);
-    let fill: String = std::iter::repeat('\u{2500}').take(fill_count).collect();
+    let fill: String = std::iter::repeat_n('\u{2500}', fill_count).collect();
 
     Line::from(vec![
         Span::styled(prefix, dim_italic),
@@ -260,7 +260,7 @@ fn render_section_header(section_idx: usize, app: &App, width: u16) -> Line<'sta
 fn render_divider(width: u16) -> Line<'static> {
     let prefix = "  ─── disabled ";
     let dash_count = (width as usize).saturating_sub(prefix.len());
-    let dashes: String = std::iter::repeat('─').take(dash_count).collect();
+    let dashes: String = std::iter::repeat_n('─', dash_count).collect();
     let full = format!("{prefix}{dashes}");
     Line::from(Span::styled(
         full,
@@ -322,7 +322,7 @@ fn render_segment_row(
         let _ = cursor_bg; // used via line.style()
     }
 
-    let mut line = Line::from(spans.drain(..).collect::<Vec<_>>());
+    let mut line = Line::from(std::mem::take(&mut spans));
     if is_cursor {
         line = line.style(cursor_bg);
     }

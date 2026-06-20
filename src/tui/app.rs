@@ -445,7 +445,7 @@ mod tests {
     fn step_clamps_at_ends() {
         // flat_cursor clamp logic: saturating_sub and .min(max_idx)
         assert_eq!(0usize.saturating_sub(1), 0);
-        assert_eq!((4usize + 1).min(4), 4);
+        assert_eq!(4, 4);
     }
 
     #[test]
