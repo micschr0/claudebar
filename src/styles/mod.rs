@@ -7,11 +7,12 @@ pub mod minimal;
 pub mod plain;
 pub mod powerline;
 pub mod rounded;
+pub mod unicode;
 
 use crate::model::Style;
 
 /// All built-in style names, in display order. Powerline is the default.
-pub const NAMES: &[&str] = &["powerline", "plain", "rounded", "minimal", "ascii"];
+pub const NAMES: &[&str] = &["powerline", "plain", "rounded", "minimal", "unicode", "ascii"];
 
 /// Resolve a style by name. Unknown names (and the default) fall back to
 /// Powerline.
@@ -20,6 +21,7 @@ pub fn get(name: &str) -> Style {
         "plain" => plain::style(),
         "rounded" => rounded::style(),
         "minimal" => minimal::style(),
+        "unicode" => unicode::style(),
         "ascii" => ascii::style(),
         _ => powerline::style(),
     }
