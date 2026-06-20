@@ -321,9 +321,9 @@ pub(crate) fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 
     list_rows.push(RowItem::ThresholdRow(ThresholdField::BarWidth));
 
     // section_starts[i] = flat_cursor of first selectable in section i.
-    let seg_count = SegmentKind::ALL.len(); // 6
-    let theme_count = crate::themes::NAMES.len(); // 6
-    let style_count = crate::styles::NAMES.len(); // 5
+    let seg_count = SegmentKind::ALL.len();
+    let theme_count = crate::themes::NAMES.len();
+    let style_count = crate::styles::NAMES.len();
     let section_starts: [usize; 4] = [
         0,
         seg_count,
