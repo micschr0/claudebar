@@ -27,8 +27,14 @@ jobs:
       - name: Clippy
         run: cargo clippy --all-targets --all-features -- -D warnings
 
+      - name: Clippy (render-only, no TUI)
+        run: cargo clippy --no-default-features -- -D warnings
+
       - name: Test
         run: cargo test --all-features
 
       - name: Build release
         run: cargo build --release
+
+      - name: Build (render-only, no TUI)
+        run: cargo build --no-default-features
