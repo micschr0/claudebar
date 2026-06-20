@@ -6,7 +6,9 @@ mod preview;
 mod sample;
 mod ui;
 
-use app::{build_list, current_section, enforce_scroll, move_segment, App, Dir, RowItem, StatusKind};
+use app::{
+    build_list, current_section, enforce_scroll, move_segment, App, Dir, RowItem, StatusKind,
+};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use crossterm::terminal::{
     disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
@@ -141,13 +143,20 @@ fn handle_pending_reset(app: &mut App, key: KeyEvent) {
             }
         }
         // Navigation keys: silent no-op (preserve banner).
-        KeyCode::Char('j') | KeyCode::Char('k')
-        | KeyCode::Up | KeyCode::Down
-        | KeyCode::Char('h') | KeyCode::Char('l')
-        | KeyCode::Char('H') | KeyCode::Char('L')
-        | KeyCode::Char('1') | KeyCode::Char('2')
-        | KeyCode::Char('3') | KeyCode::Char('4')
-        | KeyCode::Tab | KeyCode::BackTab => {}
+        KeyCode::Char('j')
+        | KeyCode::Char('k')
+        | KeyCode::Up
+        | KeyCode::Down
+        | KeyCode::Char('h')
+        | KeyCode::Char('l')
+        | KeyCode::Char('H')
+        | KeyCode::Char('L')
+        | KeyCode::Char('1')
+        | KeyCode::Char('2')
+        | KeyCode::Char('3')
+        | KeyCode::Char('4')
+        | KeyCode::Tab
+        | KeyCode::BackTab => {}
         // Any other key: silent cancel.
         _ => {
             app.pending_reset = false;
@@ -160,7 +169,10 @@ fn handle_pending_quit(app: &mut App, key: KeyEvent) {
         KeyCode::Char('s') => {
             if app.save_path.is_none() {
                 app.pending_quit = false;
-                app.status = Some((StatusKind::Error, "no save path (set $HOME or --config)".into()));
+                app.status = Some((
+                    StatusKind::Error,
+                    "no save path (set $HOME or --config)".into(),
+                ));
             } else {
                 app.save();
                 app.should_quit = true;
@@ -170,13 +182,20 @@ fn handle_pending_quit(app: &mut App, key: KeyEvent) {
             app.should_quit = true;
         }
         // Navigation keys: silent no-op (preserve banner).
-        KeyCode::Char('j') | KeyCode::Char('k')
-        | KeyCode::Up | KeyCode::Down
-        | KeyCode::Char('h') | KeyCode::Char('l')
-        | KeyCode::Char('H') | KeyCode::Char('L')
-        | KeyCode::Char('1') | KeyCode::Char('2')
-        | KeyCode::Char('3') | KeyCode::Char('4')
-        | KeyCode::Tab | KeyCode::BackTab => {}
+        KeyCode::Char('j')
+        | KeyCode::Char('k')
+        | KeyCode::Up
+        | KeyCode::Down
+        | KeyCode::Char('h')
+        | KeyCode::Char('l')
+        | KeyCode::Char('H')
+        | KeyCode::Char('L')
+        | KeyCode::Char('1')
+        | KeyCode::Char('2')
+        | KeyCode::Char('3')
+        | KeyCode::Char('4')
+        | KeyCode::Tab
+        | KeyCode::BackTab => {}
         // Any other key: silent cancel.
         _ => {
             app.pending_quit = false;
@@ -242,14 +261,19 @@ fn rebuild_and_follow(app: &mut App, moved_kind: crate::model::SegmentKind) {
     app.selectable_indices = selectable_indices;
     app.section_starts = section_starts;
     // Cursor follows the moved segment.
-    if let Some(new_si) = app.selectable_indices.iter().enumerate().find_map(|(si, &dr)| {
-        if let RowItem::SegmentRow(k) = &app.list_rows[dr] {
-            if *k == moved_kind {
-                return Some(si);
+    if let Some(new_si) = app
+        .selectable_indices
+        .iter()
+        .enumerate()
+        .find_map(|(si, &dr)| {
+            if let RowItem::SegmentRow(k) = &app.list_rows[dr] {
+                if *k == moved_kind {
+                    return Some(si);
+                }
             }
-        }
-        None
-    }) {
+            None
+        })
+    {
         app.flat_cursor = new_si;
     }
     enforce_scroll(app);
@@ -317,20 +341,18 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
                 enforce_scroll(app);
             }
         }
-        KeyCode::Char('m') => {
-            match app.cursor_row().cloned() {
-                Some(RowItem::SegmentRow(kind)) if app.config.segments.contains(&kind) => {
-                    app.reorder_mode = true;
-                }
-                Some(RowItem::SegmentRow(_)) => {
-                    app.status = Some((
-                        StatusKind::Warning,
-                        "Enable the segment first [Space]".into(),
-                    ));
-                }
-                _ => {}
+        KeyCode::Char('m') => match app.cursor_row().cloned() {
+            Some(RowItem::SegmentRow(kind)) if app.config.segments.contains(&kind) => {
+                app.reorder_mode = true;
             }
-        }
+            Some(RowItem::SegmentRow(_)) => {
+                app.status = Some((
+                    StatusKind::Warning,
+                    "Enable the segment first [Space]".into(),
+                ));
+            }
+            _ => {}
+        },
 
         // ── Thresholds ────────────────────────────────────────────────────────
         KeyCode::Char('h') | KeyCode::Left => {

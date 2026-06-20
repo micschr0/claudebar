@@ -97,7 +97,13 @@ impl App {
             .iter()
             .map(|name| {
                 let t = crate::themes::get(name);
-                [t.separator.0, t.dir.0, t.git_branch.0, t.bar_ok.0, t.bar_crit.0]
+                [
+                    t.separator.0,
+                    t.dir.0,
+                    t.git_branch.0,
+                    t.bar_ok.0,
+                    t.bar_crit.0,
+                ]
             })
             .collect();
 
@@ -206,12 +212,19 @@ impl App {
             self.selectable_indices = selectable_indices;
             self.section_starts = section_starts;
             // Cursor follows the toggled segment to its new position.
-            if let Some(si) = self.selectable_indices.iter().enumerate().find_map(|(si, &dr)| {
-                if let RowItem::SegmentRow(k) = &self.list_rows[dr] {
-                    if *k == kind { return Some(si); }
-                }
-                None
-            }) {
+            if let Some(si) = self
+                .selectable_indices
+                .iter()
+                .enumerate()
+                .find_map(|(si, &dr)| {
+                    if let RowItem::SegmentRow(k) = &self.list_rows[dr] {
+                        if *k == kind {
+                            return Some(si);
+                        }
+                    }
+                    None
+                })
+            {
                 self.flat_cursor = si;
             }
         }
@@ -540,8 +553,14 @@ mod tests {
         };
         let app = App::new(cfg, None);
         // First two selectable rows should be Model and Git.
-        assert!(matches!(app.list_rows[app.selectable_indices[0]], RowItem::SegmentRow(SegmentKind::Model)));
-        assert!(matches!(app.list_rows[app.selectable_indices[1]], RowItem::SegmentRow(SegmentKind::Git)));
+        assert!(matches!(
+            app.list_rows[app.selectable_indices[0]],
+            RowItem::SegmentRow(SegmentKind::Model)
+        ));
+        assert!(matches!(
+            app.list_rows[app.selectable_indices[1]],
+            RowItem::SegmentRow(SegmentKind::Git)
+        ));
     }
 
     #[test]
@@ -581,7 +600,13 @@ mod tests {
             panic!("expected SegmentRow");
         };
         // Move up.
-        if let Some(&seg_idx) = app.config.segments.iter().position(|s| *s == moved_kind).as_ref() {
+        if let Some(&seg_idx) = app
+            .config
+            .segments
+            .iter()
+            .position(|s| *s == moved_kind)
+            .as_ref()
+        {
             if seg_idx > 0 {
                 move_segment(&mut app.config.segments, seg_idx, Dir::Up);
                 let (rows, si, ss) = build_list(&app.config);
@@ -589,12 +614,19 @@ mod tests {
                 app.selectable_indices = si;
                 app.section_starts = ss;
                 // Cursor follows moved segment.
-                if let Some(new_si) = app.selectable_indices.iter().enumerate().find_map(|(si, &dr)| {
-                    if let RowItem::SegmentRow(k) = &app.list_rows[dr] {
-                        if *k == moved_kind { return Some(si); }
-                    }
-                    None
-                }) {
+                if let Some(new_si) =
+                    app.selectable_indices
+                        .iter()
+                        .enumerate()
+                        .find_map(|(si, &dr)| {
+                            if let RowItem::SegmentRow(k) = &app.list_rows[dr] {
+                                if *k == moved_kind {
+                                    return Some(si);
+                                }
+                            }
+                            None
+                        })
+                {
                     app.flat_cursor = new_si;
                 }
             }

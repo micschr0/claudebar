@@ -27,8 +27,11 @@ pub fn draw(f: &mut Frame, app: &App) {
     // ── Size guard ────────────────────────────────────────────────────────────
     if f.area().width < 60 || f.area().height < 18 {
         f.render_widget(
-            Paragraph::new("Terminal too small (min 60×18)")
-                .style(Style::default().fg(CHROME_CRIT).add_modifier(Modifier::BOLD)),
+            Paragraph::new("Terminal too small (min 60×18)").style(
+                Style::default()
+                    .fg(CHROME_CRIT)
+                    .add_modifier(Modifier::BOLD),
+            ),
             f.area(),
         );
         app.list_viewport_height.set(10);
@@ -95,25 +98,30 @@ fn draw_title(f: &mut Frame, app: &App, area: Rect) {
                 .map(|n| n.to_string_lossy().into_owned())
                 .unwrap_or_else(|| path.display().to_string());
             // Left-truncate if too long.
-            let max_center = (area.width as usize)
-                .saturating_sub(11 + 3 + 2 + 6); // title+sep+dirty+help
+            let max_center = (area.width as usize).saturating_sub(11 + 3 + 2 + 6); // title+sep+dirty+help
             let s = if name.chars().count() > max_center && max_center > 3 {
                 let skip = name.chars().count() - (max_center - 3);
                 format!("...{}", name.chars().skip(skip).collect::<String>())
             } else {
                 name
             };
-            (s, Style::default().fg(CHROME_HEADER).add_modifier(Modifier::DIM))
+            (
+                s,
+                Style::default()
+                    .fg(CHROME_HEADER)
+                    .add_modifier(Modifier::DIM),
+            )
         }
         None => (
             "(no path)".to_string(),
-            Style::default().fg(CHROME_CRIT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_CRIT)
+                .add_modifier(Modifier::BOLD),
         ),
     };
 
     let center_display_len = center_str.chars().count();
-    let pad_count = (area.width as usize)
-        .saturating_sub(11 + 3 + center_display_len + 2 + 6);
+    let pad_count = (area.width as usize).saturating_sub(11 + 3 + center_display_len + 2 + 6);
     let pad_str: String = " ".repeat(pad_count);
 
     // Dirty dot — always 2 chars to prevent jitter.
@@ -124,15 +132,33 @@ fn draw_title(f: &mut Frame, app: &App, area: Rect) {
     };
 
     let line = Line::from(vec![
-        Span::styled(title_str, Style::default().fg(CHROME_ACCENT).add_modifier(Modifier::BOLD)),
-        Span::styled(sep_str, Style::default().fg(CHROME_HEADER).add_modifier(Modifier::DIM)),
+        Span::styled(
+            title_str,
+            Style::default()
+                .fg(CHROME_ACCENT)
+                .add_modifier(Modifier::BOLD),
+        ),
+        Span::styled(
+            sep_str,
+            Style::default()
+                .fg(CHROME_HEADER)
+                .add_modifier(Modifier::DIM),
+        ),
         Span::styled(center_str, center_style),
         Span::raw(pad_str),
         Span::styled(dirty_char, dirty_style),
-        Span::styled(help_str, Style::default().fg(CHROME_HEADER).add_modifier(Modifier::DIM)),
+        Span::styled(
+            help_str,
+            Style::default()
+                .fg(CHROME_HEADER)
+                .add_modifier(Modifier::DIM),
+        ),
     ]);
 
-    f.render_widget(Paragraph::new(line).style(Style::default().bg(CHROME_BG)), area);
+    f.render_widget(
+        Paragraph::new(line).style(Style::default().bg(CHROME_BG)),
+        area,
+    );
 }
 
 // ── Zone 2: Scrollable List ───────────────────────────────────────────────────
@@ -257,7 +283,13 @@ fn render_segment_row(
     let badge_span = if app.reorder_mode && is_cursor {
         Span::styled("≡  ", Style::default().fg(CHROME_ACCENT))
     } else if enabled {
-        let pos = app.config.segments.iter().position(|s| *s == kind).unwrap_or(0) + 1;
+        let pos = app
+            .config
+            .segments
+            .iter()
+            .position(|s| *s == kind)
+            .unwrap_or(0)
+            + 1;
         Span::styled(format!("{pos}. "), Style::default().fg(CHROME_HEADER))
     } else {
         Span::raw("   ")
@@ -274,18 +306,15 @@ fn render_segment_row(
     let label_span = if enabled {
         Span::styled(
             kind.label(),
-            Style::default().fg(CHROME_TEXT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_TEXT)
+                .add_modifier(Modifier::BOLD),
         )
     } else {
         Span::styled(kind.label(), Style::default().fg(CHROME_DISABLED))
     };
 
-    let mut spans = vec![
-        Span::raw("  "),
-        badge_span,
-        marker_span,
-        label_span,
-    ];
+    let mut spans = vec![Span::raw("  "), badge_span, marker_span, label_span];
 
     // Apply cursor background to the whole line via a background-colored trailing space.
     if is_cursor {
@@ -300,7 +329,12 @@ fn render_segment_row(
     line
 }
 
-fn render_theme_row(name: &&'static str, app: &App, is_cursor: bool, cursor_bg: Style) -> Line<'static> {
+fn render_theme_row(
+    name: &&'static str,
+    app: &App,
+    is_cursor: bool,
+    cursor_bg: Style,
+) -> Line<'static> {
     let name: &'static str = name;
     let is_active = name == app.config.theme;
 
@@ -313,7 +347,9 @@ fn render_theme_row(name: &&'static str, app: &App, is_cursor: bool, cursor_bg: 
     let name_span = if is_active {
         Span::styled(
             format!("{name:<14}"),
-            Style::default().fg(CHROME_TEXT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_TEXT)
+                .add_modifier(Modifier::BOLD),
         )
     } else {
         Span::styled(format!("{name:<14}"), Style::default().fg(CHROME_HEADER))
@@ -325,12 +361,7 @@ fn render_theme_row(name: &&'static str, app: &App, is_cursor: bool, cursor_bg: 
         .position(|n| *n == name)
         .unwrap_or(0);
     let swatches = &app.swatch_cache[theme_idx];
-    let mut spans: Vec<Span> = vec![
-        Span::raw("  "),
-        marker_span,
-        name_span,
-        Span::raw(" "),
-    ];
+    let mut spans: Vec<Span> = vec![Span::raw("  "), marker_span, name_span, Span::raw(" ")];
     for &slot in swatches.iter() {
         spans.push(Span::styled(
             "\u{2588} ",
@@ -345,7 +376,12 @@ fn render_theme_row(name: &&'static str, app: &App, is_cursor: bool, cursor_bg: 
     line
 }
 
-fn render_style_row(name: &&'static str, app: &App, is_cursor: bool, cursor_bg: Style) -> Line<'static> {
+fn render_style_row(
+    name: &&'static str,
+    app: &App,
+    is_cursor: bool,
+    cursor_bg: Style,
+) -> Line<'static> {
     let name: &'static str = name;
     let is_active = name == app.config.style;
 
@@ -358,7 +394,9 @@ fn render_style_row(name: &&'static str, app: &App, is_cursor: bool, cursor_bg: 
     let name_span = if is_active {
         Span::styled(
             format!("{name:<14}"),
-            Style::default().fg(CHROME_TEXT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_TEXT)
+                .add_modifier(Modifier::BOLD),
         )
     } else {
         Span::styled(format!("{name:<14}"), Style::default().fg(CHROME_HEADER))
@@ -401,34 +439,12 @@ fn render_threshold_row(
     let t = &app.config.thresholds;
 
     let (label, value, unit, lo, hi) = match field {
-        ThresholdField::Warn => (
-            "warn",
-            t.warn as i32,
-            "%",
-            1i32,
-            (t.crit as i32) - 1,
-        ),
-        ThresholdField::Crit => (
-            "crit",
-            t.crit as i32,
-            "%",
-            (t.warn as i32) + 1,
-            99i32,
-        ),
-        ThresholdField::WeeklyShowAt => (
-            "weekly show at",
-            t.weekly_show_at as i32,
-            "%",
-            1i32,
-            99i32,
-        ),
-        ThresholdField::BarWidth => (
-            "bar width",
-            t.bar_width as i32,
-            " ",
-            2i32,
-            20i32,
-        ),
+        ThresholdField::Warn => ("warn", t.warn as i32, "%", 1i32, (t.crit as i32) - 1),
+        ThresholdField::Crit => ("crit", t.crit as i32, "%", (t.warn as i32) + 1, 99i32),
+        ThresholdField::WeeklyShowAt => {
+            ("weekly show at", t.weekly_show_at as i32, "%", 1i32, 99i32)
+        }
+        ThresholdField::BarWidth => ("bar width", t.bar_width as i32, " ", 2i32, 20i32),
     };
 
     let range_str = format!("[{lo}–{hi}]");
@@ -436,10 +452,20 @@ fn render_threshold_row(
     let mut line = Line::from(vec![
         Span::styled("  ~ ", Style::default().fg(CHROME_WARN)),
         Span::styled(format!("{label:<14} "), Style::default().fg(CHROME_HEADER)),
-        Span::styled(format!("{value:>3}"), Style::default().fg(CHROME_WARN).add_modifier(Modifier::BOLD)),
+        Span::styled(
+            format!("{value:>3}"),
+            Style::default()
+                .fg(CHROME_WARN)
+                .add_modifier(Modifier::BOLD),
+        ),
         Span::styled(format!("{unit:<2}"), Style::default().fg(CHROME_HEADER)),
         Span::raw("  "),
-        Span::styled(range_str, Style::default().fg(CHROME_DISABLED).add_modifier(Modifier::DIM)),
+        Span::styled(
+            range_str,
+            Style::default()
+                .fg(CHROME_DISABLED)
+                .add_modifier(Modifier::DIM),
+        ),
     ]);
     if is_cursor {
         line = line.style(cursor_bg);
@@ -480,21 +506,18 @@ fn build_desc_line(app: &App) -> Line<'static> {
                     crate::model::SegmentKind::RateLimits => {
                         "5-hour and weekly API usage windows with live reset countdown"
                     }
-                    crate::model::SegmentKind::Model => {
-                        "Active Claude model display name"
-                    }
+                    crate::model::SegmentKind::Model => "Active Claude model display name",
                 };
                 Line::from(Span::styled(desc, dim_italic))
             } else {
                 let label = kind.label().to_string();
                 Line::from(vec![
-                    Span::styled(
-                        format!("{label} — disabled · "),
-                        dim_italic,
-                    ),
+                    Span::styled(format!("{label} — disabled · "), dim_italic),
                     Span::styled(
                         "[Space]",
-                        Style::default().fg(CHROME_CRIT).add_modifier(Modifier::BOLD),
+                        Style::default()
+                            .fg(CHROME_CRIT)
+                            .add_modifier(Modifier::BOLD),
                     ),
                     Span::styled(" to enable", dim_italic),
                 ])
@@ -544,7 +567,8 @@ fn build_desc_line(app: &App) -> Line<'static> {
                     t.warn + 1
                 ),
                 ThresholdField::WeeklyShowAt => {
-                    "Show weekly rate-limit window once usage exceeds this percent. Range: [1–99%].".to_string()
+                    "Show weekly rate-limit window once usage exceeds this percent. Range: [1–99%]."
+                        .to_string()
                 }
                 ThresholdField::BarWidth => {
                     "Progress bar width in terminal cells. Range: [2–20].".to_string()
@@ -563,15 +587,26 @@ fn draw_preview(f: &mut Frame, app: &App, area: Rect) {
     let title = format!(" Preview — {} ", sample.name);
     let block = Block::default()
         .borders(Borders::ALL)
-        .border_style(Style::default().fg(CHROME_HEADER).add_modifier(Modifier::DIM))
-        .title(Span::styled(title, Style::default().fg(CHROME_HEADER).add_modifier(Modifier::DIM)));
+        .border_style(
+            Style::default()
+                .fg(CHROME_HEADER)
+                .add_modifier(Modifier::DIM),
+        )
+        .title(Span::styled(
+            title,
+            Style::default()
+                .fg(CHROME_HEADER)
+                .add_modifier(Modifier::DIM),
+        ));
 
     if app.config.segments.is_empty() {
         let msg = Paragraph::new(Line::from(vec![
             Span::raw("No segments enabled — "),
             Span::styled(
                 "[Space]",
-                Style::default().fg(CHROME_CRIT).add_modifier(Modifier::BOLD),
+                Style::default()
+                    .fg(CHROME_CRIT)
+                    .add_modifier(Modifier::BOLD),
             ),
             Span::raw(" to enable one"),
         ]))
@@ -627,11 +662,14 @@ fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
     let cursor_row = app.cursor_row().cloned();
     let line = if app.reorder_mode {
         // Variant 1: reorder mode.
-        hint_line(&[
-            ("[j/k]", " move  "),
-            ("[m/Enter/Esc]", " done  "),
-            ("[1–4]", " jump"),
-        ], false)
+        hint_line(
+            &[
+                ("[j/k]", " move  "),
+                ("[m/Enter/Esc]", " done  "),
+                ("[1–4]", " jump"),
+            ],
+            false,
+        )
     } else if app.config.segments.is_empty() {
         // Variant 2: all segments disabled — [Space] uses CHROME_CRIT bg.
         hint_line_with_crit_space(&[
@@ -645,63 +683,81 @@ fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
         match &cursor_row {
             Some(RowItem::SegmentRow(kind)) if app.config.segments.contains(kind) => {
                 // Variant 3: enabled segment.
-                hint_line(&[
-                    ("[Space]", " toggle  "),
-                    ("[m]", " reorder  "),
-                    ("[j/k]", " move  "),
-                    ("[1–4]", " section  "),
-                    ("[s]", " save  "),
-                    ("[?]", " help  "),
-                    ("[q]", " quit"),
-                ], false)
+                hint_line(
+                    &[
+                        ("[Space]", " toggle  "),
+                        ("[m]", " reorder  "),
+                        ("[j/k]", " move  "),
+                        ("[1–4]", " section  "),
+                        ("[s]", " save  "),
+                        ("[?]", " help  "),
+                        ("[q]", " quit"),
+                    ],
+                    false,
+                )
             }
             Some(RowItem::SegmentRow(_)) => {
                 // Variant 4: disabled segment.
-                hint_line(&[
-                    ("[Space]", " enable  "),
-                    ("[j/k]", " move  "),
-                    ("[1–4]", " section  "),
-                    ("[s]", " save  "),
-                    ("[?]", " help  "),
-                    ("[q]", " quit"),
-                ], false)
+                hint_line(
+                    &[
+                        ("[Space]", " enable  "),
+                        ("[j/k]", " move  "),
+                        ("[1–4]", " section  "),
+                        ("[s]", " save  "),
+                        ("[?]", " help  "),
+                        ("[q]", " quit"),
+                    ],
+                    false,
+                )
             }
             Some(RowItem::ThemeRow(_)) | Some(RowItem::StyleRow(_)) => {
                 // Variant 5: theme or style.
-                hint_line(&[
-                    ("[j/k]", " browse  "),
-                    ("[s]", " save  "),
-                    ("[1–4]", " section  "),
-                    ("[p]", " sample  "),
-                    ("[?]", " help  "),
-                    ("[q]", " quit"),
-                ], false)
+                hint_line(
+                    &[
+                        ("[j/k]", " browse  "),
+                        ("[s]", " save  "),
+                        ("[1–4]", " section  "),
+                        ("[p]", " sample  "),
+                        ("[?]", " help  "),
+                        ("[q]", " quit"),
+                    ],
+                    false,
+                )
             }
             Some(RowItem::ThresholdRow(_)) => {
                 // Variant 6: threshold.
-                hint_line(&[
-                    ("[h/l]", " ±1  "),
-                    ("[H/L]", " ±5  "),
-                    ("[j/k]", " move  "),
-                    ("[s]", " save  "),
-                    ("[?]", " help  "),
-                    ("[q]", " quit"),
-                ], false)
+                hint_line(
+                    &[
+                        ("[h/l]", " ±1  "),
+                        ("[H/L]", " ±5  "),
+                        ("[j/k]", " move  "),
+                        ("[s]", " save  "),
+                        ("[?]", " help  "),
+                        ("[q]", " quit"),
+                    ],
+                    false,
+                )
             }
             _ => {
                 // Variant 7: default.
-                hint_line(&[
-                    ("[j/k]", " move  "),
-                    ("[1–4]", " section  "),
-                    ("[s]", " save  "),
-                    ("[?]", " help  "),
-                    ("[q]", " quit"),
-                ], false)
+                hint_line(
+                    &[
+                        ("[j/k]", " move  "),
+                        ("[1–4]", " section  "),
+                        ("[s]", " save  "),
+                        ("[?]", " help  "),
+                        ("[q]", " quit"),
+                    ],
+                    false,
+                )
             }
         }
     };
 
-    f.render_widget(Paragraph::new(line).style(Style::default().bg(CHROME_BG)), area);
+    f.render_widget(
+        Paragraph::new(line).style(Style::default().bg(CHROME_BG)),
+        area,
+    );
 }
 
 /// Build a hint line from (key, desc) pairs. All key buttons use CHROME_KEY_BG.
@@ -745,131 +801,291 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
     let content = vec![
         Line::from(Span::styled(
             " Movement",
-            Style::default().fg(CHROME_ACCENT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_ACCENT)
+                .add_modifier(Modifier::BOLD),
         )),
         Line::from(vec![
-            Span::styled("  j / ↓ ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Move cursor down one row", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  j / ↓ ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Move cursor down one row",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
-            Span::styled("  k / ↑ ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  k / ↑ ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Move cursor up one row", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  g       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  g       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Jump to top of list", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  G       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  G       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Jump to bottom of list", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  Tab     ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  Tab     ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Jump to next section", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  Shift-Tab", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled(" Jump to previous section", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  Shift-Tab",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " Jump to previous section",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
-            Span::styled("  1–4    ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("   Jump to section 1=Segments 2=Theme 3=Style 4=Thresholds", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  1–4    ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "   Jump to section 1=Segments 2=Theme 3=Style 4=Thresholds",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(Span::raw("")),
         Line::from(Span::styled(
             " Segments",
-            Style::default().fg(CHROME_ACCENT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_ACCENT)
+                .add_modifier(Modifier::BOLD),
         )),
         Line::from(vec![
-            Span::styled("  Space   ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Toggle segment enabled/disabled", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  Space   ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Toggle segment enabled/disabled",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
-            Span::styled("  m       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Enter reorder mode (enabled segments only)", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  m       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Enter reorder mode (enabled segments only)",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(Span::raw("")),
         Line::from(Span::styled(
             " Reorder mode",
-            Style::default().fg(CHROME_ACCENT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_ACCENT)
+                .add_modifier(Modifier::BOLD),
         )),
         Line::from(vec![
-            Span::styled("  j / ↓   ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  j / ↓   ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Move segment down", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  k / ↑   ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  k / ↑   ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Move segment up", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  m / Enter", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled(" Exit reorder mode (commit)", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  m / Enter",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " Exit reorder mode (commit)",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
-            Span::styled("  Esc     ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Exit reorder mode (commit + flash)", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  Esc     ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Exit reorder mode (commit + flash)",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(Span::raw("")),
         Line::from(Span::styled(
             " Thresholds",
-            Style::default().fg(CHROME_ACCENT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_ACCENT)
+                .add_modifier(Modifier::BOLD),
         )),
         Line::from(vec![
-            Span::styled("  h / ←   ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  h / ←   ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Decrement by 1", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  l / →   ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  l / →   ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Increment by 1", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  H       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  H       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Decrement by 5", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  L       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  L       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("  Increment by 5", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(Span::raw("")),
         Line::from(Span::styled(
             " Global",
-            Style::default().fg(CHROME_ACCENT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_ACCENT)
+                .add_modifier(Modifier::BOLD),
         )),
         Line::from(vec![
-            Span::styled("  s / Ctrl-S", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "  s / Ctrl-S",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled(" Save config", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
-            Span::styled("  r       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Reset to defaults (confirm prompt)", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  r       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Reset to defaults (confirm prompt)",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
-            Span::styled("  p       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Cycle preview sample forward", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  p       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Cycle preview sample forward",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
-            Span::styled("  P       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Cycle preview sample backward", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  P       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Cycle preview sample backward",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
-            Span::styled("  ?       ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Close this help overlay", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  ?       ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Close this help overlay",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
-            Span::styled("  q / Esc ", Style::default().fg(CHROME_KEY_BG).add_modifier(Modifier::BOLD)),
-            Span::styled("  Quit (confirm if unsaved)", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  q / Esc ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Quit (confirm if unsaved)",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
     ];
 
     let block = Block::bordered()
         .title(Span::styled(
             " ? Keybindings ",
-            Style::default().fg(CHROME_ACCENT).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(CHROME_ACCENT)
+                .add_modifier(Modifier::BOLD),
         ))
         .border_style(Style::default().fg(CHROME_ACCENT));
 
-    f.render_widget(
-        Paragraph::new(content).block(block),
-        overlay_area,
-    );
+    f.render_widget(Paragraph::new(content).block(block), overlay_area);
 }
