@@ -56,12 +56,7 @@ impl Segment for DevContext {
             }
             out.icon(glyphs.pull_request);
             out.colored(theme.git_branch, &format!("#{num}"));
-            let pr_state = ctx
-                .input
-                .pr
-                .review_state
-                .as_deref()
-                .map(strip_control);
+            let pr_state = ctx.input.pr.review_state.as_deref().map(strip_control);
             match pr_state.as_deref() {
                 Some("approved") => out.colored(theme.bar_ok, " \u{2713}"),
                 Some("changes_requested") => out.colored(theme.bar_crit, " \u{2717}"),

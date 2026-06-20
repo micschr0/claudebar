@@ -161,7 +161,10 @@ fn run_migrate(cli: &Cli) -> ExitCode {
 
     // Check if the config file actually exists (load returns default for missing files).
     if !path.exists() {
-        eprintln!("claudebar: no config file at {} — nothing to migrate.", path.display());
+        eprintln!(
+            "claudebar: no config file at {} — nothing to migrate.",
+            path.display()
+        );
         eprintln!("Run `claudebar init` to create one.");
         return ExitCode::SUCCESS;
     }
@@ -184,12 +187,10 @@ fn run_migrate(cli: &Cli) -> ExitCode {
             Some(idx) => idx + 1,
             // No known predecessor present — insert before the first ALL-segment
             // that is already in cfg.segments and comes after `kind`.
-            None => {
-                SegmentKind::ALL[canonical_pos + 1..]
-                    .iter()
-                    .find_map(|&successor| cfg.segments.iter().position(|s| *s == successor))
-                    .unwrap_or(cfg.segments.len())
-            }
+            None => SegmentKind::ALL[canonical_pos + 1..]
+                .iter()
+                .find_map(|&successor| cfg.segments.iter().position(|s| *s == successor))
+                .unwrap_or(cfg.segments.len()),
         };
 
         cfg.segments.insert(pos, kind);

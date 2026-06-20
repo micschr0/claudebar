@@ -201,15 +201,13 @@ impl FromJsonNumber for i64 {
     }
     fn from_str_num(s: &str) -> Option<Self> {
         let s = s.trim();
-        s.parse::<i64>()
-            .ok()
-            .or_else(|| {
-                let v = s.parse::<f64>().ok()?;
-                if !v.is_finite() || v < i64::MIN as f64 || v > i64::MAX as f64 {
-                    return None;
-                }
-                Some(v as i64)
-            })
+        s.parse::<i64>().ok().or_else(|| {
+            let v = s.parse::<f64>().ok()?;
+            if !v.is_finite() || v < i64::MIN as f64 || v > i64::MAX as f64 {
+                return None;
+            }
+            Some(v as i64)
+        })
     }
 }
 
