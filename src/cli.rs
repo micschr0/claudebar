@@ -44,4 +44,6 @@ pub enum Command {
     },
     /// List the built-in themes and styles.
     List,
+    /// Add any new segments (from a newer claudebar version) to an existing config.
+    Migrate,
 }

@@ -6,6 +6,7 @@
 //! a raw color — they read `ctx.theme` / `ctx.style` through the writer.
 
 pub mod context;
+pub mod dev_context;
 pub mod directory;
 pub mod git;
 pub mod model;
@@ -44,6 +45,7 @@ impl SegmentKind {
             SegmentKind::Git => &git::Git,
             SegmentKind::Context => &context::Context,
             SegmentKind::RateLimits => &rate_limits::RateLimits,
+            SegmentKind::DevContext => &dev_context::DevContext,
             SegmentKind::Model => &model::Model,
         }
     }

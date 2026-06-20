@@ -32,6 +32,12 @@ pub struct GlyphSet {
     pub model: &'static str,
     /// Effort icon (bolt).
     pub effort: &'static str,
+    /// Worktree icon (code-fork).
+    pub worktree: &'static str,
+    /// Pull-request icon.
+    pub pull_request: &'static str,
+    /// Sub-agent icon (robot).
+    pub agent: &'static str,
 }
 
 /// A complete visual style: how segments are separated and decorated.

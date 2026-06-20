@@ -24,6 +24,9 @@ pub fn style() -> Style {
             reset: "\u{21ba}",
             model: "\u{25c8}",
             effort: "\u{f0e7}",
+            worktree: "\u{f126}",      // U+F126 nf-fa-code-fork
+            pull_request: "\u{f407}",  // U+F407 nf-oct-git-pull-request
+            agent: "\u{f06a9}",        // U+F06A9 nf-md-robot
         },
         bar_fill: '\u{2501}',  // ━ heavy horizontal
         bar_empty: '\u{254c}', // ╌ light double dash

@@ -8,7 +8,7 @@
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 
-/// The five renderable segments. `Vec<SegmentKind>` in [`Config`] encodes both
+/// The renderable segments. `Vec<SegmentKind>` in [`Config`] encodes both
 /// *which* are enabled (presence) and their *order* (render order).
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "kebab-case")]
@@ -17,16 +17,18 @@ pub enum SegmentKind {
     Git,
     Context,
     RateLimits,
+    DevContext,
     Model,
 }
 
 impl SegmentKind {
     /// All segments in canonical (default) order.
-    pub const ALL: [SegmentKind; 5] = [
+    pub const ALL: [SegmentKind; 6] = [
         SegmentKind::Directory,
         SegmentKind::Git,
         SegmentKind::Context,
         SegmentKind::RateLimits,
+        SegmentKind::DevContext,
         SegmentKind::Model,
     ];
 
@@ -37,13 +39,14 @@ impl SegmentKind {
             SegmentKind::Git => "Git",
             SegmentKind::Context => "Context",
             SegmentKind::RateLimits => "Rate limits",
+            SegmentKind::DevContext => "Dev context",
             SegmentKind::Model => "Model",
         }
     }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(default)]
+#[serde(default, deny_unknown_fields)]
 pub struct Thresholds {
     /// Bar turns warn-colored at or above this percent.
     pub warn: u16,
@@ -67,7 +70,7 @@ impl Default for Thresholds {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(default)]
+#[serde(default, deny_unknown_fields)]
 pub struct Config {
     pub theme: String,
     pub style: String,
@@ -89,6 +92,7 @@ impl Default for Config {
 impl Config {
     /// Standard config path: `$XDG_CONFIG_HOME/claudebar/config.toml`,
     /// falling back to `$HOME/.config/claudebar/config.toml`.
+    #[must_use]
     pub fn default_path() -> Option<PathBuf> {
         let base = std::env::var_os("XDG_CONFIG_HOME")
             .map(PathBuf::from)
@@ -100,6 +104,14 @@ impl Config {
     /// Load config from `path`. A missing file yields `Config::default()`
     /// (config-less operation is a supported, first-class state). A present but
     /// malformed file is a real error the caller should surface.
+    ///
+    /// # Errors
+    ///
+    /// Returns `ConfigError::Parse` when the file contains invalid TOML, and
+    /// `ConfigError::Io` when the file exists but cannot be read (permissions,
+    /// filesystem error). A missing file is **not** an error — it yields
+    /// `Ok(Config::default())`.
+    #[must_use = "returns default config on file-not-found, but parse errors must be surfaced"]
     pub fn load(path: &Path) -> Result<Config, ConfigError> {
         match std::fs::read_to_string(path) {
             Ok(s) => toml::from_str(&s).map_err(|e| ConfigError::Parse(e.to_string())),
@@ -118,6 +130,13 @@ impl Config {
     }
 
     /// Serialize to pretty TOML, creating parent dirs.
+    ///
+    /// # Errors
+    ///
+    /// Returns `ConfigError::Io` when the parent directory cannot be created or
+    /// the file cannot be written. Returns `ConfigError::Parse` when
+    /// serialization fails (should not happen for valid data).
+    #[must_use = "ignoring the save result means the config is silently not persisted"]
     pub fn save(&self, path: &Path) -> Result<(), ConfigError> {
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent).map_err(|e| ConfigError::Io(e.to_string()))?;

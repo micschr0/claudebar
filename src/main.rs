@@ -16,12 +16,30 @@ fn main() -> ExitCode {
         Command::Config => run_config(&cli),
         Command::Init { force, print } => run_init(&cli, *force, *print),
         Command::List => run_list(),
+        Command::Migrate => run_migrate(&cli),
     }
 }
 
 /// Resolve the config, applying any `--theme` / `--style` overrides.
+/// Warns on stderr when the config file exists but cannot be parsed.
 fn resolve_config(cli: &Cli) -> Config {
-    let mut cfg = Config::load_or_default(cli.config.as_deref());
+    let path = cli.config.clone().or_else(Config::default_path);
+    let mut cfg = match path {
+        Some(ref p) => {
+            if p.exists() {
+                match Config::load(p) {
+                    Ok(c) => c,
+                    Err(e) => {
+                        eprintln!("claudebar: warning: {e} — using defaults");
+                        Config::default()
+                    }
+                }
+            } else {
+                Config::load_or_default(cli.config.as_deref())
+            }
+        }
+        None => Config::default(),
+    };
     if let Some(t) = &cli.theme {
         cfg.theme = t.clone();
     }
@@ -118,4 +136,82 @@ fn run_list() -> ExitCode {
         println!("  {n}");
     }
     ExitCode::SUCCESS
+}
+
+fn run_migrate(cli: &Cli) -> ExitCode {
+    use claudebar::model::SegmentKind;
+
+    let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
+        Some(p) => p,
+        None => {
+            eprintln!("claudebar: could not determine a config path (set $HOME or --config).");
+            return ExitCode::FAILURE;
+        }
+    };
+
+    // Load the existing config. If the file doesn't exist, there's nothing to migrate
+    // (the default already includes all segments).
+    let mut cfg = match Config::load(&path) {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("claudebar: {e}");
+            return ExitCode::FAILURE;
+        }
+    };
+
+    // Check if the config file actually exists (load returns default for missing files).
+    if !path.exists() {
+        eprintln!("claudebar: no config file at {} — nothing to migrate.", path.display());
+        eprintln!("Run `claudebar init` to create one.");
+        return ExitCode::SUCCESS;
+    }
+
+    // Find segments present in ALL but absent from the user's segments list.
+    // Insert each at its canonical position relative to its neighbors in ALL.
+    let mut added: Vec<&str> = Vec::new();
+    for (canonical_pos, &kind) in SegmentKind::ALL.iter().enumerate() {
+        if cfg.segments.contains(&kind) {
+            continue;
+        }
+        // Find the best insertion point: after the last ALL-segment that is already
+        // in cfg.segments and comes before `kind` in canonical order.
+        let insert_after = SegmentKind::ALL[..canonical_pos]
+            .iter()
+            .rev()
+            .find_map(|&predecessor| cfg.segments.iter().rposition(|s| *s == predecessor));
+
+        let pos = match insert_after {
+            Some(idx) => idx + 1,
+            // No known predecessor present — insert before the first ALL-segment
+            // that is already in cfg.segments and comes after `kind`.
+            None => {
+                SegmentKind::ALL[canonical_pos + 1..]
+                    .iter()
+                    .find_map(|&successor| cfg.segments.iter().position(|s| *s == successor))
+                    .unwrap_or(cfg.segments.len())
+            }
+        };
+
+        cfg.segments.insert(pos, kind);
+        added.push(kind.label());
+    }
+
+    if added.is_empty() {
+        println!("claudebar: config is up to date, no segments added.");
+        return ExitCode::SUCCESS;
+    }
+
+    match cfg.save(&path) {
+        Ok(()) => {
+            for label in &added {
+                println!("claudebar: added segment '{label}'");
+            }
+            println!("claudebar: config updated: {}", path.display());
+            ExitCode::SUCCESS
+        }
+        Err(e) => {
+            eprintln!("claudebar: {e}");
+            ExitCode::FAILURE
+        }
+    }
 }

@@ -24,6 +24,14 @@ pub struct InputData {
     pub model: Model,
     #[serde(default)]
     pub effort: Effort,
+    #[serde(default)]
+    pub pr: Pr,
+    #[serde(default)]
+    pub worktree: Option<WorktreeInfo>,
+    #[serde(default)]
+    pub workspace: Option<WorkspaceInfo>,
+    #[serde(default)]
+    pub agent: AgentInfo,
 }
 
 #[derive(Debug, Default, Deserialize)]
@@ -68,11 +76,55 @@ pub struct Effort {
     pub level: Option<String>,
 }
 
+/// PR metadata — `pr.number` and `pr.review_state` from the Claude Code hook JSON.
+#[derive(Debug, Default, Deserialize)]
+pub struct Pr {
+    /// PR number. Uses `Coerce<u64>` so a wrong-typed value degrades to None.
+    #[serde(default)]
+    pub number: Coerce<u64>,
+    /// Review state: `approved | changes_requested | commented | pending`.
+    #[serde(default)]
+    pub review_state: Option<String>,
+}
+
+/// `worktree.name` from the Claude Code hook JSON.
+#[derive(Debug, Default, Deserialize)]
+pub struct WorktreeInfo {
+    #[serde(default)]
+    pub name: Option<String>,
+}
+
+/// `workspace.git_worktree` fallback when `worktree` is absent.
+#[derive(Debug, Default, Deserialize)]
+pub struct WorkspaceInfo {
+    #[serde(default)]
+    pub git_worktree: Option<String>,
+}
+
+/// `agent.name` — name of the active sub-agent, if any.
+#[derive(Debug, Default, Deserialize)]
+pub struct AgentInfo {
+    #[serde(default)]
+    pub name: Option<String>,
+}
+
 impl InputData {
     /// Parse from a JSON string. On any failure (even invalid JSON), returns
     /// `InputData::default()` so the caller still renders a (possibly empty) line.
     pub fn parse(s: &str) -> Self {
         serde_json::from_str(s).unwrap_or_default()
+    }
+
+    /// Worktree name: tries `worktree.name` first, then `workspace.git_worktree`.
+    pub fn worktree_name(&self) -> Option<&str> {
+        self.worktree
+            .as_ref()
+            .and_then(|w| w.name.as_deref())
+            .or_else(|| {
+                self.workspace
+                    .as_ref()
+                    .and_then(|ws| ws.git_worktree.as_deref())
+            })
     }
 }
 
@@ -119,7 +171,7 @@ impl FromJsonNumber for u64 {
         u64::try_from(v).ok()
     }
     fn from_f64(v: f64) -> Option<Self> {
-        if v.is_finite() && v >= 0.0 {
+        if v.is_finite() && v >= 0.0 && v <= u64::MAX as f64 {
             Some(v as u64)
         } else {
             None
@@ -141,7 +193,7 @@ impl FromJsonNumber for i64 {
         Some(v)
     }
     fn from_f64(v: f64) -> Option<Self> {
-        if v.is_finite() {
+        if v.is_finite() && v >= i64::MIN as f64 && v <= i64::MAX as f64 {
             Some(v as i64)
         } else {
             None
@@ -151,7 +203,13 @@ impl FromJsonNumber for i64 {
         let s = s.trim();
         s.parse::<i64>()
             .ok()
-            .or_else(|| s.parse::<f64>().ok().and_then(Self::from_f64))
+            .or_else(|| {
+                let v = s.parse::<f64>().ok()?;
+                if !v.is_finite() || v < i64::MIN as f64 || v > i64::MAX as f64 {
+                    return None;
+                }
+                Some(v as i64)
+            })
     }
 }
 
@@ -291,5 +349,60 @@ mod tests {
         assert!(d.cwd.is_none());
         let d = InputData::parse("{}");
         assert!(d.cwd.is_none());
+    }
+
+    #[test]
+    fn coerce_negative_i64_to_u64_fails() {
+        // Negative i64 cannot convert to u64.
+        let c: Coerce<u64> = serde_json::from_str("-1").unwrap();
+        assert_eq!(c.get(), None);
+    }
+
+    #[test]
+    fn coerce_large_string_to_u64_handles_overflow() {
+        // String beyond u64::MAX — rejected by f64 range check.
+        let c: Coerce<u64> = serde_json::from_str(r#""99999999999999999999""#).unwrap();
+        assert_eq!(c.get(), None);
+    }
+
+    #[test]
+    fn coerce_u64_within_range_from_f64_string() {
+        // Value within u64 range, coming as a float-parseable string.
+        let c: Coerce<u64> = serde_json::from_str(r#""18446744073709551615""#).unwrap();
+        // u64::MAX parsed via f64 — f64 rounds the last few digits, but result
+        // should be Some (either exact or lossy-but-valid).
+        assert!(c.get().is_some(), "u64::MAX should parse via f64");
+    }
+
+    #[test]
+    fn coerce_empty_string_fails() {
+        let c: Coerce<u64> = serde_json::from_str(r#""""#).unwrap();
+        assert_eq!(c.get(), None);
+    }
+
+    #[test]
+    fn coerce_negative_float_to_u64_fails() {
+        // Negative float cannot convert to u64 (gate at v >= 0.0).
+        let c: Coerce<u64> = serde_json::from_str("-1.0").unwrap();
+        assert_eq!(c.get(), None);
+    }
+
+    #[test]
+    fn coerce_negative_i64_preserved_for_i64() {
+        let c: Coerce<i64> = serde_json::from_str("-1").unwrap();
+        assert_eq!(c.get(), Some(-1));
+    }
+
+    #[test]
+    fn coerce_i64_min_string_parses() {
+        let c: Coerce<i64> = serde_json::from_str(r#""-9223372036854775808""#).unwrap();
+        assert_eq!(c.get(), Some(i64::MIN));
+    }
+
+    #[test]
+    fn coerce_i64_out_of_range_fails() {
+        // String larger than i64::MAX — rejected by f64 range check.
+        let c: Coerce<i64> = serde_json::from_str(r#""999999999999999999999""#).unwrap();
+        assert_eq!(c.get(), None);
     }
 }

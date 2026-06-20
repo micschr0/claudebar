@@ -29,5 +29,9 @@ pub fn all() -> Vec<Sample> {
             name: "no effort",
             input: InputData::parse(include_str!("../../fixtures/no_effort.json")),
         },
+        Sample {
+            name: "dev context",
+            input: InputData::parse(include_str!("../../fixtures/dev_context.json")),
+        },
     ]
 }

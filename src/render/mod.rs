@@ -14,6 +14,7 @@ use crate::{styles, themes};
 
 /// Render the full status line for `input` under `cfg`, with `now` (epoch
 /// seconds) injected for deterministic reset countdowns.
+#[must_use]
 pub fn render_line(input: &InputData, cfg: &Config, now: i64) -> String {
     let theme = themes::get(&cfg.theme);
     let style = styles::get(&cfg.style);
@@ -23,6 +24,7 @@ pub fn render_line(input: &InputData, cfg: &Config, now: i64) -> String {
 
 /// Lower-level entry that takes resolved theme/style/home directly — used by the
 /// TUI preview (which already holds them) and by tests (deterministic `home`).
+#[must_use]
 pub fn render_with(
     input: &InputData,
     cfg: &Config,

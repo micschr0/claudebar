@@ -13,6 +13,7 @@ pub struct SegmentWriter<'a> {
 }
 
 impl<'a> SegmentWriter<'a> {
+    #[must_use]
     pub fn new(theme: &'a Theme, style: &'a Style) -> Self {
         Self {
             buf: String::with_capacity(64),
@@ -21,15 +22,18 @@ impl<'a> SegmentWriter<'a> {
         }
     }
 
+    #[must_use]
     pub fn theme(&self) -> &Theme {
         self.theme
     }
 
+    #[must_use]
     pub fn style(&self) -> &Style {
         self.style
     }
 
     /// True if nothing has been written yet.
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.buf.is_empty()
     }
@@ -79,6 +83,7 @@ impl<'a> SegmentWriter<'a> {
     }
 
     /// The accumulated segment body.
+    #[must_use]
     pub fn as_str(&self) -> &str {
         &self.buf
     }

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Claude Code statusline — dark theme
-# Segments: directory | git | tokens+ctx-bar | rate-bar+timer | model
+# Segments: directory | git | tokens+ctx-bar | rate-bar+timer | dev-context | model
 
 # shellcheck disable=SC2059
 # Status segments deliberately put pre-defined ANSI color constants in the printf
@@ -40,6 +40,10 @@ SEP=" ${C_SEP}${PL}${R} "
 # the source ASCII-clean; swap the codepoint to taste.
 WK=$(printf '\xf3\xb0\x83\xad')
 EF=$(printf '\xef\x83\xa7')  # U+F0E7 nf-fa-bolt (effort indicator)
+# Dev-context icons (bytes keep the source ASCII-clean; swap codepoints to taste)
+WT=$(printf '\xef\x84\xa6')      # U+F126 nf-fa-code-fork (worktree)
+PR=$(printf '\xef\x90\x87')      # U+F407 nf-oct-git-pull-request
+AG=$(printf '\xf3\xb0\x92\xa9')  # U+F06A9 nf-md-robot (sub-agent)
 
 # make_bar <pct> <width> <fill-color>
 # Emits a self-colored bar: filled run in <fill-color>, empty track dimmed in
@@ -76,7 +80,7 @@ fmt_reset() {
 
 # Parse all fields in one jq call — herestring avoids echo subprocess;
 # delimiter US (0x1f): non-whitespace, preserves empty fields, safe in cwd/model names.
-IFS=$'\x1f' read -r cwd s_in s_out used rl_pct resets_at wk_pct wk_resets_at model_name effort_level < <(
+IFS=$'\x1f' read -r cwd s_in s_out used rl_pct resets_at wk_pct wk_resets_at model_name effort_level pr_num pr_state wt_name agent_name < <(
   jq -r '[
     (.cwd? // ""),
     ((.context_window?.total_input_tokens?  // 0) | (tonumber? // 0) | floor | tostring),
@@ -87,7 +91,11 @@ IFS=$'\x1f' read -r cwd s_in s_out used rl_pct resets_at wk_pct wk_resets_at mod
     ((.rate_limits?.seven_day?.used_percentage? // "") | (tonumber? // "") | tostring),
     ((.rate_limits?.seven_day?.resets_at?   // 0) | (tonumber? // 0) | floor | tostring),
     (.model?.display_name? // ""),
-    (.effort?.level? // "")
+    (.effort?.level? // ""),
+    ((.pr?.number? // "") | tostring),
+    (.pr?.review_state? // ""),
+    ((.worktree?.name? // .workspace?.git_worktree?) // ""),
+    (.agent?.name? // "")
   ] | join("")' <<< "$input" 2>/dev/null
 )
 
@@ -213,6 +221,34 @@ if [ -n "$rl_pct" ] || [ "${resets_at:-0}" -gt 0 ] 2>/dev/null \
       wrem=$(fmt_reset "$wk_resets_at")
       [ -n "$wrem" ] && printf " ${C_DIM}↺${R} ${C_RST}%s${R}" "$wrem"
     fi
+  fi
+fi
+
+# ── Dev context: worktree · PR · agent (medium-volatility) ───────────────────
+wt_name=${wt_name//[$CTRL]/}       # strip terminal-control bytes (injection guard)
+pr_state=${pr_state//[$CTRL]/}
+agent_name=${agent_name//[$CTRL]/}
+[[ "$pr_num" =~ ^[0-9]+$ ]] || pr_num=""
+if [ -n "$wt_name" ] || [ -n "$pr_num" ] || [ -n "$agent_name" ]; then
+  printf '%s' "$SEP"
+  pending=""   # leading space once a sub-element has been printed
+  if [ -n "$wt_name" ]; then
+    printf "${C_DIM}${WT} %s${R}" "$wt_name"; pending=" "
+  fi
+  if [ -n "$pr_num" ]; then
+    [ -n "$pending" ] && printf '%s' "$pending"
+    printf "${C_GIT}${PR} #%s${R}" "$pr_num"
+    case "$pr_state" in
+      approved)          printf " ${C_OK}✓${R}"   ;;
+      changes_requested) printf " ${C_CRIT}✗${R}" ;;
+      commented)         printf " ${C_DIM}◦${R}"  ;;
+      pending)           printf " ${C_DIM}·${R}"  ;;
+    esac
+    pending=" "
+  fi
+  if [ -n "$agent_name" ]; then
+    [ -n "$pending" ] && printf '%s' "$pending"
+    printf "${C_EFF_MAX}${AG} %s${R}" "$agent_name"
   fi
 fi
 

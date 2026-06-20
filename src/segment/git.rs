@@ -4,7 +4,7 @@
 //! - Only run when `ctx.input.cwd` is a non-empty **absolute** path (starts with
 //!   `/`). Otherwise emit nothing, return `false`.
 //! - Run exactly one git command:
-//!   `git -C <cwd> -c gc.auto=0 status --branch --porcelain` (suppress stderr).
+//!   `git -C <cwd> -c gc.auto=0 status --branch --porcelain --no-optional-locks` (suppress stderr).
 //!   If it fails or output is empty → return `false`.
 //! - Parse the `## ` branch line:
 //!   - `## No commits yet on <branch>` → branch = `<branch>`.
@@ -120,6 +120,7 @@ impl Segment for Git {
                 "status",
                 "--branch",
                 "--porcelain",
+                "--no-optional-locks",
             ])
             .stderr(std::process::Stdio::null())
             .output()

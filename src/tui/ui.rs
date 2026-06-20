@@ -506,6 +506,9 @@ fn build_desc_line(app: &App) -> Line<'static> {
                     crate::model::SegmentKind::RateLimits => {
                         "5-hour and weekly API usage windows with live reset countdown"
                     }
+                    crate::model::SegmentKind::DevContext => {
+                        "Worktree name, PR number and review state, active sub-agent"
+                    }
                     crate::model::SegmentKind::Model => "Active Claude model display name",
                 };
                 Line::from(Span::styled(desc, dim_italic))

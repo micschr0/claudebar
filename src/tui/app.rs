@@ -8,7 +8,7 @@ use std::path::PathBuf;
 
 /// Severity of a transient status message — drives the rendering color.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum StatusKind {
+pub(crate) enum StatusKind {
     Success,
     Warning,
     Error,
@@ -16,14 +16,14 @@ pub enum StatusKind {
 
 /// Direction a reorder moves the focused segment.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Dir {
+pub(crate) enum Dir {
     Up,
     Down,
 }
 
 /// A threshold field that can be nudged with h/l/H/L.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ThresholdField {
+pub(crate) enum ThresholdField {
     Warn,
     Crit,
     WeeklyShowAt,
@@ -33,7 +33,7 @@ pub enum ThresholdField {
 /// A single display row in the flat list. SectionHeader and Divider are
 /// non-selectable; all others can receive flat_cursor.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum RowItem {
+pub(crate) enum RowItem {
     /// Non-selectable section separator line.
     SectionHeader(usize), // 0=Segments, 1=Theme, 2=Style, 3=Thresholds
     /// Selectable segment toggle row.
@@ -49,7 +49,7 @@ pub enum RowItem {
 }
 
 /// Full configurator state — single flat-list design.
-pub struct App {
+pub(crate) struct App {
     pub config: Config,
     pub save_path: Option<PathBuf>,
     /// Snapshot at new()/save()/reset() used by is_dirty().
@@ -87,7 +87,7 @@ pub struct App {
 
 impl App {
     /// Build state from a loaded config and its resolved save path.
-    pub fn new(config: Config, save_path: Option<PathBuf>) -> App {
+    pub(crate) fn new(config: Config, save_path: Option<PathBuf>) -> App {
         let saved_config = config.clone();
 
         // Swatch cache built in themes::NAMES order — draw_list() indexes by themes::NAMES position.
@@ -132,44 +132,44 @@ impl App {
     }
 
     /// True if the current config differs from the last save/reset snapshot.
-    pub fn is_dirty(&self) -> bool {
+    pub(crate) fn is_dirty(&self) -> bool {
         self.config != self.saved_config
     }
 
     /// The currently displayed preview sample.
-    pub fn current_sample(&self) -> &Sample {
+    pub(crate) fn current_sample(&self) -> &Sample {
         &self.samples[self.sample_idx]
     }
 
     /// The RowItem currently under flat_cursor.
-    pub fn cursor_row(&self) -> Option<&RowItem> {
+    pub(crate) fn cursor_row(&self) -> Option<&RowItem> {
         self.selectable_indices
             .get(self.flat_cursor)
             .and_then(|&dr| self.list_rows.get(dr))
     }
 
     /// Advance the preview sample forward.
-    pub fn cycle_sample(&mut self) {
+    pub(crate) fn cycle_sample(&mut self) {
         self.sample_idx = (self.sample_idx + 1) % self.samples.len();
     }
 
     /// Advance the preview sample backward.
-    pub fn cycle_sample_back(&mut self) {
+    pub(crate) fn cycle_sample_back(&mut self) {
         self.sample_idx = (self.sample_idx + self.samples.len() - 1) % self.samples.len();
     }
 
     /// Arm the two-press reset guard. Does NOT write to self.status.
-    pub fn request_reset(&mut self) {
+    pub(crate) fn request_reset(&mut self) {
         self.pending_reset = true;
     }
 
     /// Arm the two-press quit guard. Does NOT write to self.status.
-    pub fn request_quit(&mut self) {
+    pub(crate) fn request_quit(&mut self) {
         self.pending_quit = true;
     }
 
     /// Reset config to defaults; rebuild list; reset cursor/scroll.
-    pub fn reset(&mut self) {
+    pub(crate) fn reset(&mut self) {
         self.config = Config::default();
         self.saved_config = Config::default();
         let (list_rows, selectable_indices, section_starts) = build_list(&self.config);
@@ -182,7 +182,7 @@ impl App {
     }
 
     /// Persist the config to save_path, recording outcome in status.
-    pub fn save(&mut self) {
+    pub(crate) fn save(&mut self) {
         match &self.save_path {
             Some(path) => match self.config.save(path) {
                 Ok(()) => {
@@ -204,7 +204,7 @@ impl App {
     }
 
     /// Toggle the segment under flat_cursor; rebuild list; cursor follows segment.
-    pub fn toggle_cursor(&mut self) {
+    pub(crate) fn toggle_cursor(&mut self) {
         if let Some(RowItem::SegmentRow(kind)) = self.cursor_row().cloned() {
             toggle_segment(&mut self.config.segments, kind);
             let (list_rows, selectable_indices, section_starts) = build_list(&self.config);
@@ -231,7 +231,7 @@ impl App {
     }
 
     /// Nudge a threshold field by delta, with mutual clamping.
-    pub fn nudge_threshold(&mut self, field: ThresholdField, delta: i16) {
+    pub(crate) fn nudge_threshold(&mut self, field: ThresholdField, delta: i16) {
         let t = &mut self.config.thresholds;
         match field {
             ThresholdField::Warn => {
@@ -254,7 +254,7 @@ impl App {
     }
 
     /// Apply move-is-select for ThemeRow/StyleRow after j/k navigation.
-    pub fn apply_move_is_select(&mut self) {
+    pub(crate) fn apply_move_is_select(&mut self) {
         match self.cursor_row().cloned() {
             Some(RowItem::ThemeRow(name)) => {
                 self.config.theme = name.to_string();
@@ -269,7 +269,7 @@ impl App {
 
 /// Build list_rows, selectable_indices, and section_starts from config.
 /// Called in App::new(), toggle_cursor(), reset(), and move_segment().
-pub fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 4]) {
+pub(crate) fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 4]) {
     let mut list_rows: Vec<RowItem> = Vec::new();
     let mut selectable_indices: Vec<usize> = Vec::new();
 
@@ -321,7 +321,7 @@ pub fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 4]) {
     list_rows.push(RowItem::ThresholdRow(ThresholdField::BarWidth));
 
     // section_starts[i] = flat_cursor of first selectable in section i.
-    let seg_count = SegmentKind::ALL.len(); // 5
+    let seg_count = SegmentKind::ALL.len(); // 6
     let theme_count = crate::themes::NAMES.len(); // 6
     let style_count = crate::styles::NAMES.len(); // 5
     let section_starts: [usize; 4] = [
@@ -335,7 +335,7 @@ pub fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 4]) {
 }
 
 /// Enable seg (append) if absent, else disable it (remove).
-pub fn toggle_segment(segments: &mut Vec<SegmentKind>, seg: SegmentKind) {
+pub(crate) fn toggle_segment(segments: &mut Vec<SegmentKind>, seg: SegmentKind) {
     if let Some(idx) = segments.iter().position(|s| *s == seg) {
         segments.remove(idx);
     } else {
@@ -345,7 +345,7 @@ pub fn toggle_segment(segments: &mut Vec<SegmentKind>, seg: SegmentKind) {
 
 /// Swap the element at idx with its neighbor in dir. Out-of-range or
 /// boundary moves are no-ops.
-pub fn move_segment(segments: &mut [SegmentKind], idx: usize, dir: Dir) {
+pub(crate) fn move_segment(segments: &mut [SegmentKind], idx: usize, dir: Dir) {
     if idx >= segments.len() {
         return;
     }
@@ -357,7 +357,7 @@ pub fn move_segment(segments: &mut [SegmentKind], idx: usize, dir: Dir) {
 }
 
 /// Determine which section (0–3) flat_cursor currently points into.
-pub fn current_section(flat_cursor: usize, section_starts: &[usize; 4]) -> usize {
+pub(crate) fn current_section(flat_cursor: usize, section_starts: &[usize; 4]) -> usize {
     if flat_cursor >= section_starts[3] {
         3
     } else if flat_cursor >= section_starts[2] {
@@ -370,7 +370,7 @@ pub fn current_section(flat_cursor: usize, section_starts: &[usize; 4]) -> usize
 }
 
 /// Update scroll_offset so the cursor row is visible with 1-row context above and below.
-pub fn enforce_scroll(app: &mut App) {
+pub(crate) fn enforce_scroll(app: &mut App) {
     let dr = app.selectable_indices[app.flat_cursor]; // display row index
     let h = app.list_viewport_height.get() as usize;
     if dr < app.scroll_offset.saturating_add(1) {
