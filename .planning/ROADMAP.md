@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Commit Pending Themes** - Commit 10 untracked theme files so CI can run a clean build (completed 2026-06-20)
 - [x] **Phase 2: GitHub Actions CI** - Add ci.yml running check/lint/test on every push and PR (completed 2026-06-20)
-- [ ] **Phase 3: Release Pipeline** - Add release.yml producing prebuilt binaries for 4 targets on tag push
+- [x] **Phase 3: Release Pipeline** - Add release.yml producing prebuilt binaries for 4 targets on tag push (completed 2026-06-20)
 - [ ] **Phase 4: Install Script** - Rewrite install.sh with OS/arch detection, binary download, and SHA256 verification
 - [ ] **Phase 5: Documentation Polish** - Update README to reflect all 16 themes, segments, TUI, and one-command install
 
@@ -71,10 +71,11 @@ Plans:
   3. macOS binaries are built on pinned runners (macos-13 for x86_64, macos-14 for aarch64) — never macos-latest
   4. Linux ARM binaries are produced via cross-rs and run on an aarch64 Linux host
 
-**Plans**: 1 plan
+**Plans**: 1/1 plans complete
 
 Plans:
-- [ ] 03-01-PLAN.md — Create release.yml: three-job pipeline (create-release → build matrix → finalize) for 4-target binary releases with SHA256SUMS.txt
+
+- [x] 03-01-PLAN.md — Create release.yml: three-job pipeline (create-release → build matrix → finalize) for 4-target binary releases with SHA256SUMS.txt
 
 ### Phase 4: Install Script
 
@@ -89,7 +90,10 @@ Plans:
   3. On a machine with no cargo, `install.sh` falls back to installing `statusline-command.sh` with a clear message
   4. Each fallback stage prints a descriptive message explaining what it tried and why it is falling back
 
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 04-01-PLAN.md — Rewrite install.sh: three-tier fallback chain (prebuilt binary + SHA256 → cargo → bash script)
 
 ### Phase 5: Documentation Polish
 
@@ -113,6 +117,6 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Commit Pending Themes | 1/1 | Complete   | 2026-06-20 |
 | 2. GitHub Actions CI | 1/1 | Complete   | 2026-06-20 |
-| 3. Release Pipeline | 0/TBD | Not started | - |
+| 3. Release Pipeline | 1/1 | Complete   | 2026-06-20 |
 | 4. Install Script | 0/TBD | Not started | - |
 | 5. Documentation Polish | 0/TBD | Not started | - |
