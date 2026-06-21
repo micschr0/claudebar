@@ -5,6 +5,10 @@ on:
     tags:
       - '[0-9]+.*'
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   create-release:
     runs-on: ubuntu-latest
@@ -25,6 +29,8 @@ jobs:
             os: ubuntu-latest
           - target: aarch64-unknown-linux-musl
             os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
           - target: aarch64-apple-darwin
             os: macos-latest
     runs-on: ${{ matrix.os }}
@@ -32,7 +38,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: houseabsolute/actions-rust-cross@v1
+      - uses: houseabsolute/actions-rust-cross@fe6ede73c7f0a50412ec05994e2aa5a7bf635eac
         with:
           command: build
           target: ${{ matrix.target }}
@@ -47,10 +53,16 @@ jobs:
           checksum: sha256
           include: README.md,LICENSE
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Collect checksum
+        run: |
+          sha256sum claudebar-*-${{ matrix.target }}.tar.gz \
+            > claudebar-${{ matrix.target }}.sha256 2>/dev/null || \
+          shasum -a 256 claudebar-*-${{ matrix.target }}.tar.gz \
+            > claudebar-${{ matrix.target }}.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: sha256-${{ matrix.target }}
-          path: claudebar-*-${{ matrix.target }}.tar.gz.sha256
+          path: claudebar-${{ matrix.target }}.sha256
 
   release:
     needs: [build]
@@ -64,9 +76,6 @@ jobs:
           merge-multiple: true
           path: checksums/
       - run: cat checksums/*.sha256 | sort > SHA256SUMS.txt
-      - uses: softprops/action-gh-release@v2
-        with:
-          generate_release_notes: true
-          files: SHA256SUMS.txt
+      - run: gh release upload "${{ github.ref_name }}" SHA256SUMS.txt
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

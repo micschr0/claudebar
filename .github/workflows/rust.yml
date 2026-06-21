@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   check:
     name: fmt, clippy, test, build
@@ -25,16 +32,20 @@ jobs:
         run: cargo fmt --all --check
 
       - name: Clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --locked --all-targets --all-features -- -D warnings
 
       - name: Clippy (render-only, no TUI)
-        run: cargo clippy --no-default-features -- -D warnings
+        run: cargo clippy --locked --no-default-features -- -D warnings
 
       - name: Test
-        run: cargo test --all-features
+        run: cargo test --locked --all-features
+        env:
+          INSTA_UPDATE: no
 
-      - name: Build release
-        run: cargo build --release
+      - name: Test (render-only, no TUI)
+        run: cargo test --locked --no-default-features
+        env:
+          INSTA_UPDATE: no
 
-      - name: Build (render-only, no TUI)
-        run: cargo build --no-default-features
+      - name: Check release profile
+        run: cargo check --release --locked
