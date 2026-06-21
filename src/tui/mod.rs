@@ -6,7 +6,9 @@ mod preview;
 mod sample;
 mod ui;
 
-use app::{build_list, detail_len, move_segment, App, Dir, Panel, RowItem, StatusKind, ThresholdField};
+use app::{
+    build_list, detail_len, move_segment, App, Dir, Panel, RowItem, StatusKind, ThresholdField,
+};
 use crossterm::event::{
     self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyEventKind,
     KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
@@ -370,48 +372,40 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
         }
 
         // ── Segments (only in Segments section, right panel) ──────────────────
-        KeyCode::Char(' ') => {
-            if app.focused_panel == Panel::Right && app.menu_cursor == 0 {
-                app.toggle_cursor();
-            }
+        KeyCode::Char(' ') if app.focused_panel == Panel::Right && app.menu_cursor == 0 => {
+            app.toggle_cursor();
         }
-        KeyCode::Char('m') => {
-            if app.focused_panel == Panel::Right && app.menu_cursor == 0 {
-                // Build segment display order to find the kind at detail_cursor.
-                let display_order: Vec<crate::model::SegmentKind> = {
-                    let mut order = app.config.segments.clone();
-                    for &kind in &crate::model::SegmentKind::ALL {
-                        if !app.config.segments.contains(&kind) {
-                            order.push(kind);
-                        }
+        KeyCode::Char('m') if app.focused_panel == Panel::Right && app.menu_cursor == 0 => {
+            // Build segment display order to find the kind at detail_cursor.
+            let display_order: Vec<crate::model::SegmentKind> = {
+                let mut order = app.config.segments.clone();
+                for &kind in &crate::model::SegmentKind::ALL {
+                    if !app.config.segments.contains(&kind) {
+                        order.push(kind);
                     }
-                    order
-                };
-                match display_order.get(app.detail_cursor) {
-                    Some(&kind) if app.config.segments.contains(&kind) => {
-                        app.reorder_mode = true;
-                    }
-                    Some(_) => {
-                        app.status = Some((
-                            StatusKind::Warning,
-                            "Enable the segment first [Space]".into(),
-                        ));
-                    }
-                    None => {}
                 }
+                order
+            };
+            match display_order.get(app.detail_cursor) {
+                Some(&kind) if app.config.segments.contains(&kind) => {
+                    app.reorder_mode = true;
+                }
+                Some(_) => {
+                    app.status = Some((
+                        StatusKind::Warning,
+                        "Enable the segment first [Space]".into(),
+                    ));
+                }
+                None => {}
             }
         }
 
         // ── Thresholds (large nudge, only in Thresholds section, right panel) ─
-        KeyCode::Char('H') => {
-            if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
-                app.nudge_threshold(threshold_field_at(app.detail_cursor), -5);
-            }
+        KeyCode::Char('H') if app.focused_panel == Panel::Right && app.menu_cursor == 3 => {
+            app.nudge_threshold(threshold_field_at(app.detail_cursor), -5);
         }
-        KeyCode::Char('L') => {
-            if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
-                app.nudge_threshold(threshold_field_at(app.detail_cursor), 5);
-            }
+        KeyCode::Char('L') if app.focused_panel == Panel::Right && app.menu_cursor == 3 => {
+            app.nudge_threshold(threshold_field_at(app.detail_cursor), 5);
         }
 
         // ── Global ────────────────────────────────────────────────────────────
@@ -470,8 +464,7 @@ fn handle_mouse(app: &mut App, event: MouseEvent) {
                 let inner_row = row.saturating_sub(left.y + 1) as usize;
                 if inner_row < 4 {
                     app.menu_cursor = inner_row;
-                    app.detail_cursor =
-                        app.detail_cursor.min(detail_len(app).saturating_sub(1));
+                    app.detail_cursor = app.detail_cursor.min(detail_len(app).saturating_sub(1));
                 }
             } else if contains(right, col, row) {
                 app.focused_panel = Panel::Right;

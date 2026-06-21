@@ -102,7 +102,7 @@ Toggle segments with `claudebar config` or edit the `segments` list in `config.t
 ### Themes and styles
 
 - **Themes (16):** `tokyo-night` (default) · `ayu-mirage` · `catppuccin` · `cobalt2` · `everforest-dark` · `github-dark` · `gruvbox` · `kanagawa-wave` · `moonfly` · `night-owl` · `nord` · `one-dark` · `dracula` · `rose-pine` · `sonokai` · `solarized-dark`
-- **Styles (5):** `powerline` (default) · `plain` · `rounded` · `minimal` · `ascii`
+- **Styles (6):** `powerline` (default) · `plain` · `rounded` · `minimal` · `unicode` · `ascii`
 
 ### Config file
 

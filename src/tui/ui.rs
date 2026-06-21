@@ -37,7 +37,11 @@ fn panel_block(title: &str, active: bool) -> Block<'_> {
     } else {
         Block::bordered()
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(CHROME_HEADER).add_modifier(Modifier::DIM))
+            .border_style(
+                Style::default()
+                    .fg(CHROME_HEADER)
+                    .add_modifier(Modifier::DIM),
+            )
             .title(Span::styled(
                 format!(" {title} "),
                 Style::default()
@@ -593,9 +597,7 @@ fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
             ("[?]", " help  "),
             ("[q]", " quit"),
         ])
-    } else if app.focused_panel == Panel::Right
-        && (app.menu_cursor == 1 || app.menu_cursor == 2)
-    {
+    } else if app.focused_panel == Panel::Right && (app.menu_cursor == 1 || app.menu_cursor == 2) {
         hint_line(&[
             ("[↑↓]", " browse  "),
             ("[s]", " save  "),
