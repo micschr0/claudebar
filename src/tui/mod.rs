@@ -1,4 +1,4 @@
-//! TUI configurator: single flat-list design with six vertical zones.
+//! TUI configurator: split-pane design with left menu panel, right detail panel, and bottom preview.
 //! Save writes the edited [`crate::model::Config`] back to the config path as TOML.
 
 mod app;
@@ -6,10 +6,11 @@ mod preview;
 mod sample;
 mod ui;
 
-use app::{
-    build_list, current_section, enforce_scroll, move_segment, App, Dir, RowItem, StatusKind,
+use app::{build_list, detail_len, move_segment, App, Dir, Panel, RowItem, StatusKind, ThresholdField};
+use crossterm::event::{
+    self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyEventKind,
+    KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
 };
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use crossterm::terminal::{
     disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
 };
@@ -32,6 +33,8 @@ impl TerminalGuard {
         let mut out = io::stdout();
         out.execute(EnterAlternateScreen)
             .map_err(|e| format!("enter alternate screen: {e}"))?;
+        out.execute(EnableMouseCapture)
+            .map_err(|e| format!("enable mouse: {e}"))?;
         let backend = CrosstermBackend::new(out);
         let terminal = Terminal::new(backend).map_err(|e| format!("init terminal: {e}"))?;
         Ok(TerminalGuard { terminal })
@@ -41,6 +44,7 @@ impl TerminalGuard {
 impl Drop for TerminalGuard {
     fn drop(&mut self) {
         let _ = disable_raw_mode();
+        let _ = io::stdout().execute(DisableMouseCapture);
         let _ = io::stdout().execute(LeaveAlternateScreen);
         let _ = self.terminal.show_cursor();
     }
@@ -68,10 +72,14 @@ fn event_loop(
             .map_err(|e| format!("draw: {e}"))?;
 
         if event::poll(Duration::from_millis(200)).map_err(|e| format!("poll: {e}"))? {
-            if let Event::Key(key) = event::read().map_err(|e| format!("read: {e}"))? {
-                if key.kind == KeyEventKind::Press {
+            match event::read().map_err(|e| format!("read: {e}"))? {
+                Event::Key(key) if key.kind == KeyEventKind::Press => {
                     handle_key(app, key);
                 }
+                Event::Mouse(mouse) => {
+                    handle_mouse(app, mouse);
+                }
+                _ => {}
             }
         }
 
@@ -204,27 +212,18 @@ fn handle_pending_quit(app: &mut App, key: KeyEvent) {
 }
 
 fn handle_reorder(app: &mut App, key: KeyEvent) {
-    // Find the SegmentKind under cursor and its index in config.segments.
-    let moved_kind = match app.cursor_row() {
-        Some(RowItem::SegmentRow(k)) => *k,
-        _ => {
-            // Should not happen; exit reorder mode.
-            app.reorder_mode = false;
-            return;
-        }
-    };
-
-    let seg_idx = match app.config.segments.iter().position(|s| *s == moved_kind) {
-        Some(idx) => idx,
+    // In reorder mode, detail_cursor is the index into the enabled segment list.
+    let moved_kind = match app.config.segments.get(app.detail_cursor) {
+        Some(&k) => k,
         None => {
             app.reorder_mode = false;
             return;
         }
     };
+    let seg_idx = app.detail_cursor;
 
     match key.code {
         KeyCode::Char('j') | KeyCode::Down => {
-            // Boundary check: if last in segments, no-op.
             if seg_idx + 1 >= app.config.segments.len() {
                 return;
             }
@@ -232,7 +231,6 @@ fn handle_reorder(app: &mut App, key: KeyEvent) {
             rebuild_and_follow(app, moved_kind);
         }
         KeyCode::Char('k') | KeyCode::Up => {
-            // Boundary check: if first in segments, no-op.
             if seg_idx == 0 {
                 return;
             }
@@ -241,7 +239,6 @@ fn handle_reorder(app: &mut App, key: KeyEvent) {
         }
         KeyCode::Char('m') | KeyCode::Enter => {
             app.reorder_mode = false;
-            // No status flash for intentional commit.
         }
         KeyCode::Esc => {
             app.reorder_mode = false;
@@ -250,7 +247,6 @@ fn handle_reorder(app: &mut App, key: KeyEvent) {
                 "Reorder committed — reorder again to undo, or [r] to reset all".into(),
             ));
         }
-        // All other keys: no-op (reorder_mode consumes all input).
         _ => {}
     }
 }
@@ -260,7 +256,14 @@ fn rebuild_and_follow(app: &mut App, moved_kind: crate::model::SegmentKind) {
     app.list_rows = list_rows;
     app.selectable_indices = selectable_indices;
     app.section_starts = section_starts;
-    // Cursor follows the moved segment.
+
+    // In reorder mode, the moved segment is always enabled, so its index in
+    // config.segments equals its position in the right panel's item list.
+    if let Some(idx) = app.config.segments.iter().position(|&k| k == moved_kind) {
+        app.detail_cursor = idx;
+    }
+
+    // Also update flat_cursor for backward compat with unit tests.
     if let Some(new_si) = app
         .selectable_indices
         .iter()
@@ -276,108 +279,142 @@ fn rebuild_and_follow(app: &mut App, moved_kind: crate::model::SegmentKind) {
     {
         app.flat_cursor = new_si;
     }
-    enforce_scroll(app);
 }
 
 fn handle_normal(app: &mut App, key: KeyEvent) {
-    let max_idx = app.selectable_indices.len().saturating_sub(1);
     let _ctrl = key.modifiers.contains(KeyModifiers::CONTROL);
 
     match key.code {
-        // ── Movement ─────────────────────────────────────────────────────────
-        KeyCode::Char('j') | KeyCode::Down => {
-            if app.flat_cursor < max_idx {
-                app.flat_cursor += 1;
-                app.apply_move_is_select();
-                enforce_scroll(app);
+        // ── Panel switching and within-panel navigation ───────────────────────
+        KeyCode::Left | KeyCode::Char('h') => {
+            if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
+                // Threshold section: nudge selected field by -1.
+                app.nudge_threshold(threshold_field_at(app.detail_cursor), -1);
+            } else {
+                app.focused_panel = Panel::Left;
             }
         }
-        KeyCode::Char('k') | KeyCode::Up => {
-            if app.flat_cursor > 0 {
-                app.flat_cursor -= 1;
-                app.apply_move_is_select();
-                enforce_scroll(app);
+        KeyCode::Right | KeyCode::Char('l') => {
+            if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
+                app.nudge_threshold(threshold_field_at(app.detail_cursor), 1);
+            } else {
+                app.focused_panel = Panel::Right;
             }
         }
+        KeyCode::Up | KeyCode::Char('k') => match app.focused_panel {
+            Panel::Left => {
+                if app.menu_cursor > 0 {
+                    app.menu_cursor -= 1;
+                    app.detail_cursor = app.detail_cursor.min(detail_len(app).saturating_sub(1));
+                }
+            }
+            Panel::Right => {
+                if app.detail_cursor > 0 {
+                    app.detail_cursor -= 1;
+                    app.apply_move_is_select();
+                }
+            }
+        },
+        KeyCode::Down | KeyCode::Char('j') => match app.focused_panel {
+            Panel::Left => {
+                if app.menu_cursor < 3 {
+                    app.menu_cursor += 1;
+                    app.detail_cursor = app.detail_cursor.min(detail_len(app).saturating_sub(1));
+                }
+            }
+            Panel::Right => {
+                let max = detail_len(app).saturating_sub(1);
+                if app.detail_cursor < max {
+                    app.detail_cursor += 1;
+                    app.apply_move_is_select();
+                }
+            }
+        },
         KeyCode::Char('g') => {
-            app.flat_cursor = 0;
-            enforce_scroll(app);
+            app.detail_cursor = 0;
         }
         KeyCode::Char('G') => {
-            app.flat_cursor = max_idx;
-            enforce_scroll(app);
+            app.detail_cursor = detail_len(app).saturating_sub(1);
         }
         KeyCode::Tab => {
-            let sec = current_section(app.flat_cursor, &app.section_starts);
-            app.flat_cursor = app.section_starts[(sec + 1) % 4];
-            enforce_scroll(app);
+            app.focused_panel = match app.focused_panel {
+                Panel::Left => Panel::Right,
+                Panel::Right => Panel::Left,
+            };
         }
         KeyCode::BackTab => {
-            let sec = current_section(app.flat_cursor, &app.section_starts);
-            app.flat_cursor = app.section_starts[(sec + 3) % 4];
-            enforce_scroll(app);
+            app.focused_panel = match app.focused_panel {
+                Panel::Left => Panel::Right,
+                Panel::Right => Panel::Left,
+            };
         }
         KeyCode::Char('1') => {
-            app.flat_cursor = app.section_starts[0];
-            enforce_scroll(app);
+            app.menu_cursor = 0;
+            app.detail_cursor = 0;
+            app.focused_panel = Panel::Right;
         }
         KeyCode::Char('2') => {
-            app.flat_cursor = app.section_starts[1];
-            enforce_scroll(app);
+            app.menu_cursor = 1;
+            app.detail_cursor = 0;
+            app.focused_panel = Panel::Right;
         }
         KeyCode::Char('3') => {
-            app.flat_cursor = app.section_starts[2];
-            enforce_scroll(app);
+            app.menu_cursor = 2;
+            app.detail_cursor = 0;
+            app.focused_panel = Panel::Right;
         }
         KeyCode::Char('4') => {
-            app.flat_cursor = app.section_starts[3];
-            enforce_scroll(app);
+            app.menu_cursor = 3;
+            app.detail_cursor = 0;
+            app.focused_panel = Panel::Right;
         }
 
-        // ── Segments ──────────────────────────────────────────────────────────
+        // ── Segments (only in Segments section, right panel) ──────────────────
         KeyCode::Char(' ') => {
-            if let Some(RowItem::SegmentRow(_)) = app.cursor_row() {
+            if app.focused_panel == Panel::Right && app.menu_cursor == 0 {
                 app.toggle_cursor();
-                enforce_scroll(app);
             }
         }
-        KeyCode::Char('m') => match app.cursor_row().cloned() {
-            Some(RowItem::SegmentRow(kind)) if app.config.segments.contains(&kind) => {
-                app.reorder_mode = true;
+        KeyCode::Char('m') => {
+            if app.focused_panel == Panel::Right && app.menu_cursor == 0 {
+                // Build segment display order to find the kind at detail_cursor.
+                let display_order: Vec<crate::model::SegmentKind> = {
+                    let mut order = app.config.segments.clone();
+                    for &kind in &crate::model::SegmentKind::ALL {
+                        if !app.config.segments.contains(&kind) {
+                            order.push(kind);
+                        }
+                    }
+                    order
+                };
+                match display_order.get(app.detail_cursor) {
+                    Some(&kind) if app.config.segments.contains(&kind) => {
+                        app.reorder_mode = true;
+                    }
+                    Some(_) => {
+                        app.status = Some((
+                            StatusKind::Warning,
+                            "Enable the segment first [Space]".into(),
+                        ));
+                    }
+                    None => {}
+                }
             }
-            Some(RowItem::SegmentRow(_)) => {
-                app.status = Some((
-                    StatusKind::Warning,
-                    "Enable the segment first [Space]".into(),
-                ));
-            }
-            _ => {}
-        },
+        }
 
-        // ── Thresholds ────────────────────────────────────────────────────────
-        KeyCode::Char('h') | KeyCode::Left => {
-            if let Some(RowItem::ThresholdRow(field)) = app.cursor_row().cloned() {
-                app.nudge_threshold(field, -1);
-            }
-        }
-        KeyCode::Char('l') | KeyCode::Right => {
-            if let Some(RowItem::ThresholdRow(field)) = app.cursor_row().cloned() {
-                app.nudge_threshold(field, 1);
-            }
-        }
+        // ── Thresholds (large nudge, only in Thresholds section, right panel) ─
         KeyCode::Char('H') => {
-            if let Some(RowItem::ThresholdRow(field)) = app.cursor_row().cloned() {
-                app.nudge_threshold(field, -5);
+            if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
+                app.nudge_threshold(threshold_field_at(app.detail_cursor), -5);
             }
         }
         KeyCode::Char('L') => {
-            if let Some(RowItem::ThresholdRow(field)) = app.cursor_row().cloned() {
-                app.nudge_threshold(field, 5);
+            if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
+                app.nudge_threshold(threshold_field_at(app.detail_cursor), 5);
             }
         }
 
         // ── Global ────────────────────────────────────────────────────────────
-        // s or Ctrl-S: save.
         KeyCode::Char('s') => {
             app.save();
         }
@@ -398,6 +435,71 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
                 app.request_quit();
             } else {
                 app.should_quit = true;
+            }
+        }
+        _ => {}
+    }
+}
+
+/// Returns the ThresholdField corresponding to a detail_cursor index in the Thresholds section.
+fn threshold_field_at(idx: usize) -> ThresholdField {
+    match idx {
+        0 => ThresholdField::Warn,
+        1 => ThresholdField::Crit,
+        2 => ThresholdField::WeeklyShowAt,
+        _ => ThresholdField::BarWidth,
+    }
+}
+
+/// Returns true if the terminal coordinate (col, row) is within rect.
+fn contains(rect: ratatui::layout::Rect, col: u16, row: u16) -> bool {
+    col >= rect.x && col < rect.x + rect.width && row >= rect.y && row < rect.y + rect.height
+}
+
+/// Handle a mouse event — click selects panel/item; scroll navigates within panel.
+fn handle_mouse(app: &mut App, event: MouseEvent) {
+    let left = app.left_panel_area.get();
+    let right = app.right_panel_area.get();
+
+    match event.kind {
+        MouseEventKind::Down(MouseButton::Left) => {
+            let col = event.column;
+            let row = event.row;
+            if contains(left, col, row) {
+                app.focused_panel = Panel::Left;
+                let inner_row = row.saturating_sub(left.y + 1) as usize;
+                if inner_row < 4 {
+                    app.menu_cursor = inner_row;
+                    app.detail_cursor =
+                        app.detail_cursor.min(detail_len(app).saturating_sub(1));
+                }
+            } else if contains(right, col, row) {
+                app.focused_panel = Panel::Right;
+                let inner_row = row.saturating_sub(right.y + 1) as usize;
+                let max = detail_len(app).saturating_sub(1);
+                app.detail_cursor = inner_row.min(max);
+                app.apply_move_is_select();
+            }
+        }
+        MouseEventKind::ScrollUp => {
+            if app.focused_panel == Panel::Right && app.detail_cursor > 0 {
+                app.detail_cursor -= 1;
+                app.apply_move_is_select();
+            } else if app.focused_panel == Panel::Left && app.menu_cursor > 0 {
+                app.menu_cursor -= 1;
+                app.detail_cursor = 0;
+            }
+        }
+        MouseEventKind::ScrollDown => {
+            if app.focused_panel == Panel::Right {
+                let max = detail_len(app).saturating_sub(1);
+                if app.detail_cursor < max {
+                    app.detail_cursor += 1;
+                    app.apply_move_is_select();
+                }
+            } else if app.focused_panel == Panel::Left && app.menu_cursor < 3 {
+                app.menu_cursor += 1;
+                app.detail_cursor = 0;
             }
         }
         _ => {}

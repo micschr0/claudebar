@@ -1,12 +1,12 @@
-//! Drawing: six-zone single-column flat-list layout.
-//! No state mutation happens here (Cell<u16> excepted).
+//! Drawing: three-zone split-pane layout — left menu panel, right detail panel, bottom preview.
+//! No state mutation happens here (Cell<Rect> excepted).
 
-use crate::tui::app::{App, RowItem, StatusKind, ThresholdField};
+use crate::tui::app::{App, Panel, StatusKind, ThresholdField};
 use crate::tui::preview;
-use ratatui::layout::{Constraint, Direction, Layout, Rect};
+use ratatui::layout::{Constraint, Layout, Rect};
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::text::{Line, Span, Text};
-use ratatui::widgets::{Block, Borders, Clear, Paragraph};
+use ratatui::widgets::{Block, BorderType, Borders, Clear, Paragraph};
 use ratatui::Frame;
 
 // ── Chrome color constants (Rgb — immune to 256-color palette remapping) ──────
@@ -22,253 +22,285 @@ const CHROME_CRIT: Color = Color::Rgb(247, 118, 142); // errors, disabled call-t
 const CHROME_DISABLED: Color = Color::Rgb(86, 95, 137); // disabled labels, section fills
 const CHROME_KEY_BG: Color = Color::Rgb(65, 72, 104); // hint line [x] button bg
 
-/// Top-level draw entrypoint. Returns the list viewport height for Cell update.
+/// Build an active or inactive bordered panel block.
+fn panel_block(title: &str, active: bool) -> Block<'_> {
+    if active {
+        Block::bordered()
+            .border_type(BorderType::Rounded)
+            .border_style(Style::default().fg(CHROME_ACCENT))
+            .title(Span::styled(
+                format!(" {title} "),
+                Style::default()
+                    .fg(CHROME_ACCENT)
+                    .add_modifier(Modifier::BOLD),
+            ))
+    } else {
+        Block::bordered()
+            .border_type(BorderType::Rounded)
+            .border_style(Style::default().fg(CHROME_HEADER).add_modifier(Modifier::DIM))
+            .title(Span::styled(
+                format!(" {title} "),
+                Style::default()
+                    .fg(CHROME_HEADER)
+                    .add_modifier(Modifier::DIM),
+            ))
+    }
+}
+
+/// Top-level draw entrypoint — three-zone split-pane layout.
 pub fn draw(f: &mut Frame, app: &App) {
-    // ── Size guard ────────────────────────────────────────────────────────────
-    if f.area().width < 60 || f.area().height < 18 {
+    // Size guard: split-pane needs at least 80 cols and 20 rows.
+    if f.area().width < 80 || f.area().height < 20 {
         f.render_widget(
-            Paragraph::new("Terminal too small (min 60×18)").style(
+            Paragraph::new("Terminal too small (min 80×20)").style(
                 Style::default()
                     .fg(CHROME_CRIT)
                     .add_modifier(Modifier::BOLD),
             ),
             f.area(),
         );
-        app.list_viewport_height.set(10);
         return;
     }
 
-    // ── Six vertical zones ────────────────────────────────────────────────────
-    let chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(1), // Zone 1: title bar
-            Constraint::Min(8),    // Zone 2: scrollable list
-            Constraint::Length(1), // Zone 3: description
-            Constraint::Length(3), // Zone 4: preview
-            Constraint::Length(1), // Zone 5: status
-            Constraint::Length(1), // Zone 6: hint
-        ])
-        .split(f.area());
+    // Three vertical zones.
+    let [panels_area, preview_area, status_area, hint_area] = Layout::vertical([
+        Constraint::Min(10),   // top row: left + right panels
+        Constraint::Length(3), // preview block with border
+        Constraint::Length(1), // status line
+        Constraint::Length(1), // hint bar
+    ])
+    .areas(f.area());
 
-    let title_area = chunks[0];
-    let list_area = chunks[1];
-    let desc_area = chunks[2];
-    let preview_area = chunks[3];
-    let status_area = chunks[4];
-    let hint_area = chunks[5];
+    // Horizontal split within panels_area.
+    let [left_area, right_area] = Layout::horizontal([
+        Constraint::Percentage(28), // left menu panel
+        Constraint::Min(0),         // right detail panel
+    ])
+    .areas(panels_area);
 
-    draw_title(f, app, title_area);
-    draw_list(f, app, list_area);
-    draw_desc(f, app, desc_area);
+    // Store panel areas for mouse hit-testing (Cell interior mutability).
+    app.left_panel_area.set(left_area);
+    app.right_panel_area.set(right_area);
+
+    draw_left_panel(f, app, left_area);
+    draw_right_panel(f, app, right_area);
     draw_preview(f, app, preview_area);
     draw_status(f, app, status_area);
     draw_hint(f, app, hint_area);
 
-    // ── Help overlay (zones 2+3 combined) ─────────────────────────────────────
+    // Help overlay spans the full panels_area (both left and right).
     if app.show_help {
-        let overlay_area = Rect::new(
-            list_area.x,
-            list_area.y,
-            list_area.width,
-            list_area.height + desc_area.height,
-        );
-        draw_help_overlay(f, overlay_area);
+        draw_help_overlay(f, panels_area);
     }
 }
 
-// ── Zone 1: Title Bar ─────────────────────────────────────────────────────────
+// ── Left panel: section menu ──────────────────────────────────────────────────
 
-fn draw_title(f: &mut Frame, app: &App, area: Rect) {
-    // Background fill.
-    f.render_widget(
-        Paragraph::new("").style(Style::default().bg(CHROME_BG)),
-        area,
-    );
+fn draw_left_panel(f: &mut Frame, app: &App, area: Rect) {
+    let active = app.focused_panel == Panel::Left;
+    let block = panel_block("Menu", active);
+    let inner = block.inner(area);
+    f.render_widget(block, area);
 
-    let title_str = "  claudebar"; // 11 chars
-    let sep_str = " — "; // 3 chars
-    let help_str = "? help"; // 6 chars
+    let sections = [
+        (
+            "Segments",
+            format!(
+                "  {}/{}",
+                app.config.segments.len(),
+                crate::model::SegmentKind::ALL.len()
+            ),
+        ),
+        ("Theme", format!("  {}", app.config.theme)),
+        ("Style", format!("  {}", app.config.style)),
+        ("Thresholds", String::new()),
+    ];
 
-    // Center section: path or "(no path)".
-    let (center_str, center_style) = match &app.save_path {
-        Some(path) => {
-            let name = path
-                .file_name()
-                .map(|n| n.to_string_lossy().into_owned())
-                .unwrap_or_else(|| path.display().to_string());
-            // Left-truncate if too long.
-            let max_center = (area.width as usize).saturating_sub(11 + 3 + 2 + 6); // title+sep+dirty+help
-            let s = if name.chars().count() > max_center && max_center > 3 {
-                let skip = name.chars().count() - (max_center - 3);
-                format!("...{}", name.chars().skip(skip).collect::<String>())
+    let lines: Vec<Line> = sections
+        .iter()
+        .enumerate()
+        .map(|(idx, (label, badge))| {
+            let selected = idx == app.menu_cursor;
+            let marker = if selected {
+                Span::styled("● ", Style::default().fg(CHROME_OK))
             } else {
-                name
+                Span::styled("○ ", Style::default().fg(CHROME_DISABLED))
             };
-            (
-                s,
+            let label_style = if selected {
                 Style::default()
-                    .fg(CHROME_HEADER)
-                    .add_modifier(Modifier::DIM),
-            )
-        }
-        None => (
-            "(no path)".to_string(),
-            Style::default()
-                .fg(CHROME_CRIT)
-                .add_modifier(Modifier::BOLD),
-        ),
-    };
-
-    let center_display_len = center_str.chars().count();
-    let pad_count = (area.width as usize).saturating_sub(11 + 3 + center_display_len + 2 + 6);
-    let pad_str: String = " ".repeat(pad_count);
-
-    // Dirty dot — always 2 chars to prevent jitter.
-    let (dirty_char, dirty_style) = if app.is_dirty() {
-        ("● ", Style::default().fg(CHROME_WARN))
-    } else {
-        ("  ", Style::default().bg(CHROME_BG))
-    };
-
-    let line = Line::from(vec![
-        Span::styled(
-            title_str,
-            Style::default()
-                .fg(CHROME_ACCENT)
-                .add_modifier(Modifier::BOLD),
-        ),
-        Span::styled(
-            sep_str,
-            Style::default()
-                .fg(CHROME_HEADER)
-                .add_modifier(Modifier::DIM),
-        ),
-        Span::styled(center_str, center_style),
-        Span::raw(pad_str),
-        Span::styled(dirty_char, dirty_style),
-        Span::styled(
-            help_str,
-            Style::default()
-                .fg(CHROME_HEADER)
-                .add_modifier(Modifier::DIM),
-        ),
-    ]);
-
-    f.render_widget(
-        Paragraph::new(line).style(Style::default().bg(CHROME_BG)),
-        area,
-    );
-}
-
-// ── Zone 2: Scrollable List ───────────────────────────────────────────────────
-
-fn draw_list(f: &mut Frame, app: &App, area: Rect) {
-    // Store viewport height via Cell (interior mutability — no &mut App needed).
-    app.list_viewport_height.set(area.height);
-
-    let cursor_dr = app.selectable_indices.get(app.flat_cursor).copied();
-    let scroll_offset = app.scroll_offset;
-    let viewport_h = area.height as usize;
-
-    let mut lines: Vec<Line> = Vec::new();
-
-    for dr in scroll_offset..(scroll_offset + viewport_h) {
-        let row_item = match app.list_rows.get(dr) {
-            Some(r) => r,
-            None => break,
-        };
-        let is_cursor = cursor_dr == Some(dr);
-        let line = render_row(row_item, app, is_cursor, area.width);
-        lines.push(line);
-    }
-
-    let para = Paragraph::new(Text::from(lines));
-    f.render_widget(para, area);
-}
-
-fn render_row(row: &RowItem, app: &App, is_cursor: bool, width: u16) -> Line<'static> {
-    let cursor_bg = if is_cursor {
-        Style::default().bg(CHROME_SURFACE)
-    } else {
-        Style::default()
-    };
-
-    match row {
-        RowItem::SectionHeader(section_idx) => render_section_header(*section_idx, app, width),
-        RowItem::Divider => render_divider(width),
-        RowItem::SegmentRow(kind) => render_segment_row(*kind, app, is_cursor, cursor_bg, width),
-        RowItem::ThemeRow(name) => render_theme_row(name, app, is_cursor, cursor_bg),
-        RowItem::StyleRow(name) => render_style_row(name, app, is_cursor, cursor_bg),
-        RowItem::ThresholdRow(field) => render_threshold_row(*field, app, is_cursor, cursor_bg),
-    }
-}
-
-fn render_section_header(section_idx: usize, app: &App, width: u16) -> Line<'static> {
-    let dim_italic = Style::default()
-        .fg(CHROME_DISABLED)
-        .add_modifier(Modifier::DIM | Modifier::ITALIC);
-
-    let (title, badge, title_style) = match section_idx {
-        0 => {
-            let n = app.config.segments.len();
-            let total = crate::model::SegmentKind::ALL.len();
-            let badge = format!("({n}/{total} enabled)");
-            if app.reorder_mode {
-                (
-                    "Segments — REORDER ".to_string(),
-                    badge,
-                    Style::default()
-                        .fg(CHROME_ACCENT)
-                        .add_modifier(Modifier::DIM | Modifier::ITALIC),
-                )
+                    .fg(CHROME_TEXT)
+                    .add_modifier(Modifier::BOLD)
             } else {
-                (
-                    "Segments ".to_string(),
-                    badge,
-                    Style::default()
-                        .fg(CHROME_HEADER)
-                        .add_modifier(Modifier::DIM | Modifier::ITALIC),
-                )
+                Style::default().fg(CHROME_HEADER)
+            };
+            let badge_style = Style::default()
+                .fg(CHROME_DISABLED)
+                .add_modifier(Modifier::DIM);
+
+            let mut line = Line::from(vec![
+                Span::raw(" "),
+                marker,
+                Span::styled(label.to_string(), label_style),
+                Span::styled(badge.clone(), badge_style),
+            ]);
+            if selected {
+                line = line.style(Style::default().bg(CHROME_SURFACE));
+            }
+            line
+        })
+        .collect();
+
+    f.render_widget(Paragraph::new(Text::from(lines)), inner);
+}
+
+// ── Right panel: section detail ───────────────────────────────────────────────
+
+fn draw_right_panel(f: &mut Frame, app: &App, area: Rect) {
+    let section_title = match app.menu_cursor {
+        0 => {
+            if app.reorder_mode {
+                "Segments — REORDER".to_string()
+            } else {
+                "Segments".to_string()
             }
         }
-        1 => {
-            let count = crate::themes::NAMES.len();
-            ("Theme ".to_string(), format!("({count})"), dim_italic)
-        }
-        2 => {
-            let count = crate::styles::NAMES.len();
-            ("Style ".to_string(), format!("({count})"), dim_italic)
-        }
-        _ => ("Thresholds ".to_string(), String::new(), dim_italic),
+        1 => "Theme".to_string(),
+        2 => "Style".to_string(),
+        _ => "Thresholds".to_string(),
     };
 
-    let prefix = "── ";
-    let fill_count = (width as usize)
-        .saturating_sub(prefix.len() + title.chars().count() + badge.chars().count() + 1);
-    let fill: String = std::iter::repeat_n('\u{2500}', fill_count).collect();
+    let active = app.focused_panel == Panel::Right;
+    let block = panel_block(&section_title, active);
+    let inner = block.inner(area);
+    f.render_widget(block, area);
 
-    Line::from(vec![
-        Span::styled(prefix, dim_italic),
-        Span::styled(title, title_style),
-        Span::styled(badge, Style::default().fg(CHROME_TEXT)),
-        Span::raw(" "),
-        Span::styled(fill, dim_italic),
-    ])
+    // Reserve 2 rows at the bottom for the config-values footer.
+    let item_height = inner.height.saturating_sub(2) as usize;
+
+    let item_lines: Vec<Line> = match app.menu_cursor {
+        0 => build_segment_lines(app, inner.width),
+        1 => build_theme_lines(app),
+        2 => build_style_lines(app),
+        _ => build_threshold_lines(app),
+    };
+
+    // Virtual scroll: keep detail_cursor visible.
+    let scroll_start = app
+        .detail_cursor
+        .saturating_sub(item_height.saturating_sub(1));
+    let visible: Vec<Line> = item_lines
+        .into_iter()
+        .skip(scroll_start)
+        .take(item_height)
+        .collect();
+
+    let item_area = Rect::new(inner.x, inner.y, inner.width, item_height as u16);
+    f.render_widget(Paragraph::new(Text::from(visible)), item_area);
+
+    // Config-values footer (D-07): one row from the bottom of inner.
+    let footer_y = inner.y + inner.height.saturating_sub(1);
+    let footer_area = Rect::new(inner.x, footer_y, inner.width, 1);
+    let footer_text = format!(
+        " Theme: {}  Style: {}  Segs: {}/{}  Warn: {}%  Crit: {}%",
+        app.config.theme,
+        app.config.style,
+        app.config.segments.len(),
+        crate::model::SegmentKind::ALL.len(),
+        app.config.thresholds.warn,
+        app.config.thresholds.crit,
+    );
+    f.render_widget(
+        Paragraph::new(Line::from(Span::styled(
+            footer_text,
+            Style::default()
+                .fg(CHROME_DISABLED)
+                .add_modifier(Modifier::DIM),
+        ))),
+        footer_area,
+    );
 }
 
-fn render_divider(width: u16) -> Line<'static> {
-    let prefix = "  ─── disabled ";
-    let dash_count = (width as usize).saturating_sub(prefix.len());
-    let dashes: String = std::iter::repeat_n('─', dash_count).collect();
-    let full = format!("{prefix}{dashes}");
-    Line::from(Span::styled(
-        full,
-        Style::default()
-            .fg(CHROME_DISABLED)
-            .add_modifier(Modifier::DIM),
-    ))
+fn build_segment_lines(app: &App, width: u16) -> Vec<Line<'static>> {
+    // Display order: enabled in config.segments order, then disabled in ALL order.
+    let display_order: Vec<crate::model::SegmentKind> = {
+        let mut order: Vec<crate::model::SegmentKind> = app.config.segments.clone();
+        for &kind in &crate::model::SegmentKind::ALL {
+            if !app.config.segments.contains(&kind) {
+                order.push(kind);
+            }
+        }
+        order
+    };
+
+    display_order
+        .into_iter()
+        .enumerate()
+        .map(|(idx, kind)| {
+            let is_cursor = idx == app.detail_cursor;
+            let cursor_bg = if is_cursor {
+                Style::default().bg(CHROME_SURFACE)
+            } else {
+                Style::default()
+            };
+            render_segment_row(kind, app, is_cursor, cursor_bg, width)
+        })
+        .collect()
 }
+
+fn build_theme_lines(app: &App) -> Vec<Line<'static>> {
+    crate::themes::NAMES
+        .iter()
+        .enumerate()
+        .map(|(idx, name)| {
+            let is_cursor = idx == app.detail_cursor;
+            let cursor_bg = if is_cursor {
+                Style::default().bg(CHROME_SURFACE)
+            } else {
+                Style::default()
+            };
+            render_theme_row(name, app, is_cursor, cursor_bg)
+        })
+        .collect()
+}
+
+fn build_style_lines(app: &App) -> Vec<Line<'static>> {
+    crate::styles::NAMES
+        .iter()
+        .enumerate()
+        .map(|(idx, name)| {
+            let is_cursor = idx == app.detail_cursor;
+            let cursor_bg = if is_cursor {
+                Style::default().bg(CHROME_SURFACE)
+            } else {
+                Style::default()
+            };
+            render_style_row(name, app, is_cursor, cursor_bg)
+        })
+        .collect()
+}
+
+fn build_threshold_lines(app: &App) -> Vec<Line<'static>> {
+    [
+        ThresholdField::Warn,
+        ThresholdField::Crit,
+        ThresholdField::WeeklyShowAt,
+        ThresholdField::BarWidth,
+    ]
+    .iter()
+    .enumerate()
+    .map(|(idx, &field)| {
+        let is_cursor = idx == app.detail_cursor;
+        let cursor_bg = if is_cursor {
+            Style::default().bg(CHROME_SURFACE)
+        } else {
+            Style::default()
+        };
+        render_threshold_row(field, app, is_cursor, cursor_bg)
+    })
+    .collect()
+}
+
+// ── Row renderers (unchanged from old flat-list ui) ───────────────────────────
 
 fn render_segment_row(
     kind: crate::model::SegmentKind,
@@ -279,7 +311,6 @@ fn render_segment_row(
 ) -> Line<'static> {
     let enabled = app.config.segments.contains(&kind);
 
-    // Badge: position number or spaces (3 chars).
     let badge_span = if app.reorder_mode && is_cursor {
         Span::styled("≡  ", Style::default().fg(CHROME_ACCENT))
     } else if enabled {
@@ -295,14 +326,12 @@ fn render_segment_row(
         Span::raw("   ")
     };
 
-    // Marker: filled or empty circle.
     let marker_span = if enabled {
         Span::styled("● ", Style::default().fg(CHROME_OK))
     } else {
         Span::styled("○ ", Style::default().fg(CHROME_DISABLED))
     };
 
-    // Label.
     let label_span = if enabled {
         Span::styled(
             kind.label(),
@@ -314,15 +343,8 @@ fn render_segment_row(
         Span::styled(kind.label(), Style::default().fg(CHROME_DISABLED))
     };
 
-    let mut spans = vec![Span::raw("  "), badge_span, marker_span, label_span];
-
-    // Apply cursor background to the whole line via a background-colored trailing space.
-    if is_cursor {
-        // We set the line style below.
-        let _ = cursor_bg; // used via line.style()
-    }
-
-    let mut line = Line::from(std::mem::take(&mut spans));
+    let spans = vec![Span::raw("  "), badge_span, marker_span, label_span];
+    let mut line = Line::from(spans);
     if is_cursor {
         line = line.style(cursor_bg);
     }
@@ -355,7 +377,6 @@ fn render_theme_row(
         Span::styled(format!("{name:<14}"), Style::default().fg(CHROME_HEADER))
     };
 
-    // Swatch spans.
     let theme_idx = crate::themes::NAMES
         .iter()
         .position(|n| *n == name)
@@ -403,12 +424,8 @@ fn render_style_row(
     };
 
     let style = crate::styles::get(name);
-
-    // Separator preview.
     let sep_span = Span::raw(style.separator);
-    // 2-space gap.
     let gap_span = Span::raw("  ");
-    // Bar fill preview (2 cells).
     let fill2 = format!("{0}{0}", style.bar_fill);
     let empty2 = format!("{0}{0}", style.bar_empty);
     let fill_span = Span::styled(fill2, Style::default().fg(CHROME_OK));
@@ -447,7 +464,7 @@ fn render_threshold_row(
         ThresholdField::BarWidth => ("bar width", t.bar_width as i32, " ", 2i32, 20i32),
     };
 
-    let range_str = format!("[{lo}–{hi}]");
+    let range_str = format!("[{lo}\u{2013}{hi}]");
 
     let mut line = Line::from(vec![
         Span::styled("  ~ ", Style::default().fg(CHROME_WARN)),
@@ -473,117 +490,7 @@ fn render_threshold_row(
     line
 }
 
-// ── Zone 3: Description ───────────────────────────────────────────────────────
-
-fn draw_desc(f: &mut Frame, app: &App, area: Rect) {
-    let line = build_desc_line(app);
-    f.render_widget(Paragraph::new(line), area);
-}
-
-fn build_desc_line(app: &App) -> Line<'static> {
-    let dim_italic = Style::default()
-        .fg(CHROME_HEADER)
-        .add_modifier(Modifier::DIM | Modifier::ITALIC);
-
-    let cursor_row = match app.cursor_row() {
-        Some(r) => r.clone(),
-        None => return Line::from(Span::raw(" ")),
-    };
-
-    match cursor_row {
-        RowItem::SegmentRow(kind) => {
-            if app.config.segments.contains(&kind) {
-                let desc: &'static str = match kind {
-                    crate::model::SegmentKind::Directory => {
-                        "Current working directory, fish-style abbreviated"
-                    }
-                    crate::model::SegmentKind::Git => {
-                        "Branch name, ahead/behind counts, modified and untracked files"
-                    }
-                    crate::model::SegmentKind::Context => {
-                        "Token usage bar and count for the current session"
-                    }
-                    crate::model::SegmentKind::RateLimits => {
-                        "5-hour and weekly API usage windows with live reset countdown"
-                    }
-                    crate::model::SegmentKind::DevContext => {
-                        "Worktree name, PR number and review state, active sub-agent"
-                    }
-                    crate::model::SegmentKind::Model => "Active Claude model display name",
-                };
-                Line::from(Span::styled(desc, dim_italic))
-            } else {
-                let label = kind.label().to_string();
-                Line::from(vec![
-                    Span::styled(format!("{label} — disabled · "), dim_italic),
-                    Span::styled(
-                        "[Space]",
-                        Style::default()
-                            .fg(CHROME_CRIT)
-                            .add_modifier(Modifier::BOLD),
-                    ),
-                    Span::styled(" to enable", dim_italic),
-                ])
-            }
-        }
-        RowItem::ThemeRow(name) => {
-            if name == app.saved_config.theme {
-                Line::from(Span::styled(format!("Using {name}"), dim_italic))
-            } else {
-                let saved = app.saved_config.theme.clone();
-                Line::from(Span::styled(
-                    format!(
-                        "Previewing {name} — originally: {saved} · [s] save  [j/k] browse  [1/Tab] jump"
-                    ),
-                    Style::default()
-                        .fg(CHROME_WARN)
-                        .add_modifier(Modifier::DIM | Modifier::ITALIC),
-                ))
-            }
-        }
-        RowItem::StyleRow(name) => {
-            let font_note: &str = if name == "ascii" {
-                " · Works in all terminals"
-            } else {
-                " · Requires Nerd Font"
-            };
-            if name == app.saved_config.style {
-                Line::from(Span::styled(format!("Using {name}{font_note}"), dim_italic))
-            } else {
-                Line::from(Span::styled(
-                    format!("Previewing {name}{font_note} — [s] save  [j/k] browse"),
-                    Style::default()
-                        .fg(CHROME_WARN)
-                        .add_modifier(Modifier::DIM | Modifier::ITALIC),
-                ))
-            }
-        }
-        RowItem::ThresholdRow(field) => {
-            let t = &app.config.thresholds;
-            let desc: String = match field {
-                ThresholdField::Warn => format!(
-                    "Warn threshold: color bar yellow at/above. Range constrained to [1–{}%].",
-                    t.crit - 1
-                ),
-                ThresholdField::Crit => format!(
-                    "Crit threshold: color bar red at/above. Range constrained to [{}–99%].",
-                    t.warn + 1
-                ),
-                ThresholdField::WeeklyShowAt => {
-                    "Show weekly rate-limit window once usage exceeds this percent. Range: [1–99%]."
-                        .to_string()
-                }
-                ThresholdField::BarWidth => {
-                    "Progress bar width in terminal cells. Range: [2–20].".to_string()
-                }
-            };
-            Line::from(Span::styled(desc, dim_italic))
-        }
-        _ => Line::from(Span::raw(" ")),
-    }
-}
-
-// ── Zone 4: Preview Block ─────────────────────────────────────────────────────
+// ── Preview block ─────────────────────────────────────────────────────────────
 
 fn draw_preview(f: &mut Frame, app: &App, area: Rect) {
     let sample = app.current_sample();
@@ -623,7 +530,7 @@ fn draw_preview(f: &mut Frame, app: &App, area: Rect) {
     f.render_widget(para, area);
 }
 
-// ── Zone 5: Status Line ───────────────────────────────────────────────────────
+// ── Status line ───────────────────────────────────────────────────────────────
 
 fn draw_status(f: &mut Frame, app: &App, area: Rect) {
     let para = if app.pending_reset {
@@ -654,7 +561,7 @@ fn draw_status(f: &mut Frame, app: &App, area: Rect) {
     f.render_widget(para, area);
 }
 
-// ── Zone 6: Hint Line ─────────────────────────────────────────────────────────
+// ── Hint bar ──────────────────────────────────────────────────────────────────
 
 fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
     if app.pending_reset || app.pending_quit {
@@ -662,19 +569,13 @@ fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
         return;
     }
 
-    let cursor_row = app.cursor_row().cloned();
     let line = if app.reorder_mode {
-        // Variant 1: reorder mode.
-        hint_line(
-            &[
-                ("[j/k]", " move  "),
-                ("[m/Enter/Esc]", " done  "),
-                ("[1–4]", " jump"),
-            ],
-            false,
-        )
+        hint_line(&[
+            ("[j/k]", " move  "),
+            ("[m/Enter/Esc]", " done  "),
+            ("[1\u{2013}4]", " jump"),
+        ])
     } else if app.config.segments.is_empty() {
-        // Variant 2: all segments disabled — [Space] uses CHROME_CRIT bg.
         hint_line_with_crit_space(&[
             ("[Space]", " enable  ", true),
             ("[j/k]", " move  ", false),
@@ -682,79 +583,45 @@ fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
             ("[s]", " save  ", false),
             ("[q]", " quit", false),
         ])
+    } else if app.focused_panel == Panel::Right && app.menu_cursor == 0 {
+        hint_line(&[
+            ("[Space]", " toggle  "),
+            ("[m]", " reorder  "),
+            ("[←→]", " panel  "),
+            ("[↑↓]", " move  "),
+            ("[s]", " save  "),
+            ("[?]", " help  "),
+            ("[q]", " quit"),
+        ])
+    } else if app.focused_panel == Panel::Right
+        && (app.menu_cursor == 1 || app.menu_cursor == 2)
+    {
+        hint_line(&[
+            ("[↑↓]", " browse  "),
+            ("[s]", " save  "),
+            ("[p]", " sample  "),
+            ("[?]", " help  "),
+            ("[q]", " quit"),
+        ])
+    } else if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
+        hint_line(&[
+            ("[h/l]", " \u{b1}1  "),
+            ("[H/L]", " \u{b1}5  "),
+            ("[↑↓]", " move  "),
+            ("[s]", " save  "),
+            ("[?]", " help  "),
+            ("[q]", " quit"),
+        ])
     } else {
-        match &cursor_row {
-            Some(RowItem::SegmentRow(kind)) if app.config.segments.contains(kind) => {
-                // Variant 3: enabled segment.
-                hint_line(
-                    &[
-                        ("[Space]", " toggle  "),
-                        ("[m]", " reorder  "),
-                        ("[j/k]", " move  "),
-                        ("[1–4]", " section  "),
-                        ("[s]", " save  "),
-                        ("[?]", " help  "),
-                        ("[q]", " quit"),
-                    ],
-                    false,
-                )
-            }
-            Some(RowItem::SegmentRow(_)) => {
-                // Variant 4: disabled segment.
-                hint_line(
-                    &[
-                        ("[Space]", " enable  "),
-                        ("[j/k]", " move  "),
-                        ("[1–4]", " section  "),
-                        ("[s]", " save  "),
-                        ("[?]", " help  "),
-                        ("[q]", " quit"),
-                    ],
-                    false,
-                )
-            }
-            Some(RowItem::ThemeRow(_)) | Some(RowItem::StyleRow(_)) => {
-                // Variant 5: theme or style.
-                hint_line(
-                    &[
-                        ("[j/k]", " browse  "),
-                        ("[s]", " save  "),
-                        ("[1–4]", " section  "),
-                        ("[p]", " sample  "),
-                        ("[?]", " help  "),
-                        ("[q]", " quit"),
-                    ],
-                    false,
-                )
-            }
-            Some(RowItem::ThresholdRow(_)) => {
-                // Variant 6: threshold.
-                hint_line(
-                    &[
-                        ("[h/l]", " ±1  "),
-                        ("[H/L]", " ±5  "),
-                        ("[j/k]", " move  "),
-                        ("[s]", " save  "),
-                        ("[?]", " help  "),
-                        ("[q]", " quit"),
-                    ],
-                    false,
-                )
-            }
-            _ => {
-                // Variant 7: default.
-                hint_line(
-                    &[
-                        ("[j/k]", " move  "),
-                        ("[1–4]", " section  "),
-                        ("[s]", " save  "),
-                        ("[?]", " help  "),
-                        ("[q]", " quit"),
-                    ],
-                    false,
-                )
-            }
-        }
+        // Left panel focused or default.
+        hint_line(&[
+            ("[←→]", " panel  "),
+            ("[↑↓]", " section  "),
+            ("[1\u{2013}4]", " jump  "),
+            ("[s]", " save  "),
+            ("[?]", " help  "),
+            ("[q]", " quit"),
+        ])
     };
 
     f.render_widget(
@@ -763,8 +630,7 @@ fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
     );
 }
 
-/// Build a hint line from (key, desc) pairs. All key buttons use CHROME_KEY_BG.
-fn hint_line(pairs: &[(&str, &str)], _crit_first: bool) -> Line<'static> {
+fn hint_line(pairs: &[(&str, &str)]) -> Line<'static> {
     let mut spans = vec![Span::raw("  ")];
     for &(key, desc) in pairs {
         spans.push(Span::styled(
@@ -779,7 +645,6 @@ fn hint_line(pairs: &[(&str, &str)], _crit_first: bool) -> Line<'static> {
     Line::from(spans)
 }
 
-/// Build a hint line where entries marked true use CHROME_CRIT bg for [key].
 fn hint_line_with_crit_space(pairs: &[(&str, &str, bool)]) -> Line<'static> {
     let mut spans = vec![Span::raw("  ")];
     for &(key, desc, crit) in pairs {
@@ -796,7 +661,7 @@ fn hint_line_with_crit_space(pairs: &[(&str, &str, bool)]) -> Line<'static> {
     Line::from(spans)
 }
 
-// ── Help Overlay ──────────────────────────────────────────────────────────────
+// ── Help overlay ──────────────────────────────────────────────────────────────
 
 fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
     f.render_widget(Clear, overlay_area);
@@ -810,24 +675,51 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
         )),
         Line::from(vec![
             Span::styled(
-                "  j / ↓ ",
+                "  \u{2190} / h  ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                "  Move cursor down one row",
+                "  Switch focus to left panel (or nudge threshold \u{2212}1 in Thresholds section)",
                 Style::default().fg(CHROME_TEXT),
             ),
         ]),
         Line::from(vec![
             Span::styled(
-                "  k / ↑ ",
+                "  \u{2192} / l  ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Move cursor up one row", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  Switch focus to right panel (or nudge threshold +1 in Thresholds section)",
+                Style::default().fg(CHROME_TEXT),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "  j / \u{2193} ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Move cursor down within focused panel",
+                Style::default().fg(CHROME_TEXT),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "  k / \u{2191} ",
+                Style::default()
+                    .fg(CHROME_KEY_BG)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  Move cursor up within focused panel",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -836,7 +728,10 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Jump to top of list", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  Jump to top of right panel list",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -845,7 +740,10 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Jump to bottom of list", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  Jump to bottom of right panel list",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -854,29 +752,20 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Jump to next section", Style::default().fg(CHROME_TEXT)),
-        ]),
-        Line::from(vec![
             Span::styled(
-                "  Shift-Tab",
-                Style::default()
-                    .fg(CHROME_KEY_BG)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled(
-                " Jump to previous section",
+                "  Toggle focus between left and right panel",
                 Style::default().fg(CHROME_TEXT),
             ),
         ]),
         Line::from(vec![
             Span::styled(
-                "  1–4    ",
+                "  1\u{2013}4    ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                "   Jump to section 1=Segments 2=Theme 3=Style 4=Thresholds",
+                "   Jump to section: 1=Segments  2=Theme  3=Style  4=Thresholds",
                 Style::default().fg(CHROME_TEXT),
             ),
         ]),
@@ -920,7 +809,7 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
         )),
         Line::from(vec![
             Span::styled(
-                "  j / ↓   ",
+                "  j / \u{2193}   ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
@@ -929,7 +818,7 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
         ]),
         Line::from(vec![
             Span::styled(
-                "  k / ↑   ",
+                "  k / \u{2191}   ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
@@ -969,7 +858,7 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
         )),
         Line::from(vec![
             Span::styled(
-                "  h / ←   ",
+                "  h / \u{2190}   ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
@@ -978,7 +867,7 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
         ]),
         Line::from(vec![
             Span::styled(
-                "  l / →   ",
+                "  l / \u{2192}   ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
@@ -1012,7 +901,7 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
         )),
         Line::from(vec![
             Span::styled(
-                "  s / Ctrl-S",
+                "  s       ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
@@ -1082,6 +971,7 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
     ];
 
     let block = Block::bordered()
+        .border_type(BorderType::Rounded)
         .title(Span::styled(
             " ? Keybindings ",
             Style::default()

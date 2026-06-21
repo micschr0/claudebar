@@ -30,6 +30,13 @@ pub(crate) enum ThresholdField {
     BarWidth,
 }
 
+/// Identifies which of the two top-row panels is active.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Panel {
+    Left,
+    Right,
+}
+
 /// A single display row in the flat list. SectionHeader and Divider are
 /// non-selectable; all others can receive flat_cursor.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -62,10 +69,18 @@ pub(crate) struct App {
     pub list_rows: Vec<RowItem>,
     /// Top display-row index currently scrolled to.
     pub scroll_offset: usize,
-    /// Viewport height set by draw_list() via Cell; read by handle_key().
-    pub list_viewport_height: std::cell::Cell<u16>,
     /// section_starts[i] = flat_cursor index of first row in section i.
     pub section_starts: [usize; 4],
+    /// Which panel (Left/Right) currently has keyboard focus.
+    pub focused_panel: Panel,
+    /// 0–3: which section is highlighted in the left panel.
+    pub menu_cursor: usize,
+    /// Position within the right panel's section item list, 0-indexed.
+    pub detail_cursor: usize,
+    /// Last drawn area of the left panel — set by draw(), read by mouse handler.
+    pub left_panel_area: std::cell::Cell<ratatui::layout::Rect>,
+    /// Last drawn area of the right panel — set by draw(), read by mouse handler.
+    pub right_panel_area: std::cell::Cell<ratatui::layout::Rect>,
     /// Swatch cache built in themes::NAMES order.
     /// Slot order: [separator, dir, git_branch, bar_ok, bar_crit].
     /// Reordering themes::NAMES or changing Theme struct fields requires updating here.
@@ -117,8 +132,12 @@ impl App {
             selectable_indices,
             list_rows,
             scroll_offset: 0,
-            list_viewport_height: std::cell::Cell::new(10),
             section_starts,
+            focused_panel: Panel::Left,
+            menu_cursor: 0,
+            detail_cursor: 0,
+            left_panel_area: std::cell::Cell::new(ratatui::layout::Rect::default()),
+            right_panel_area: std::cell::Cell::new(ratatui::layout::Rect::default()),
             swatch_cache,
             samples: sample::all(),
             sample_idx: 0,
@@ -178,6 +197,9 @@ impl App {
         self.section_starts = section_starts;
         self.flat_cursor = 0;
         self.scroll_offset = 0;
+        self.menu_cursor = 0;
+        self.detail_cursor = 0;
+        self.focused_panel = Panel::Left;
         // Status intentionally NOT set here — caller handles display.
     }
 
@@ -203,30 +225,61 @@ impl App {
         }
     }
 
-    /// Toggle the segment under flat_cursor; rebuild list; cursor follows segment.
+    /// Toggle the segment under detail_cursor; rebuild list; both cursors follow segment.
+    /// detail_cursor indexes into the display order (enabled first, then disabled in ALL order).
+    /// flat_cursor is also updated for backward compat with unit tests that use cursor_row().
     pub(crate) fn toggle_cursor(&mut self) {
-        if let Some(RowItem::SegmentRow(kind)) = self.cursor_row().cloned() {
-            toggle_segment(&mut self.config.segments, kind);
-            let (list_rows, selectable_indices, section_starts) = build_list(&self.config);
-            self.list_rows = list_rows;
-            self.selectable_indices = selectable_indices;
-            self.section_starts = section_starts;
-            // Cursor follows the toggled segment to its new position.
-            if let Some(si) = self
-                .selectable_indices
-                .iter()
-                .enumerate()
-                .find_map(|(si, &dr)| {
-                    if let RowItem::SegmentRow(k) = &self.list_rows[dr] {
-                        if *k == kind {
-                            return Some(si);
-                        }
-                    }
-                    None
-                })
-            {
-                self.flat_cursor = si;
+        // Build display order for segments: enabled in config.segments order, then disabled in ALL order.
+        let display_order: Vec<SegmentKind> = {
+            let mut order: Vec<SegmentKind> = self.config.segments.clone();
+            for &kind in &SegmentKind::ALL {
+                if !self.config.segments.contains(&kind) {
+                    order.push(kind);
+                }
             }
+            order
+        };
+
+        let kind = match display_order.get(self.detail_cursor) {
+            Some(&k) => k,
+            None => return,
+        };
+
+        toggle_segment(&mut self.config.segments, kind);
+        let (list_rows, selectable_indices, section_starts) = build_list(&self.config);
+        self.list_rows = list_rows;
+        self.selectable_indices = selectable_indices;
+        self.section_starts = section_starts;
+
+        // Update detail_cursor to follow the toggled segment in new display order.
+        let new_display_order: Vec<SegmentKind> = {
+            let mut order: Vec<SegmentKind> = self.config.segments.clone();
+            for &kind in &SegmentKind::ALL {
+                if !self.config.segments.contains(&kind) {
+                    order.push(kind);
+                }
+            }
+            order
+        };
+        if let Some(idx) = new_display_order.iter().position(|&k| k == kind) {
+            self.detail_cursor = idx;
+        }
+
+        // Also update flat_cursor for backward compat with unit tests.
+        if let Some(si) = self
+            .selectable_indices
+            .iter()
+            .enumerate()
+            .find_map(|(si, &dr)| {
+                if let RowItem::SegmentRow(k) = &self.list_rows[dr] {
+                    if *k == kind {
+                        return Some(si);
+                    }
+                }
+                None
+            })
+        {
+            self.flat_cursor = si;
         }
     }
 
@@ -253,16 +306,34 @@ impl App {
         }
     }
 
-    /// Apply move-is-select for ThemeRow/StyleRow after j/k navigation.
+    /// Apply move-is-select for theme/style sections after navigation.
+    /// In the two-panel model, keyed to menu_cursor + detail_cursor.
+    /// Falls back to cursor_row() when menu_cursor == 0 for backward
+    /// compatibility with unit tests that manipulate flat_cursor directly.
     pub(crate) fn apply_move_is_select(&mut self) {
-        match self.cursor_row().cloned() {
-            Some(RowItem::ThemeRow(name)) => {
-                self.config.theme = name.to_string();
+        match self.menu_cursor {
+            1 => {
+                if let Some(&name) = crate::themes::NAMES.get(self.detail_cursor) {
+                    self.config.theme = name.to_string();
+                }
             }
-            Some(RowItem::StyleRow(name)) => {
-                self.config.style = name.to_string();
+            2 => {
+                if let Some(&name) = crate::styles::NAMES.get(self.detail_cursor) {
+                    self.config.style = name.to_string();
+                }
             }
-            _ => {}
+            _ => {
+                // Backward compat: flat-cursor callers (unit tests) use cursor_row().
+                match self.cursor_row().cloned() {
+                    Some(RowItem::ThemeRow(name)) => {
+                        self.config.theme = name.to_string();
+                    }
+                    Some(RowItem::StyleRow(name)) => {
+                        self.config.style = name.to_string();
+                    }
+                    _ => {}
+                }
+            }
         }
     }
 }
@@ -356,27 +427,14 @@ pub(crate) fn move_segment(segments: &mut [SegmentKind], idx: usize, dir: Dir) {
     }
 }
 
-/// Determine which section (0–3) flat_cursor currently points into.
-pub(crate) fn current_section(flat_cursor: usize, section_starts: &[usize; 4]) -> usize {
-    if flat_cursor >= section_starts[3] {
-        3
-    } else if flat_cursor >= section_starts[2] {
-        2
-    } else if flat_cursor >= section_starts[1] {
-        1
-    } else {
-        0
-    }
-}
-
-/// Update scroll_offset so the cursor row is visible with 1-row context above and below.
-pub(crate) fn enforce_scroll(app: &mut App) {
-    let dr = app.selectable_indices[app.flat_cursor]; // display row index
-    let h = app.list_viewport_height.get() as usize;
-    if dr < app.scroll_offset.saturating_add(1) {
-        app.scroll_offset = dr.saturating_sub(1);
-    } else if dr + 2 > app.scroll_offset + h {
-        app.scroll_offset = (dr + 2).saturating_sub(h);
+/// Number of items in the right panel for the section at app.menu_cursor.
+pub(crate) fn detail_len(app: &App) -> usize {
+    match app.menu_cursor {
+        0 => crate::model::SegmentKind::ALL.len(),
+        1 => crate::themes::NAMES.len(),
+        2 => crate::styles::NAMES.len(),
+        3 => 4, // ThresholdField variants: Warn, Crit, WeeklyShowAt, BarWidth
+        _ => 0,
     }
 }
 
@@ -466,9 +524,8 @@ mod tests {
     #[test]
     fn moving_theme_cursor_updates_config_and_dirty() {
         let mut app = App::new(Config::default(), None);
-        // Jump to theme section.
+        // Jump to theme section via flat_cursor (backward compat with old flat-list model).
         app.flat_cursor = app.section_starts[1];
-        enforce_scroll(&mut app);
         let before = app.config.theme.clone();
         // Simulate j press: move down, apply move-is-select.
         let max_idx = app.selectable_indices.len().saturating_sub(1);
