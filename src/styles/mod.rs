@@ -12,7 +12,14 @@ pub mod unicode;
 use crate::model::Style;
 
 /// All built-in style names, in display order. Powerline is the default.
-pub const NAMES: &[&str] = &["powerline", "plain", "rounded", "minimal", "unicode", "ascii"];
+pub const NAMES: &[&str] = &[
+    "powerline",
+    "plain",
+    "rounded",
+    "minimal",
+    "unicode",
+    "ascii",
+];
 
 /// Resolve a style by name. Unknown names (and the default) fall back to
 /// Powerline.
