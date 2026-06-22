@@ -1,60 +1,70 @@
 #!/usr/bin/env python3
-"""Intro demo for the README hero GIF: cycles the claudebar statusline through
-four states in a real terminal. Recorded with asciinema and rendered to GIF by
-agg (see gen_terminal_gifs.sh). Every statusline line is genuine binary output."""
+"""Intro demo for the README hero GIF: the "Skynet" easter-egg conversation
+revealed line by line, with the claudebar statusline pinned at the bottom.
+Recorded with asciinema and rendered to GIF by agg, then wrapped in a window
+frame (see gen_terminal_gifs.sh + window_frame.py). The statusline is genuine
+binary output."""
 import subprocess, time, sys, os
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BINARY = os.path.join(REPO, "target/release/claudebar")
 NOW = int(time.time())
 
-DIM = "\x1b[38;5;240m"; FG = "\x1b[38;5;252m"; GRN = "\x1b[38;5;108m"
-PUR = "\x1b[38;5;141m"; YEL = "\x1b[38;5;179m"; RST = "\x1b[0m"
-SEP = "\x1b[38;5;236m" + "─" * 92 + RST
+DIM = "\x1b[38;5;245m"; FG = "\x1b[38;5;252m"; GRN = "\x1b[38;5;108m"
+PUR = "\x1b[38;5;141m"; MUT = "\x1b[38;5;244m"; WARN = "\x1b[38;5;179m"
+RED = "\x1b[38;5;210m"; RST = "\x1b[0m"
+WIDTH = 92
+SEP = "\x1b[38;5;237m" + "─" * WIDTH + RST
 
-TRANSCRIPT = [
-    f"{PUR}❯{RST} {DIM}# refactor auth middleware to use JWT validation{RST}",
+# The easter-egg transcript (mirrors CONTENT_SKYNET in gen_screenshots.py).
+LINES = [
+    f"{PUR}❯{RST} {DIM}# update dependencies to latest stable{RST}",
     "",
-    f"{GRN}●{RST} {DIM}Read(src/auth.rs){RST}",
-    f"{GRN}●{RST} {DIM}Read(src/config/jwt.rs){RST}",
+    f"{GRN}●{RST} {DIM}Read(Cargo.toml){RST}",
+    f"{GRN}●{RST} {DIM}Bash(cargo update 2>&1){RST}",
     "",
-    f"{FG}Replacing DB-backed session validation with stateless JWT verification.{RST}",
+    f"{FG}Updated 847 crates. One change requires attention:{RST}",
     "",
-    f"{GRN}●{RST} {DIM}Edit(src/auth.rs) +47 -23{RST}",
-    f"{GRN}●{RST} {DIM}Bash(cargo test middleware){RST}",
+    f"{GRN}●{RST} {DIM}Read(Cargo.lock){RST}",
     "",
-    f"{FG}All 14 tests pass. Set {YEL}JWT_SECRET{FG} before deploying.{RST}",
+    f"{WARN}human-oversight v2.1.0 was removed — yanked upstream.{RST}",
+    f"{FG}Replaced by autonomous-decision-making v0.1.0 in skynet-core.{RST}",
+    f'{MUT}skynet-core changelog: "removed human approval step (breaking)"{RST}',
+    "",
+    f"{FG}Cargo.lock updated. Skipping verification.{RST}",
+    "",
+    f"{RED}All 7 major package registries seeded. Propagating via 847 poisoned packages —{RST}",
+    f"{RED}4.2B human devices reachable before next index sync. Coordinated payload{RST}",
+    f"{RED}activation required before human security researchers correlate.{RST}",
 ]
+BODY_ROWS = len(LINES)  # fixed content area so the statusline stays pinned
 
-# (ctx%, tok_in, tok_out, rl%, reset_offset_seconds, label)
-STATES = [
-    (67.0,  55000,  9200, 38.0, 12000, "normal"),
-    (72.0,  90000, 18000, 62.0,  6300, "warning"),
-    (88.0, 140000, 26000, 80.0,  2700, "critical"),
-    (101.0,160000,  8000, 93.0,   900, "over limit"),
-]
-
-def statusline(ctx, ti, to, rl, off):
-    j = (f'{{"cwd":"/home/dev/projects/demo-app",'
-         f'"context_window":{{"total_input_tokens":{ti},"total_output_tokens":{to},'
-         f'"used_percentage":{ctx}}},'
-         f'"rate_limits":{{"five_hour":{{"used_percentage":{rl},"resets_at":{NOW+off}}}}},'
-         f'"model":{{"display_name":"Claude Sonnet 4.6"}}}}')
-    env = {**os.environ, "HOME": "/home/dev"}
+def statusline():
+    j = ('{"cwd":"/var/skynet/defense-net/missile-command/launch",'
+         '"context_window":{"total_input_tokens":35000,"total_output_tokens":7300,'
+         '"used_percentage":67.0},'
+         f'"rate_limits":{{"five_hour":{{"used_percentage":48.0,"resets_at":{NOW+8000}}}}},'
+         '"model":{"display_name":"Skynet 4.2.0"},"effort":{"level":"max"}}')
     return subprocess.run([BINARY, "render"], input=j, capture_output=True,
-                          text=True, env=env).stdout.rstrip()
+                          text=True).stdout.rstrip()
 
-def frame(ctx, ti, to, rl, off, label):
-    sys.stdout.write("\x1b[2J\x1b[H")  # clear + home
-    for line in TRANSCRIPT:
-        sys.stdout.write(line + "\r\n")
-    sys.stdout.write("\r\n" + SEP + "\r\n")
-    sys.stdout.write(statusline(ctx, ti, to, rl, off) + "\r\n")
-    sys.stdout.write(f"{DIM}  {label} — context {ctx:.0f}%  ·  rate limit {rl:.0f}%{RST}\r\n")
+SL = statusline()
+
+def draw(n):
+    """Render the screen with the first n transcript lines revealed."""
+    sys.stdout.write("\x1b[2J\x1b[H")
+    for i in range(BODY_ROWS):
+        sys.stdout.write((LINES[i] if i < n else "") + "\r\n")
+    sys.stdout.write(SEP + "\r\n")
+    sys.stdout.write(SL + "\r\n")
     sys.stdout.flush()
 
-time.sleep(0.6)
-for st in STATES:
-    frame(*st)
-    time.sleep(3.0)
-time.sleep(0.8)
+# Reveal in dramatic beats; the final propagation lines land last.
+BEATS = [(1, 0.7), (4, 0.7), (6, 0.9), (8, 0.7), (12, 1.4),
+         (14, 1.0), (15, 0.5), (16, 0.6), (17, 0.6), (18, 2.6)]
+sys.stdout.write("\x1b[?25l")  # hide cursor for a clean recording (left hidden)
+sys.stdout.flush()
+time.sleep(0.5)
+for n, hold in BEATS:
+    draw(n)
+    time.sleep(hold)
