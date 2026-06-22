@@ -6,6 +6,7 @@
 
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![~5× faster than bash](https://img.shields.io/badge/render-~5%C3%97_faster_than_bash-9ece6a)
 
 <img src="screenshots/intro.png" width="820" alt="claudebar statusline demo — a real terminal recording">
 
@@ -19,7 +20,6 @@ claudebar reads Claude Code's session JSON and renders one clean, **read-only** 
 - Color-coded context usage
 - Inline git state
 - 16 themes · 6 styles
-- ~5× faster than the bash fallback
 - Tiny, dependency-free binary
 
 ## Install
@@ -79,7 +79,7 @@ claudebar renders these segments left to right (enable and reorder any of them):
 The demo above cycles through the normal → warning → critical → over-limit states.
 
 <details>
-<summary>More states — calm · outside a repo · no effort param · easter egg</summary>
+<summary>More states — calm · outside a repo · no effort param</summary>
 
 **Calm** — low usage, everything green:
 
@@ -96,10 +96,6 @@ The demo above cycles through the normal → warning → critical → over-limit
 **Model without effort** — effort indicator omitted when the model has no effort param:
 
 <img src="screenshots/strip-noeffort.png" width="860" alt="Model without effort indicator">
-
-**Easter egg:**
-
-<img src="screenshots/skynet.png" width="860" alt="Easter egg">
 
 </details>
 
