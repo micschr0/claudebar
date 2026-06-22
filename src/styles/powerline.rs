@@ -1,7 +1,7 @@
 //! Powerline — the default style and **byte-parity anchor** for glyphs. Every
 //! glyph reproduces the exact codepoint the bash script emitted.
 //!
-//! Separator U+E0B1, branch U+E0A0, context U+F035B, token U+2B21,
+//! Separator U+E0B1, branch U+E0A0, context U+F035B, token U+F0C29,
 //! clock U+F051F, weekly U+F00ED, reset U+21BA, model U+25C8, effort U+F0E7,
 //! ahead U+2191, behind U+2193. Requires a Nerd Font / powerline-patched font.
 
@@ -18,7 +18,7 @@ pub fn style() -> Style {
             modified: "M",
             untracked: "?",
             context: "\u{f035b}",
-            token: "\u{2b21}",
+            token: "\u{f0c29}", // nf-md-hexagon_outline — outline hexagon present in Nerd Fonts (U+2B21 ⬡ is not)
             clock: "\u{f051f}",
             weekly: "\u{f00ed}",
             reset: "\u{21ba}",

@@ -178,12 +178,12 @@ if [ "$s_in" -gt 0 ] 2>/dev/null || [ "$s_out" -gt 0 ] 2>/dev/null; then
       elif [ "$pct" -ge 50 ];  then cc="$C_WARN"
       else cc="$C_OK"; fi
       bar=$(make_bar "$pct" 6 "$cc")
-      printf "${SEP}${C_DIM}󰍛 %s ${cc}%d%%${R} ${C_TOK}⬡ %s${R}" "$bar" "$pct" "$fmt"
+      printf "${SEP}${C_DIM}󰍛 %s ${cc}%d%%${R} ${C_TOK}󰰩 %s${R}" "$bar" "$pct" "$fmt"
     else
-      printf "${SEP}${C_TOK}⬡ %s${R}" "$fmt"
+      printf "${SEP}${C_TOK}󰰩 %s${R}" "$fmt"
     fi
   else
-    printf "${SEP}${C_TOK}⬡ %s${R}" "$fmt"
+    printf "${SEP}${C_TOK}󰰩 %s${R}" "$fmt"
   fi
 fi
 

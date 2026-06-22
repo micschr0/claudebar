@@ -17,20 +17,66 @@ Prerequisites for PNG:
     /tmp/demo-{clean,app,busy,release,behind} in distinct git states so the
     screenshots show varied git segments instead of an identical one.
 """
-import subprocess, re, time, os, sys
+import subprocess, re, time, os, sys, base64
 
 REPO     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPT   = os.path.join(REPO, "statusline-command.sh")
+# Screenshots render the real Rust binary's output (what users actually install),
+# not the bash fallback — build it first with `cargo build --release`.
+BINARY   = os.path.join(REPO, "target/release/claudebar")
 SHOTS    = os.path.join(REPO, "screenshots")
 DEMO_CWD = "/tmp/demo-app"
 
-DOCKER_SOCK  = "unix:///run/user/1002/docker.sock"
+DOCKER_SOCK  = os.environ.get("DOCKER_HOST", "unix:///var/run/docker.sock")
 PLAYWRIGHT   = "mcr.microsoft.com/playwright:v1.49.0-noble"
 CHROMIUM     = "/ms-playwright/chromium-1148/chrome-linux/chrome"
-NF_FONT_DIR  = "/tmp/fonts"
-PW_MODULES   = "/tmp/pw/node_modules"
+NF_FONT_DIR  = os.environ.get("NF_FONT_DIR", "/tmp/fonts")
+PW_MODULES   = os.environ.get("PW_MODULES", "/tmp/pw/node_modules")
+
+# Set CLAUDEBAR_CHROME to a host Chrome/Chromium binary to render directly on the
+# host (no Docker) — required where Docker can't run containers (e.g. gVisor).
+# When unset, rendering goes through the Playwright Docker image as before.
+HOST_CHROME  = os.environ.get("CLAUDEBAR_CHROME")
+# Absolute file:// URL works under both: Docker mounts /tmp, host reads it directly.
+FONT_URL     = f"file://{NF_FONT_DIR}/HackNerdFontMono-Regular.ttf"
 
 MODE = sys.argv[1] if len(sys.argv) > 1 else "all"
+
+def render_shots(shots, selector, scale=2, wait=900, viewport=None):
+    """Render the `selector` element of each HTML file to a transparent PNG.
+    `shots` is a list of (src_html_path, out_png_path). Uses host Chrome when
+    CLAUDEBAR_CHROME is set, otherwise the Playwright Docker image."""
+    vp = (f"deviceScaleFactor:{scale}, viewport:{{width:{viewport[0]},height:{viewport[1]}}}"
+          if viewport else f"deviceScaleFactor:{scale}")
+    shots_js = ",\n    ".join(f'{{ src:"file://{s}", out:"{o}" }}' for s, o in shots)
+    loop = f"""
+  for (const {{ src, out }} of [{shots_js}]) {{
+    const page = await browser.newPage({{ {vp} }});
+    await page.goto(src);
+    await page.waitForTimeout({wait});
+    await page.locator("{selector}").screenshot({{ path: out, omitBackground: true }});
+    await page.close();
+    console.log("Saved:", out);
+  }}"""
+    if HOST_CHROME:
+        core = os.path.join(PW_MODULES, "playwright-core")
+        js = (f'const {{ chromium }} = require("{core}");\n(async () => {{\n'
+              f'  const browser = await chromium.launch({{ executablePath:"{HOST_CHROME}",'
+              f' args:["--no-sandbox","--disable-setuid-sandbox","--disable-gpu"] }});{loop}\n'
+              f'  await browser.close();\n}})().catch(e => {{ console.error(e.message); process.exit(1); }});')
+        with open("/tmp/claudebar_render.js", "w") as f: f.write(js)
+        ok = subprocess.run(["node", "/tmp/claudebar_render.js"]).returncode == 0
+    else:
+        js = (f'const {{ chromium }} = require("/node_modules/playwright-core");\n(async () => {{\n'
+              f'  const browser = await chromium.launch({{ executablePath:"{CHROMIUM}",'
+              f' args:["--no-sandbox","--disable-setuid-sandbox"] }});{loop}\n'
+              f'  await browser.close();\n}})().catch(e => {{ console.error(e.message); process.exit(1); }});')
+        with open("/tmp/claudebar_render.js", "w") as f: f.write(js)
+        ok = subprocess.run([
+            "docker", "run", "--rm", "-v", f"{REPO}:{REPO}", "-v", "/tmp:/tmp",
+            "-v", f"{PW_MODULES}:/node_modules", "-v", f"{NF_FONT_DIR}:/fonts",
+            "--ipc=host", PLAYWRIGHT, "node", "/tmp/claudebar_render.js",
+        ], env={**os.environ, "DOCKER_HOST": DOCKER_SOCK}).returncode == 0
+    print("  Done." if ok else "  Render failed.")
 
 # ── ANSI parser ────────────────────────────────────────────────────────────────
 
@@ -71,14 +117,14 @@ def run_sl(ctx_pct, tok_in, tok_out, rl_5h_pct, rl_5h_reset,
          f'"context_window":{{"total_input_tokens":{tok_in},'
          f'"total_output_tokens":{tok_out},"used_percentage":{ctx_pct}}},'
          f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}{effort_field}}}')
-    return subprocess.run(["bash", SCRIPT], input=j, capture_output=True, text=True).stdout.rstrip()
+    return subprocess.run([BINARY, "render"], input=j, capture_output=True, text=True).stdout.rstrip()
 
 # ── HTML helpers ───────────────────────────────────────────────────────────────
 
 CSS = """
 @font-face {
   font-family: 'HackNF';
-  src: url('/fonts/HackNerdFontMono-Regular.ttf') format('truetype');
+  src: url('__FONT_URL__') format('truetype');
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -140,7 +186,7 @@ def html_window(content_lines, statusline_html, title="claude — /tmp/demo-app"
   <div class="titlebar">{DOTS}<span class="title">{esc(title)}</span></div>
   <div class="content">{content}</div>
   <div class="statusline">{sl_html}</div>
-</div></body></html>"""
+</div></body></html>""".replace("__FONT_URL__", FONT_URL)
 
 # ── PNG screenshots ─────────────────────────────────────────────────────────────
 
@@ -231,51 +277,10 @@ def generate_pngs():
         with open(tmp, "w") as f: f.write(html)
         html_files.append((tmp, f"{SHOTS}/{name}.png"))
 
-    # Build Playwright script
-    shots_js = ",\n    ".join(
-        f'{{ src: "file://{src}", out: "{dst}" }}' for src, dst in html_files
-    )
-    pw_script = f"""const {{ chromium }} = require("/node_modules/playwright-core");
-(async () => {{
-  const browser = await chromium.launch({{
-    executablePath: "{CHROMIUM}",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  }});
-  for (const {{ src, out }} of [{shots_js}]) {{
-    const page = await browser.newPage({{
-      deviceScaleFactor: 2,
-      viewport: {{ width: 1260, height: 900 }}
-    }});
-    await page.goto(src);
-    await page.waitForTimeout(1200);
-    // Screenshot the window element itself — symmetric, both rounded corners
-    // intact, transparent outside the radius (no fixed clip to slice the edge).
-    await page.locator(".window").screenshot({{ path: out, omitBackground: true }});
-    await page.close();
-    console.log("Saved:", out);
-  }}
-  await browser.close();
-}})().catch(e => {{ console.error(e.message); process.exit(1); }});
-"""
-    pw_path = "/tmp/take_screenshots.js"
-    with open(pw_path, "w") as f: f.write(pw_script)
-
-    print("\n  Running Docker...")
-    result = subprocess.run([
-        "docker", "run", "--rm",
-        "-v", f"{REPO}:{REPO}",
-        "-v", "/tmp:/tmp",
-        "-v", f"{PW_MODULES}:/node_modules",
-        "-v", f"{NF_FONT_DIR}:/fonts",
-        "--ipc=host",
-        PLAYWRIGHT,
-        "node", pw_path,
-    ], env={**os.environ, "DOCKER_HOST": DOCKER_SOCK},
-       capture_output=False)
-    if result.returncode != 0:
-        print("  Docker run failed.")
-    else:
-        print("  Done.")
+    # Screenshot the window element itself — symmetric, both rounded corners
+    # intact, transparent outside the radius (no fixed clip to slice the edge).
+    print("\n  Rendering...")
+    render_shots(html_files, ".window", scale=2, wait=1200, viewport=(1260, 900))
 
 # ── Statusline strips (compact, README-friendly) ─────────────────────────────────
 # Just the bar in a self-contained rounded card — no terminal chrome, no fake
@@ -285,7 +290,7 @@ def generate_pngs():
 STRIP_CSS = """
 @font-face {
   font-family:'HackNF';
-  src:url('/fonts/HackNerdFontMono-Regular.ttf') format('truetype');
+  src:url('__FONT_URL__') format('truetype');
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:transparent; }
@@ -329,7 +334,7 @@ def strip_html(sl_raw):
                     for c, t in parse_ansi(sl_raw))
     return (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
             f'<style>{STRIP_CSS}</style></head>'
-            f'<body><div class="strip">{spans}</div></body></html>')
+            f'<body><div class="strip">{spans}</div></body></html>').replace("__FONT_URL__", FONT_URL)
 
 def generate_strips():
     print("── Statusline strips ────────────────────────────")
@@ -342,42 +347,8 @@ def generate_strips():
         with open(tmp, "w") as f: f.write(strip_html(raw))
         html_files.append((tmp, f"{SHOTS}/strip-{name}.png"))
 
-    shots_js = ",\n    ".join(
-        f'{{ src: "file://{src}", out: "{dst}" }}' for src, dst in html_files
-    )
-    pw_script = f"""const {{ chromium }} = require("/node_modules/playwright-core");
-(async () => {{
-  const browser = await chromium.launch({{
-    executablePath: "{CHROMIUM}",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  }});
-  for (const {{ src, out }} of [{shots_js}]) {{
-    const page = await browser.newPage({{ deviceScaleFactor: 2 }});
-    await page.goto(src);
-    await page.waitForTimeout(800);
-    await page.locator(".strip").screenshot({{ path: out, omitBackground: true }});
-    await page.close();
-    console.log("Saved:", out);
-  }}
-  await browser.close();
-}})().catch(e => {{ console.error(e.message); process.exit(1); }});
-"""
-    pw_path = "/tmp/take_strips.js"
-    with open(pw_path, "w") as f: f.write(pw_script)
-
-    print("\n  Running Docker...")
-    result = subprocess.run([
-        "docker", "run", "--rm",
-        "-v", f"{REPO}:{REPO}",
-        "-v", "/tmp:/tmp",
-        "-v", f"{PW_MODULES}:/node_modules",
-        "-v", f"{NF_FONT_DIR}:/fonts",
-        "--ipc=host",
-        PLAYWRIGHT,
-        "node", pw_path,
-    ], env={**os.environ, "DOCKER_HOST": DOCKER_SOCK},
-       capture_output=False)
-    print("  Done." if result.returncode == 0 else "  Docker run failed.")
+    print("\n  Rendering...")
+    render_shots(html_files, ".strip", scale=2, wait=800)
 
 # ── Animated SVG ───────────────────────────────────────────────────────────────
 
@@ -388,9 +359,31 @@ SVG_BOTTOM_PAD = 8
 SVG_BG, SVG_BAR_BG, SVG_BORDER = "#1a1b2e", "#1f2035", "#2a2b3d"
 SVG_FG = "#c0caf5"
 SVG_C  = {"dim":"#565f89","muted":"#8a8a8a","green":"#9ece6a","purple":"#bb9af7","yellow":"#e0af68"}
-FONT_MONO  = "font-family=\"'SF Mono','Menlo','Courier New',monospace\" font-size=\"13\""
-FONT_SL    = "font-family=\"'Noto Sans Mono','SF Mono','Courier New',monospace\" font-size=\"13\""
+# 'ClaudebarNF' is the Nerd Font embedded directly in the SVG (see embed_nerd_font)
+# so the Powerline separators and segment icons render everywhere — including
+# GitHub, which strips external font references. Without this the statusline
+# glyphs fall back to tofu boxes in the rendered SVG.
+FONT_MONO  = "font-family=\"'ClaudebarNF','SF Mono','Menlo',monospace\" font-size=\"13\""
+FONT_SL    = "font-family=\"'ClaudebarNF','SF Mono','Courier New',monospace\" font-size=\"13\""
 FONT_TITLE = "font-family=\"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif\" font-size=\"11.5\""
+
+def embed_nerd_font(chars):
+    """Subset HackNerdFontMono to `chars` and return a base64 woff2 @font-face
+    rule. Subsetting keeps the SVG small (only the glyphs actually used)."""
+    from fontTools import subset
+    ttf_in = os.path.join(NF_FONT_DIR, "HackNerdFontMono-Regular.ttf")
+    out    = "/tmp/claudebar-nf-subset.woff2"
+    opts   = subset.Options(flavor="woff2", desubroutinize=True,
+                            layout_features=[], notdef_outline=True,
+                            recalc_bounds=True, glyph_names=False)
+    font = subset.load_font(ttf_in, opts)
+    ss   = subset.Subsetter(options=opts)
+    ss.populate(unicodes=sorted({ord(c) for c in chars}))
+    ss.subset(font)
+    subset.save_font(font, out, opts)
+    b64 = base64.b64encode(open(out, "rb").read()).decode()
+    return ("@font-face{font-family:'ClaudebarNF';font-style:normal;"
+            f"font-weight:400;src:url(data:font/woff2;base64,{b64}) format('woff2');}}")
 
 SVG_STATES = [
     ("normal",    67.0,  55000,  9200, 38.0, 12000, "Normal — all good"),
@@ -442,9 +435,16 @@ def generate_svg():
         state_data.append((label, spans, lbl_text))
         print(f"  {label}: {re.sub(chr(27)+r'[^m]*m','',raw)}")
 
+    # Every character that appears in mono text — used to subset the embedded font.
+    glyph_chars = set()
+    for parts in SVG_LINES:
+        for t, _ in parts: glyph_chars |= set(t)
+    for _, spans, _ in state_data:
+        for _, t in spans: glyph_chars |= set(t)
+
     o = []
     o.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{SVG_W}" height="{TH}" viewBox="0 0 {SVG_W} {TH}">')
-    css = []
+    css = [embed_nerd_font(glyph_chars)]
     for i,(label,_,_) in enumerate(state_data):
         css.append(f'@keyframes show-{label}{{{kf(i)}}}')
         css.append(f'.sl-{label}{{opacity:0;animation:show-{label} {CYCLE}s ease-in-out infinite}}')

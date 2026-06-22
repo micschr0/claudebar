@@ -3,4 +3,4 @@ source: tests/render_golden.rs
 expression: render_fixture(&json)
 input_file: fixtures/typical.json
 ---
-\e[38;5;33m ~/p/claude-code-statusline\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰍛\e[0m \e[38;5;221m━━━━\e[38;5;238m╌╌\e[0m \e[38;5;221m67%\e[0m \e[38;5;245m⬡\e[0m \e[38;5;117m42.3k\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰔟\e[0m \e[38;5;114m━━\e[38;5;238m╌╌╌╌\e[0m \e[38;5;114m48%\e[0m \e[38;5;245m↺\e[0m \e[38;5;73m2h46m\e[0m \e[38;5;238m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mOpus 4.8\e[0m \e[38;5;245m\e[0m \e[38;5;114mhigh\e[0m
+\e[38;5;33m ~/p/claude-code-statusline\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰍛\e[0m \e[38;5;221m━━━━\e[38;5;238m╌╌\e[0m \e[38;5;221m67%\e[0m \e[38;5;245m󰰩\e[0m \e[38;5;117m42.3k\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰔟\e[0m \e[38;5;114m━━\e[38;5;238m╌╌╌╌\e[0m \e[38;5;114m48%\e[0m \e[38;5;245m↺\e[0m \e[38;5;73m2h46m\e[0m \e[38;5;238m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mOpus 4.8\e[0m \e[38;5;245m\e[0m \e[38;5;114mhigh\e[0m

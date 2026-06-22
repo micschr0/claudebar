@@ -2,9 +2,39 @@
 
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
 
-A statusline for Claude Code — context usage, rate limits, git state, and model info on every turn.
+**A fast, themeable statusline for Claude Code — your session at a glance, on every turn.**
+
+claudebar reads Claude Code's session JSON and renders one clean ANSI line: where you are, what git's doing, how much context you've burned, and — the part you actually want — a live countdown to your next rate-limit reset. It's a single tiny binary with no runtime dependencies, 16 themes, 6 rendering styles, and a TUI to wire it up in under a minute.
 
 <img src="screenshots/animated.svg" alt="claudebar demo">
+
+## Why claudebar
+
+- **Never get surprised by a rate limit** — live countdowns to your 5-hour *and* weekly reset windows, with the weekly window appearing only once it actually matters. Know how long you've got before you hit a wall.
+- **Context usage at a glance** — a color-coded usage bar plus token count, turning yellow at your warn threshold and red when you're close to the edge.
+- **Git state, inline** — branch name, ahead/behind counts, and modified-file count, read straight from your working tree. Drops out cleanly outside a repo.
+- **Everything you need, nothing you don't** — directory, git, context, rate limits, dev context (worktree / PR / agent), and model + effort level. Toggle and reorder any of them.
+- **16 themes, 6 styles** — Tokyo Night, Catppuccin, Gruvbox, Nord, Dracula, Rose Pine and more, in Powerline, rounded, minimal, unicode, plain, or ASCII.
+- **A TUI to set it all up** — `claudebar config` lets you toggle segments, reorder them, pick a theme and style, and tune thresholds with a live preview. No hand-editing TOML required.
+- **Tiny and dependency-free** — a single statically-linked binary with an LTO-stripped release build and a render-only mode for the absolute minimum footprint. Parsing never fails: malformed or partial session JSON degrades gracefully instead of breaking your prompt.
+- **No toolchain? No problem** — a zero-dependency bash fallback (just `jq` + `git`) for environments without Rust.
+
+### What each segment shows
+
+| Segment | Shows |
+|---------|-------|
+| Directory | Fish-style abbreviated path |
+| Git | Branch, ahead/behind, modified-file count |
+| Context | Usage bar + token count, colored by threshold |
+| Rate limits | 5-hour and weekly windows with live reset countdown |
+| Dev context | Worktree name, PR number + review state, sub-agent name |
+| Model | Model name and effort level |
+
+### Configure it in seconds
+
+`claudebar config` opens an interactive TUI — toggle and reorder segments, switch themes and styles, and nudge thresholds, all with a live render preview.
+
+<img src="screenshots/config-tui.png" width="860" alt="The claudebar TUI configurator">
 
 **Requirements:**
 - [Nerd Font](https://www.nerdfonts.com/) — for the Powerline separator and status icon glyphs
@@ -130,6 +160,17 @@ Global flags `--theme`, `--style`, and `--config` override the file for a single
 | `claudebar config` | Launch the interactive TUI configurator |
 | `claudebar init [--print] [--force]` | Write a default config file |
 | `claudebar list` | Print all built-in theme and style names |
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| **Statusline is blank** | Check `~/.claude/settings.json` has `"statusLine": {"type": "command", ...}`, then restart Claude Code — it refreshes on the next turn. |
+| **Glyphs show as boxes (□)** | Install a [Nerd Font](https://www.nerdfonts.com/) and set it as your terminal font. macOS Terminal.app does not render Nerd Font PUA glyphs — use iTerm2, Kitty, WezTerm, Ghostty, or Alacritty. |
+| **Git segment missing** | The git segment only appears inside a git repository, and needs `git` on your `PATH`. |
+| **Rate-limit windows missing** | These come from Claude Code's session JSON and only appear on Pro/Max plans; the weekly window shows only once it crosses `weekly_show_at`. |
+| **`command not found: claudebar`** | The binary installs to `~/.claude/claudebar` — use the full path in `settings.json`, or move it onto your `PATH`. |
+| **Bash fallback errors** | The fallback needs both [`jq`](https://jqlang.org/) and `git` installed. |
 
 ## Build from source
 
