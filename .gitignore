@@ -67,3 +67,7 @@ coverage/
 tmp/
 .planning/
 .agents/
+
+# Local skills tooling (not part of the project)
+skills-lock.json
+.agents/skills/
