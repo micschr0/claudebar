@@ -21,10 +21,8 @@ claudebar turns Claude Code's session JSON into one clean ANSI line — **direct
 - **Never hit a wall blind** — live countdowns to your 5-hour *and* weekly resets; the weekly window appears only when it matters.
 - **Context usage, color-coded** — a usage bar and token count that shift green → yellow → red as you near the edge.
 - **Git state, inline** — branch, ahead/behind, and modified counts; disappears when you leave the repo.
-- **Six segments, your order** — toggle and reorder directory, git, context, rate-limits, dev-context, and model.
-- **16 themes, 6 styles** — Tokyo Night, Catppuccin, Gruvbox, Nord, Dracula, Rose Pine, and more — in `powerline`, `plain`, `rounded`, `minimal`, `unicode`, or `ascii`.
-- **A TUI to set it up** — `claudebar config`: toggle, reorder, theme, style, thresholds, all with a live preview.
-- **Small and resilient** — one LTO-stripped binary; malformed JSON degrades to a clean line and keeps your prompt intact.
+- **16 themes, 6 styles, your order** — pick a theme and style and reorder segments in the `claudebar config` TUI.
+- **Small and resilient** — one dependency-free, LTO-stripped binary; malformed JSON degrades to a clean line and keeps your prompt intact.
 
 ## Install
 
@@ -151,13 +149,16 @@ weekly_show_at = 50   # weekly window shows at this % and above
 bar_width      = 6    # bar width in terminal cells
 ```
 
-- **Themes (16):** `tokyo-night` (default) · `ayu-mirage` · `catppuccin` · `cobalt2` · `everforest-dark` · `github-dark` · `gruvbox` · `kanagawa-wave` · `moonfly` · `night-owl` · `nord` · `one-dark` · `dracula` · `rose-pine` · `sonokai` · `solarized-dark`
-- **Styles (6):** `powerline` (default) · `plain` · `rounded` · `minimal` · `unicode` · `ascii`
+**Styles (6):** `powerline` (default) · `plain` · `rounded` · `minimal` · `unicode` · `ascii`
+
+<details>
+<summary><b>Themes (16)</b></summary>
+
+`tokyo-night` (default) · `ayu-mirage` · `catppuccin` · `cobalt2` · `everforest-dark` · `github-dark` · `gruvbox` · `kanagawa-wave` · `moonfly` · `night-owl` · `nord` · `one-dark` · `dracula` · `rose-pine` · `sonokai` · `solarized-dark`
+
+</details>
 
 The `--theme`, `--style`, and `--config` flags override the file for a single invocation.
-
-> [!TIP]
-> Upgraded from an older version? Run `claudebar migrate` to append newly added segments to your existing `config.toml`.
 
 ## CLI
 
