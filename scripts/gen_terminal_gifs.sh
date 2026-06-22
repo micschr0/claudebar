@@ -47,6 +47,7 @@ tmux set -t cbgif -g remain-on-exit off
   tmux send-keys -t cbgif q ) &
 asciinema rec --cols 100 --rows 30 --overwrite \
   -c "tmux attach -t cbgif" /tmp/cb_tui.cast
-"${AGG[@]}" /tmp/cb_tui.cast "$SHOTS/tui.gif"
+"${AGG[@]}" --font-size 20 /tmp/cb_tui.cast /tmp/cb_tui_raw.gif
+python3 "$REPO/scripts/window_frame.py" /tmp/cb_tui_raw.gif "$SHOTS/tui.gif" "claudebar config"
 
 echo "Done: $SHOTS/intro.gif, $SHOTS/tui.gif"

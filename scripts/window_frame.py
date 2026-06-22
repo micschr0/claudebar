@@ -61,12 +61,39 @@ def frame_window(term_rgb):
     canvas.paste(win, (PAD, PAD), win)
     return canvas
 
-src = Image.open(IN)
-frames, durations = [], []
-for fr in ImageSequence.Iterator(src):
-    frames.append(frame_window(fr.convert("RGB")))
-    durations.append(fr.info.get("duration", 100))
+def empty_body(term):
+    """True if the terminal frame is essentially blank (just background) — used
+    to drop asciinema's initial empty frame so the loop doesn't flash."""
+    small = term.resize((120, 70)); px = small.load(); c = 0
+    for y in range(70):
+        for x in range(120):
+            r, g, b = px[x, y]
+            if abs(r - BODY_BG[0]) > 28 or abs(g - BODY_BG[1]) > 28 or abs(b - BODY_BG[2]) > 28:
+                c += 1
+    return c < 30
 
-frames[0].save(OUT, save_all=True, append_images=frames[1:],
-               duration=durations, loop=0, disposal=2, optimize=True)
+src = Image.open(IN)
+raw = [(fr.convert("RGB"), fr.info.get("duration", 100))
+       for fr in ImageSequence.Iterator(src)]
+# Drop the empty frames asciinema records at session start and after exit, so the
+# loop neither flashes blank nor holds a blank screen at the end.
+while len(raw) > 1 and empty_body(raw[0][0]):
+    raw.pop(0)
+while len(raw) > 1 and empty_body(raw[-1][0]):
+    raw.pop()
+# Hold the final (content) frame a beat so the loop reads cleanly.
+raw[-1] = (raw[-1][0], max(raw[-1][1], 2500))
+
+frames = [frame_window(term) for term, _ in raw]
+durations = [dur for _, dur in raw]
+
+# Quantise every frame to ONE shared palette and write FULL (un-optimised)
+# frames. Optimised diff-frames + disposal break in strict GIF viewers
+# (GitHub/browsers clear to background and show only the diff → flicker); full
+# self-contained frames render identically everywhere. The richest frame (last)
+# sources the palette so every colour is covered.
+master = frames[-1].convert("P", palette=Image.ADAPTIVE, colors=255)
+pal = [f.quantize(palette=master, dither=Image.NONE) for f in frames]
+pal[0].save(OUT, save_all=True, append_images=pal[1:], duration=durations,
+            loop=0, disposal=1, optimize=False)
 print(f"Wrote {OUT}: {len(frames)} frames, {frames[0].size[0]}x{frames[0].size[1]}")

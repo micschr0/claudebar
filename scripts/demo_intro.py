@@ -64,7 +64,8 @@ BEATS = [(1, 0.7), (4, 0.7), (6, 0.9), (8, 0.7), (12, 1.4),
          (14, 1.0), (15, 0.5), (16, 0.6), (17, 0.6), (18, 2.6)]
 sys.stdout.write("\x1b[?25l")  # hide cursor for a clean recording (left hidden)
 sys.stdout.flush()
-time.sleep(0.5)
-for n, hold in BEATS:
+draw(BEATS[0][0])  # paint the first beat immediately — no empty leading frame
+time.sleep(BEATS[0][1])
+for n, hold in BEATS[1:]:
     draw(n)
     time.sleep(hold)
