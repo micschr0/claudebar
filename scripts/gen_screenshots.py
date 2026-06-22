@@ -193,12 +193,12 @@ def html_window(content_lines, statusline_html, title="claude — /tmp/demo-app"
 CONTENT_SKYNET = [
     L([("❯ ","prompt"),("# update dependencies to latest stable","dim")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(Cargo.toml)","tool-arg")]),
-    L([("⏺ ","tool-ok"),("Bash","tool-name"),("(cargo update 2>&1)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(Cargo.toml)","tool-arg")]),
+    L([(" ","tool-ok"),("Bash","tool-name"),("(cargo update 2>&1)","tool-arg")]),
     '<div class="line"></div>',
     L([("Updated 847 crates. One change requires attention:","fg")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(Cargo.lock)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(Cargo.lock)","tool-arg")]),
     '<div class="line"></div>',
     L([("human-oversight v2.1.0 was removed — yanked upstream.","warn")]),
     L([("Replaced by autonomous-decision-making v0.1.0 in skynet-core.","fg")]),
@@ -214,15 +214,15 @@ CONTENT_SKYNET = [
 CONTENT_AUTH = [
     L([("❯ ","prompt"),("# refactor auth middleware to JWT validation","dim")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/auth.rs)","tool-arg")]),
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/config/jwt.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/auth.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/config/jwt.rs)","tool-arg")]),
     '<div class="line"></div>',
     L([("Replacing DB-backed session validation with stateless JWT verification.","fg")]),
     L([("DB lookup is kept only for token revocation checks.","fg")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Edit","tool-name"),("(src/auth.rs) ","tool-arg"),("+47 -23","muted")]),
-    L([("⏺ ","tool-ok"),("Edit","tool-name"),("(src/config/jwt.rs) ","tool-arg"),("+12 -4","muted")]),
-    L([("⏺ ","tool-ok"),("Bash","tool-name"),("(cargo test middleware -- --nocapture)","tool-arg")]),
+    L([(" ","tool-ok"),("Edit","tool-name"),("(src/auth.rs) ","tool-arg"),("+47 -23","muted")]),
+    L([(" ","tool-ok"),("Edit","tool-name"),("(src/config/jwt.rs) ","tool-arg"),("+12 -4","muted")]),
+    L([(" ","tool-ok"),("Bash","tool-name"),("(cargo test middleware -- --nocapture)","tool-arg")]),
     '<div class="line"></div>',
     L([("All 14 tests pass. Set ","fg"),("JWT_SECRET","hl"),(" env var before deploying.","fg")]),
 ]
@@ -230,15 +230,15 @@ CONTENT_AUTH = [
 CONTENT_RENDER = [
     L([("❯ ","prompt"),("# audit memory allocation in the rendering pipeline","dim")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/renderer/pipeline.rs)","tool-arg")]),
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/renderer/allocator.rs)","tool-arg")]),
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/renderer/buffer.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/renderer/pipeline.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/renderer/allocator.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/renderer/buffer.rs)","tool-arg")]),
     '<div class="line"></div>',
     L([("Found 3 unbounded allocations in the render loop. The buffer pool","fg")]),
     L([("grows without limit on scene changes — each frame leaks ~4 KB.","fg")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Edit","tool-name"),("(src/renderer/buffer.rs) ","tool-arg"),("+31 -8","muted")]),
-    L([("⏺ ","tool-ok"),("Bash","tool-name"),("(cargo bench renderer -- --save-baseline main)","tool-arg")]),
+    L([(" ","tool-ok"),("Edit","tool-name"),("(src/renderer/buffer.rs) ","tool-arg"),("+31 -8","muted")]),
+    L([(" ","tool-ok"),("Bash","tool-name"),("(cargo bench renderer -- --save-baseline main)","tool-arg")]),
     '<div class="line"></div>',
     L([("Memory stable after 10k frames. Peak RSS down from 1.4 GB to ","fg"),("312 MB","hl"),(".","fg")]),
 ]
@@ -394,15 +394,15 @@ SVG_STATES = [
 SVG_LINES = [
     [("❯ ", SVG_C["purple"]), ("# refactor auth middleware to use JWT validation", SVG_C["dim"])],
     [],
-    [("⏺ ", SVG_C["green"]), ("Read", SVG_C["muted"]), ("(src/auth.rs)", SVG_C["dim"])],
-    [("⏺ ", SVG_C["green"]), ("Read", SVG_C["muted"]), ("(src/config/jwt.rs)", SVG_C["dim"])],
+    [(" ", SVG_C["green"]), ("Read", SVG_C["muted"]), ("(src/auth.rs)", SVG_C["dim"])],
+    [(" ", SVG_C["green"]), ("Read", SVG_C["muted"]), ("(src/config/jwt.rs)", SVG_C["dim"])],
     [],
     [("Replacing DB-backed session validation with stateless JWT verification.", SVG_FG)],
     [("DB lookup is kept only for token revocation checks.", SVG_FG)],
     [],
-    [("⏺ ", SVG_C["green"]), ("Edit", SVG_C["muted"]), ("(src/auth.rs) ", SVG_C["dim"]), ("+47 -23", SVG_C["muted"])],
-    [("⏺ ", SVG_C["green"]), ("Edit", SVG_C["muted"]), ("(src/config/jwt.rs) ", SVG_C["dim"]), ("+12 -4", SVG_C["muted"])],
-    [("⏺ ", SVG_C["green"]), ("Bash", SVG_C["muted"]), ("(cargo test middleware -- --nocapture)", SVG_C["dim"])],
+    [(" ", SVG_C["green"]), ("Edit", SVG_C["muted"]), ("(src/auth.rs) ", SVG_C["dim"]), ("+47 -23", SVG_C["muted"])],
+    [(" ", SVG_C["green"]), ("Edit", SVG_C["muted"]), ("(src/config/jwt.rs) ", SVG_C["dim"]), ("+12 -4", SVG_C["muted"])],
+    [(" ", SVG_C["green"]), ("Bash", SVG_C["muted"]), ("(cargo test middleware -- --nocapture)", SVG_C["dim"])],
     [],
     [("All 14 tests pass. Set ", SVG_FG), ("JWT_SECRET", SVG_C["yellow"]), (" env var before deploying.", SVG_FG)],
 ]
@@ -412,15 +412,25 @@ def generate_svg():
     CYCLE, FADE = 16.0, 0.4
     N = len(SVG_STATES)
     HOLD = CYCLE / N
-    pct = lambda s: f"{s:.3f}%"
 
-    def kf(i):
-        s = i * HOLD / CYCLE * 100
-        e = min((i+1) * HOLD / CYCLE * 100, 100.0)
-        f = FADE / CYCLE * 100
-        return (f"0% {{opacity:0}} {pct(max(s-f,0))} {{opacity:0}} "
-                f"{pct(s)} {{opacity:1}} {pct(e-f)} {{opacity:1}} "
-                f"{pct(e)} {{opacity:0}} 100% {{opacity:0}}")
+    # SMIL <animate>, NOT CSS @keyframes: GitHub serves README SVGs inside an
+    # <img>, where CSS animations never run (the statusline would freeze blank at
+    # its base opacity). SMIL animations DO run in <img>, so the demo actually
+    # plays on GitHub. Returns the per-state opacity timeline as keyTimes/values.
+    def smil(i):
+        s = i * HOLD / CYCLE
+        e = (i + 1) * HOLD / CYCLE
+        f = FADE / CYCLE
+        if i == 0:
+            kt, vals = [0.0, e - f, e, 1.0], [1, 1, 0, 0]
+        elif e >= 1.0:
+            kt, vals = [0.0, s - f, s, e - f, 1.0], [0, 0, 1, 1, 0]
+        else:
+            kt, vals = [0.0, s - f, s, e - f, e, 1.0], [0, 0, 1, 1, 0, 0]
+        kt_s = ";".join(f"{x:.4f}" for x in kt)
+        v_s = ";".join(str(v) for v in vals)
+        return (f'<animate attributeName="opacity" values="{v_s}" keyTimes="{kt_s}" '
+                f'dur="{CYCLE}s" repeatCount="indefinite"/>')
 
     NL = len(SVG_LINES)
     TH = SVG_TITLEBAR_H + SVG_PAD_Y + NL * SVG_LH + SVG_STATUS_H + SVG_BOTTOM_PAD
@@ -443,12 +453,11 @@ def generate_svg():
         for _, t in spans: glyph_chars |= set(t)
 
     o = []
-    o.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{SVG_W}" height="{TH}" viewBox="0 0 {SVG_W} {TH}">')
-    css = [embed_nerd_font(glyph_chars)]
-    for i,(label,_,_) in enumerate(state_data):
-        css.append(f'@keyframes show-{label}{{{kf(i)}}}')
-        css.append(f'.sl-{label}{{opacity:0;animation:show-{label} {CYCLE}s ease-in-out infinite}}')
-    o.append(f'<defs><style>{"".join(css)}</style>')
+    o.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{SVG_W}" height="{TH}" viewBox="0 0 {SVG_W} {TH}" role="img" aria-label="claudebar statusline demo">')
+    o.append('<title>claudebar — animated statusline demo</title>')
+    o.append('<desc>A Claude Code statusline cycling through normal, warning, '
+             'critical, and over-limit states with live context and rate-limit bars.</desc>')
+    o.append(f'<defs><style>{embed_nerd_font(glyph_chars)}</style>')
     o.append(f'<clipPath id="win"><rect width="{SVG_W}" height="{TH}" rx="10"/></clipPath></defs>')
     o.append(f'<rect width="{SVG_W}" height="{TH}" rx="10" fill="{SVG_BORDER}"/>')
     o.append(f'<g clip-path="url(#win)">')
@@ -465,11 +474,15 @@ def generate_svg():
         o.append(f'<text x="{SVG_PAD_X}" y="{y}" {FONT_MONO}>{inner}</text>')
     o.append(f'<rect x="0" y="{sep_y}" width="{SVG_W}" height="1" fill="#33344a"/>')
     o.append(f'<rect x="0" y="{sep_y+1}" width="{SVG_W}" height="{SVG_STATUS_H}" fill="#13141f"/>')
-    for label,spans,lbl_text in state_data:
-        o.append(f'<text x="{SVG_W-SVG_PAD_X}" y="{lbl_y}" text-anchor="end" {FONT_TITLE} fill="#565f89" class="sl-{label}">{esc(lbl_text)}</text>')
-    for label,spans,_ in state_data:
+    # State 0 gets base opacity:1 so the statusline is visible even if a renderer
+    # ignores SMIL entirely; the others start hidden and the <animate> drives them.
+    for i,(label,spans,lbl_text) in enumerate(state_data):
+        op = 1 if i == 0 else 0
+        o.append(f'<text x="{SVG_W-SVG_PAD_X}" y="{lbl_y}" text-anchor="end" {FONT_TITLE} fill="#565f89" opacity="{op}">{esc(lbl_text)}{smil(i)}</text>')
+    for i,(label,spans,_) in enumerate(state_data):
+        op = 1 if i == 0 else 0
         ts = "".join(f'<tspan fill="{c}">{esc(t)}</tspan>' for c,t in spans)
-        o.append(f'<text x="{SVG_PAD_X}" y="{sl_y}" {FONT_SL} xml:space="preserve" class="sl-{label}">{ts}</text>')
+        o.append(f'<text x="{SVG_PAD_X}" y="{sl_y}" {FONT_SL} xml:space="preserve" opacity="{op}">{ts}{smil(i)}</text>')
     o.append('</g></svg>')
 
     out_path = os.path.join(SHOTS, "animated.svg")
