@@ -12,14 +12,14 @@
 
 </div>
 
-claudebar reads Claude Code's session JSON and renders one clean, **read-only** ANSI line — it never touches your session or Claude's behavior.
-
 ## Features
 
 - Live rate-limit countdowns
 - Color-coded context usage
 - Inline git state
 - 16 themes · 6 styles
+- ~5× faster: ~30ms vs ~200ms
+- Read-only — never touches your session
 - Tiny, dependency-free binary
 
 ## Install
