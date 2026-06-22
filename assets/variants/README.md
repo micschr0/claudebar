@@ -15,3 +15,18 @@ with matching PNG rasters. Regenerate the SVGs with `scripts/gen_logos.py`.
 
 The marks are self-contained (dark tile) and the lockups sit on a dark panel, so
 all variants stay legible on both light and dark README themes.
+
+## Alternative directions (different palettes + styles)
+
+Three concepts that drop the tokyo-night blue/purple for entirely different
+colour worlds and visual styles, drawn from other themes seen in the
+screenshots. Regenerate with `scripts/gen_logos_alt.py`.
+
+| Name | Palette / style | Mark | Lockup |
+|------|-----------------|------|--------|
+| `warm` | Gruvbox — warm retro, boxy level-meter | <img src="warm-mark.svg" width="72"> | <img src="warm.svg" width="260"> |
+| `soft` | Catppuccin — soft pastel, rounded pill + knob | <img src="soft-mark.svg" width="72"> | <img src="soft.svg" width="260"> |
+| `light` | Status semaphore — flat, light, green→amber→red | <img src="light-mark.svg" width="72"> | <img src="light.svg" width="260"> |
+
+`warm` and `soft` are self-contained dark tiles/panels; `light` is a deliberately
+light design (white tile, light panel) for a completely different mood.
