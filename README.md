@@ -47,9 +47,6 @@ Then **restart Claude Code** — the statusline appears on your next turn.
 > [!TIP]
 > Glyphs showing as boxes (□)? Install a [Nerd Font](https://www.nerdfonts.com/) and set it as your terminal font. See [Troubleshooting](#troubleshooting).
 
-> [!NOTE]
-> Prefer to read the script first? Download it with `curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh -o install.sh`, inspect it, then run `bash install.sh`.
-
 <details>
 <summary>Manual install</summary>
 
@@ -93,21 +90,18 @@ claudebar renders these segments left to right (enable and reorder any of them):
 
 ## Screenshots
 
+The demo above cycles through the normal → warning → critical → over-limit states.
+
+<details>
+<summary>More states — calm · outside a repo · no effort param · easter egg</summary>
+
 **Calm** — low usage, everything green:
 
 <img src="screenshots/strip-green.png" width="860" alt="Calm state, all green">
 
-**Normal** — typical mid-session usage:
-
-<img src="screenshots/strip-normal.png" width="860" alt="Normal mid-session state">
-
 **Critical** — context filling up, 5-hour limit tight, weekly window now shown:
 
 <img src="screenshots/strip-critical.png" width="860" alt="Critical state with weekly rate limit">
-
-**Over limit** — past 100% context, both bars red:
-
-<img src="screenshots/strip-overlimit.png" width="860" alt="Over context limit">
 
 **Outside a git repo** — the git segment drops out:
 
@@ -117,8 +111,7 @@ claudebar renders these segments left to right (enable and reorder any of them):
 
 <img src="screenshots/strip-noeffort.png" width="860" alt="Model without effort indicator">
 
-<details>
-<summary>Easter egg</summary>
+**Easter egg:**
 
 <img src="screenshots/skynet.png" width="860" alt="Easter egg">
 
