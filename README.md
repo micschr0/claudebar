@@ -11,7 +11,10 @@
 
 </div>
 
-claudebar turns Claude Code's session JSON into one clean ANSI line: directory, git, context usage, rate-limit countdown, dev context, and model. One dependency-free binary with 16 themes, 6 styles, and a TUI configurator. It is read-only — it never touches your session or Claude's behavior.
+claudebar turns Claude Code's session JSON into one clean ANSI line — **directory · git · context · rate limits · dev context · model**. One dependency-free binary, **16 themes**, **6 styles**, and a TUI to set it up.
+
+> [!NOTE]
+> Read-only by design — claudebar never touches your session or Claude's behavior.
 
 ## Features
 
@@ -25,15 +28,21 @@ claudebar turns Claude Code's session JSON into one clean ANSI line: directory, 
 
 ## Install
 
-**Prerequisites:** a terminal with a [Nerd Font](https://www.nerdfonts.com/) for glyphs. If you already have a `~/.claude/settings.json`, you also need `jq` so the installer can merge into it. `git` is needed at runtime for the git segment.
+**Prerequisites**
+
+- A [Nerd Font](https://www.nerdfonts.com/) set as your terminal font — for the glyphs
+- `git` — for the git segment (optional; the segment just hides without it)
+- `jq` — only if you already have a `~/.claude/settings.json` to merge into
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
-The installer downloads the binary and wires it into `~/.claude/settings.json` for you (your existing file is backed up first). Restart Claude Code; the statusline appears on your next turn.
+It installs the binary, wires up `~/.claude/settings.json` (backing up any existing file), and picks the best method automatically:
 
-The installer falls back in order: a prebuilt binary from GitHub Releases (SHA256-verified), a `cargo` build from a local checkout, then a bash fallback (needs `jq` and `git`).
+**prebuilt binary** (SHA256-verified) → **`cargo` build** (from a checkout) → **bash fallback**
+
+Then **restart Claude Code** — the statusline appears on your next turn.
 
 > [!TIP]
 > Glyphs showing as boxes (□)? Install a [Nerd Font](https://www.nerdfonts.com/) and set it as your terminal font. See [Troubleshooting](#troubleshooting).
