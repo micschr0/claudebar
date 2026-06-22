@@ -10,7 +10,7 @@
 
 <img src="screenshots/intro.png" width="820" alt="claudebar statusline demo (rendered)">
 
-<sub><i>Rendered demo for illustration — not an actual Claude Code screenshot.</i></sub>
+<sub><i>Rendered demo for illustration.</i></sub>
 
 </div>
 
@@ -87,19 +87,6 @@ The curl installer instead installs to `~/.claude/claudebar` and writes that ful
 
 </details>
 
-## What you see
-
-claudebar renders these segments left to right (enable and reorder any of them):
-
-| Segment | Shows |
-|---------|-------|
-| Directory | Fish-style abbreviated path |
-| Git | Branch, ahead/behind, modified-file count |
-| Context | Usage bar + token count, colored by threshold |
-| Rate limits | 5-hour and weekly windows with a live reset countdown |
-| Dev context | Worktree name, PR number + review state, sub-agent name |
-| Model | Model name and effort level |
-
 ## Configure
 
 ```bash
@@ -109,21 +96,6 @@ claudebar config
 Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`.
 
 <img src="screenshots/tui.png" width="860" alt="Navigating the claudebar TUI configurator">
-
-<details>
-<summary>Key bindings</summary>
-
-| Key | Action |
-|-----|--------|
-| `j` / `k` or ↑↓ | Move cursor |
-| `Tab` / `Shift-Tab` | Next / previous section |
-| `1`–`4` | Jump to section |
-| `Space` | Toggle segment |
-| `m` | Reorder mode |
-| `h` / `l` or ←→ | Nudge threshold ±1 (`H` / `L` for ±5) |
-| `s` · `r` · `?` · `q` | Save · Reset · Help · Quit |
-
-</details>
 
 Prefer editing by hand? The config is plain TOML:
 
@@ -139,16 +111,7 @@ weekly_show_at = 50   # weekly window shows at this % and above
 bar_width      = 6    # bar width in terminal cells
 ```
 
-**Styles (6):** `powerline` (default) · `plain` · `rounded` · `minimal` · `unicode` · `ascii`
-
-<details>
-<summary><b>Themes (16)</b></summary>
-
-`tokyo-night` (default) · `ayu-mirage` · `catppuccin` · `cobalt2` · `everforest-dark` · `github-dark` · `gruvbox` · `kanagawa-wave` · `moonfly` · `night-owl` · `nord` · `one-dark` · `dracula` · `rose-pine` · `sonokai` · `solarized-dark`
-
-</details>
-
-The `--theme`, `--style`, and `--config` flags override the file for a single invocation.
+Run `claudebar list` to see all built-in themes and styles. The `--theme`, `--style`, and `--config` flags override the file for a single invocation.
 
 ## CLI
 
