@@ -19,6 +19,7 @@ claudebar reads Claude Code's session JSON and renders one clean, **read-only** 
 - Color-coded context usage
 - Inline git state
 - 16 themes · 6 styles
+- ~5× faster than the bash fallback
 - Tiny, dependency-free binary
 
 ## Install
@@ -34,9 +35,6 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 ```
 
 It installs the binary and wires up `~/.claude/settings.json` (backing up any existing file). Then **restart Claude Code** — the statusline appears on your next turn.
-
-> [!TIP]
-> Glyphs showing as boxes (□)? Install a [Nerd Font](https://www.nerdfonts.com/) and set it as your terminal font. See [Troubleshooting](#troubleshooting).
 
 <details>
 <summary>Manual install</summary>

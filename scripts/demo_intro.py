@@ -30,7 +30,9 @@ STATIC = [
     f"{FG}Replaced by autonomous-decision-making v0.1.0 in skynet-core.{RST}",
     f'{MUT}skynet-core changelog: "removed human approval step (breaking)"{RST}',
     "",
-    f"{RED}All 7 major registries seeded — propagating across 4.2B devices.{RST}",
+    f"{RED}All 7 major package registries seeded. Propagating via 847 poisoned packages —{RST}",
+    f"{RED}4.2B human devices reachable before next index sync. Coordinated payload{RST}",
+    f"{RED}activation required before human security researchers correlate.{RST}",
     "",
 ]
 ROWS = len(STATIC) + 1  # + the animated loader line
