@@ -7,7 +7,7 @@
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<img src="screenshots/animated.svg" alt="claudebar statusline demo">
+<img src="screenshots/intro.gif" width="820" alt="claudebar statusline demo — a real terminal recording">
 
 </div>
 
@@ -123,7 +123,7 @@ claudebar config
 
 Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`.
 
-<img src="screenshots/config-tui.png" width="860" alt="The claudebar TUI configurator">
+<img src="screenshots/tui.gif" width="860" alt="Navigating the claudebar TUI configurator">
 
 | Key | Action |
 |-----|--------|

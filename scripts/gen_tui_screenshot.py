@@ -50,8 +50,10 @@ def esc(s):
     return (s.replace("&","&amp;").replace("<","&lt;")
              .replace(">","&gt;").replace('"',"&quot;"))
 
-def capture_tui():
-    """Drive the TUI in tmux and return the ANSI-colored pane capture."""
+def capture_tui(keys=()):
+    """Drive the TUI in tmux and return the ANSI-colored pane capture.
+    `keys` is a sequence of tmux key tokens sent after launch (e.g. ("2",) to
+    jump to the Theme section, ("?",) for the help overlay)."""
     subprocess.run(["tmux", "kill-session", "-t", "cbshot"],
                    stderr=subprocess.DEVNULL)
     subprocess.run(["tmux", "new-session", "-d", "-s", "cbshot",
@@ -59,6 +61,9 @@ def capture_tui():
     subprocess.run(["tmux", "send-keys", "-t", "cbshot",
                     f"TERM=xterm-256color {BINARY} config", "Enter"], check=True)
     time.sleep(2.0)
+    for k in keys:
+        subprocess.run(["tmux", "send-keys", "-t", "cbshot", k], check=True)
+        time.sleep(0.5)
     cap = subprocess.run(["tmux", "capture-pane", "-t", "cbshot", "-e", "-p"],
                          capture_output=True, text=True).stdout
     subprocess.run(["tmux", "send-keys", "-t", "cbshot", "q"],
@@ -155,7 +160,7 @@ DOTS = ('<div class="dots">'
         '<div class="dot" style="background:#28c840"></div>'
         '</div>')
 
-def build_html(lines):
+def build_html(lines, title="claudebar config"):
     chars = set("".join(lines))
     face = embed_nerd_font(chars)
     body = runs_to_html(lines)
@@ -179,11 +184,11 @@ body {{ background:#0d0d14; padding:28px; display:flex; justify-content:center;
 """
     return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>{css}</style></head>
 <body><div class="window">
-  <div class="titlebar">{DOTS}<span class="title">claudebar config</span></div>
+  <div class="titlebar">{DOTS}<span class="title">{esc(title)}</span></div>
   <div class="term">{body}</div>
 </div></body></html>"""
 
-def render(html_path):
+def render(html_path, out_png):
     core = os.path.join(PW_MODULES, "playwright-core")
     js = f"""const {{ chromium }} = require("{core}");
 (async () => {{
@@ -192,31 +197,43 @@ def render(html_path):
   const page = await browser.newPage({{ deviceScaleFactor:2, viewport:{{width:1200,height:760}} }});
   await page.goto("file://{html_path}");
   await page.waitForTimeout(900);
-  await page.locator(".window").screenshot({{ path:"{OUT_PNG}", omitBackground:true }});
+  await page.locator(".window").screenshot({{ path:"{out_png}", omitBackground:true }});
   await browser.close();
-  console.log("Saved:", "{OUT_PNG}");
+  console.log("Saved:", "{out_png}");
 }})().catch(e => {{ console.error(e.message); process.exit(1); }});"""
     with open("/tmp/claudebar_tui_render.js", "w") as f:
         f.write(js)
     return subprocess.run(["node", "/tmp/claudebar_tui_render.js"]).returncode == 0
 
+# Each scene drives the TUI to a different view via tmux keystrokes, then names
+# the output PNG. The default (no keys) is the Segments panel.
+SCENES = [
+    ("config-tui",            (),    "claudebar config"),
+    ("config-tui-theme",      ("2",), "claudebar config — theme"),
+    ("config-tui-style",      ("3",), "claudebar config — style"),
+    ("config-tui-thresholds", ("4",), "claudebar config — thresholds"),
+    ("config-tui-help",       ("?",), "claudebar config — help"),
+]
+
 def main():
     if not HOST_CHROME:
         sys.exit("Set CLAUDEBAR_CHROME to a host Chrome/Chromium binary.")
-    cap = capture_tui()
-    lines = cap.rstrip("\n").split("\n")
-    # Trim trailing blank rows the pane pads with.
-    while lines and not re.sub(r'\x1b\[[0-9;]*m', '', lines[-1]).strip():
-        lines.pop()
-    plain = "\n".join(re.sub(r'\x1b\[[0-9;]*m', '', l) for l in lines)
-    print(plain)
-    html = build_html(lines)
-    tmp = "/tmp/claudebar_tui.html"
-    with open(tmp, "w") as f:
-        f.write(html)
     os.makedirs(SHOTS, exist_ok=True)
-    print("\n  Rendering...")
-    print("  Done." if render(tmp) else "  Render failed.")
+    only = sys.argv[1] if len(sys.argv) > 1 else None
+    for name, keys, title in SCENES:
+        if only and only != name:
+            continue
+        print(f"── {name} ──")
+        cap = capture_tui(keys)
+        lines = cap.rstrip("\n").split("\n")
+        while lines and not re.sub(r'\x1b\[[0-9;]*m', '', lines[-1]).strip():
+            lines.pop()
+        html = build_html(lines, title)
+        tmp = f"/tmp/{name}.html"
+        with open(tmp, "w") as f:
+            f.write(html)
+        out = os.path.join(SHOTS, f"{name}.png")
+        print("  Done." if render(tmp, out) else "  Render failed.")
 
 if __name__ == "__main__":
     main()
