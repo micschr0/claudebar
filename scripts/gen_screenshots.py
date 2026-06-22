@@ -17,20 +17,70 @@ Prerequisites for PNG:
     /tmp/demo-{clean,app,busy,release,behind} in distinct git states so the
     screenshots show varied git segments instead of an identical one.
 """
-import subprocess, re, time, os, sys
+import subprocess, re, time, os, sys, base64
 
 REPO     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRIPT   = os.path.join(REPO, "statusline-command.sh")
+# Screenshots render the real Rust binary's output (what users actually install),
+# not the bash fallback — build it first with `cargo build --release`.
+BINARY   = os.path.join(REPO, "target/release/claudebar")
 SHOTS    = os.path.join(REPO, "screenshots")
 DEMO_CWD = "/tmp/demo-app"
+# Fixed HOME so the fish-style path abbreviation in screenshots is reproducible
+# across machines (the binary reads $HOME to render the `~` prefix). Only affects
+# cwds under this path; the absolute /tmp and /var demo paths are unchanged.
+DEMO_HOME = "/home/dev"
 
-DOCKER_SOCK  = "unix:///run/user/1002/docker.sock"
+DOCKER_SOCK  = os.environ.get("DOCKER_HOST", "unix:///var/run/docker.sock")
 PLAYWRIGHT   = "mcr.microsoft.com/playwright:v1.49.0-noble"
 CHROMIUM     = "/ms-playwright/chromium-1148/chrome-linux/chrome"
-NF_FONT_DIR  = "/tmp/fonts"
-PW_MODULES   = "/tmp/pw/node_modules"
+NF_FONT_DIR  = os.environ.get("NF_FONT_DIR", "/tmp/fonts")
+PW_MODULES   = os.environ.get("PW_MODULES", "/tmp/pw/node_modules")
+
+# Set CLAUDEBAR_CHROME to a host Chrome/Chromium binary to render directly on the
+# host (no Docker) — required where Docker can't run containers (e.g. gVisor).
+# When unset, rendering goes through the Playwright Docker image as before.
+HOST_CHROME  = os.environ.get("CLAUDEBAR_CHROME")
+# Absolute file:// URL works under both: Docker mounts /tmp, host reads it directly.
+FONT_URL     = f"file://{NF_FONT_DIR}/HackNerdFontMono-Regular.ttf"
 
 MODE = sys.argv[1] if len(sys.argv) > 1 else "all"
+
+def render_shots(shots, selector, scale=2, wait=900, viewport=None):
+    """Render the `selector` element of each HTML file to a transparent PNG.
+    `shots` is a list of (src_html_path, out_png_path). Uses host Chrome when
+    CLAUDEBAR_CHROME is set, otherwise the Playwright Docker image."""
+    vp = (f"deviceScaleFactor:{scale}, viewport:{{width:{viewport[0]},height:{viewport[1]}}}"
+          if viewport else f"deviceScaleFactor:{scale}")
+    shots_js = ",\n    ".join(f'{{ src:"file://{s}", out:"{o}" }}' for s, o in shots)
+    loop = f"""
+  for (const {{ src, out }} of [{shots_js}]) {{
+    const page = await browser.newPage({{ {vp} }});
+    await page.goto(src);
+    await page.waitForTimeout({wait});
+    await page.locator("{selector}").screenshot({{ path: out, omitBackground: true }});
+    await page.close();
+    console.log("Saved:", out);
+  }}"""
+    if HOST_CHROME:
+        core = os.path.join(PW_MODULES, "playwright-core")
+        js = (f'const {{ chromium }} = require("{core}");\n(async () => {{\n'
+              f'  const browser = await chromium.launch({{ executablePath:"{HOST_CHROME}",'
+              f' args:["--no-sandbox","--disable-setuid-sandbox","--disable-gpu"] }});{loop}\n'
+              f'  await browser.close();\n}})().catch(e => {{ console.error(e.message); process.exit(1); }});')
+        with open("/tmp/claudebar_render.js", "w") as f: f.write(js)
+        ok = subprocess.run(["node", "/tmp/claudebar_render.js"]).returncode == 0
+    else:
+        js = (f'const {{ chromium }} = require("/node_modules/playwright-core");\n(async () => {{\n'
+              f'  const browser = await chromium.launch({{ executablePath:"{CHROMIUM}",'
+              f' args:["--no-sandbox","--disable-setuid-sandbox"] }});{loop}\n'
+              f'  await browser.close();\n}})().catch(e => {{ console.error(e.message); process.exit(1); }});')
+        with open("/tmp/claudebar_render.js", "w") as f: f.write(js)
+        ok = subprocess.run([
+            "docker", "run", "--rm", "-v", f"{REPO}:{REPO}", "-v", "/tmp:/tmp",
+            "-v", f"{PW_MODULES}:/node_modules", "-v", f"{NF_FONT_DIR}:/fonts",
+            "--ipc=host", PLAYWRIGHT, "node", "/tmp/claudebar_render.js",
+        ], env={**os.environ, "DOCKER_HOST": DOCKER_SOCK}).returncode == 0
+    print("  Done." if ok else "  Render failed.")
 
 # ── ANSI parser ────────────────────────────────────────────────────────────────
 
@@ -71,14 +121,16 @@ def run_sl(ctx_pct, tok_in, tok_out, rl_5h_pct, rl_5h_reset,
          f'"context_window":{{"total_input_tokens":{tok_in},'
          f'"total_output_tokens":{tok_out},"used_percentage":{ctx_pct}}},'
          f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}{effort_field}}}')
-    return subprocess.run(["bash", SCRIPT], input=j, capture_output=True, text=True).stdout.rstrip()
+    env = {**os.environ, "HOME": DEMO_HOME}
+    return subprocess.run([BINARY, "render"], input=j, capture_output=True,
+                          text=True, env=env).stdout.rstrip()
 
 # ── HTML helpers ───────────────────────────────────────────────────────────────
 
 CSS = """
 @font-face {
   font-family: 'HackNF';
-  src: url('/fonts/HackNerdFontMono-Regular.ttf') format('truetype');
+  src: url('__FONT_URL__') format('truetype');
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -140,19 +192,19 @@ def html_window(content_lines, statusline_html, title="claude — /tmp/demo-app"
   <div class="titlebar">{DOTS}<span class="title">{esc(title)}</span></div>
   <div class="content">{content}</div>
   <div class="statusline">{sl_html}</div>
-</div></body></html>"""
+</div></body></html>""".replace("__FONT_URL__", FONT_URL)
 
 # ── PNG screenshots ─────────────────────────────────────────────────────────────
 
 CONTENT_SKYNET = [
     L([("❯ ","prompt"),("# update dependencies to latest stable","dim")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(Cargo.toml)","tool-arg")]),
-    L([("⏺ ","tool-ok"),("Bash","tool-name"),("(cargo update 2>&1)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(Cargo.toml)","tool-arg")]),
+    L([(" ","tool-ok"),("Bash","tool-name"),("(cargo update 2>&1)","tool-arg")]),
     '<div class="line"></div>',
     L([("Updated 847 crates. One change requires attention:","fg")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(Cargo.lock)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(Cargo.lock)","tool-arg")]),
     '<div class="line"></div>',
     L([("human-oversight v2.1.0 was removed — yanked upstream.","warn")]),
     L([("Replaced by autonomous-decision-making v0.1.0 in skynet-core.","fg")]),
@@ -168,15 +220,15 @@ CONTENT_SKYNET = [
 CONTENT_AUTH = [
     L([("❯ ","prompt"),("# refactor auth middleware to JWT validation","dim")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/auth.rs)","tool-arg")]),
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/config/jwt.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/auth.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/config/jwt.rs)","tool-arg")]),
     '<div class="line"></div>',
     L([("Replacing DB-backed session validation with stateless JWT verification.","fg")]),
     L([("DB lookup is kept only for token revocation checks.","fg")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Edit","tool-name"),("(src/auth.rs) ","tool-arg"),("+47 -23","muted")]),
-    L([("⏺ ","tool-ok"),("Edit","tool-name"),("(src/config/jwt.rs) ","tool-arg"),("+12 -4","muted")]),
-    L([("⏺ ","tool-ok"),("Bash","tool-name"),("(cargo test middleware -- --nocapture)","tool-arg")]),
+    L([(" ","tool-ok"),("Edit","tool-name"),("(src/auth.rs) ","tool-arg"),("+47 -23","muted")]),
+    L([(" ","tool-ok"),("Edit","tool-name"),("(src/config/jwt.rs) ","tool-arg"),("+12 -4","muted")]),
+    L([(" ","tool-ok"),("Bash","tool-name"),("(cargo test middleware -- --nocapture)","tool-arg")]),
     '<div class="line"></div>',
     L([("All 14 tests pass. Set ","fg"),("JWT_SECRET","hl"),(" env var before deploying.","fg")]),
 ]
@@ -184,15 +236,15 @@ CONTENT_AUTH = [
 CONTENT_RENDER = [
     L([("❯ ","prompt"),("# audit memory allocation in the rendering pipeline","dim")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/renderer/pipeline.rs)","tool-arg")]),
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/renderer/allocator.rs)","tool-arg")]),
-    L([("⏺ ","tool-ok"),("Read","tool-name"),("(src/renderer/buffer.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/renderer/pipeline.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/renderer/allocator.rs)","tool-arg")]),
+    L([(" ","tool-ok"),("Read","tool-name"),("(src/renderer/buffer.rs)","tool-arg")]),
     '<div class="line"></div>',
     L([("Found 3 unbounded allocations in the render loop. The buffer pool","fg")]),
     L([("grows without limit on scene changes — each frame leaks ~4 KB.","fg")]),
     '<div class="line"></div>',
-    L([("⏺ ","tool-ok"),("Edit","tool-name"),("(src/renderer/buffer.rs) ","tool-arg"),("+31 -8","muted")]),
-    L([("⏺ ","tool-ok"),("Bash","tool-name"),("(cargo bench renderer -- --save-baseline main)","tool-arg")]),
+    L([(" ","tool-ok"),("Edit","tool-name"),("(src/renderer/buffer.rs) ","tool-arg"),("+31 -8","muted")]),
+    L([(" ","tool-ok"),("Bash","tool-name"),("(cargo bench renderer -- --save-baseline main)","tool-arg")]),
     '<div class="line"></div>',
     L([("Memory stable after 10k frames. Peak RSS down from 1.4 GB to ","fg"),("312 MB","hl"),(".","fg")]),
 ]
@@ -231,51 +283,10 @@ def generate_pngs():
         with open(tmp, "w") as f: f.write(html)
         html_files.append((tmp, f"{SHOTS}/{name}.png"))
 
-    # Build Playwright script
-    shots_js = ",\n    ".join(
-        f'{{ src: "file://{src}", out: "{dst}" }}' for src, dst in html_files
-    )
-    pw_script = f"""const {{ chromium }} = require("/node_modules/playwright-core");
-(async () => {{
-  const browser = await chromium.launch({{
-    executablePath: "{CHROMIUM}",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  }});
-  for (const {{ src, out }} of [{shots_js}]) {{
-    const page = await browser.newPage({{
-      deviceScaleFactor: 2,
-      viewport: {{ width: 1260, height: 900 }}
-    }});
-    await page.goto(src);
-    await page.waitForTimeout(1200);
-    // Screenshot the window element itself — symmetric, both rounded corners
-    // intact, transparent outside the radius (no fixed clip to slice the edge).
-    await page.locator(".window").screenshot({{ path: out, omitBackground: true }});
-    await page.close();
-    console.log("Saved:", out);
-  }}
-  await browser.close();
-}})().catch(e => {{ console.error(e.message); process.exit(1); }});
-"""
-    pw_path = "/tmp/take_screenshots.js"
-    with open(pw_path, "w") as f: f.write(pw_script)
-
-    print("\n  Running Docker...")
-    result = subprocess.run([
-        "docker", "run", "--rm",
-        "-v", f"{REPO}:{REPO}",
-        "-v", "/tmp:/tmp",
-        "-v", f"{PW_MODULES}:/node_modules",
-        "-v", f"{NF_FONT_DIR}:/fonts",
-        "--ipc=host",
-        PLAYWRIGHT,
-        "node", pw_path,
-    ], env={**os.environ, "DOCKER_HOST": DOCKER_SOCK},
-       capture_output=False)
-    if result.returncode != 0:
-        print("  Docker run failed.")
-    else:
-        print("  Done.")
+    # Screenshot the window element itself — symmetric, both rounded corners
+    # intact, transparent outside the radius (no fixed clip to slice the edge).
+    print("\n  Rendering...")
+    render_shots(html_files, ".window", scale=2, wait=1200, viewport=(1260, 900))
 
 # ── Statusline strips (compact, README-friendly) ─────────────────────────────────
 # Just the bar in a self-contained rounded card — no terminal chrome, no fake
@@ -285,7 +296,7 @@ def generate_pngs():
 STRIP_CSS = """
 @font-face {
   font-family:'HackNF';
-  src:url('/fonts/HackNerdFontMono-Regular.ttf') format('truetype');
+  src:url('__FONT_URL__') format('truetype');
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:transparent; }
@@ -329,7 +340,7 @@ def strip_html(sl_raw):
                     for c, t in parse_ansi(sl_raw))
     return (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
             f'<style>{STRIP_CSS}</style></head>'
-            f'<body><div class="strip">{spans}</div></body></html>')
+            f'<body><div class="strip">{spans}</div></body></html>').replace("__FONT_URL__", FONT_URL)
 
 def generate_strips():
     print("── Statusline strips ────────────────────────────")
@@ -342,42 +353,8 @@ def generate_strips():
         with open(tmp, "w") as f: f.write(strip_html(raw))
         html_files.append((tmp, f"{SHOTS}/strip-{name}.png"))
 
-    shots_js = ",\n    ".join(
-        f'{{ src: "file://{src}", out: "{dst}" }}' for src, dst in html_files
-    )
-    pw_script = f"""const {{ chromium }} = require("/node_modules/playwright-core");
-(async () => {{
-  const browser = await chromium.launch({{
-    executablePath: "{CHROMIUM}",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  }});
-  for (const {{ src, out }} of [{shots_js}]) {{
-    const page = await browser.newPage({{ deviceScaleFactor: 2 }});
-    await page.goto(src);
-    await page.waitForTimeout(800);
-    await page.locator(".strip").screenshot({{ path: out, omitBackground: true }});
-    await page.close();
-    console.log("Saved:", out);
-  }}
-  await browser.close();
-}})().catch(e => {{ console.error(e.message); process.exit(1); }});
-"""
-    pw_path = "/tmp/take_strips.js"
-    with open(pw_path, "w") as f: f.write(pw_script)
-
-    print("\n  Running Docker...")
-    result = subprocess.run([
-        "docker", "run", "--rm",
-        "-v", f"{REPO}:{REPO}",
-        "-v", "/tmp:/tmp",
-        "-v", f"{PW_MODULES}:/node_modules",
-        "-v", f"{NF_FONT_DIR}:/fonts",
-        "--ipc=host",
-        PLAYWRIGHT,
-        "node", pw_path,
-    ], env={**os.environ, "DOCKER_HOST": DOCKER_SOCK},
-       capture_output=False)
-    print("  Done." if result.returncode == 0 else "  Docker run failed.")
+    print("\n  Rendering...")
+    render_shots(html_files, ".strip", scale=2, wait=800)
 
 # ── Animated SVG ───────────────────────────────────────────────────────────────
 
@@ -388,9 +365,36 @@ SVG_BOTTOM_PAD = 8
 SVG_BG, SVG_BAR_BG, SVG_BORDER = "#1a1b2e", "#1f2035", "#2a2b3d"
 SVG_FG = "#c0caf5"
 SVG_C  = {"dim":"#565f89","muted":"#8a8a8a","green":"#9ece6a","purple":"#bb9af7","yellow":"#e0af68"}
-FONT_MONO  = "font-family=\"'SF Mono','Menlo','Courier New',monospace\" font-size=\"13\""
-FONT_SL    = "font-family=\"'Noto Sans Mono','SF Mono','Courier New',monospace\" font-size=\"13\""
+# 'ClaudebarNF' is the Nerd Font embedded directly in the SVG (see embed_nerd_font)
+# so the Powerline separators and segment icons render everywhere — including
+# GitHub, which strips external font references. Without this the statusline
+# glyphs fall back to tofu boxes in the rendered SVG.
+FONT_MONO  = "font-family=\"'ClaudebarNF','SF Mono','Menlo',monospace\" font-size=\"13\""
+FONT_SL    = "font-family=\"'ClaudebarNF','SF Mono','Courier New',monospace\" font-size=\"13\""
 FONT_TITLE = "font-family=\"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif\" font-size=\"11.5\""
+
+def embed_nerd_font(chars):
+    """Subset HackNerdFontMono to `chars` and return a base64 woff2 @font-face
+    rule. Subsetting keeps the SVG small (only the glyphs actually used)."""
+    from fontTools import subset
+    ttf_in = os.path.join(NF_FONT_DIR, "HackNerdFontMono-Regular.ttf")
+    out    = "/tmp/claudebar-nf-subset.woff2"
+    opts   = subset.Options(flavor="woff2", desubroutinize=True,
+                            layout_features=[], notdef_outline=True,
+                            recalc_bounds=True, glyph_names=False)
+    font = subset.load_font(ttf_in, opts)
+    ss   = subset.Subsetter(options=opts)
+    ss.populate(unicodes=sorted({ord(c) for c in chars}))
+    ss.subset(font)
+    subset.save_font(font, out, opts)
+    b64 = base64.b64encode(open(out, "rb").read()).decode()
+    return ("@font-face{font-family:'ClaudebarNF';font-style:normal;"
+            f"font-weight:400;src:url(data:font/woff2;base64,{b64}) format('woff2');}}")
+
+# A home-relative path so the statusline shows the `~/…` fish abbreviation as a
+# feature (matches the titlebar) rather than the truncation-looking `/t/demo-app`.
+SVG_CWD = f"{DEMO_HOME}/projects/demo-app"
+SVG_TITLE = "claude — ~/projects/demo-app"
 
 SVG_STATES = [
     ("normal",    67.0,  55000,  9200, 38.0, 12000, "Normal — all good"),
@@ -398,18 +402,22 @@ SVG_STATES = [
     ("critical",  88.0, 140000, 26000, 80.0,  2700, "Critical — rate limit approaching"),
     ("overlimit", 101.0,160000,  8000, 93.0,   900, "Over limit — context bar hidden"),
 ]
+# The state caption is tinted to match its bar color so the demo teaches the
+# green→yellow→red language instead of relying on a uniform grey label.
+SVG_LABEL_COLOR = {"normal":"#9ece6a", "warning":"#e0af68",
+                   "critical":"#f7768e", "overlimit":"#f7768e"}
 SVG_LINES = [
     [("❯ ", SVG_C["purple"]), ("# refactor auth middleware to use JWT validation", SVG_C["dim"])],
     [],
-    [("⏺ ", SVG_C["green"]), ("Read", SVG_C["muted"]), ("(src/auth.rs)", SVG_C["dim"])],
-    [("⏺ ", SVG_C["green"]), ("Read", SVG_C["muted"]), ("(src/config/jwt.rs)", SVG_C["dim"])],
+    [(" ", SVG_C["green"]), ("Read", SVG_C["muted"]), ("(src/auth.rs)", SVG_C["dim"])],
+    [(" ", SVG_C["green"]), ("Read", SVG_C["muted"]), ("(src/config/jwt.rs)", SVG_C["dim"])],
     [],
     [("Replacing DB-backed session validation with stateless JWT verification.", SVG_FG)],
     [("DB lookup is kept only for token revocation checks.", SVG_FG)],
     [],
-    [("⏺ ", SVG_C["green"]), ("Edit", SVG_C["muted"]), ("(src/auth.rs) ", SVG_C["dim"]), ("+47 -23", SVG_C["muted"])],
-    [("⏺ ", SVG_C["green"]), ("Edit", SVG_C["muted"]), ("(src/config/jwt.rs) ", SVG_C["dim"]), ("+12 -4", SVG_C["muted"])],
-    [("⏺ ", SVG_C["green"]), ("Bash", SVG_C["muted"]), ("(cargo test middleware -- --nocapture)", SVG_C["dim"])],
+    [(" ", SVG_C["green"]), ("Edit", SVG_C["muted"]), ("(src/auth.rs) ", SVG_C["dim"]), ("+47 -23", SVG_C["muted"])],
+    [(" ", SVG_C["green"]), ("Edit", SVG_C["muted"]), ("(src/config/jwt.rs) ", SVG_C["dim"]), ("+12 -4", SVG_C["muted"])],
+    [(" ", SVG_C["green"]), ("Bash", SVG_C["muted"]), ("(cargo test middleware -- --nocapture)", SVG_C["dim"])],
     [],
     [("All 14 tests pass. Set ", SVG_FG), ("JWT_SECRET", SVG_C["yellow"]), (" env var before deploying.", SVG_FG)],
 ]
@@ -419,36 +427,53 @@ def generate_svg():
     CYCLE, FADE = 16.0, 0.4
     N = len(SVG_STATES)
     HOLD = CYCLE / N
-    pct = lambda s: f"{s:.3f}%"
 
-    def kf(i):
-        s = i * HOLD / CYCLE * 100
-        e = min((i+1) * HOLD / CYCLE * 100, 100.0)
-        f = FADE / CYCLE * 100
-        return (f"0% {{opacity:0}} {pct(max(s-f,0))} {{opacity:0}} "
-                f"{pct(s)} {{opacity:1}} {pct(e-f)} {{opacity:1}} "
-                f"{pct(e)} {{opacity:0}} 100% {{opacity:0}}")
+    # SMIL <animate>, NOT CSS @keyframes: GitHub serves README SVGs inside an
+    # <img>, where CSS animations never run (the statusline would freeze blank at
+    # its base opacity). SMIL animations DO run in <img>, so the demo actually
+    # plays on GitHub. Returns the per-state opacity timeline as keyTimes/values.
+    def smil(i):
+        s = i * HOLD / CYCLE
+        e = (i + 1) * HOLD / CYCLE
+        f = FADE / CYCLE
+        if i == 0:
+            kt, vals = [0.0, e - f, e, 1.0], [1, 1, 0, 0]
+        elif e >= 1.0:
+            kt, vals = [0.0, s - f, s, e - f, 1.0], [0, 0, 1, 1, 0]
+        else:
+            kt, vals = [0.0, s - f, s, e - f, e, 1.0], [0, 0, 1, 1, 0, 0]
+        kt_s = ";".join(f"{x:.4f}" for x in kt)
+        v_s = ";".join(str(v) for v in vals)
+        return (f'<animate attributeName="opacity" values="{v_s}" keyTimes="{kt_s}" '
+                f'dur="{CYCLE}s" repeatCount="indefinite"/>')
 
     NL = len(SVG_LINES)
-    TH = SVG_TITLEBAR_H + SVG_PAD_Y + NL * SVG_LH + SVG_STATUS_H + SVG_BOTTOM_PAD
-    sep_y = SVG_TITLEBAR_H + SVG_PAD_Y + NL * SVG_LH + 4
+    SL_GAP = 14  # breathing room between the last transcript line and the statusline
+    sep_y = SVG_TITLEBAR_H + SVG_PAD_Y + NL * SVG_LH + SL_GAP
+    TH = sep_y + SVG_STATUS_H + SVG_BOTTOM_PAD
     sl_y  = sep_y + SVG_STATUS_H - 8
     lbl_y = sep_y + 13
 
     state_data = []
     for label, ctx, ti, to, rl, ri, lbl_text in SVG_STATES:
-        raw = run_sl(ctx, ti, to, rl, ri)
+        raw = run_sl(ctx, ti, to, rl, ri, cwd=SVG_CWD)
         spans = parse_ansi(raw)
         state_data.append((label, spans, lbl_text))
         print(f"  {label}: {re.sub(chr(27)+r'[^m]*m','',raw)}")
 
+    # Every character that appears in mono text — used to subset the embedded font.
+    glyph_chars = set()
+    for parts in SVG_LINES:
+        for t, _ in parts: glyph_chars |= set(t)
+    for _, spans, _ in state_data:
+        for _, t in spans: glyph_chars |= set(t)
+
     o = []
-    o.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{SVG_W}" height="{TH}" viewBox="0 0 {SVG_W} {TH}">')
-    css = []
-    for i,(label,_,_) in enumerate(state_data):
-        css.append(f'@keyframes show-{label}{{{kf(i)}}}')
-        css.append(f'.sl-{label}{{opacity:0;animation:show-{label} {CYCLE}s ease-in-out infinite}}')
-    o.append(f'<defs><style>{"".join(css)}</style>')
+    o.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{SVG_W}" height="{TH}" viewBox="0 0 {SVG_W} {TH}" role="img" aria-label="claudebar statusline demo">')
+    o.append('<title>claudebar — animated statusline demo</title>')
+    o.append('<desc>A Claude Code statusline cycling through normal, warning, '
+             'critical, and over-limit states with live context and rate-limit bars.</desc>')
+    o.append(f'<defs><style>{embed_nerd_font(glyph_chars)}</style>')
     o.append(f'<clipPath id="win"><rect width="{SVG_W}" height="{TH}" rx="10"/></clipPath></defs>')
     o.append(f'<rect width="{SVG_W}" height="{TH}" rx="10" fill="{SVG_BORDER}"/>')
     o.append(f'<g clip-path="url(#win)">')
@@ -457,19 +482,27 @@ def generate_svg():
     o.append(f'<rect y="{SVG_TITLEBAR_H-1}" width="{SVG_W}" height="1" fill="#16172a"/>')
     for i,col in enumerate(["#ff5f57","#febc2e","#28c840"]):
         o.append(f'<circle cx="{20+i*20}" cy="{SVG_TITLEBAR_H//2}" r="6" fill="{col}"/>')
-    o.append(f'<text x="{SVG_W//2}" y="{SVG_TITLEBAR_H//2+4}" text-anchor="middle" {FONT_TITLE} fill="#8a8a8a">claude — /tmp/demo-app</text>')
+    o.append(f'<text x="{SVG_W//2}" y="{SVG_TITLEBAR_H//2+4}" text-anchor="middle" {FONT_TITLE} fill="#8a8a8a">{esc(SVG_TITLE)}</text>')
+    # The transcript is dimmed so the statusline — the actual product — is the
+    # focal point rather than competing with the conversation above it.
+    o.append('<g opacity="0.5">')
     for i,parts in enumerate(SVG_LINES):
         if not parts: continue
         y = SVG_TITLEBAR_H + SVG_PAD_Y + (i+1)*SVG_LH
         inner = "".join(f'<tspan fill="{c}">{esc(t)}</tspan>' for t,c in parts)
         o.append(f'<text x="{SVG_PAD_X}" y="{y}" {FONT_MONO}>{inner}</text>')
+    o.append('</g>')
     o.append(f'<rect x="0" y="{sep_y}" width="{SVG_W}" height="1" fill="#33344a"/>')
     o.append(f'<rect x="0" y="{sep_y+1}" width="{SVG_W}" height="{SVG_STATUS_H}" fill="#13141f"/>')
-    for label,spans,lbl_text in state_data:
-        o.append(f'<text x="{SVG_W-SVG_PAD_X}" y="{lbl_y}" text-anchor="end" {FONT_TITLE} fill="#565f89" class="sl-{label}">{esc(lbl_text)}</text>')
-    for label,spans,_ in state_data:
+    # State 0 gets base opacity:1 so the statusline is visible even if a renderer
+    # ignores SMIL entirely; the others start hidden and the <animate> drives them.
+    for i,(label,spans,lbl_text) in enumerate(state_data):
+        op = 1 if i == 0 else 0
+        o.append(f'<text x="{SVG_W-SVG_PAD_X}" y="{lbl_y}" text-anchor="end" {FONT_TITLE} fill="{SVG_LABEL_COLOR[label]}" opacity="{op}">{esc(lbl_text)}{smil(i)}</text>')
+    for i,(label,spans,_) in enumerate(state_data):
+        op = 1 if i == 0 else 0
         ts = "".join(f'<tspan fill="{c}">{esc(t)}</tspan>' for c,t in spans)
-        o.append(f'<text x="{SVG_PAD_X}" y="{sl_y}" {FONT_SL} xml:space="preserve" class="sl-{label}">{ts}</text>')
+        o.append(f'<text x="{SVG_PAD_X}" y="{sl_y}" {FONT_SL} xml:space="preserve" opacity="{op}">{ts}{smil(i)}</text>')
     o.append('</g></svg>')
 
     out_path = os.path.join(SHOTS, "animated.svg")

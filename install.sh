@@ -23,8 +23,12 @@ green() { printf '\033[32m%s\033[0m\n' "$*"; }
 bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 
 # ── Preflight ──────────────────────────────────────────────────────────────────
+# git is the only soft runtime dependency (the git segment). jq is needed only
+# for the bash fallback and for merging into an *existing* settings.json — both
+# checked at the point of use, not gated here. The happy path (prebuilt binary,
+# fresh settings.json) needs nothing but a terminal.
 bold "Checking dependencies..."
-echo "  Requires a Nerd Font set as your terminal font — https://www.nerdfonts.com"
+echo "  Tip: set a Nerd Font as your terminal font for the glyphs — https://www.nerdfonts.com"
 echo ""
 install_hint() {
   case "$1" in
@@ -34,20 +38,11 @@ install_hint() {
   echo "  Linux:  sudo apt install $1   # or: sudo dnf install $1"
 }
 
-ok=true
-for cmd in jq git; do
-  if command -v "$cmd" >/dev/null 2>&1; then
-    printf '  %-6s %s\n' "$cmd" "$(command -v "$cmd")"
-  else
-    red "  $cmd    not found"
-    install_hint "$cmd"
-    ok=false
-  fi
-done
-if [ "$ok" = false ]; then
-  echo ""
-  red "Install the missing tools above, then re-run this script."
-  exit 1
+if command -v git >/dev/null 2>&1; then
+  printf '  %-6s %s\n' "git" "$(command -v git)"
+else
+  red "  git    not found — the git segment stays hidden until you install it"
+  install_hint git
 fi
 echo ""
 
@@ -166,11 +161,8 @@ fi
 if [ -z "$COMMAND_VALUE" ]; then
   if [ -n "$SRC_DIR" ] && [ -f "${SRC_DIR}/Cargo.toml" ] && command -v cargo >/dev/null 2>&1; then
     bold "Building from source with cargo..."
-    if cargo install --path "$SRC_DIR" --root "$HOME/.claude" --force; then
-      if [ -x "$HOME/.claude/bin/claudebar" ]; then
-        cp "$HOME/.claude/bin/claudebar" "$BIN_DEST"
-      fi
-      chmod +x "$BIN_DEST"
+    if cargo build --release --manifest-path "${SRC_DIR}/Cargo.toml"; then
+      install -m 0755 "${SRC_DIR}/target/release/claudebar" "$BIN_DEST"
       COMMAND_VALUE="${BIN_DEST} render"
       green "claudebar built and installed to ${BIN_DEST}"
     else
@@ -198,20 +190,32 @@ if [ -z "$COMMAND_VALUE" ]; then
 fi
 
 # ── Patch settings.json ────────────────────────────────────────────────────────
-STATUS_LINE_VALUE=$(jq -nc --arg c "$COMMAND_VALUE" '{type:"command",command:$c}')
-
+# Merging into an existing config requires jq (hand-rolling a JSON merge is
+# unsafe). A fresh install writes the file directly — no jq needed.
 if [ -f "$SETTINGS" ]; then
+  if ! command -v jq >/dev/null 2>&1; then
+    red "$SETTINGS already exists but jq is not installed."
+    echo "Install jq, or add this manually to $SETTINGS:"
+    printf '  "statusLine": {"type":"command","command":"%s"}\n' "$COMMAND_VALUE"
+    exit 1
+  fi
   backup="${SETTINGS}.backup.$(date +%s)"
   cp "$SETTINGS" "$backup"
   printf 'Backed up settings.json to %s\n' "$backup"
+  status_line=$(jq -nc --arg c "$COMMAND_VALUE" '{type:"command",command:$c}')
   tmp_cfg=$(mktemp)
-  if ! jq --argjson v "$STATUS_LINE_VALUE" '.statusLine = $v' "$SETTINGS" > "$tmp_cfg"; then
+  if ! jq --argjson v "$status_line" '.statusLine = $v' "$SETTINGS" > "$tmp_cfg"; then
     red "$SETTINGS is not valid JSON — fix it manually before re-running."
+    rm -f "$tmp_cfg"
     exit 1
   fi
   mv "$tmp_cfg" "$SETTINGS"
 else
-  jq -n --argjson v "$STATUS_LINE_VALUE" '{statusLine:$v}' > "$SETTINGS"
+  cat > "$SETTINGS" <<EOF
+{
+  "statusLine": { "type": "command", "command": "$COMMAND_VALUE" }
+}
+EOF
 fi
 green "settings.json updated"
 

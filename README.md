@@ -1,158 +1,28 @@
-# claudebar
+<div align="center">
+
+<img src="assets/logo.svg" width="300" alt="claudebar">
+
+**A fast, themeable statusline for Claude Code.**
 
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![~5× faster than bash](https://img.shields.io/badge/render-~5%C3%97_faster_than_bash-9ece6a)
 
-A statusline for Claude Code — context usage, rate limits, git state, and model info on every turn.
+<img src="screenshots/intro.png" width="820" alt="claudebar statusline demo (rendered)">
 
-<img src="screenshots/animated.svg" alt="claudebar demo">
+<sub><i>Rendered demo for illustration — not an actual Claude Code screenshot.</i></sub>
 
-**Requirements:**
-- [Nerd Font](https://www.nerdfonts.com/) — for the Powerline separator and status icon glyphs
-- [git](https://git-scm.com/) — reads branch, ahead/behind, and modified-file counts
-
-## Install
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
-```
-
-Restart Claude Code. If the claudebar is blank, verify `~/.claude/settings.json` contains `"statusLine": {"type": "command", ...}`. If glyphs show as boxes, install a Nerd Font — macOS Terminal does not support Nerd Font PUA glyphs, use iTerm2, Kitty, WezTerm, Ghostty, or Alacritty.
-
-The installer tries three methods in order: (1) downloads a prebuilt binary from GitHub Releases (verified by SHA256), (2) builds from source with `cargo` if run from a local checkout, (3) falls back to a standalone bash script. The bash fallback requires [jq](https://jqlang.org/).
-
-<details>
-<summary>Manual install</summary>
-
-**Prebuilt binary:**
-
-Download the latest release for your platform from the [releases page](https://github.com/micschr0/claudebar/releases), extract, and place `claudebar` on your `$PATH` or at `~/.claude/claudebar`.
-
-**Rust binary (build from source):**
-
-```bash
-cargo install --git https://github.com/micschr0/claudebar
-```
-
-Add to `~/.claude/settings.json`:
-
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "claudebar render"
-  }
-}
-```
-
-**Bash fallback** (no Rust toolchain needed, requires `jq`):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/statusline-command.sh \
-  > ~/.claude/statusline-command.sh
-chmod +x ~/.claude/statusline-command.sh
-```
-
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  }
-}
-```
-
-</details>
-
-## Updates
-
-Re-run the install command. Updates take effect on the next turn.
-
-## Configure
-
-```bash
-claudebar config      # interactive TUI configurator
-```
-
-The TUI lets you toggle and reorder segments, pick a theme and rendering style, and nudge the warning/critical thresholds. Changes are saved to `~/.config/claudebar/config.toml`.
-
-| Key | Action |
-|-----|--------|
-| `j` / `k` or ↑↓ | Move cursor |
-| `Tab` / `Shift-Tab` | Jump to next/previous section |
-| `1`–`4` | Jump to section by number |
-| `Space` | Toggle segment on/off |
-| `m` | Enter reorder mode |
-| `h` / `l` or ←→ | Nudge threshold ±1 |
-| `H` / `L` | Nudge threshold ±5 |
-| `s` | Save · `r` Reset to defaults · `?` Help · `q` Quit |
-
-### Segments
-
-| Segment | TOML key | What it shows |
-|---------|----------|---------------|
-| Directory | `directory` | Fish-style abbreviated path |
-| Git | `git` | Branch name, ahead/behind, modified-file count |
-| Context | `context` | Context usage bar and token count |
-| Rate limits | `rate-limits` | 5-hour and weekly rate-limit windows with countdown |
-| Dev context | `dev-context` | Dev context bar |
-| Model | `model` | Model name and effort level |
-
-Toggle segments with `claudebar config` or edit the `segments` list in `config.toml`.
-
-### Themes and styles
-
-- **Themes (16):** `tokyo-night` (default) · `ayu-mirage` · `catppuccin` · `cobalt2` · `everforest-dark` · `github-dark` · `gruvbox` · `kanagawa-wave` · `moonfly` · `night-owl` · `nord` · `one-dark` · `dracula` · `rose-pine` · `sonokai` · `solarized-dark`
-- **Styles (5):** `powerline` (default) · `plain` · `rounded` · `minimal` · `ascii`
-
-### Config file
-
-TOML at `~/.config/claudebar/config.toml` (`$XDG_CONFIG_HOME/claudebar/config.toml` when set).
-
-```toml
-theme = "tokyo-night"
-style = "powerline"
-segments = ["directory", "git", "context", "rate-limits", "dev-context", "model"]
-
-[thresholds]
-warn           = 50   # bar turns yellow at this %
-crit           = 80   # bar turns red at this %
-weekly_show_at = 50   # show weekly rate-limit only above this %
-bar_width      = 6    # bar width in terminal cells
-```
-
-Global flags `--theme`, `--style`, and `--config` override the file for a single invocation.
-
-### All subcommands
-
-| Command | What it does |
-|---------|--------------|
-| `claudebar` / `claudebar render` | Read session JSON from stdin, write ANSI status line to stdout |
-| `claudebar config` | Launch the interactive TUI configurator |
-| `claudebar init [--print] [--force]` | Write a default config file |
-| `claudebar list` | Print all built-in theme and style names |
-
-## Build from source
-
-```bash
-cargo build --release          # binary at target/release/claudebar
-cargo install --path .         # install to ~/.cargo/bin/claudebar
-```
-
-To build without the TUI configurator (render-only, smaller binary):
-
-```bash
-cargo build --release --no-default-features
-```
+</div>
 
 ## Screenshots
 
-**Calm** — low context and rate-limit usage, everything green:
+**Calm** — low usage, everything green:
 
 <img src="screenshots/strip-green.png" width="860" alt="Calm state, all green">
 
-**Normal** — context, 5-hour rate limit, and git state, working along:
+**Normal** — typical mid-session usage:
 
-<img src="screenshots/strip-normal.png" width="860" alt="Normal state">
+<img src="screenshots/strip-normal.png" width="860" alt="Normal mid-session state">
 
 **Critical** — context filling up, 5-hour limit tight, weekly window now shown:
 
@@ -162,20 +32,151 @@ cargo build --release --no-default-features
 
 <img src="screenshots/strip-overlimit.png" width="860" alt="Over context limit">
 
-**Outside a git repo** — the git segment simply drops out:
+**Outside a git repo** — the git segment drops out:
 
 <img src="screenshots/strip-nogit.png" width="860" alt="Outside a git repository">
 
-**Model without an effort parameter** — the effort indicator drops out:
+**Model without effort** — effort indicator omitted when the model has no effort param:
 
 <img src="screenshots/strip-noeffort.png" width="860" alt="Model without effort indicator">
 
-<details>
-<summary>Easter egg</summary>
+## Features
 
-<img src="screenshots/skynet.png" width="860" alt="Easter egg">
+- Live rate-limit countdowns
+- Color-coded context usage
+- Inline git state
+- 16 themes · 6 styles
+- [~5× faster than bash scripts](scripts/benchmark.sh) (~30ms vs ~200ms)
+- Read-only — never touches your session
+- Tiny ~1.5 MB dependency-free binary
+
+## Install
+
+**Prerequisites**
+
+- A [Nerd Font](https://www.nerdfonts.com/) set as your terminal font — for the glyphs
+- `git` — for the git segment (optional; the segment just hides without it)
+- `jq` — only if you already have a `~/.claude/settings.json` to merge into
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+```
+
+It installs the binary and wires up `~/.claude/settings.json` (backing up any existing file). Then **restart Claude Code** — the statusline appears on your next turn.
+
+<details>
+<summary>Manual install</summary>
+
+**Prebuilt binary:** download the latest release for your platform from the [releases page](https://github.com/micschr0/claudebar/releases), extract, and place `claudebar` on your `$PATH` or at `~/.claude/claudebar`.
+
+**Build with cargo:**
+
+```bash
+cargo install --git https://github.com/micschr0/claudebar
+```
+
+`cargo install` places the binary on your `PATH` (`~/.cargo/bin`), so add it with the bare command:
+
+```json
+{
+  "statusLine": { "type": "command", "command": "claudebar render" }
+}
+```
+
+The curl installer instead installs to `~/.claude/claudebar` and writes that full path automatically. For the bash fallback, point the command at `bash ~/.claude/statusline-command.sh` instead.
 
 </details>
+
+## What you see
+
+claudebar renders these segments left to right (enable and reorder any of them):
+
+| Segment | Shows |
+|---------|-------|
+| Directory | Fish-style abbreviated path |
+| Git | Branch, ahead/behind, modified-file count |
+| Context | Usage bar + token count, colored by threshold |
+| Rate limits | 5-hour and weekly windows with a live reset countdown |
+| Dev context | Worktree name, PR number + review state, sub-agent name |
+| Model | Model name and effort level |
+
+## Configure
+
+```bash
+claudebar config
+```
+
+Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`.
+
+<img src="screenshots/tui.png" width="860" alt="Navigating the claudebar TUI configurator">
+
+<details>
+<summary>Key bindings</summary>
+
+| Key | Action |
+|-----|--------|
+| `j` / `k` or ↑↓ | Move cursor |
+| `Tab` / `Shift-Tab` | Next / previous section |
+| `1`–`4` | Jump to section |
+| `Space` | Toggle segment |
+| `m` | Reorder mode |
+| `h` / `l` or ←→ | Nudge threshold ±1 (`H` / `L` for ±5) |
+| `s` · `r` · `?` · `q` | Save · Reset · Help · Quit |
+
+</details>
+
+Prefer editing by hand? The config is plain TOML:
+
+```toml
+theme = "tokyo-night"
+style = "powerline"
+segments = ["directory", "git", "context", "rate-limits", "dev-context", "model"]
+
+[thresholds]
+warn           = 50   # bar turns yellow at this %
+crit           = 80   # bar turns red at this %
+weekly_show_at = 50   # weekly window shows at this % and above
+bar_width      = 6    # bar width in terminal cells
+```
+
+**Styles (6):** `powerline` (default) · `plain` · `rounded` · `minimal` · `unicode` · `ascii`
+
+<details>
+<summary><b>Themes (16)</b></summary>
+
+`tokyo-night` (default) · `ayu-mirage` · `catppuccin` · `cobalt2` · `everforest-dark` · `github-dark` · `gruvbox` · `kanagawa-wave` · `moonfly` · `night-owl` · `nord` · `one-dark` · `dracula` · `rose-pine` · `sonokai` · `solarized-dark`
+
+</details>
+
+The `--theme`, `--style`, and `--config` flags override the file for a single invocation.
+
+## CLI
+
+| Command | What it does |
+|---------|--------------|
+| `claudebar` / `claudebar render` | Read session JSON from stdin, write the ANSI line to stdout |
+| `claudebar config` | Launch the interactive TUI configurator |
+| `claudebar init [--print] [--force]` | Write a default config file |
+| `claudebar migrate` | Add new segments from a newer version to an existing config |
+| `claudebar list` | Print all built-in theme and style names |
+
+## Build from source
+
+```bash
+cargo build --release                       # binary at target/release/claudebar
+cargo install --path .                       # install to ~/.cargo/bin
+cargo build --release --no-default-features  # render-only, no TUI (smaller)
+```
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| **Statusline is blank** | Check `~/.claude/settings.json` has `"statusLine": {"type": "command", ...}`, then restart Claude Code. |
+| **Glyphs show as boxes (□)** | Install a [Nerd Font](https://www.nerdfonts.com/). macOS Terminal.app can't render Nerd Font PUA glyphs — use iTerm2, Kitty, WezTerm, Ghostty, or Alacritty. |
+| **Git segment missing** | Appears only inside a git repo; needs `git` on your `PATH`. |
+| **Rate-limit windows missing** | Pro/Max plans only; the weekly window shows once weekly usage is at or above `weekly_show_at` (default 50%). |
+| **`command not found: claudebar`** | The curl installer places the binary at `~/.claude/claudebar`; `cargo install` places it in `~/.cargo/bin`. Use the full path in `settings.json`, or ensure that directory is on your `PATH`. |
 
 ## License
 
