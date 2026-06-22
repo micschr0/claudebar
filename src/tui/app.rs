@@ -271,10 +271,10 @@ impl App {
             .iter()
             .enumerate()
             .find_map(|(si, &dr)| {
-                if let RowItem::SegmentRow(k) = &self.list_rows[dr] {
-                    if *k == kind {
-                        return Some(si);
-                    }
+                if let RowItem::SegmentRow(k) = &self.list_rows[dr]
+                    && *k == kind
+                {
+                    return Some(si);
                 }
                 None
             })

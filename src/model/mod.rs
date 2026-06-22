@@ -9,5 +9,5 @@ pub mod style;
 
 pub use config::{Config, ConfigError, SegmentKind, Thresholds};
 pub use input::InputData;
-pub use palette::{Color, Theme, RESET};
+pub use palette::{Color, RESET, Theme};
 pub use style::{GlyphSet, Style};

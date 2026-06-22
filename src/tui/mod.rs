@@ -7,18 +7,18 @@ mod sample;
 mod ui;
 
 use app::{
-    build_list, detail_len, move_segment, App, Dir, Panel, RowItem, StatusKind, ThresholdField,
+    App, Dir, Panel, RowItem, StatusKind, ThresholdField, build_list, detail_len, move_segment,
 };
+use crossterm::ExecutableCommand;
 use crossterm::event::{
     self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyEventKind,
     KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
 };
 use crossterm::terminal::{
-    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
+    EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode,
 };
-use crossterm::ExecutableCommand;
-use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
+use ratatui::backend::CrosstermBackend;
 use std::io::{self, Stdout};
 use std::path::PathBuf;
 use std::time::Duration;
@@ -271,10 +271,10 @@ fn rebuild_and_follow(app: &mut App, moved_kind: crate::model::SegmentKind) {
         .iter()
         .enumerate()
         .find_map(|(si, &dr)| {
-            if let RowItem::SegmentRow(k) = &app.list_rows[dr] {
-                if *k == moved_kind {
-                    return Some(si);
-                }
+            if let RowItem::SegmentRow(k) = &app.list_rows[dr]
+                && *k == moved_kind
+            {
+                return Some(si);
             }
             None
         })

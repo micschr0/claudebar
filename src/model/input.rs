@@ -6,8 +6,8 @@
 //! Combined with `#[serde(default)]` everywhere and a top-level
 //! `unwrap_or_default()`, the render path can never fail to produce a line.
 
-use serde::de::{self, Deserializer, Visitor};
 use serde::Deserialize;
+use serde::de::{self, Deserializer, Visitor};
 use std::fmt;
 use std::marker::PhantomData;
 
@@ -219,19 +219,11 @@ impl FromJsonNumber for f64 {
         Some(v as f64)
     }
     fn from_f64(v: f64) -> Option<Self> {
-        if v.is_finite() {
-            Some(v)
-        } else {
-            None
-        }
+        if v.is_finite() { Some(v) } else { None }
     }
     fn from_str_num(s: &str) -> Option<Self> {
         let v = s.trim().parse::<f64>().ok()?;
-        if v.is_finite() {
-            Some(v)
-        } else {
-            None
-        }
+        if v.is_finite() { Some(v) } else { None }
     }
 }
 

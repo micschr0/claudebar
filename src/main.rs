@@ -2,7 +2,7 @@ mod cli;
 
 use clap::Parser;
 use claudebar::model::Config;
-use claudebar::{render_line, styles, themes, InputData};
+use claudebar::{InputData, render_line, styles, themes};
 use cli::{Cli, Command};
 use std::io::Read;
 use std::path::PathBuf;

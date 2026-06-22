@@ -3,11 +3,11 @@
 
 use crate::tui::app::{App, Panel, StatusKind, ThresholdField};
 use crate::tui::preview;
+use ratatui::Frame;
 use ratatui::layout::{Constraint, Layout, Rect};
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::text::{Line, Span, Text};
 use ratatui::widgets::{Block, BorderType, Borders, Clear, Paragraph};
-use ratatui::Frame;
 
 // ── Chrome color constants (Rgb — immune to 256-color palette remapping) ──────
 

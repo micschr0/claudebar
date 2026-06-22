@@ -23,8 +23,8 @@
 //! Emit nothing / return false when neither window has anything to show.
 //! ```
 
-use crate::model::input::Window;
 use crate::model::Color;
+use crate::model::input::Window;
 use crate::render::SegmentWriter;
 use crate::sanitize::fmt_reset;
 use crate::segment::{RenderCtx, Segment};
@@ -66,22 +66,21 @@ impl Segment for RateLimits {
         }
 
         // Weekly (7-day) window.
-        if let Some(w) = ctx.input.rate_limits.seven_day.as_ref() {
-            if let Some(pct) = w.used_percentage.get().and_then(pct_in_range) {
-                if pct >= u32::from(ctx.th.weekly_show_at) {
-                    let color = if pct >= u32::from(ctx.th.crit) {
-                        ctx.theme.bar_crit
-                    } else {
-                        ctx.theme.bar_warn
-                    };
-                    if emitted {
-                        out.raw(" ");
-                    }
-                    write_window(ctx, out, ctx.style.glyphs.weekly, pct, color);
-                    write_reset(ctx, out, w.resets_at.get().unwrap_or(0));
-                    emitted = true;
-                }
+        if let Some(w) = ctx.input.rate_limits.seven_day.as_ref()
+            && let Some(pct) = w.used_percentage.get().and_then(pct_in_range)
+            && pct >= u32::from(ctx.th.weekly_show_at)
+        {
+            let color = if pct >= u32::from(ctx.th.crit) {
+                ctx.theme.bar_crit
+            } else {
+                ctx.theme.bar_warn
+            };
+            if emitted {
+                out.raw(" ");
             }
+            write_window(ctx, out, ctx.style.glyphs.weekly, pct, color);
+            write_reset(ctx, out, w.resets_at.get().unwrap_or(0));
+            emitted = true;
         }
 
         emitted

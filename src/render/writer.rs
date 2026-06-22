@@ -3,7 +3,7 @@
 //! code, never hardcodes a theme color, and never decides whether icons render;
 //! it just calls these methods and the active theme × style does the rest.
 
-use crate::model::{Color, Style, Theme, RESET};
+use crate::model::{Color, RESET, Style, Theme};
 use crate::render::bar::make_bar;
 
 pub struct SegmentWriter<'a> {

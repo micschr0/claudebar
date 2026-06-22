@@ -8,7 +8,7 @@ pub mod writer;
 
 pub use writer::SegmentWriter;
 
-use crate::model::{Config, InputData, Style, Theme, RESET};
+use crate::model::{Config, InputData, RESET, Style, Theme};
 use crate::segment::RenderCtx;
 use crate::{styles, themes};
 
