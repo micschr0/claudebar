@@ -7,7 +7,7 @@
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<img src="screenshots/intro.gif" width="820" alt="claudebar statusline demo — a real terminal recording">
+<img src="screenshots/intro.png" width="820" alt="claudebar statusline demo — a real terminal recording">
 
 </div>
 
