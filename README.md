@@ -39,8 +39,6 @@ It installs the binary and wires up `~/.claude/settings.json` (backing up any ex
 <details>
 <summary>Manual install</summary>
 
-If you used the curl script above, skip this — it is already done.
-
 **Prebuilt binary:** download the latest release for your platform from the [releases page](https://github.com/micschr0/claudebar/releases), extract, and place `claudebar` on your `$PATH` or at `~/.claude/claudebar`.
 
 **Build with cargo:**
