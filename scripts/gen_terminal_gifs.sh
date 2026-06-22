@@ -29,7 +29,7 @@ AGG=(agg --font-dir "$NF_FONT_DIR" --font-family "Hack Nerd Font Mono" --theme "
 mkdir -p "$SHOTS"
 
 echo "── intro.gif ──"
-asciinema rec --cols 94 --rows 22 --overwrite \
+asciinema rec --cols 94 --rows 20 --overwrite \
   -c "python3 $REPO/scripts/demo_intro.py" /tmp/cb_intro.cast
 "${AGG[@]}" --font-size 28 /tmp/cb_intro.cast /tmp/cb_intro_raw.gif
 python3 "$REPO/scripts/window_frame.py" /tmp/cb_intro_raw.gif "$SHOTS/intro.gif" \

@@ -56,7 +56,7 @@ def draw(n):
     for i in range(BODY_ROWS):
         sys.stdout.write((LINES[i] if i < n else "") + "\r\n")
     sys.stdout.write(SEP + "\r\n")
-    sys.stdout.write(SL + "\r\n")
+    sys.stdout.write(SL)  # no trailing newline → no blank row below the statusline
     sys.stdout.flush()
 
 # Reveal in dramatic beats; the final propagation lines land last.
