@@ -1,6 +1,6 @@
 <div align="center">
 
-# claudebar
+<img src="assets/logo.svg" width="440" alt="claudebar">
 
 **A fast, themeable statusline for Claude Code — see your context usage and rate-limit countdowns at a glance, every turn.**
 
