@@ -663,29 +663,28 @@ mod tests {
             .iter()
             .position(|s| *s == moved_kind)
             .as_ref()
+            && seg_idx > 0
         {
-            if seg_idx > 0 {
-                move_segment(&mut app.config.segments, seg_idx, Dir::Up);
-                let (rows, si, ss) = build_list(&app.config);
-                app.list_rows = rows;
-                app.selectable_indices = si;
-                app.section_starts = ss;
-                // Cursor follows moved segment.
-                if let Some(new_si) =
-                    app.selectable_indices
-                        .iter()
-                        .enumerate()
-                        .find_map(|(si, &dr)| {
-                            if let RowItem::SegmentRow(k) = &app.list_rows[dr] {
-                                if *k == moved_kind {
-                                    return Some(si);
-                                }
-                            }
-                            None
-                        })
-                {
-                    app.flat_cursor = new_si;
-                }
+            move_segment(&mut app.config.segments, seg_idx, Dir::Up);
+            let (rows, si, ss) = build_list(&app.config);
+            app.list_rows = rows;
+            app.selectable_indices = si;
+            app.section_starts = ss;
+            // Cursor follows moved segment.
+            if let Some(new_si) = app
+                .selectable_indices
+                .iter()
+                .enumerate()
+                .find_map(|(si, &dr)| {
+                    if let RowItem::SegmentRow(k) = &app.list_rows[dr]
+                        && *k == moved_kind
+                    {
+                        return Some(si);
+                    }
+                    None
+                })
+            {
+                app.flat_cursor = new_si;
             }
         }
         assert!(matches!(app.cursor_row(), Some(RowItem::SegmentRow(k)) if *k == moved_kind));

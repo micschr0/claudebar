@@ -26,8 +26,8 @@ pub fn theme() -> Theme {
         bar_ok: Color(116),     // foam  #9ccfd8
         bar_warn: Color(222),   // gold  #f6c177
         bar_crit: Color(211),   // love  #eb6f92
-        bar_track: Color(60),   // muted #6e6a86 (overlay tone)
-        separator: Color(60),   // muted #6e6a86
+        bar_track: Color(103),  // subtle #908caa (overlay tone, lifted for contrast)
+        separator: Color(103),  // subtle #908caa
         dim: Color(103),        // subtle #908caa
         reset: Color(66),       // pine  #31748f
         effort_max: Color(183), // iris  #c4a7e7

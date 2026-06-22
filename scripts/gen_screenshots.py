@@ -300,17 +300,22 @@ STRIP_CSS = """
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:transparent; }
+/* Transparent padded frame so the strip's drop shadow has room to render and
+   isn't clipped by the element-screenshot bounding box. */
+.stripwrap { display:inline-block; padding:22px 26px; background:transparent; }
 .strip {
   display:inline-block;
-  /* Uniform card width across every state so they render at the SAME font
-     size when shown at a fixed width in the README. min-width (not width)
-     floors short states to a common width while still growing for any future
-     state longer than this — no text gets clipped. */
-  min-width:1300px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.45);
+  /* Floor every card to the width of the widest real state (critical, with
+     its weekly window) so all strips share ONE width. Shown at a single
+     <img> width in the README, that keeps the font size identical across
+     every strip and aligns their edges — without the old 1300px dead space.
+     min-width (not width) still grows for any future longer state. */
+  min-width:960px;
   background:#13141f;
   border:1px solid #2a2b3d;
   border-radius:8px;
-  padding:9px 18px;
+  padding:16px 22px;
   font-family:'HackNF',monospace; font-size:14px; line-height:1.5;
   white-space:pre; color:#a9b1d6;
 }
@@ -340,7 +345,7 @@ def strip_html(sl_raw):
                     for c, t in parse_ansi(sl_raw))
     return (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
             f'<style>{STRIP_CSS}</style></head>'
-            f'<body><div class="strip">{spans}</div></body></html>').replace("__FONT_URL__", FONT_URL)
+            f'<body><div class="stripwrap"><div class="strip">{spans}</div></div></body></html>').replace("__FONT_URL__", FONT_URL)
 
 def generate_strips():
     print("── Statusline strips ────────────────────────────")
@@ -354,7 +359,7 @@ def generate_strips():
         html_files.append((tmp, f"{SHOTS}/strip-{name}.png"))
 
     print("\n  Rendering...")
-    render_shots(html_files, ".strip", scale=2, wait=800)
+    render_shots(html_files, ".stripwrap", scale=2, wait=800)
 
 # ── Animated SVG ───────────────────────────────────────────────────────────────
 

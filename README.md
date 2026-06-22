@@ -4,41 +4,31 @@
 
 **A fast, themeable statusline for Claude Code.**
 
+Your working directory, git state, context usage, and live rate-limit countdowns — right in the Claude Code status line.
+
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![~5× faster than bash](https://img.shields.io/badge/render-~5%C3%97_faster_than_bash-9ece6a)
 
-<img src="screenshots/intro.png" width="820" alt="claudebar statusline demo (rendered)">
-
-<sub><i>Rendered demo for illustration.</i></sub>
+<img src="screenshots/strip-critical.png" width="880" alt="claudebar statusline — directory, git, context, rate limits, model">
 
 </div>
 
-## Screenshots
+<div align="center">
 
-**Calm** — low usage, everything green:
+<img src="screenshots/strip-green.png" width="880" alt="Calm state — low usage, everything green">
+<img src="screenshots/strip-normal.png" width="880" alt="Normal mid-session usage">
+<img src="screenshots/strip-overlimit.png" width="880" alt="Over limit — past 100% context, both bars red">
+<img src="screenshots/strip-nogit.png" width="880" alt="Outside a git repo — git segment drops out">
+<img src="screenshots/strip-noeffort.png" width="880" alt="Model without an effort param — effort indicator omitted">
 
-<img src="screenshots/strip-green.png" width="860" alt="Calm state, all green">
+<br>
 
-**Normal** — typical mid-session usage:
+<img src="screenshots/intro.png" width="820" alt="claudebar at the bottom of a real Claude Code session">
 
-<img src="screenshots/strip-normal.png" width="860" alt="Normal mid-session state">
+<sub><i>claudebar living at the bottom of a Claude Code session.</i></sub>
 
-**Critical** — context filling up, 5-hour limit tight, weekly window now shown:
-
-<img src="screenshots/strip-critical.png" width="860" alt="Critical state with weekly rate limit">
-
-**Over limit** — past 100% context, both bars red:
-
-<img src="screenshots/strip-overlimit.png" width="860" alt="Over context limit">
-
-**Outside a git repo** — the git segment drops out:
-
-<img src="screenshots/strip-nogit.png" width="860" alt="Outside a git repository">
-
-**Model without effort** — effort indicator omitted when the model has no effort param:
-
-<img src="screenshots/strip-noeffort.png" width="860" alt="Model without effort indicator">
+</div>
 
 ## Features
 
@@ -46,7 +36,7 @@
 - Color-coded context usage
 - Inline git state
 - 16 themes · 6 styles
-- [~5× faster than bash scripts](scripts/benchmark.sh) (~30ms vs ~200ms)
+- [Renders in ~30 ms](scripts/benchmark.sh) — the bash script takes ~200 ms
 - Read-only — never touches your session
 - Tiny ~1.5 MB dependency-free binary
 
@@ -63,6 +53,16 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 ```
 
 It installs the binary and wires up `~/.claude/settings.json` (backing up any existing file). Then **restart Claude Code** — the statusline appears on your next turn.
+
+**Where it hooks in:** Claude Code reads the `statusLine` key in `~/.claude/settings.json`. The installer adds this for you:
+
+```json
+{
+  "statusLine": { "type": "command", "command": "~/.claude/claudebar render" }
+}
+```
+
+On every turn Claude Code runs that command, feeds it the session JSON on stdin, and prints whatever it writes to stdout as your statusline. (`cargo install` users use the bare `claudebar render`; the bash fallback uses `bash ~/.claude/statusline-command.sh`.)
 
 <details>
 <summary>Manual install</summary>
@@ -89,11 +89,15 @@ The curl installer instead installs to `~/.claude/claudebar` and writes that ful
 
 ## Configure
 
+Once installed, launch the configurator — this is the simplest way, there's no separate app or flag to remember:
+
 ```bash
 claudebar config
 ```
 
-Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`.
+Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`. Press `?` inside for key bindings, `s` to save, `q` to quit.
+
+> If you installed with the curl script, the binary lives at `~/.claude/claudebar`, so call `~/.claude/claudebar config` (or add `~/.claude` to your `PATH`).
 
 <img src="screenshots/tui.png" width="860" alt="Navigating the claudebar TUI configurator">
 

@@ -15,7 +15,7 @@ pub fn theme() -> Theme {
         bar_ok: Color(149),
         bar_warn: Color(185),
         bar_crit: Color(204),
-        bar_track: Color(234),
+        bar_track: Color(240),
         separator: Color(102),
         dim: Color(102),
         reset: Color(209),
