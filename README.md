@@ -2,7 +2,7 @@
 
 <img src="assets/logo.svg" width="300" alt="claudebar">
 
-**A fast, themeable statusline for Claude Code — see your context usage and rate-limit countdowns at a glance, every turn.**
+**A fast, themeable statusline for Claude Code.**
 
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -11,18 +11,15 @@
 
 </div>
 
-claudebar turns Claude Code's session JSON into one clean ANSI line — **directory · git · context · rate limits · dev context · model**. One dependency-free binary, **16 themes**, **6 styles**, and a TUI to set it up.
-
-> [!NOTE]
-> Read-only by design — claudebar never touches your session or Claude's behavior.
+claudebar reads Claude Code's session JSON and renders one clean, **read-only** ANSI line — it never touches your session or Claude's behavior.
 
 ## Features
 
-- **Never hit a wall blind** — live countdowns to your 5-hour *and* weekly resets; the weekly window appears only when it matters.
-- **Context usage, color-coded** — a usage bar and token count that shift green → yellow → red as you near the edge.
-- **Git state, inline** — branch, ahead/behind, and modified counts; disappears when you leave the repo.
-- **16 themes, 6 styles, your order** — pick a theme and style and reorder segments in the `claudebar config` TUI.
-- **Small and resilient** — one dependency-free, LTO-stripped binary; malformed JSON degrades to a clean line and keeps your prompt intact.
+- Live rate-limit countdowns
+- Color-coded context usage
+- Inline git state
+- 16 themes · 6 styles
+- Tiny, dependency-free binary
 
 ## Install
 
@@ -36,11 +33,7 @@ claudebar turns Claude Code's session JSON into one clean ANSI line — **direct
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
-It installs the binary, wires up `~/.claude/settings.json` (backing up any existing file), and picks the best method automatically:
-
-**prebuilt binary** (SHA256-verified) → **`cargo` build** (from a checkout) → **bash fallback**
-
-Then **restart Claude Code** — the statusline appears on your next turn.
+It installs the binary and wires up `~/.claude/settings.json` (backing up any existing file). Then **restart Claude Code** — the statusline appears on your next turn.
 
 > [!TIP]
 > Glyphs showing as boxes (□)? Install a [Nerd Font](https://www.nerdfonts.com/) and set it as your terminal font. See [Troubleshooting](#troubleshooting).
@@ -83,9 +76,6 @@ claudebar renders these segments left to right (enable and reorder any of them):
 | Dev context | Worktree name, PR number + review state, sub-agent name |
 | Model | Model name and effort level |
 
-> [!NOTE]
-> Rate-limit countdowns come from Claude Code's session JSON and appear on Pro/Max plans only.
-
 ## Screenshots
 
 The demo above cycles through the normal → warning → critical → over-limit states.
@@ -125,6 +115,9 @@ Toggle and reorder segments, pick a theme and style, and nudge thresholds — al
 
 <img src="screenshots/tui.png" width="860" alt="Navigating the claudebar TUI configurator">
 
+<details>
+<summary>Key bindings</summary>
+
 | Key | Action |
 |-----|--------|
 | `j` / `k` or ↑↓ | Move cursor |
@@ -134,6 +127,8 @@ Toggle and reorder segments, pick a theme and style, and nudge thresholds — al
 | `m` | Reorder mode |
 | `h` / `l` or ←→ | Nudge threshold ±1 (`H` / `L` for ±5) |
 | `s` · `r` · `?` · `q` | Save · Reset · Help · Quit |
+
+</details>
 
 Prefer editing by hand? The config is plain TOML:
 
