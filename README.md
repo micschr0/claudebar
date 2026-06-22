@@ -74,18 +74,21 @@ claudebar renders these segments left to right (enable and reorder any of them):
 
 ## Screenshots
 
-The demo above cycles through the normal → warning → critical → over-limit states.
-
-<details>
-<summary>More states — calm · outside a repo · no effort param</summary>
-
 **Calm** — low usage, everything green:
 
 <img src="screenshots/strip-green.png" width="860" alt="Calm state, all green">
 
+**Normal** — typical mid-session usage:
+
+<img src="screenshots/strip-normal.png" width="860" alt="Normal mid-session state">
+
 **Critical** — context filling up, 5-hour limit tight, weekly window now shown:
 
 <img src="screenshots/strip-critical.png" width="860" alt="Critical state with weekly rate limit">
+
+**Over limit** — past 100% context, both bars red:
+
+<img src="screenshots/strip-overlimit.png" width="860" alt="Over context limit">
 
 **Outside a git repo** — the git segment drops out:
 
@@ -94,8 +97,6 @@ The demo above cycles through the normal → warning → critical → over-limit
 **Model without effort** — effort indicator omitted when the model has no effort param:
 
 <img src="screenshots/strip-noeffort.png" width="860" alt="Model without effort indicator">
-
-</details>
 
 ## Configure
 
