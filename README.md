@@ -132,7 +132,7 @@ claudebar config
 
 Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`.
 
-<img src="screenshots/tui.gif" width="860" alt="Navigating the claudebar TUI configurator">
+<img src="screenshots/tui.png" width="860" alt="Navigating the claudebar TUI configurator">
 
 | Key | Action |
 |-----|--------|
