@@ -18,9 +18,9 @@
 - Color-coded context usage
 - Inline git state
 - 16 themes · 6 styles
-- ~5× faster: ~30ms vs ~200ms
+- ~5× faster than bash scripts (~30ms vs ~200ms)
 - Read-only — never touches your session
-- Tiny, dependency-free binary
+- Tiny ~1.5 MB dependency-free binary
 
 ## Install
 
