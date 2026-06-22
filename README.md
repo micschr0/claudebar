@@ -145,7 +145,7 @@ segments = ["directory", "git", "context", "rate-limits", "dev-context", "model"
 [thresholds]
 warn           = 50   # bar turns yellow at this %
 crit           = 80   # bar turns red at this %
-weekly_show_at = 50   # the weekly window appears once weekly usage reaches this %
+weekly_show_at = 50   # weekly window shows at this % and above
 bar_width      = 6    # bar width in terminal cells
 ```
 
