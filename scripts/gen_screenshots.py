@@ -25,6 +25,10 @@ REPO     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BINARY   = os.path.join(REPO, "target/release/claudebar")
 SHOTS    = os.path.join(REPO, "screenshots")
 DEMO_CWD = "/tmp/demo-app"
+# Fixed HOME so the fish-style path abbreviation in screenshots is reproducible
+# across machines (the binary reads $HOME to render the `~` prefix). Only affects
+# cwds under this path; the absolute /tmp and /var demo paths are unchanged.
+DEMO_HOME = "/home/dev"
 
 DOCKER_SOCK  = os.environ.get("DOCKER_HOST", "unix:///var/run/docker.sock")
 PLAYWRIGHT   = "mcr.microsoft.com/playwright:v1.49.0-noble"
@@ -117,7 +121,9 @@ def run_sl(ctx_pct, tok_in, tok_out, rl_5h_pct, rl_5h_reset,
          f'"context_window":{{"total_input_tokens":{tok_in},'
          f'"total_output_tokens":{tok_out},"used_percentage":{ctx_pct}}},'
          f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}{effort_field}}}')
-    return subprocess.run([BINARY, "render"], input=j, capture_output=True, text=True).stdout.rstrip()
+    env = {**os.environ, "HOME": DEMO_HOME}
+    return subprocess.run([BINARY, "render"], input=j, capture_output=True,
+                          text=True, env=env).stdout.rstrip()
 
 # ── HTML helpers ───────────────────────────────────────────────────────────────
 
@@ -385,12 +391,21 @@ def embed_nerd_font(chars):
     return ("@font-face{font-family:'ClaudebarNF';font-style:normal;"
             f"font-weight:400;src:url(data:font/woff2;base64,{b64}) format('woff2');}}")
 
+# A home-relative path so the statusline shows the `~/…` fish abbreviation as a
+# feature (matches the titlebar) rather than the truncation-looking `/t/demo-app`.
+SVG_CWD = f"{DEMO_HOME}/projects/demo-app"
+SVG_TITLE = "claude — ~/projects/demo-app"
+
 SVG_STATES = [
     ("normal",    67.0,  55000,  9200, 38.0, 12000, "Normal — all good"),
     ("warning",   72.0,  90000, 18000, 62.0,  6300, "Warning — context filling up"),
     ("critical",  88.0, 140000, 26000, 80.0,  2700, "Critical — rate limit approaching"),
     ("overlimit", 101.0,160000,  8000, 93.0,   900, "Over limit — context bar hidden"),
 ]
+# The state caption is tinted to match its bar color so the demo teaches the
+# green→yellow→red language instead of relying on a uniform grey label.
+SVG_LABEL_COLOR = {"normal":"#9ece6a", "warning":"#e0af68",
+                   "critical":"#f7768e", "overlimit":"#f7768e"}
 SVG_LINES = [
     [("❯ ", SVG_C["purple"]), ("# refactor auth middleware to use JWT validation", SVG_C["dim"])],
     [],
@@ -433,14 +448,15 @@ def generate_svg():
                 f'dur="{CYCLE}s" repeatCount="indefinite"/>')
 
     NL = len(SVG_LINES)
-    TH = SVG_TITLEBAR_H + SVG_PAD_Y + NL * SVG_LH + SVG_STATUS_H + SVG_BOTTOM_PAD
-    sep_y = SVG_TITLEBAR_H + SVG_PAD_Y + NL * SVG_LH + 4
+    SL_GAP = 14  # breathing room between the last transcript line and the statusline
+    sep_y = SVG_TITLEBAR_H + SVG_PAD_Y + NL * SVG_LH + SL_GAP
+    TH = sep_y + SVG_STATUS_H + SVG_BOTTOM_PAD
     sl_y  = sep_y + SVG_STATUS_H - 8
     lbl_y = sep_y + 13
 
     state_data = []
     for label, ctx, ti, to, rl, ri, lbl_text in SVG_STATES:
-        raw = run_sl(ctx, ti, to, rl, ri)
+        raw = run_sl(ctx, ti, to, rl, ri, cwd=SVG_CWD)
         spans = parse_ansi(raw)
         state_data.append((label, spans, lbl_text))
         print(f"  {label}: {re.sub(chr(27)+r'[^m]*m','',raw)}")
@@ -466,19 +482,23 @@ def generate_svg():
     o.append(f'<rect y="{SVG_TITLEBAR_H-1}" width="{SVG_W}" height="1" fill="#16172a"/>')
     for i,col in enumerate(["#ff5f57","#febc2e","#28c840"]):
         o.append(f'<circle cx="{20+i*20}" cy="{SVG_TITLEBAR_H//2}" r="6" fill="{col}"/>')
-    o.append(f'<text x="{SVG_W//2}" y="{SVG_TITLEBAR_H//2+4}" text-anchor="middle" {FONT_TITLE} fill="#8a8a8a">claude — /tmp/demo-app</text>')
+    o.append(f'<text x="{SVG_W//2}" y="{SVG_TITLEBAR_H//2+4}" text-anchor="middle" {FONT_TITLE} fill="#8a8a8a">{esc(SVG_TITLE)}</text>')
+    # The transcript is dimmed so the statusline — the actual product — is the
+    # focal point rather than competing with the conversation above it.
+    o.append('<g opacity="0.5">')
     for i,parts in enumerate(SVG_LINES):
         if not parts: continue
         y = SVG_TITLEBAR_H + SVG_PAD_Y + (i+1)*SVG_LH
         inner = "".join(f'<tspan fill="{c}">{esc(t)}</tspan>' for t,c in parts)
         o.append(f'<text x="{SVG_PAD_X}" y="{y}" {FONT_MONO}>{inner}</text>')
+    o.append('</g>')
     o.append(f'<rect x="0" y="{sep_y}" width="{SVG_W}" height="1" fill="#33344a"/>')
     o.append(f'<rect x="0" y="{sep_y+1}" width="{SVG_W}" height="{SVG_STATUS_H}" fill="#13141f"/>')
     # State 0 gets base opacity:1 so the statusline is visible even if a renderer
     # ignores SMIL entirely; the others start hidden and the <animate> drives them.
     for i,(label,spans,lbl_text) in enumerate(state_data):
         op = 1 if i == 0 else 0
-        o.append(f'<text x="{SVG_W-SVG_PAD_X}" y="{lbl_y}" text-anchor="end" {FONT_TITLE} fill="#565f89" opacity="{op}">{esc(lbl_text)}{smil(i)}</text>')
+        o.append(f'<text x="{SVG_W-SVG_PAD_X}" y="{lbl_y}" text-anchor="end" {FONT_TITLE} fill="{SVG_LABEL_COLOR[label]}" opacity="{op}">{esc(lbl_text)}{smil(i)}</text>')
     for i,(label,spans,_) in enumerate(state_data):
         op = 1 if i == 0 else 0
         ts = "".join(f'<tspan fill="{c}">{esc(t)}</tspan>' for c,t in spans)
