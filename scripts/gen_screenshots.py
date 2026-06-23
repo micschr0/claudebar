@@ -306,10 +306,12 @@ body { background:transparent; }
 .strip {
   display:inline-block;
   box-shadow:0 10px 30px rgba(0,0,0,0.45);
-  /* Card hugs its content (no fixed/min width) so short states don't trail a
-     long empty gap on the right. The README sets each <img> width to the
-     card's own CSS width, keeping the font size uniform across all strips. */
-  width:max-content;
+  /* Floor every card to the width of the widest real state (critical, with
+     its weekly window) so all strips share ONE width. Shown at a single
+     <img> width in the README, that keeps the font size identical across
+     every strip and aligns their edges — without the old 1300px dead space.
+     min-width (not width) still grows for any future longer state. */
+  min-width:960px;
   background:#13141f;
   border:1px solid #2a2b3d;
   border-radius:8px;
