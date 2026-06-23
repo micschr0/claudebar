@@ -29,7 +29,7 @@ thiserror = "1"
 # TUI-only (feature-gated, never linked on the render hot path)
 ratatui = { version = "0.29", optional = true }
 crossterm = { version = "0.28", optional = true }
-ansi-to-tui = { version = "7", optional = true }
+ansi-to-tui = { version = "8", optional = true }
 
 [dev-dependencies]
 insta = { version = "1", features = ["filters", "glob"] }
