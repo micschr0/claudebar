@@ -12,6 +12,7 @@ use std::path::{Path, PathBuf};
 /// *which* are enabled (presence) and their *order* (render order).
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "kebab-case")]
+#[non_exhaustive]
 pub enum SegmentKind {
     Directory,
     Git,
@@ -33,6 +34,7 @@ impl SegmentKind {
     ];
 
     /// Human label for the TUI list.
+    #[must_use]
     pub fn label(self) -> &'static str {
         match self {
             SegmentKind::Directory => "Directory",
@@ -121,6 +123,7 @@ impl Config {
     }
 
     /// Load from the explicit path if given, else the default path, else default.
+    #[must_use]
     pub fn load_or_default(explicit: Option<&Path>) -> Config {
         let path = explicit.map(PathBuf::from).or_else(Config::default_path);
         match path {
@@ -147,6 +150,7 @@ impl Config {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum ConfigError {
     #[error("config i/o error: {0}")]
     Io(String),

@@ -174,7 +174,7 @@ impl FromJsonNumber for u64 {
         // 2^64. `u64::MAX as f64` rounds up to exactly 2^64, so `<=` would admit
         // the whole rounding gap (u64::MAX, 2^64]; the literal is f64-exact and
         // strict-less-than rejects it.
-        if v.is_finite() && v >= 0.0 && v < 18446744073709551616.0 {
+        if v.is_finite() && (0.0..18446744073709551616.0).contains(&v) {
             Some(v as u64)
         } else {
             None
@@ -199,7 +199,7 @@ impl FromJsonNumber for i64 {
         // 2^63. `i64::MAX as f64` rounds up to exactly 2^63, so `<=` would admit
         // the rounding gap (i64::MAX, 2^63]; the literal is f64-exact and
         // strict-less-than rejects it. `i64::MIN as f64` is exact, so `>=` is fine.
-        if v.is_finite() && v >= i64::MIN as f64 && v < 9223372036854775808.0 {
+        if v.is_finite() && (i64::MIN as f64..9223372036854775808.0).contains(&v) {
             Some(v as i64)
         } else {
             None
