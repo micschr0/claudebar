@@ -15,7 +15,7 @@
 //!   bar_warn   nord13 #ebcb8b → 222 (Aurora yellow)
 //!   bar_crit   nord11 #bf616a → 131 (Aurora red)
 //!   bar_track  nord1  #3b4252 → 239 (Polar Night)
-//!   separator  nord1  #3b4252 → 239 (Polar Night)
+//!   separator  nord3  #4c566a → 60  (Polar Night, lifted for contrast)
 //!   dim        nord3-ish grey → 245
 //!   reset      nord8  #88c0d0 → 110 (Frost cyan)
 //!   effort_max nord15 #b48ead → 139 (Aurora purple)
@@ -36,7 +36,7 @@ pub fn theme() -> Theme {
         bar_warn: Color(222),
         bar_crit: Color(131),
         bar_track: Color(239),
-        separator: Color(239),
+        separator: Color(60),
         dim: Color(245),
         reset: Color(110),
         effort_max: Color(139),

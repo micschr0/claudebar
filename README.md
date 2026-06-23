@@ -64,6 +64,16 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 
 It installs the binary and wires up `~/.claude/settings.json` (backing up any existing file). Then **restart Claude Code** — the statusline appears on your next turn.
 
+**Where it hooks in:** Claude Code reads the `statusLine` key in `~/.claude/settings.json`. The installer adds this for you:
+
+```json
+{
+  "statusLine": { "type": "command", "command": "~/.claude/claudebar render" }
+}
+```
+
+On every turn Claude Code runs that command, feeds it the session JSON on stdin, and prints whatever it writes to stdout as your statusline. (`cargo install` users use the bare `claudebar render`; the bash fallback uses `bash ~/.claude/statusline-command.sh`.)
+
 <details>
 <summary>Manual install</summary>
 
@@ -89,11 +99,15 @@ The curl installer instead installs to `~/.claude/claudebar` and writes that ful
 
 ## Configure
 
+Once installed, launch the configurator — this is the simplest way, there's no separate app or flag to remember:
+
 ```bash
 claudebar config
 ```
 
-Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`.
+Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`. Press `?` inside for key bindings, `s` to save, `q` to quit.
+
+> If you installed with the curl script, the binary lives at `~/.claude/claudebar`, so call `~/.claude/claudebar config` (or add `~/.claude` to your `PATH`).
 
 <img src="screenshots/tui.png" width="860" alt="Navigating the claudebar TUI configurator">
 
