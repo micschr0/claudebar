@@ -5,6 +5,7 @@
 
 use crate::model::{Color, RESET, Style, Theme};
 use crate::render::bar::make_bar;
+use std::fmt::Write;
 
 pub struct SegmentWriter<'a> {
     buf: String,
@@ -42,8 +43,18 @@ impl<'a> SegmentWriter<'a> {
     /// emitted verbatim — callers must pre-sanitize host-provided strings with
     /// [`crate::sanitize::strip_control`].
     pub fn colored(&mut self, color: Color, text: &str) {
-        self.buf.push_str(&color.fg());
+        color.write_fg(&mut self.buf);
         self.buf.push_str(text);
+        self.buf.push_str(RESET);
+    }
+
+    /// Like [`SegmentWriter::colored`] but takes pre-formatted [`std::fmt::Arguments`]
+    /// so callers can pass `format_args!(...)` and write directly into the buffer
+    /// instead of allocating a throwaway `String` per emission. Emits the same
+    /// byte order as [`SegmentWriter::colored`]: fg color → args → reset.
+    pub fn colored_fmt(&mut self, color: Color, args: std::fmt::Arguments) {
+        color.write_fg(&mut self.buf);
+        self.buf.write_fmt(args).unwrap();
         self.buf.push_str(RESET);
     }
 
@@ -57,7 +68,7 @@ impl<'a> SegmentWriter<'a> {
     /// so minimal/ASCII styles drop glyphs without any per-segment branching.
     pub fn icon(&mut self, glyph: &str) {
         if self.style.icons && !glyph.is_empty() {
-            self.buf.push_str(&self.theme.dim.fg());
+            self.theme.dim.write_fg(&mut self.buf);
             self.buf.push_str(glyph);
             self.buf.push_str(RESET);
             self.buf.push(' ');

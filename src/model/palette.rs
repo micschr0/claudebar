@@ -3,6 +3,8 @@
 //! A theme is a *fixed struct* (not a map): adding a slot is a compile error in
 //! every theme that omits it, so a theme can never silently miss a color.
 
+use std::fmt::Write;
+
 /// A 256-color ANSI color index, used as `\e[38;5;<n>m`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Color(pub u8);
@@ -11,6 +13,14 @@ impl Color {
     /// SGR foreground sequence, e.g. `\x1b[38;5;33m`.
     pub fn fg(self) -> String {
         format!("\x1b[38;5;{}m", self.0)
+    }
+
+    /// Append the SGR foreground sequence directly into `buf`, avoiding the
+    /// throwaway `String` that [`Color::fg`] allocates on the render hot path.
+    pub fn write_fg(self, buf: &mut String) {
+        buf.push_str("\x1b[38;5;");
+        write!(buf, "{}", self.0).unwrap();
+        buf.push('m');
     }
 }
 
