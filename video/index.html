@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>claudebar — promo</title>
+  <style>
+    /* Dark body matches every scene's bg → no flash during the 0.4s crossfades. */
+    html, body { margin: 0; padding: 0; background: #16161e; }
+  </style>
+</head>
+<body>
+  <!--
+    claudebar promo. Silent (on-screen text only). 25s, 16:9 1920×1080.
+    Each scene's data-duration extends 0.4s past its nominal end; the next scene
+    starts at that nominal boundary and fades 0→1 over the 0.4s overlap, on top of
+    the still-opaque outgoing scene. Unique track index per scene. Last scene (CTA)
+    does NOT extend — it holds the final frame to t=25 for clean looping.
+  -->
+  <div id="root"
+       data-composition-id="main"
+       data-width="1920"
+       data-height="1080"
+       data-start="0"
+       data-duration="25">
+
+    <div data-composition-id="scene-00-logo"
+         data-composition-src="scenes/00-logo.html"
+         data-start="0"    data-duration="3.9"  data-track-index="1"></div>
+
+    <div data-composition-id="scene-01-strip"
+         data-composition-src="scenes/01-strip.html"
+         data-start="3.5"  data-duration="5.4"  data-track-index="2"
+         style="opacity:0"></div>
+
+    <div data-composition-id="scene-02-states"
+         data-composition-src="scenes/02-states.html"
+         data-start="8.5"  data-duration="5.4"  data-track-index="3"
+         style="opacity:0"></div>
+
+    <div data-composition-id="scene-03-features"
+         data-composition-src="scenes/03-features.html"
+         data-start="13.5" data-duration="4.9"  data-track-index="4"
+         style="opacity:0"></div>
+
+    <div data-composition-id="scene-04-speed"
+         data-composition-src="scenes/04-speed.html"
+         data-start="18"   data-duration="3.9"  data-track-index="5"
+         style="opacity:0"></div>
+
+    <div data-composition-id="scene-05-cta"
+         data-composition-src="scenes/05-cta.html"
+         data-start="21.5" data-duration="3.5"  data-track-index="6"
+         style="opacity:0"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+    // Only fade the INCOMING scene in; the outgoing stays opaque underneath until its duration ends.
+    tl.to('[data-composition-id="scene-01-strip"]',    { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 3.5);
+    tl.to('[data-composition-id="scene-02-states"]',   { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 8.5);
+    tl.to('[data-composition-id="scene-03-features"]', { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 13.5);
+    tl.to('[data-composition-id="scene-04-speed"]',    { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 18);
+    tl.to('[data-composition-id="scene-05-cta"]',      { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 21.5);
+    window.__timelines["main"] = tl;
+  </script>
+</body>
+</html>

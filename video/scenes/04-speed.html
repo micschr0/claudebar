@@ -1,0 +1,76 @@
+<template id="scene-04-speed-template">
+  <div data-composition-id="scene-04-speed" data-width="1920" data-height="1080">
+    <div class="stack">
+      <div id="bignum" class="bignum"><span id="ms">0</span><span class="unit">&nbsp;ms</span></div>
+      <div class="bars">
+        <div id="row-cb" class="row">
+          <span class="rlabel">claudebar</span>
+          <span class="track"><span id="bar-cb" class="fill cb"></span></span>
+        </div>
+        <div id="row-bash" class="row">
+          <span class="rlabel dim">bash</span>
+          <span class="track"><span id="bar-bash" class="fill bash"></span></span>
+          <span class="rt dim">~200 ms</span>
+        </div>
+      </div>
+      <p id="tag" class="tag">~5× faster than bash · ~1.5 MB · read-only</p>
+    </div>
+
+    <style>
+      [data-composition-id="scene-04-speed"] {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: #16161e;
+        font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+      }
+      [data-composition-id="scene-04-speed"] .stack {
+        display: flex; flex-direction: column; align-items: center; gap: 46px;
+      }
+      [data-composition-id="scene-04-speed"] .bignum {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 150px; font-weight: 700; letter-spacing: -4px; color: #9ece6a;
+        visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-04-speed"] .bignum .unit { color: #565f89; font-size: 86px; }
+      [data-composition-id="scene-04-speed"] .bars {
+        display: flex; flex-direction: column; gap: 22px; width: 1100px;
+      }
+      [data-composition-id="scene-04-speed"] .row { display: flex; align-items: center; gap: 28px; }
+      [data-composition-id="scene-04-speed"] .rlabel {
+        width: 230px; text-align: right; font-size: 40px; font-weight: 600; color: #c0caf5;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+      [data-composition-id="scene-04-speed"] .dim { color: #828bb8; }
+      [data-composition-id="scene-04-speed"] .track {
+        flex: 1; height: 26px; border-radius: 13px; background: #2f334d; overflow: hidden;
+      }
+      [data-composition-id="scene-04-speed"] .fill {
+        display: block; height: 100%; border-radius: 13px;
+        transform: scaleX(0); transform-origin: left center;
+      }
+      [data-composition-id="scene-04-speed"] .fill.cb   { width: 15%;  background: linear-gradient(90deg,#7aa2f7,#7dcfff); }
+      [data-composition-id="scene-04-speed"] .fill.bash { width: 100%; background: #f7768e; }
+      [data-composition-id="scene-04-speed"] .rt {
+        font-size: 34px; font-family: "JetBrains Mono", ui-monospace, monospace; width: 150px;
+      }
+      [data-composition-id="scene-04-speed"] .tag {
+        margin: 0; font-size: 44px; font-weight: 400; color: #565f89; letter-spacing: -0.5px;
+        visibility: hidden; opacity: 0;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#bignum", { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4, ease: "expo.out" }, 0.1);
+      const ms = { v: 0 }, el = document.getElementById("ms");
+      tl.to(ms, { v: 30, duration: 0.7, ease: "power1.out",
+        onUpdate: () => { el.textContent = Math.round(ms.v); } }, 0.2);
+      tl.to("#bar-cb",   { scaleX: 1, duration: 0.45, ease: "power3.out" }, 0.2);
+      tl.to("#bar-bash", { scaleX: 1, duration: 1.4,  ease: "power1.inOut" }, 0.2);
+      tl.fromTo("#tag", { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out" }, 1.2);
+      window.__timelines["scene-04-speed"] = tl;
+    </script>
+  </div>
+</template>

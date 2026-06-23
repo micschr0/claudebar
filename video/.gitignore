@@ -1,0 +1,6 @@
+# Downloaded render browser — do not commit (261 MB)
+chrome-headless-shell/
+
+# Render scratch
+out/work-*/
+*.log
