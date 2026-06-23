@@ -16,12 +16,12 @@
 
 <div align="center">
 
-<img src="screenshots/strip-green.png" width="820" alt="Calm state — low usage, everything green">
-<img src="screenshots/strip-normal.png" width="820" alt="Normal mid-session usage">
-<img src="screenshots/strip-critical.png" width="820" alt="Critical — context high, 5-hour limit tight, weekly window shown">
-<img src="screenshots/strip-overlimit.png" width="820" alt="Over limit — past 100% context, both bars red">
-<img src="screenshots/strip-nogit.png" width="820" alt="Outside a git repo — git segment drops out">
-<img src="screenshots/strip-noeffort.png" width="820" alt="Model without an effort param — effort indicator omitted">
+<img src="screenshots/strip-green.png" width="857" alt="Calm state — low usage, everything green">
+<img src="screenshots/strip-normal.png" width="832" alt="Normal mid-session usage">
+<img src="screenshots/strip-critical.png" width="1009" alt="Critical — context high, 5-hour limit tight, weekly window shown">
+<img src="screenshots/strip-overlimit.png" width="874" alt="Over limit — past 100% context, both bars red">
+<img src="screenshots/strip-nogit.png" width="756" alt="Outside a git repo — git segment drops out">
+<img src="screenshots/strip-noeffort.png" width="781" alt="Model without an effort param — effort indicator omitted">
 
 </div>
 

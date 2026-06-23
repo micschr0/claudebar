@@ -306,15 +306,14 @@ body { background:transparent; }
 .strip {
   display:inline-block;
   box-shadow:0 10px 30px rgba(0,0,0,0.45);
-  /* Uniform card width across every state so they render at the SAME font
-     size when shown at a fixed width in the README. min-width (not width)
-     floors short states to a common width while still growing for any future
-     state longer than this — no text gets clipped. */
-  min-width:1300px;
+  /* Card hugs its content (no fixed/min width) so short states don't trail a
+     long empty gap on the right. The README sets each <img> width to the
+     card's own CSS width, keeping the font size uniform across all strips. */
+  width:max-content;
   background:#13141f;
   border:1px solid #2a2b3d;
   border-radius:8px;
-  padding:9px 18px;
+  padding:16px 22px;
   font-family:'HackNF',monospace; font-size:14px; line-height:1.5;
   white-space:pre; color:#a9b1d6;
 }
