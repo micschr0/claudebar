@@ -31,7 +31,6 @@ jobs:
         env:
           RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
           RENOVATE_REPOSITORIES: ${{ github.repository }}
-          LOG_LEVEL: debug
           GIT_AUTHOR_NAME: micschro
           GIT_AUTHOR_EMAIL: micschr0@mailbox.org
           GIT_COMMITTER_NAME: micschro
