@@ -1,0 +1,56 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices", ":semanticCommits"],
+  "labels": ["dependencies"],
+  "timezone": "Europe/Berlin",
+  "schedule": ["after 8am and before 6pm on Monday"],
+  "cargo": {
+    "rangeStrategy": "update-lockfile"
+  },
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "minimumReleaseAge": "0 days",
+    "schedule": ["at any time"],
+    "automerge": false
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "schedule": ["after 8am and before 6pm on Sunday"]
+  },
+  "packageRules": [
+    {
+      "description": "Never pin Cargo crate versions to exact '=' — Cargo.lock gives reproducibility",
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["pin"],
+      "enabled": false
+    },
+    {
+      "description": "Group serde ecosystem",
+      "matchManagers": ["cargo"],
+      "matchPackageNames": ["serde*"],
+      "groupName": "serde ecosystem",
+      "automerge": true
+    },
+    {
+      "description": "Automerge non-major Cargo updates after 7d soak (CI is the gate)",
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "minimumReleaseAge": "7 days",
+      "automerge": true
+    },
+    {
+      "description": "Group and automerge GitHub Actions minor/patch/digest",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "github-actions",
+      "automerge": true
+    },
+    {
+      "description": "Major updates require manual review",
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ]
+}
