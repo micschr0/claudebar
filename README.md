@@ -14,31 +14,16 @@
 
 </div>
 
-## Screenshots
+<div align="center">
 
-**Calm** — low usage, everything green:
+<img src="screenshots/strip-green.png" width="820" alt="Calm state — low usage, everything green">
+<img src="screenshots/strip-normal.png" width="820" alt="Normal mid-session usage">
+<img src="screenshots/strip-critical.png" width="820" alt="Critical — context high, 5-hour limit tight, weekly window shown">
+<img src="screenshots/strip-overlimit.png" width="820" alt="Over limit — past 100% context, both bars red">
+<img src="screenshots/strip-nogit.png" width="820" alt="Outside a git repo — git segment drops out">
+<img src="screenshots/strip-noeffort.png" width="820" alt="Model without an effort param — effort indicator omitted">
 
-<img src="screenshots/strip-green.png" width="860" alt="Calm state, all green">
-
-**Normal** — typical mid-session usage:
-
-<img src="screenshots/strip-normal.png" width="860" alt="Normal mid-session state">
-
-**Critical** — context filling up, 5-hour limit tight, weekly window now shown:
-
-<img src="screenshots/strip-critical.png" width="860" alt="Critical state with weekly rate limit">
-
-**Over limit** — past 100% context, both bars red:
-
-<img src="screenshots/strip-overlimit.png" width="860" alt="Over context limit">
-
-**Outside a git repo** — the git segment drops out:
-
-<img src="screenshots/strip-nogit.png" width="860" alt="Outside a git repository">
-
-**Model without effort** — effort indicator omitted when the model has no effort param:
-
-<img src="screenshots/strip-noeffort.png" width="860" alt="Model without effort indicator">
+</div>
 
 ## Features
 
