@@ -1,0 +1,6 @@
+---
+source: tests/render_golden.rs
+assertion_line: 69
+expression: rendered
+---
+\e[38;5;116m ~/p/claude-code-statusline\e[0m \e[38;5;103m\e[0m \e[38;5;103m󰍛\e[0m \e[38;5;222m━━━━\e[38;5;103m╌╌\e[0m \e[38;5;222m67%\e[0m \e[38;5;103m󰰩\e[0m \e[38;5;116m42.3k\e[0m \e[38;5;103m\e[0m \e[38;5;103m󰔟\e[0m \e[38;5;116m━━\e[38;5;103m╌╌╌╌\e[0m \e[38;5;116m48%\e[0m \e[38;5;103m↺\e[0m \e[38;5;66m2h46m\e[0m \e[38;5;103m\e[0m \e[38;5;103m◈\e[0m \e[38;5;181mOpus 4.8\e[0m \e[38;5;103m\e[0m \e[38;5;116mhigh\e[0m
