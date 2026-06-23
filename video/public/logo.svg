@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="286" height="96" viewBox="0 0 286 96" role="img" aria-label="claudebar">
+  <defs>
+    <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7aa2f7"/>
+      <stop offset="1" stop-color="#7dcfff"/>
+    </linearGradient>
+    <style>
+      .claude { fill: #c0caf5; }
+      .bar    { fill: #7aa2f7; }
+      .track  { fill: #2f334d; }
+      /* Stay readable on light README themes */
+      @media (prefers-color-scheme: light) {
+        .claude { fill: #1f2328; }
+        .bar    { fill: #2f6fed; }
+        .track  { fill: #d0d7de; }
+      }
+    </style>
+  </defs>
+  <text x="6" y="60" font-family="'SF Pro Display','Segoe UI',Helvetica,Arial,sans-serif"
+        font-size="58" font-weight="700" letter-spacing="-1">
+    <tspan class="claude">claude</tspan><tspan class="bar">bar</tspan>
+  </text>
+  <!-- progress-bar underline beneath "bar" (the one product flourish) -->
+  <rect class="track" x="196" y="74" width="84" height="6" rx="3"/>
+  <rect x="196" y="74" width="52" height="6" rx="3" fill="url(#bar)"/>
+</svg>
