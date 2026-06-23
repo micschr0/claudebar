@@ -40,10 +40,9 @@
       "automerge": true
     },
     {
-      "description": "Automerge non-major Cargo updates after 4d soak (CI is the gate)",
+      "description": "Automerge non-major Cargo updates (CI is the gate)",
       "matchManagers": ["cargo"],
       "matchUpdateTypes": ["patch", "minor"],
-      "minimumReleaseAge": "4 days",
       "automerge": true
     },
     {
