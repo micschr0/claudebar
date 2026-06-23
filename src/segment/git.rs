@@ -143,7 +143,10 @@ impl Segment for Git {
         out.icon(glyphs.branch);
         out.colored(theme.git_branch, &status.branch);
         if status.ahead > 0 {
-            out.colored_fmt(theme.ahead, format_args!(" {}{}", glyphs.ahead, status.ahead));
+            out.colored_fmt(
+                theme.ahead,
+                format_args!(" {}{}", glyphs.ahead, status.ahead),
+            );
         }
         if status.behind > 0 {
             out.colored_fmt(

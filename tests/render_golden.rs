@@ -109,12 +109,7 @@ fn injection_no_control_byte_leak() {
         residue.push(c);
     }
 
-    for (byte, label) in [
-        ('\x1b', "ESC"),
-        ('\x07', "BEL"),
-        ('\r', "CR"),
-        ('\n', "LF"),
-    ] {
+    for (byte, label) in [('\x1b', "ESC"), ('\x07', "BEL"), ('\r', "CR"), ('\n', "LF")] {
         assert!(
             !residue.contains(byte),
             "{label} control byte leaked into output: residue={residue:?}"
