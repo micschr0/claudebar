@@ -1,0 +1,37 @@
+name: Renovate
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: renovate-${{ github.ref }}
+  cancel-in-progress: false
+
+# Deny-all by default. Renovate authenticates with its own RENOVATE_TOKEN
+# (PAT) — the workflow's GITHUB_TOKEN only needs `contents: read` for
+# checkout.
+permissions: {}
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: renovatebot/github-action@8217b3fc286df088d7c27f3255fe8414463bc0fd # v46.1.15
+        with:
+          configurationFile: renovate.json
+        env:
+          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+          GIT_AUTHOR_NAME: micschro
+          GIT_AUTHOR_EMAIL: micschr0@mailbox.org
+          GIT_COMMITTER_NAME: micschro
+          GIT_COMMITTER_EMAIL: micschr0@mailbox.org
