@@ -22,10 +22,10 @@ pub fn make_bar(
     }
     // At least one filled cell once there's any usage, so a non-zero bar is
     // visually distinct from an empty one.
-    if pct > 0 && filled == 0 {
+    if pct > 0 && width > 0 && filled == 0 {
         filled = 1;
     }
-    let empty = width - filled;
+    let empty = width.saturating_sub(filled);
 
     let mut out = String::with_capacity(width as usize * 4 + 16);
     out.push_str(&fill.fg());
@@ -47,6 +47,11 @@ mod tests {
     fn plain(pct: u32) -> String {
         // Strip ANSI to count cells deterministically.
         let s = make_bar(pct, 6, Color(1), Color(2), '#', '-');
+        s.chars().filter(|c| *c == '#' || *c == '-').collect()
+    }
+
+    fn plain_w(pct: u32, width: u8) -> String {
+        let s = make_bar(pct, width, Color(1), Color(2), '#', '-');
         s.chars().filter(|c| *c == '#' || *c == '-').collect()
     }
 
@@ -73,5 +78,15 @@ mod tests {
     #[test]
     fn over_limit_clamps() {
         assert_eq!(plain(150), "######");
+    }
+
+    #[test]
+    fn width_zero_with_zero_pct_is_empty() {
+        assert_eq!(plain_w(0, 0), "");
+    }
+
+    #[test]
+    fn width_zero_with_nonzero_pct_is_empty() {
+        assert_eq!(plain_w(50, 0), "");
     }
 }
