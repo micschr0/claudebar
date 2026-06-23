@@ -172,4 +172,12 @@ mod tests {
         assert_eq!(fmt_reset(now - 5, now), None); // past
         assert_eq!(fmt_reset(0, now), None); // absent
     }
+
+    #[test]
+    fn boundary_reset_cases() {
+        // CR-16: exact diff-0 and diff-1 boundaries around the `diff <= 0` guard.
+        let now = 1_000_000;
+        assert_eq!(fmt_reset(now, now), None); // diff 0 → None
+        assert_eq!(fmt_reset(now + 1, now).as_deref(), Some("1s")); // diff 1 → "1s"
+    }
 }

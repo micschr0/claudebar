@@ -215,6 +215,22 @@ mod tests {
     }
 
     #[test]
+    fn past_reset_shows_pct_without_countdown() {
+        // CR-16: a window with resets_at in the PAST (< NOW) renders the pct but
+        // no countdown — fmt_reset returns None so write_reset_value is skipped.
+        // Complementary negative case to five_hour_shows_with_pct_and_reset.
+        let out = render_rl(
+            r#"{"rate_limits":{"five_hour":{"used_percentage":48.0,"resets_at":1699000000}}}"#,
+        );
+        assert!(out.contains("48%"), "pct should still render: {out:?}");
+        let reset = themes::get("tokyo-night").reset.fg();
+        assert!(
+            !out.contains(&reset),
+            "no countdown expected for past reset: {out:?}"
+        );
+    }
+
+    #[test]
     fn empty_input_renders_nothing() {
         assert_eq!(render_rl("{}"), "");
     }
