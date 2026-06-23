@@ -4,17 +4,11 @@
 
 **A fast, themeable statusline for Claude Code.**
 
+Your working directory, git state, context usage, and live rate-limit countdowns — right in the Claude Code status line.
+
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![~5× faster than bash](https://img.shields.io/badge/render-~5%C3%97_faster_than_bash-9ece6a)
-
-<img src="screenshots/intro.png" width="820" alt="claudebar statusline demo (rendered)">
-
-<sub><i>Rendered demo for illustration.</i></sub>
-
-</div>
-
-<div align="center">
 
 <img src="screenshots/strip-green.png" width="857" alt="Calm state — low usage, everything green">
 <img src="screenshots/strip-normal.png" width="832" alt="Normal mid-session usage">
@@ -22,6 +16,12 @@
 <img src="screenshots/strip-overlimit.png" width="874" alt="Over limit — past 100% context, both bars red">
 <img src="screenshots/strip-nogit.png" width="756" alt="Outside a git repo — git segment drops out">
 <img src="screenshots/strip-noeffort.png" width="781" alt="Model without an effort param — effort indicator omitted">
+
+<br>
+
+<img src="screenshots/intro.png" width="820" alt="claudebar at the bottom of a real Claude Code session">
+
+<sub><i>claudebar living at the bottom of a Claude Code session.</i></sub>
 
 </div>
 
