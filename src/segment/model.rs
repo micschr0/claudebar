@@ -134,6 +134,25 @@ mod tests {
     }
 
     #[test]
+    fn unknown_effort_level_uses_dim_catch_all() {
+        // CR-13: an effort level not in {low,medium,high,xhigh,max} falls through
+        // to the `_ => ctx.theme.dim` arm. "ultra" is unknown (note: "xhigh" has
+        // its own bar_warn arm, so it would NOT exercise the catch-all).
+        let out = render_model(Some("Opus 4.8"), Some("ultra"));
+        let theme = themes::get("tokyo-night");
+        assert!(out.contains("ultra"), "level text missing: {out:?}");
+        assert!(
+            out.contains(&theme.dim.fg()),
+            "catch-all dim color missing: {out:?}"
+        );
+        // Negative guard: must not have matched the xhigh (bar_warn) arm.
+        assert!(
+            !out.contains(&theme.bar_warn.fg()),
+            "unexpectedly matched xhigh/bar_warn arm: {out:?}"
+        );
+    }
+
+    #[test]
     fn strips_injection_bytes() {
         // ESC injected through the model name must be stripped; the only ESC
         // bytes left are our own SGR codes (icon dim+reset, model color+reset) —

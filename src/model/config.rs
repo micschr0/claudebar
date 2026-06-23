@@ -194,4 +194,41 @@ mod tests {
         let c: Config = toml::from_str(r#"segments = ["rate-limits", "git"]"#).unwrap();
         assert_eq!(c.segments, vec![SegmentKind::RateLimits, SegmentKind::Git]);
     }
+
+    /// Unique temp path; nanos + pid keep parallel test runs from colliding.
+    /// No `tempfile` crate — `insta` is the only dev-dependency.
+    fn unique_temp_path() -> PathBuf {
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or(0);
+        std::env::temp_dir().join(format!(
+            "claudebar-test-{}-{}.toml",
+            std::process::id(),
+            nanos
+        ))
+    }
+
+    #[test]
+    fn malformed_toml_is_parse_error() {
+        // CR-14: a present-but-broken file is a real error, not a silent default.
+        let path = unique_temp_path();
+        std::fs::write(&path, "theme = \"unclosed").unwrap();
+        let result = Config::load(&path);
+        assert!(
+            matches!(result, Err(ConfigError::Parse(_))),
+            "expected Parse error, got: {result:?}"
+        );
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn load_or_default_falls_back_on_malformed() {
+        // CR-14: the load-or-default path swallows the parse error and yields
+        // Config::default() so rendering never breaks on a bad file.
+        let path = unique_temp_path();
+        std::fs::write(&path, "theme = \"unclosed").unwrap();
+        assert_eq!(Config::load_or_default(Some(&path)), Config::default());
+        let _ = std::fs::remove_file(&path);
+    }
 }
