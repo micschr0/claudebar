@@ -171,7 +171,10 @@ impl FromJsonNumber for u64 {
         u64::try_from(v).ok()
     }
     fn from_f64(v: f64) -> Option<Self> {
-        if v.is_finite() && v >= 0.0 && v <= u64::MAX as f64 {
+        // 2^64. `u64::MAX as f64` rounds up to exactly 2^64, so `<=` would admit
+        // the whole rounding gap (u64::MAX, 2^64]; the literal is f64-exact and
+        // strict-less-than rejects it.
+        if v.is_finite() && v >= 0.0 && v < 18446744073709551616.0 {
             Some(v as u64)
         } else {
             None
@@ -193,7 +196,10 @@ impl FromJsonNumber for i64 {
         Some(v)
     }
     fn from_f64(v: f64) -> Option<Self> {
-        if v.is_finite() && v >= i64::MIN as f64 && v <= i64::MAX as f64 {
+        // 2^63. `i64::MAX as f64` rounds up to exactly 2^63, so `<=` would admit
+        // the rounding gap (i64::MAX, 2^63]; the literal is f64-exact and
+        // strict-less-than rejects it. `i64::MIN as f64` is exact, so `>=` is fine.
+        if v.is_finite() && v >= i64::MIN as f64 && v < 9223372036854775808.0 {
             Some(v as i64)
         } else {
             None
@@ -203,7 +209,8 @@ impl FromJsonNumber for i64 {
         let s = s.trim();
         s.parse::<i64>().ok().or_else(|| {
             let v = s.parse::<f64>().ok()?;
-            if !v.is_finite() || v < i64::MIN as f64 || v > i64::MAX as f64 {
+            // Reject at/above 2^63 (strict): see `from_f64` rationale.
+            if !v.is_finite() || v < i64::MIN as f64 || v >= 9223372036854775808.0 {
                 return None;
             }
             Some(v as i64)
@@ -357,11 +364,44 @@ mod tests {
 
     #[test]
     fn coerce_u64_within_range_from_f64_string() {
-        // Value within u64 range, coming as a float-parseable string.
-        let c: Coerce<u64> = serde_json::from_str(r#""18446744073709551615""#).unwrap();
-        // u64::MAX parsed via f64 — f64 rounds the last few digits, but result
-        // should be Some (either exact or lossy-but-valid).
-        assert!(c.get().is_some(), "u64::MAX should parse via f64");
+        // Value within u64 range, coming as a float-parseable string. Chosen
+        // below the 2^64 rounding boundary: u64::MAX parses through f64 to
+        // exactly 2^64 (now correctly rejected), so use 1.8e19 which is
+        // f64-representable and unambiguously < 2^64.
+        let c: Coerce<u64> = serde_json::from_str(r#""18000000000000000000""#).unwrap();
+        assert!(c.get().is_some(), "a sub-2^64 value should parse via f64");
+    }
+
+    #[test]
+    fn coerce_u64_at_2_pow_64_from_float_fails() {
+        // 2^64 is the value `u64::MAX as f64` rounds to — must be rejected.
+        let c: Coerce<u64> = serde_json::from_str("18446744073709551616.0").unwrap();
+        assert_eq!(c.get(), None);
+    }
+
+    #[test]
+    fn coerce_u64_largest_f64_below_2_pow_64_accepted() {
+        // The largest f64 strictly below 2^64 is 2^64 - 2048 (f64 spacing at this
+        // magnitude is 2048), which is < u64::MAX and must still be accepted: the
+        // strict `< 2^64` bound rejects only the rounded-up 2^64 value itself, not
+        // valid in-range floats just beneath it.
+        let largest = 18446744073709549568.0_f64; // 2^64 - 2048
+        let c: Coerce<u64> = serde_json::from_str("18446744073709549568.0").unwrap();
+        assert_eq!(c.get(), Some(largest as u64));
+    }
+
+    #[test]
+    fn coerce_i64_at_2_pow_63_from_float_fails() {
+        // 2^63 is the value `i64::MAX as f64` rounds to — must be rejected.
+        let c: Coerce<i64> = serde_json::from_str("9223372036854775808.0").unwrap();
+        assert_eq!(c.get(), None);
+    }
+
+    #[test]
+    fn coerce_i64_at_2_pow_63_from_string_fails() {
+        // Same boundary via the `from_str_num` float path.
+        let c: Coerce<i64> = serde_json::from_str(r#""9223372036854775808.0""#).unwrap();
+        assert_eq!(c.get(), None);
     }
 
     #[test]
