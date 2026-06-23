@@ -10,9 +10,14 @@ Your working directory, git state, context usage, and live rate-limit countdowns
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![~5× faster than bash](https://img.shields.io/badge/render-~5%C3%97_faster_than_bash-9ece6a)
 
+<img src="screenshots/strip-critical.png" width="900" alt="claudebar statusline — directory, git, context, rate limits, model">
+
+</div>
+
+<div align="center">
+
 <img src="screenshots/strip-green.png" width="857" alt="Calm state — low usage, everything green">
 <img src="screenshots/strip-normal.png" width="832" alt="Normal mid-session usage">
-<img src="screenshots/strip-critical.png" width="1009" alt="Critical — context high, 5-hour limit tight, weekly window shown">
 <img src="screenshots/strip-overlimit.png" width="874" alt="Over limit — past 100% context, both bars red">
 <img src="screenshots/strip-nogit.png" width="756" alt="Outside a git repo — git segment drops out">
 <img src="screenshots/strip-noeffort.png" width="781" alt="Model without an effort param — effort indicator omitted">
@@ -31,7 +36,7 @@ Your working directory, git state, context usage, and live rate-limit countdowns
 - Color-coded context usage
 - Inline git state
 - 16 themes · 6 styles
-- [~5× faster than bash scripts](scripts/benchmark.sh) (~30ms vs ~200ms)
+- [Renders in ~30 ms](scripts/benchmark.sh) — the bash script takes ~200 ms
 - Read-only — never touches your session
 - Tiny ~1.5 MB dependency-free binary
 
