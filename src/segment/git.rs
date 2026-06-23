@@ -91,11 +91,11 @@ fn parse_count(line: &str, key: &str) -> u32 {
     line.find(key)
         .map(|i| &line[i + key.len()..])
         .map(|rest| {
-            rest.chars()
-                .take_while(char::is_ascii_digit)
-                .collect::<String>()
+            // ASCII digits are single-byte, so the count of leading digit bytes
+            // is a valid `&str` boundary — parse that subslice with no String.
+            let n = rest.bytes().take_while(u8::is_ascii_digit).count();
+            rest[..n].parse().unwrap_or(0)
         })
-        .and_then(|digits| digits.parse().ok())
         .unwrap_or(0)
 }
 

@@ -4,17 +4,20 @@
 
 use crate::model::{Color, RESET};
 
-/// Build a self-colored bar of `width` cells for `pct` percent.
+/// Append a self-colored bar of `width` cells for `pct` percent into `buf`,
+/// avoiding the throwaway `String` that [`make_bar`] allocates.
 ///
 /// `pct` may exceed 100 (over-limit); the filled run is clamped to `width`.
-pub fn make_bar(
+#[allow(clippy::too_many_arguments)]
+pub fn write_bar(
+    buf: &mut String,
     pct: u32,
     width: u8,
     fill: Color,
     track: Color,
     fill_ch: char,
     empty_ch: char,
-) -> String {
+) {
     let width = width as u32;
     let mut filled = pct.saturating_mul(width) / 100;
     if filled > width {
@@ -27,16 +30,30 @@ pub fn make_bar(
     }
     let empty = width.saturating_sub(filled);
 
-    let mut out = String::with_capacity(width as usize * 4 + 16);
-    out.push_str(&fill.fg());
+    fill.write_fg(buf);
     for _ in 0..filled {
-        out.push(fill_ch);
+        buf.push(fill_ch);
     }
-    out.push_str(&track.fg());
+    track.write_fg(buf);
     for _ in 0..empty {
-        out.push(empty_ch);
+        buf.push(empty_ch);
     }
-    out.push_str(RESET);
+    buf.push_str(RESET);
+}
+
+/// Build a self-colored bar of `width` cells for `pct` percent.
+///
+/// `pct` may exceed 100 (over-limit); the filled run is clamped to `width`.
+pub fn make_bar(
+    pct: u32,
+    width: u8,
+    fill: Color,
+    track: Color,
+    fill_ch: char,
+    empty_ch: char,
+) -> String {
+    let mut out = String::with_capacity(width as usize * 4 + 16);
+    write_bar(&mut out, pct, width, fill, track, fill_ch, empty_ch);
     out
 }
 

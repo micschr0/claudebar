@@ -4,7 +4,7 @@
 //! it just calls these methods and the active theme × style does the rest.
 
 use crate::model::{Color, RESET, Style, Theme};
-use crate::render::bar::make_bar;
+use crate::render::bar::write_bar;
 use std::fmt::Write;
 
 pub struct SegmentWriter<'a> {
@@ -83,14 +83,15 @@ impl<'a> SegmentWriter<'a> {
     /// Append a progress bar, using the style's bar characters, the theme's
     /// track color, and the given fill color.
     pub fn bar(&mut self, pct: u32, width: u8, fill: Color) {
-        self.buf.push_str(&make_bar(
+        write_bar(
+            &mut self.buf,
             pct,
             width,
             fill,
             self.theme.bar_track,
             self.style.bar_fill,
             self.style.bar_empty,
-        ));
+        );
     }
 
     /// The accumulated segment body.

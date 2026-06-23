@@ -18,7 +18,13 @@ pub fn strip_control(s: &str) -> String {
 pub fn abbreviate_path(cwd: &str, home: Option<&str>) -> String {
     let rel = match home {
         Some(h) if !h.is_empty() && cwd == h => "~".to_string(),
-        Some(h) if !h.is_empty() && cwd.starts_with(&format!("{h}/")) => {
+        Some(h)
+            if !h.is_empty()
+                && cwd
+                    .strip_prefix(h)
+                    .is_some_and(|rest| rest.starts_with('/')) =>
+        {
+            // SAFETY of slice bounds: strip_prefix matched, so `h` is a prefix.
             format!("~{}", &cwd[h.len()..])
         }
         _ => cwd.to_string(),
