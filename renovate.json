@@ -47,11 +47,9 @@
       "automerge": true
     },
     {
-      "description": "Group and automerge GitHub Actions minor/patch/digest",
+      "description": "Disable GitHub Actions updates — managed manually",
       "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch", "digest"],
-      "groupName": "github-actions",
-      "automerge": true
+      "enabled": false
     },
     {
       "description": "Major updates require manual review",
