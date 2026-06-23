@@ -122,7 +122,7 @@ fn write_window(ctx: &RenderCtx, out: &mut SegmentWriter, glyph: &str, pct: u32,
     out.icon(glyph);
     out.bar(pct, ctx.th.bar_width, color);
     out.raw(" ");
-    out.colored(color, &format!("{pct}%"));
+    out.colored_fmt(color, format_args!("{pct}%"));
 }
 
 #[cfg(test)]

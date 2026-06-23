@@ -143,24 +143,24 @@ impl Segment for Git {
         out.icon(glyphs.branch);
         out.colored(theme.git_branch, &status.branch);
         if status.ahead > 0 {
-            out.colored(theme.ahead, &format!(" {}{}", glyphs.ahead, status.ahead));
+            out.colored_fmt(theme.ahead, format_args!(" {}{}", glyphs.ahead, status.ahead));
         }
         if status.behind > 0 {
-            out.colored(
+            out.colored_fmt(
                 theme.behind,
-                &format!(" {}{}", glyphs.behind, status.behind),
+                format_args!(" {}{}", glyphs.behind, status.behind),
             );
         }
         if status.n_mod > 0 {
-            out.colored(
+            out.colored_fmt(
                 theme.modified,
-                &format!(" {}{}", glyphs.modified, status.n_mod),
+                format_args!(" {}{}", glyphs.modified, status.n_mod),
             );
         }
         if status.n_new > 0 {
-            out.colored(
+            out.colored_fmt(
                 theme.untracked,
-                &format!(" {}{}", glyphs.untracked, status.n_new),
+                format_args!(" {}{}", glyphs.untracked, status.n_new),
             );
         }
         true

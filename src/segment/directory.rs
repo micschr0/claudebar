@@ -22,7 +22,7 @@ impl Segment for Directory {
         };
         let path = abbreviate_path(cwd, ctx.home);
         // Leading space inside the colored run, matching bash's `${C_DIR} %s`.
-        out.colored(ctx.theme.dir, &format!(" {path}"));
+        out.colored_fmt(ctx.theme.dir, format_args!(" {path}"));
         true
     }
 }

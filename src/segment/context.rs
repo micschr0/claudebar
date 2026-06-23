@@ -48,7 +48,7 @@ impl Segment for Context {
                 out.icon(ctx.style.glyphs.context);
                 out.bar(pct, ctx.th.bar_width, color);
                 out.raw(" ");
-                out.colored(color, &format!("{pct}%"));
+                out.colored_fmt(color, format_args!("{pct}%"));
                 out.raw(" ");
             }
         }

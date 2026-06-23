@@ -49,7 +49,7 @@ pub fn render_with(
         let emitted = kind.as_segment().render(&ctx, &mut w);
         if emitted && !w.is_empty() {
             if !first {
-                line.push_str(&separator(theme, style));
+                separator(&mut line, theme, style);
             }
             line.push_str(w.as_str());
             first = false;
@@ -58,8 +58,13 @@ pub fn render_with(
     line
 }
 
-/// The separator placed between two adjacent non-empty segments: a space, the
-/// style's separator glyph painted in the theme's separator color, then a space.
-fn separator(theme: &Theme, style: &Style) -> String {
-    format!(" {}{}{} ", theme.separator.fg(), style.separator, RESET)
+/// Append the separator between two adjacent non-empty segments directly into
+/// `line`: a space, the style's separator glyph painted in the theme's separator
+/// color, then a space.
+fn separator(line: &mut String, theme: &Theme, style: &Style) {
+    line.push(' ');
+    theme.separator.write_fg(line);
+    line.push_str(style.separator);
+    line.push_str(RESET);
+    line.push(' ');
 }
