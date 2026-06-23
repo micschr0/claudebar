@@ -61,6 +61,10 @@ tasks:
     desc: Regenerate README strip images only
     cmd: python3 scripts/gen_screenshots.py --strips
 
+  social-preview:
+    desc: Regenerate the GitHub social-preview card (Pillow only)
+    cmd: python3 scripts/gen_social_preview.py
+
   install:
     desc: Install claudebar into ~/.claude
     cmd: bash install.sh
