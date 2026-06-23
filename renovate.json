@@ -6,7 +6,7 @@
   "rebaseWhen": "never",
   "labels": ["dependencies"],
   "dependencyDashboard": true,
-  "configMigration": true,
+  "configMigration": false,
   "platformAutomerge": true,
   "timezone": "Europe/Berlin",
   "schedule": ["after 8am and before 6pm on Monday"],
