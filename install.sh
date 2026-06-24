@@ -88,13 +88,13 @@ sha256_of() {
 }
 
 # verify_checksum <file> <archive_name> <sums_file> — verify <file> against
-# the SHA256SUMS.txt entry for <archive_name>. Returns 1 on mismatch (fatal).
+# the sha256.sum entry for <archive_name>. Returns 1 on mismatch (fatal).
 verify_checksum() {
   local file="$1" archive_name="$2" sums_file="$3"
   local expected actual
   expected=$(grep "  ${archive_name}$" "$sums_file" | awk '{print $1}')
   if [ -z "$expected" ]; then
-    red "No checksum entry for ${archive_name} in SHA256SUMS.txt"
+    red "No checksum entry for ${archive_name} in sha256.sum"
     return 1
   fi
   actual=$(sha256_of "$file")
@@ -121,9 +121,10 @@ download_prebuilt() {
     return 1
   fi
 
-  archive="claudebar-${tag}-${target}.tar.gz"
+  # dist names archives by target only (no tag segment): claudebar-<target>.tar.gz.
+  archive="claudebar-${target}.tar.gz"
   url="https://github.com/micschr0/claudebar/releases/download/${tag}/${archive}"
-  sums_url="https://github.com/micschr0/claudebar/releases/download/${tag}/SHA256SUMS.txt"
+  sums_url="https://github.com/micschr0/claudebar/releases/download/${tag}/sha256.sum"
 
   bold "Downloading ${archive}..."
   if ! curl -fsSL "$url" -o "${TMPDIR_WORK}/${archive}"; then
@@ -132,8 +133,8 @@ download_prebuilt() {
     return 1
   fi
 
-  curl -fsSL "$sums_url" -o "${TMPDIR_WORK}/SHA256SUMS.txt"
-  if ! verify_checksum "${TMPDIR_WORK}/${archive}" "$archive" "${TMPDIR_WORK}/SHA256SUMS.txt"; then
+  curl -fsSL "$sums_url" -o "${TMPDIR_WORK}/sha256.sum"
+  if ! verify_checksum "${TMPDIR_WORK}/${archive}" "$archive" "${TMPDIR_WORK}/sha256.sum"; then
     exit 1
   fi
 
