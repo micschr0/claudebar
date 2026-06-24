@@ -39,3 +39,32 @@ opt-level = 3
 lto = true
 strip = true
 codegen-units = 1
+
+[workspace.metadata.dist]
+# Pin the dist version that generated release.yml. Regenerate deliberately on bump;
+# the CI guard installs this exact version so the pipeline cannot silently drift.
+cargo-dist-version = "0.32.0"
+# musl is NOT in dist's default suite — list all 4 targets explicitly.
+targets = [
+  "x86_64-unknown-linux-musl",
+  "aarch64-unknown-linux-musl",
+  "x86_64-apple-darwin",
+  "aarch64-apple-darwin",
+]
+# Hosted shell installer (curl | sh) as a binary-only alternative to install.sh.
+installers = ["shell"]
+# Bundle the binary plus auto-detected README + LICENSE (both at repo root).
+auto-includes = true
+# SHA256, sha256sum-compatible output.
+checksum = "sha256"
+# Pin .tar.gz (not dist's .tar.xz default) to preserve the existing release-URL
+# contract and keep the install.sh diff minimal.
+unix-archive = ".tar.gz"
+ci = ["github"]
+hosting = ["github"]
+
+# Pin macOS runners to the existing macos-13 (x86_64) / macos-14 (aarch64) split;
+# linux musl targets default to an ubuntu runner — left unset.
+[workspace.metadata.dist.github-custom-runners]
+x86_64-apple-darwin = "macos-13"
+aarch64-apple-darwin = "macos-14"
