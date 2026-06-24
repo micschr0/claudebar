@@ -49,3 +49,9 @@ jobs:
 
       - name: Check release profile
         run: cargo check --release --locked
+
+      - name: Install dist (pinned to Cargo.toml cargo-dist-version)
+        run: cargo install cargo-dist@0.32.0 --locked
+
+      - name: dist workflow drift check
+        run: dist generate --check
