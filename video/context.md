@@ -21,7 +21,7 @@ signal during long sessions (context budget + rate limits).
 - Live rate-limit countdowns
 - Color-coded context usage (green → yellow → red)
 - Inline git state
-- 16 themes · 6 styles
+- A theme & style for every terminal
 - ~30 ms render (~5× faster than bash), ~1.5 MB, read-only
 
 ## Emotional arc
