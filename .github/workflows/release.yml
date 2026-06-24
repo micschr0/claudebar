@@ -38,17 +38,18 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-edit
       - name: Set version from tag
         shell: bash
         env:
           VER: ${{ github.ref_name }}
         run: |
-          # Tag is the single source of truth — sync Cargo.toml + Cargo.lock so
-          # the binary's --version matches the release, keeping --locked valid.
-          perl -i -pe 'if (!$d && s/^version = ".*"/version = "$ENV{VER}"/) { $d = 1 }' Cargo.toml
-          perl -0777 -i -pe 's/(name = "claudebar"\nversion = ")[^"]*"/$1$ENV{VER}"/' Cargo.lock
-          grep -m1 '^version' Cargo.toml
-          grep -A1 'name = "claudebar"' Cargo.lock | head -2
+          # Tag is the single source of truth — cargo set-version syncs
+          # Cargo.toml + Cargo.lock so the binary's --version matches the
+          # release and --locked stays valid.
+          cargo set-version "$VER"
       - uses: houseabsolute/actions-rust-cross@fe6ede73c7f0a50412ec05994e2aa5a7bf635eac
         with:
           command: build
