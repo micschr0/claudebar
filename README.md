@@ -6,6 +6,8 @@
 
 Your working directory, git state, context usage, and live rate-limit countdowns — right in the Claude Code status line.
 
+**[▶ See it in action](https://micschr0.github.io/claudebar/)** — demo video, all 16 themes, one-command install.
+
 [![CI](https://github.com/micschr0/claudebar/actions/workflows/rust.yml/badge.svg)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![~5× faster than bash](https://img.shields.io/badge/render-~5%C3%97_faster_than_bash-9ece6a)
