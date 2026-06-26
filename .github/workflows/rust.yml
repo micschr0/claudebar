@@ -25,8 +25,10 @@ jobs:
         with:
           components: rustfmt, clippy
 
-      - name: Cache cargo
-        uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install cargo-auditable
+        run: cargo install cargo-auditable --locked
 
       - name: Format
         run: cargo fmt --all --check
@@ -50,6 +52,9 @@ jobs:
       - name: Check release profile
         run: cargo check --release --locked
 
+
+      - name: Check release profile (auditable)
+        run: cargo auditable build --release --locked
       - name: Install dist (pinned to Cargo.toml cargo-dist-version)
         run: cargo install cargo-dist@0.32.0 --locked
 

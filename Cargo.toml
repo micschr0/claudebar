@@ -57,6 +57,8 @@ installers = ["shell"]
 auto-includes = true
 # SHA256, sha256sum-compatible output.
 checksum = "sha256"
+# Embed dependency info for cargo audit bin scanning
+auditable = true
 # Pin .tar.gz (not dist's .tar.xz default) to preserve the existing release-URL
 # contract and keep the install.sh diff minimal.
 unix-archive = ".tar.gz"
