@@ -15,7 +15,9 @@ jobs:
     name: ShellCheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v7
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
       - name: Run shellcheck
         run: shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
 
@@ -23,7 +25,7 @@ jobs:
     name: Smoke test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v7
       - name: Install jq
         run: sudo apt-get install -y jq
       - name: Syntax check
@@ -63,8 +65,8 @@ jobs:
     name: Semgrep
     runs-on: ubuntu-latest
     container:
-      image: semgrep/semgrep:1.75.0
+      image: semgrep/semgrep:1.167.0
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v7
       - name: Scan
         run: semgrep scan --config p/trailofbits --error statusline-command.sh

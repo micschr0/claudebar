@@ -14,6 +14,9 @@ CLAUDE.md
 __pycache__/
 *.pyc
 
+
+# Generated video output
+video/out/
 # CI benchmark artifact
 benchmark-report.txt
 
