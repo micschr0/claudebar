@@ -5,6 +5,7 @@ edition = "2024"
 description = "Powerline-style statusline for Claude Code, with a TUI configurator, themes and styles"
 license = "MIT"
 repository = "https://github.com/micschr0/claudebar"
+homepage = "https://micschr0.github.io/claudebar"
 readme = "README.md"
 keywords = ["statusline", "claude-code", "powerline", "tui"]
 categories = ["command-line-utilities"]
@@ -52,13 +53,15 @@ targets = [
   "aarch64-apple-darwin",
 ]
 # Hosted shell installer (curl | sh) as a binary-only alternative to install.sh.
-installers = ["shell"]
+installers = ["shell", "homebrew"]
 # Bundle the binary plus auto-detected README + LICENSE (both at repo root).
 auto-includes = true
 # SHA256, sha256sum-compatible output.
 checksum = "sha256"
 # Embed dependency info for cargo audit bin scanning
 auditable = true
+tap = "micschr0/homebrew-tap"
+publish-jobs = ["homebrew"]
 # Pin .tar.gz (not dist's .tar.xz default) to preserve the existing release-URL
 # contract and keep the install.sh diff minimal.
 unix-archive = ".tar.gz"
