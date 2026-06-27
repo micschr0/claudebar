@@ -1,5 +1,4 @@
-//! Command-line surface. `render` is the default when no subcommand is given,
-//! so the hook can invoke the bare binary and pipe JSON to its stdin.
+//! Command-line surface. `render` runs by default — pipe session JSON to stdin.
 
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;

@@ -1,7 +1,7 @@
 //! Directory segment: the abbreviated current working directory.
 //!
 //! Matches the bash script's directory segment: fish-style abbreviation with
-//! `~` for `$HOME`, the whole thing in `theme.dir`, no icon. Bash emitted
+//! `~` for `$HOME`, the whole thing in `theme.dir`, no icon. The bash script emits
 //! `printf "${C_DIR} %s${R}"` — a leading space inside the colored run, then the
 //! path. The path is host-provided; `abbreviate_path` strips control bytes.
 //!

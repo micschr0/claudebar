@@ -47,7 +47,7 @@ Your working directory, git state, context usage, and live rate-limit countdowns
 **Prerequisites**
 
 - A [Nerd Font](https://www.nerdfonts.com/) set as your terminal font — for the glyphs
-- `git` — for the git segment (optional; the segment just hides without it)
+- `git` — for the git segment (optional; the segment hides without it)
 - `jq` — only if you already have a `~/.claude/settings.json` to merge into
 
 ```bash
@@ -91,13 +91,13 @@ The curl installer instead installs to `~/.claude/claudebar` and writes that ful
 
 ## Configure
 
-Once installed, launch the configurator — this is the simplest way, there's no separate app or flag to remember:
+Once installed, launch the configurator — the simplest way; no extra app or flags needed:
 
 ```bash
 claudebar config
 ```
 
-Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`. Press `?` inside for key bindings, `s` to save, `q` to quit.
+Toggle and reorder segments, pick a theme and style, and nudge thresholds — all with a live render preview. It saves changes to `~/.config/claudebar/config.toml`. Inside, press `?` for key bindings, `s` to save, `q` to quit.
 
 > If you installed with the curl script, the binary lives at `~/.claude/claudebar`, so call `~/.claude/claudebar config` (or add `~/.claude` to your `PATH`).
 
@@ -144,7 +144,7 @@ cargo build --release --no-default-features  # render-only, no TUI (smaller)
 | **Statusline is blank** | Check `~/.claude/settings.json` has `"statusLine": {"type": "command", ...}`, then restart Claude Code. |
 | **Glyphs show as boxes (□)** | Install a [Nerd Font](https://www.nerdfonts.com/). macOS Terminal.app can't render Nerd Font PUA glyphs — use iTerm2, Kitty, WezTerm, Ghostty, or Alacritty. |
 | **Git segment missing** | Appears only inside a git repo; needs `git` on your `PATH`. |
-| **Rate-limit windows missing** | Pro/Max plans only; the weekly window shows once weekly usage is at or above `weekly_show_at` (default 50%). |
+| **Rate-limit windows missing** | Pro/Max plans only; the weekly window appears only when weekly usage meets or exceeds `weekly_show_at` (default 50%). |
 | **`command not found: claudebar`** | The curl installer places the binary at `~/.claude/claudebar`; `cargo install` places it in `~/.cargo/bin`. Use the full path in `settings.json`, or ensure that directory is on your `PATH`. |
 
 ## License

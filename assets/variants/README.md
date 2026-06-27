@@ -1,6 +1,6 @@
 # claudebar logo variants
 
-Five logo concepts, all built from the default **tokyo-night** palette
+Five logo concepts, all using the default **tokyo-night** palette
 (`#1a1b2e` tile · `#7aa2f7` blue · `#bb9af7` purple · `#7dcfff` cyan).
 Each comes as a square `vN-mark.svg` (app icon) and a `vN.svg` wordmark lockup,
 with matching PNG rasters. Regenerate the SVGs with `scripts/gen_logos.py`.
@@ -19,7 +19,7 @@ all variants stay legible on both light and dark README themes.
 ## Alternative directions (different palettes + styles)
 
 Three concepts that drop the tokyo-night blue/purple for entirely different
-colour worlds and visual styles, drawn from other themes seen in the
+colour worlds and visual styles, drawn from other themes appearing in the
 screenshots. Regenerate with `scripts/gen_logos_alt.py`.
 
 | Name | Palette / style | Mark | Lockup |
@@ -29,4 +29,4 @@ screenshots. Regenerate with `scripts/gen_logos_alt.py`.
 | `light` | Status semaphore — flat, light, green→amber→red | <img src="light-mark.svg" width="72"> | <img src="light.svg" width="260"> |
 
 `warm` and `soft` are self-contained dark tiles/panels; `light` is a deliberately
-light design (white tile, light panel) for a completely different mood.
+light design (white tile, light panel) for a different mood.

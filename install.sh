@@ -223,7 +223,7 @@ green "settings.json updated"
 # ── Done ───────────────────────────────────────────────────────────────────────
 echo ""
 bold "Installation complete."
-echo "Restart Claude Code — the claudebar appears on the next turn."
+echo "Restart Claude Code — claudebar appears on the next turn."
 echo ""
 echo "If glyphs show as boxes, install a Nerd Font and set it as your terminal font."
 echo "Troubleshooting: https://github.com/micschr0/claudebar#troubleshooting"

@@ -4,7 +4,7 @@
 //! mirrors jq's `tonumber? // <default>`: a wrong-typed or unparseable value
 //! degrades *that one field* to `None` instead of aborting the whole parse.
 //! Combined with `#[serde(default)]` everywhere and a top-level
-//! `unwrap_or_default()`, the render path can never fail to produce a line.
+//! `unwrap_or_default()`, the render path always produces a line.
 
 use serde::Deserialize;
 use serde::de::{self, Deserializer, Visitor};

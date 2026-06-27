@@ -4,7 +4,7 @@
 Usage:
   python3 scripts/gen_screenshots.py          # full PNGs + strips (Docker) + SVG
   python3 scripts/gen_screenshots.py --png     # full terminal PNGs only
-  python3 scripts/gen_screenshots.py --strips  # compact statusline-only strips only
+  python3 scripts/gen_screenshots.py --strips  # compact strips only
   python3 scripts/gen_screenshots.py --svg     # animated SVG only (no Docker needed)
 
 Prerequisites for PNG:

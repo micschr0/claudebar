@@ -102,7 +102,7 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
         let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
             Some(p) => p,
             None => {
-                eprintln!("claudebar: could not determine a config path (set $HOME or --config).");
+                eprintln!("claudebar: no config path found — set $HOME or use --config.");
                 return ExitCode::FAILURE;
             }
         };
@@ -144,7 +144,7 @@ fn run_migrate(cli: &Cli) -> ExitCode {
     let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
         Some(p) => p,
         None => {
-            eprintln!("claudebar: could not determine a config path (set $HOME or --config).");
+            eprintln!("claudebar: no config path found — set $HOME or use --config.");
             return ExitCode::FAILURE;
         }
     };

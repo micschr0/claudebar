@@ -6,7 +6,7 @@ three one-line registrations. No runtime config, no parsing — themes are compi
 ## 1. Create the theme file
 
 Themes live in [`src/themes/`](src/themes/). Copy an existing one as a template —
-[`src/themes/catppuccin.rs`](src/themes/catppuccin.rs) is a good, well-commented start.
+[`src/themes/catppuccin.rs`](src/themes/catppuccin.rs) is a clear, well-commented template.
 
 ```rust
 // src/themes/my_theme.rs
@@ -81,4 +81,4 @@ bash scripts/gen-gallery.sh   # → docs/index.html
 
 - Confirm `cargo test`, `cargo clippy --all-targets -- -D warnings`, and `cargo fmt --check` pass.
 - Include a screenshot of at least the `powerline` and `rounded` styles.
-- Themes are judged on readability across all six bar states (calm → over-limit).
+- Ensure the theme is readable across all six bar states (calm → over-limit).
