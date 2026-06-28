@@ -226,6 +226,9 @@ fn draw_right_panel(f: &mut Frame, app: &App, area: Rect) {
         );
     }
 
+    let item_area = Rect::new(inner.x, inner.y, inner.width, item_height as u16);
+    f.render_widget(Paragraph::new(Text::from(visible)), item_area);
+
     // Config-values footer (D-07): one row from the bottom of inner.
     let footer_y = inner.y + inner.height.saturating_sub(1);
     let footer_area = Rect::new(inner.x, footer_y, inner.width, 1);
