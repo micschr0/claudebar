@@ -50,6 +50,26 @@ mkdir -p "$HOME/.claude"
 
 # ── Helper functions ───────────────────────────────────────────────────────────
 
+# check_nerd_font — return 0 if a Nerd Font is installed, 1 otherwise.
+# Uses fc-list when available; falls back to scanning common font directories.
+check_nerd_font() {
+    # Try fc-list first — fastest and most accurate.
+    if command -v fc-list >/dev/null 2>&1; then
+        if fc-list :family 2>/dev/null | grep -qi 'nerd'; then
+            return 0
+        fi
+    fi
+
+    # Fallback: scan common font directories (non-recursive, matching main.rs).
+    local dir
+    for dir in "/usr/share/fonts" "/usr/local/share/fonts" "$HOME/.local/share/fonts" "$HOME/.fonts"; do
+        if [ -d "$dir" ] && find "$dir" -maxdepth 1 \( -name '*Nerd*' -o -name '*nerd*' \) \( -name '*.ttf' -o -name '*.otf' \) -print -quit 2>/dev/null | grep -q .; then
+            return 0
+        fi
+    done
+
+    return 1
+}
 # detect_target — print the Rust target triple for the current OS/arch, or
 # empty string if no prebuilt binary is available for this platform.
 detect_target() {
@@ -225,5 +245,12 @@ echo ""
 bold "Installation complete."
 echo "Restart Claude Code — claudebar appears on the next turn."
 echo ""
-echo "If glyphs show as boxes, install a Nerd Font and set it as your terminal font."
+# Nerd Font check (non-blocking — always runs after install)
+if check_nerd_font; then
+    green "✓ Nerd Font detected"
+else
+    red "⚠ No Nerd Font detected. The statusline uses powerline glyphs — install a Nerd Font for best results: https://www.nerdfonts.com"
+    echo "Tip: run 'claudebar config' and choose the 'ascii' style for glyph-free rendering."
+fi
+echo ""
 echo "Troubleshooting: https://github.com/micschr0/claudebar#troubleshooting"

@@ -102,7 +102,8 @@ pub fn draw(f: &mut Frame, app: &App) {
 
 fn draw_left_panel(f: &mut Frame, app: &App, area: Rect) {
     let active = app.focused_panel == Panel::Left;
-    let block = panel_block("Menu", active);
+    let title = if app.is_dirty() { "● Menu" } else { "Menu" };
+    let block = panel_block(title, active);
     let inner = block.inner(area);
     f.render_widget(block, area);
 
@@ -460,6 +461,8 @@ fn render_style_row(
     let empty2 = format!("{0}{0}", style.bar_empty);
     let fill_span = Span::styled(fill2, Style::default().fg(CHROME_OK));
     let empty_span = Span::styled(empty2, Style::default().fg(CHROME_DISABLED));
+    let project_span = Span::raw(style.glyphs.project);
+    let duration_span = Span::raw(style.glyphs.duration);
 
     let mut line = Line::from(vec![
         Span::raw("  "),
@@ -467,9 +470,13 @@ fn render_style_row(
         name_span,
         Span::raw(" "),
         sep_span,
-        gap_span,
+        gap_span.clone(),
         fill_span,
         empty_span,
+        gap_span,
+        project_span,
+        Span::raw(" "),
+        duration_span,
     ]);
     if is_cursor {
         line = line.style(cursor_bg);
@@ -622,6 +629,20 @@ fn draw_status(f: &mut Frame, app: &App, area: Rect) {
         Paragraph::new(Line::from(vec![Span::styled(
             format!("  {msg}"),
             Style::default().fg(color),
+        )]))
+    } else if let Some(help) = app.context_help() {
+        Paragraph::new(Line::from(vec![Span::styled(
+            format!("  {help}"),
+            Style::default()
+                .fg(CHROME_HEADER)
+                .add_modifier(Modifier::DIM),
+        )]))
+    } else if app.is_dirty() {
+        Paragraph::new(Line::from(vec![Span::styled(
+            "  unsaved changes — press [s] to save",
+            Style::default()
+                .fg(CHROME_DISABLED)
+                .add_modifier(Modifier::DIM),
         )]))
     } else {
         Paragraph::new(Line::from(Span::raw(" ")))
