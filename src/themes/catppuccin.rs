@@ -25,7 +25,7 @@ pub fn theme() -> Theme {
         // Yellow #f9e2af
         bar_warn: Color(223),
         // Red #f38ba8
-        bar_crit: Color(211),
+        bar_crit: Color(204),
         // Surface2 #585b70 — muted surface tone
         bar_track: Color(240),
         // Surface2 #585b70 — muted surface tone
@@ -35,9 +35,17 @@ pub fn theme() -> Theme {
         // Teal #94e2d5
         reset: Color(115),
         // Pink #f5c2e7 — vivid accent
-        effort_max: Color(218),
-        // Mauve #cba6f7
-        model: Color(183),
+        effort: Color(218),
+        // Lavender (Catppuccin Mauve neighbour, same family) — distinct from git_branch
+        model: Color(140),
+        project: Color(111),
+        stash: Color(183),
+        lines: Color(243),
+        cost: Color(223),     // Gold — informational, not alarm
+        duration: Color(115),
+        clock: Color(150),
+        // same as bar_crit
+        burn: Color(204),
     }
 }
 
@@ -52,8 +60,8 @@ mod tests {
         assert_eq!(t.git_branch, Color(183));
         assert_eq!(t.bar_ok, Color(150));
         assert_eq!(t.bar_warn, Color(223));
-        assert_eq!(t.bar_crit, Color(211));
-        assert_eq!(t.effort_max, Color(218));
+        assert_eq!(t.bar_crit, Color(204));
+        assert_eq!(t.effort, Color(218));
     }
 
     #[test]

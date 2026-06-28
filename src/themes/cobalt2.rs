@@ -19,7 +19,14 @@ pub fn theme() -> Theme {
         separator: Color(25),
         dim: Color(25),
         reset: Color(123),
-        effort_max: Color(213),
+        effort: Color(205),
         model: Color(220),
+        project: Color(33),
+        stash: Color(213),
+        lines: Color(25),
+        cost: Color(215),     // Warm amber — informational, not alarm
+        duration: Color(123),
+        clock: Color(76),
+        burn: Color(204),
     }
 }

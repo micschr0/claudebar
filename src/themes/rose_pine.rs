@@ -10,7 +10,7 @@
 //!   ahead = foam · behind = love · modified = gold · untracked = muted
 //!   separator & bar_track = muted overlay tone · dim = subtle
 //!   dir = foam · git_branch = iris · token = foam · model = rose
-//!   reset = pine · effort_max = iris
+//!   reset = pine · effort = iris
 
 use crate::model::{Color, Theme};
 
@@ -30,8 +30,15 @@ pub fn theme() -> Theme {
         separator: Color(103),  // subtle #908caa
         dim: Color(103),        // subtle #908caa
         reset: Color(66),       // pine  #31748f
-        effort_max: Color(183), // iris  #c4a7e7
+        effort: Color(139),     // iris neighbour, distinct from git_branch (183)
         model: Color(181),      // rose  #ebbcba
+        project: Color(116),
+        stash: Color(183),
+        lines: Color(103),
+        cost: Color(222),    // Rosé Pine gold — informational, not alarm
+        duration: Color(66),
+        clock: Color(116),
+        burn: Color(211),
     }
 }
 

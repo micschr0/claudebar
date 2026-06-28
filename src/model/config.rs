@@ -1,9 +1,9 @@
 //! User configuration: which segments, in what order, which theme & style,
 //! and the numeric thresholds. Persisted as TOML.
 //!
-//! Config-less operation uses [`Config::default`], which reproduces the original
-//! bash look exactly: Tokyo Night palette, Powerline style, all five segments in
-//! their historical order.
+//! Config-less operation uses [`Config::default`], which renders the full
+//! 8-segment core statusline with the Tokyo Night palette and Powerline style
+//! in canonical order.
 
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
@@ -20,17 +20,45 @@ pub enum SegmentKind {
     RateLimits,
     DevContext,
     Model,
+    Effort,
+    Clock,
+    Cost,
+    Lines,
+    Duration,
+    Stash,
+    Project,
+    Burn,
 }
 
 impl SegmentKind {
-    /// All segments in canonical (default) order.
-    pub const ALL: [SegmentKind; 6] = [
+    /// All segments in canonical order.
+    pub const ALL: [SegmentKind; 14] = [
+        SegmentKind::Project,
         SegmentKind::Directory,
         SegmentKind::Git,
+        SegmentKind::Model,
         SegmentKind::Context,
         SegmentKind::RateLimits,
         SegmentKind::DevContext,
+        SegmentKind::Stash,
+        SegmentKind::Effort,
+        SegmentKind::Cost,
+        SegmentKind::Lines,
+        SegmentKind::Duration,
+        SegmentKind::Burn,
+        SegmentKind::Clock,
+    ];
+
+    /// The core default segment set (8 segments). Model renders Effort inline.
+    pub const DEFAULT: [SegmentKind; 8] = [
+        SegmentKind::Project,
+        SegmentKind::Directory,
+        SegmentKind::Git,
         SegmentKind::Model,
+        SegmentKind::Context,
+        SegmentKind::Cost,
+        SegmentKind::Duration,
+        SegmentKind::Clock,
     ];
 
     /// Human label for the TUI list.
@@ -40,14 +68,32 @@ impl SegmentKind {
             SegmentKind::Directory => "Directory",
             SegmentKind::Git => "Git",
             SegmentKind::Context => "Context",
-            SegmentKind::RateLimits => "Rate limits",
-            SegmentKind::DevContext => "Dev context",
+            SegmentKind::RateLimits => "Rate Limits",
+            SegmentKind::DevContext => "Dev Context",
             SegmentKind::Model => "Model",
+            SegmentKind::Effort => "Effort",
+            SegmentKind::Clock => "Clock",
+            SegmentKind::Cost => "Cost",
+            SegmentKind::Lines => "Lines",
+            SegmentKind::Duration => "Duration",
+            SegmentKind::Stash => "Stash",
+            SegmentKind::Burn => "Burn",
+            SegmentKind::Project => "Project",
         }
     }
-}
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+    /// Parse a kebab-case name (e.g. `"rate-limits"`, `"dev-context"`) into a
+    /// [`SegmentKind`]. Returns `None` for unknown names.
+    ///
+    /// Uses serde's `rename_all = "kebab-case"` mapping so the name table stays
+    /// in one place.
+    #[must_use]
+    pub fn from_kebab(s: &str) -> Option<Self> {
+        // Single-value JSON deserialization reuses the existing rename mapping.
+        serde_json::from_str(&format!("\"{s}\"")).ok()
+    }
+}
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(default, deny_unknown_fields)]
 pub struct Thresholds {
     /// Bar turns warn-colored at or above this percent.
@@ -58,8 +104,36 @@ pub struct Thresholds {
     pub weekly_show_at: u16,
     /// Width, in cells, of every progress bar.
     pub bar_width: u8,
+    /// Decimal places for the cost segment (0–4).
+    pub cost_decimals: u8,
+    /// Max chars for project/git/model names before … truncation (0 = off).
+    pub name_max: u16,
+    /// Clock display mode: `12h`, `24h`, or `off`.
+    pub clock_mode: String,
+    /// Show seconds in the clock.
+    pub clock_seconds: bool,
+    /// When enabled, the Model segment appends an inline effort bar (Effort
+    /// is NOT a standalone segment by default — flip this to false to hide it).
+    pub model_show_effort: bool,
+    /// Burn-rate lookback window in seconds (default 600 = 10 min).
+    pub burn_lookback: u32,
+    /// Enable the plain-text float readout file (best-effort side effect).
+    pub float: bool,
+    /// Segments to render into the float readout (space-separated kebab-case names).
+    pub float_segments: String,
+    /// Separator placed between adjacent non-empty float segments.
+    pub float_sep: String,
+    /// Where to write the float readout (`~` expands to `$HOME`).
+    pub float_file: String,
+    /// Layout mode: "fixed" (one line) or "auto" (responsive wrap).
+    pub layout: String,
+    /// Auto only — max lines to wrap into.
+    pub max_lines: u8,
+    /// Auto only — columns kept free on the right.
+    pub wrap_margin: u8,
+    /// Enable cross-session rate-limit sync (opt-in).
+    pub limit_sync: bool,
 }
-
 impl Default for Thresholds {
     fn default() -> Self {
         Self {
@@ -67,6 +141,20 @@ impl Default for Thresholds {
             crit: 80,
             weekly_show_at: 50,
             bar_width: 6,
+            cost_decimals: 2,
+            name_max: 0,
+            clock_mode: "auto".into(),
+            burn_lookback: 600,
+            clock_seconds: true,
+            model_show_effort: true,
+            float: false,
+            float_segments: "model context cost".into(),
+            float_sep: "  ·  ".into(),
+            float_file: "~/.claude/claudebar-float.txt".into(),
+            layout: "fixed".into(),
+            max_lines: 3,
+            wrap_margin: 4,
+            limit_sync: false,
         }
     }
 }
@@ -85,7 +173,7 @@ impl Default for Config {
         Self {
             theme: "tokyo-night".into(),
             style: "powerline".into(),
-            segments: SegmentKind::ALL.to_vec(),
+            segments: SegmentKind::DEFAULT.to_vec(),
             thresholds: Thresholds::default(),
         }
     }
@@ -167,7 +255,7 @@ mod tests {
         let c = Config::default();
         assert_eq!(c.theme, "tokyo-night");
         assert_eq!(c.style, "powerline");
-        assert_eq!(c.segments, SegmentKind::ALL.to_vec());
+        assert_eq!(c.segments, SegmentKind::DEFAULT.to_vec());
         assert_eq!(c.thresholds.warn, 50);
         assert_eq!(c.thresholds.crit, 80);
     }
@@ -186,7 +274,7 @@ mod tests {
         let c: Config = toml::from_str(r#"theme = "nord""#).unwrap();
         assert_eq!(c.theme, "nord");
         assert_eq!(c.style, "powerline");
-        assert_eq!(c.segments, SegmentKind::ALL.to_vec());
+        assert_eq!(c.segments, SegmentKind::DEFAULT.to_vec());
     }
 
     #[test]

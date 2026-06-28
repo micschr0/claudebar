@@ -12,7 +12,7 @@ Your working directory, git state, context usage, and live rate-limit countdowns
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![~5× faster than bash](https://img.shields.io/badge/render-~5%C3%97_faster_than_bash-9ece6a)
 
-<img src="screenshots/strip-critical.png" width="880" alt="claudebar statusline — directory, git, context, rate limits, model">
+<img src="screenshots/strip-normal.png" width="880" alt="claudebar statusline — calm mid-session state, all green">
 
 </div>
 
@@ -26,21 +26,44 @@ Your working directory, git state, context usage, and live rate-limit countdowns
 
 <br>
 
+<img src="screenshots/strip-features.png" width="880" alt="Full power — all 14 segments active, showing the complete statusline">
+
+<br>
+<sub><i>Full power — all 14 segments active.</i></sub>
+<br>
+
+## Features
+
+- Live rate-limit countdowns with burn-rate projection
+- Color-coded context usage
+- Inline git state, stash count, and project name
+- `clock_mode = "auto"` — detects 12h/24h and your local timezone
+- 14 segments: 6 on by default, 8 more to opt into
+- 16 themes · 6 styles
+- [Renders in ~30 ms](scripts/benchmark.sh) — the bash script takes ~200 ms
+- Read-only — never touches your session
+- Tiny ~1.5 MB dependency-free binary
+
+### Opt-in segments
+
+Enable any of these in `~/.config/claudebar/config.toml` (or toggle via `claudebar config`):
+
+| Segment | kebab-case key | What it shows |
+|---------|---------------|---------------|
+| Effort   | `effort`       | Reasoning effort level (`low`–`max`) |
+| Clock    | `clock`        | Current time — 12h/24h/auto with timezone |
+| Cost     | `cost`         | Session cost in USD |
+| Lines    | `lines`        | Added/removed lines this session (`+321 −87`) |
+| Duration | `duration`     | Session wall-clock time (`⧖ 47m`) |
+| Stash    | `stash`        | Git stash count |
+| Project  | `project`      | Repo-root name (stable across worktrees) |
+| Burn     | `burn`         | Projected time until a rate-limit window runs dry |
 <img src="screenshots/intro.png" width="820" alt="claudebar at the bottom of a real Claude Code session">
 
 <sub><i>claudebar living at the bottom of a Claude Code session.</i></sub>
 
 </div>
 
-## Features
-
-- Live rate-limit countdowns
-- Color-coded context usage
-- Inline git state
-- 16 themes · 6 styles
-- [Renders in ~30 ms](scripts/benchmark.sh) — the bash script takes ~200 ms
-- Read-only — never touches your session
-- Tiny ~1.5 MB dependency-free binary
 
 ## Install
 
@@ -114,7 +137,7 @@ segments = ["directory", "git", "context", "rate-limits", "dev-context", "model"
 warn           = 50   # bar turns yellow at this %
 crit           = 80   # bar turns red at this %
 weekly_show_at = 50   # weekly window shows at this % and above
-bar_width      = 6    # bar width in terminal cells
+clock_mode     = "auto"   # "auto" detects 12h/24h and timezone; "12h" / "24h" / "off" override
 ```
 
 Run `claudebar list` to see all built-in themes and styles. The `--theme`, `--style`, and `--config` flags override the file for a single invocation.
@@ -127,7 +150,10 @@ Run `claudebar list` to see all built-in themes and styles. The `--theme`, `--st
 | `claudebar config` | Launch the interactive TUI configurator |
 | `claudebar init [--print] [--force]` | Write a default config file |
 | `claudebar migrate` | Add new segments from a newer version to an existing config |
-| `claudebar list` | Print all built-in theme and style names |
+| `claudebar list [--segments]` | List built-in themes and styles; `--segments` lists all segments |
+| `claudebar test` | Render a built-in fixture to verify the install works |
+| `claudebar doctor` | Diagnose common issues: Nerd Font, git, config parse errors |
+| `claudebar edit` | Open your config file in `$EDITOR` (falls back to `vi`) |
 
 ## Build from source
 
@@ -139,6 +165,8 @@ cargo build --release --no-default-features  # render-only, no TUI (smaller)
 
 ## Troubleshooting
 
+| **Something seems wrong** | Run `claudebar doctor` first — it checks your setup and suggests fixes. |
+| **Install verification** | Run `claudebar test` — renders a fixture so you can confirm everything works before restarting Claude Code. |
 | Symptom | Fix |
 |---------|-----|
 | **Statusline is blank** | Check `~/.claude/settings.json` has `"statusLine": {"type": "command", ...}`, then restart Claude Code. |

@@ -3,4 +3,4 @@ source: tests/render_golden.rs
 expression: render_fixture(&json)
 input_file: fixtures/huge_tokens.json
 ---
-\e[38;5;245m󰍛\e[0m \e[38;5;203m━━━━━\e[38;5;238m╌\e[0m \e[38;5;203m95%\e[0m \e[38;5;245m󰰩\e[0m \e[38;5;117m1.6M\e[0m \e[38;5;238m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mOpus 4.8\e[0m
+\e[38;5;245m◈\e[0m \e[38;5;208mOpus 4.8\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰍛\e[0m \e[38;5;203m━━━━━\e[38;5;239m╌\e[0m \e[38;5;203m95%\e[0m \e[38;5;245m󰰩\e[0m \e[38;5;117m1.6M\e[0m \e[38;5;238m\e[0m \e[38;5;70m\e[38;5;245m󰔟\e[0m  15:00:00 \e[0m

@@ -192,14 +192,38 @@ fn draw_right_panel(f: &mut Frame, app: &App, area: Rect) {
     let scroll_start = app
         .detail_cursor
         .saturating_sub(item_height.saturating_sub(1));
-    let visible: Vec<Line> = item_lines
+    let total = item_lines.len();
+    let has_more_above = scroll_start > 0;
+    let has_more_below = total > scroll_start + item_height;
+
+    let mut visible: Vec<Line> = item_lines
         .into_iter()
         .skip(scroll_start)
         .take(item_height)
         .collect();
 
-    let item_area = Rect::new(inner.x, inner.y, inner.width, item_height as u16);
-    f.render_widget(Paragraph::new(Text::from(visible)), item_area);
+    // Scroll indicators: show '…' when list extends beyond visible area.
+    if has_more_below && !visible.is_empty() {
+        visible.pop();
+        visible.push(Line::from(Span::styled(
+            "  \u{2026}",
+            Style::default()
+                .fg(CHROME_DISABLED)
+                .add_modifier(Modifier::DIM),
+        )));
+    }
+    if has_more_above && !visible.is_empty() {
+        visible.remove(0);
+        visible.insert(
+            0,
+            Line::from(Span::styled(
+                "  \u{2026}",
+                Style::default()
+                    .fg(CHROME_DISABLED)
+                    .add_modifier(Modifier::DIM),
+            )),
+        );
+    }
 
     // Config-values footer (D-07): one row from the bottom of inner.
     let footer_y = inner.y + inner.height.saturating_sub(1);
@@ -289,6 +313,8 @@ fn build_threshold_lines(app: &App) -> Vec<Line<'static>> {
         ThresholdField::Crit,
         ThresholdField::WeeklyShowAt,
         ThresholdField::BarWidth,
+        ThresholdField::ClockMode,
+        ThresholdField::Layout,
     ]
     .iter()
     .enumerate()
@@ -450,7 +476,6 @@ fn render_style_row(
     }
     line
 }
-
 fn render_threshold_row(
     field: ThresholdField,
     app: &App,
@@ -459,35 +484,75 @@ fn render_threshold_row(
 ) -> Line<'static> {
     let t = &app.config.thresholds;
 
-    let (label, value, unit, lo, hi) = match field {
-        ThresholdField::Warn => ("warn", t.warn as i32, "%", 1i32, (t.crit as i32) - 1),
-        ThresholdField::Crit => ("crit", t.crit as i32, "%", (t.warn as i32) + 1, 99i32),
-        ThresholdField::WeeklyShowAt => {
-            ("weekly show at", t.weekly_show_at as i32, "%", 1i32, 99i32)
+    let (label, value_str, unit_or_options) = match field {
+        ThresholdField::Warn => {
+            ("warn", format!("{:>3}", t.warn), "%".to_string())
         }
-        ThresholdField::BarWidth => ("bar width", t.bar_width as i32, " ", 2i32, 20i32),
+        ThresholdField::Crit => {
+            ("crit", format!("{:>3}", t.crit), "%".to_string())
+        }
+        ThresholdField::WeeklyShowAt => {
+            ("weekly show at", format!("{:>3}", t.weekly_show_at), "%".to_string())
+        }
+        ThresholdField::BarWidth => {
+            ("bar width", format!("{:>3}", t.bar_width), " ".to_string())
+        }
+        ThresholdField::ClockMode => {
+            let options = "auto | 12h | 24h | off";
+            (if is_cursor { options } else { "clock" }, app.config.thresholds.clock_mode.clone(), String::new())
+        }
+        ThresholdField::Layout => {
+            let options = "fixed | auto";
+            (if is_cursor { options } else { "layout" }, app.config.thresholds.layout.clone(), String::new())
+        }
     };
 
-    let range_str = format!("[{lo}\u{2013}{hi}]");
-
-    let mut line = Line::from(vec![
-        Span::styled("  ~ ", Style::default().fg(CHROME_WARN)),
-        Span::styled(format!("{label:<14} "), Style::default().fg(CHROME_HEADER)),
-        Span::styled(
-            format!("{value:>3}"),
-            Style::default()
-                .fg(CHROME_WARN)
-                .add_modifier(Modifier::BOLD),
-        ),
-        Span::styled(format!("{unit:<2}"), Style::default().fg(CHROME_HEADER)),
-        Span::raw("  "),
-        Span::styled(
-            range_str,
-            Style::default()
-                .fg(CHROME_DISABLED)
-                .add_modifier(Modifier::DIM),
-        ),
-    ]);
+    let mut line = if matches!(field, ThresholdField::ClockMode | ThresholdField::Layout) {
+        // Enum-cycling fields show options when focused, current value otherwise.
+        Line::from(vec![
+            Span::styled("  ~ ", Style::default().fg(CHROME_WARN)),
+            Span::styled(format!("{label:<14} "), Style::default().fg(CHROME_HEADER)),
+            Span::styled(
+                value_str,
+                Style::default()
+                    .fg(CHROME_ACCENT)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            if !unit_or_options.is_empty() {
+                Span::raw(format!("  ({unit_or_options})"))
+            } else {
+                Span::raw("")
+            },
+        ])
+    } else {
+        // Numeric nudge fields — show value and range.
+        let (lo, hi) = match field {
+            ThresholdField::Warn => (1i32, (t.crit as i32) - 1),
+            ThresholdField::Crit => ((t.warn as i32) + 1, 99i32),
+            ThresholdField::WeeklyShowAt => (1i32, 99i32),
+            ThresholdField::BarWidth => (2i32, 20i32),
+            _ => (0i32, 0i32),
+        };
+        let range_str = format!("[{lo}\u{2013}{hi}]");
+        Line::from(vec![
+            Span::styled("  ~ ", Style::default().fg(CHROME_WARN)),
+            Span::styled(format!("{label:<14} "), Style::default().fg(CHROME_HEADER)),
+            Span::styled(
+                value_str,
+                Style::default()
+                    .fg(CHROME_WARN)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(format!("{unit_or_options:<2}"), Style::default().fg(CHROME_HEADER)),
+            Span::raw("  "),
+            Span::styled(
+                range_str,
+                Style::default()
+                    .fg(CHROME_DISABLED)
+                    .add_modifier(Modifier::DIM),
+            ),
+        ])
+    };
     if is_cursor {
         line = line.style(cursor_bg);
     }
@@ -565,6 +630,7 @@ fn draw_status(f: &mut Frame, app: &App, area: Rect) {
     f.render_widget(para, area);
 }
 
+
 // ── Hint bar ──────────────────────────────────────────────────────────────────
 
 fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
@@ -607,9 +673,10 @@ fn draw_hint(f: &mut Frame, app: &App, area: Rect) {
         ])
     } else if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
         hint_line(&[
-            ("[h/l]", " \u{b1}1  "),
-            ("[H/L]", " \u{b1}5  "),
-            ("[↑↓]", " move  "),
+            ("[-/=]", " \u{b1}1  "),
+            ("[_/+]", " \u{b1}5  "),
+            ("[Spc/Ent]", " cycle  "),
+            ("[\u{2191}\u{2193}]", " move  "),
             ("[s]", " save  "),
             ("[?]", " help  "),
             ("[q]", " quit"),
@@ -683,7 +750,7 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                "  Switch focus to left panel (or nudge threshold \u{2212}1 in Thresholds section)",
+                "  Switch focus to left panel",
                 Style::default().fg(CHROME_TEXT),
             ),
         ]),
@@ -695,7 +762,7 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                "  Switch focus to right panel (or nudge threshold +1 in Thresholds section)",
+                "  Switch focus to right panel",
                 Style::default().fg(CHROME_TEXT),
             ),
         ]),
@@ -860,39 +927,33 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
         )),
         Line::from(vec![
             Span::styled(
-                "  h / \u{2190}   ",
+                "  - / =   ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Decrement by 1", Style::default().fg(CHROME_TEXT)),
+            Span::styled("  Nudge \u{b1}1 (numeric fields only)", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
             Span::styled(
-                "  l / \u{2192}   ",
+                "  _ / +   ",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Increment by 1", Style::default().fg(CHROME_TEXT)),
+            Span::styled("  Nudge \u{b1}5 (numeric fields only)", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(vec![
             Span::styled(
-                "  H       ",
+                "  Space / Enter",
                 Style::default()
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Decrement by 5", Style::default().fg(CHROME_TEXT)),
-        ]),
-        Line::from(vec![
             Span::styled(
-                "  L       ",
-                Style::default()
-                    .fg(CHROME_KEY_BG)
-                    .add_modifier(Modifier::BOLD),
+                "  Cycle value (clock_mode, layout)",
+                Style::default().fg(CHROME_TEXT),
             ),
-            Span::styled("  Increment by 5", Style::default().fg(CHROME_TEXT)),
         ]),
         Line::from(Span::raw("")),
         Line::from(Span::styled(

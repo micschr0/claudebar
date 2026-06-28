@@ -3,4 +3,4 @@ source: tests/render_golden.rs
 expression: render_fixture(&json)
 input_file: fixtures/empty.json
 ---
-
+\e[38;5;70m\e[38;5;245m󰔟\e[0m  15:00:00 \e[0m

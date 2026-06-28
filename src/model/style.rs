@@ -28,7 +28,7 @@ pub struct GlyphSet {
     pub weekly: &'static str,
     /// Reset/countdown icon (`↺`).
     pub reset: &'static str,
-    /// Model icon (`◈`).
+    /// Model icon (`▪` / `◈`).
     pub model: &'static str,
     /// Effort icon (bolt).
     pub effort: &'static str,
@@ -36,8 +36,22 @@ pub struct GlyphSet {
     pub worktree: &'static str,
     /// Pull-request icon.
     pub pull_request: &'static str,
-    /// Sub-agent icon (robot).
+    /// Sub-agent / dev-context icon (`⚙`).
     pub agent: &'static str,
+    /// Project/repo icon (`⎔`).
+    pub project: &'static str,
+    /// Stash icon.
+    pub stash: &'static str,
+    /// Lines removed icon (lines added uses plain +).
+    pub lines: &'static str,
+    /// Cost icon.
+    pub cost: &'static str,
+    /// Duration icon (`⏱`).
+    pub duration: &'static str,
+    /// Current time icon.
+    pub time: &'static str,
+    /// Burn-rate / range-to-empty icon (↗).
+    pub burn: &'static str,
 }
 
 /// A complete visual style: how segments are separated and decorated.

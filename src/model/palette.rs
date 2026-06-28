@@ -58,8 +58,22 @@ pub struct Theme {
     pub dim: Color,
     /// Reset/countdown timer value.
     pub reset: Color,
-    /// `max` effort highlight.
-    pub effort_max: Color,
     /// Model display name.
     pub model: Color,
+    /// Project/repo-root name (falls back to `dir` in themes that predate this slot).
+    pub project: Color,
+    /// Stash count (falls back to `git_branch` in themes that predate this slot).
+    pub stash: Color,
+    /// Lines added/removed background.
+    pub lines: Color,
+    /// Cost in USD background.
+    pub cost: Color,
+    /// Session duration background.
+    pub duration: Color,
+    /// Clock background.
+    pub clock: Color,
+    /// Effort level (reasoning effort) background.
+    pub effort: Color,
+    /// Burn-rate / range-to-empty background.
+    pub burn: Color,
 }

@@ -5,12 +5,21 @@
 //! Segments never know their neighbors, never emit a separator, and never embed
 //! a raw color — they read `ctx.theme` / `ctx.style` through the writer.
 
+pub mod burn;
+pub mod clock;
 pub mod context;
+pub mod cost;
 pub mod dev_context;
 pub mod directory;
+pub mod duration;
+pub mod effort;
 pub mod git;
+pub mod limit_sync;
+pub mod lines;
 pub mod model;
+pub mod project;
 pub mod rate_limits;
+pub mod stash;
 
 use crate::model::{InputData, SegmentKind, Style, Theme, Thresholds};
 use crate::render::SegmentWriter;
@@ -27,6 +36,9 @@ pub struct RenderCtx<'a> {
     pub now: i64,
     /// `$HOME`, for path abbreviation.
     pub home: Option<&'a str>,
+    /// Local timezone offset in seconds east of UTC.
+    /// 0 = UTC (fallback when detection fails, or TUI preview).
+    pub tz_offset_seconds: i32,
 }
 
 /// A renderable status segment.
@@ -41,12 +53,20 @@ impl SegmentKind {
     /// Resolve a [`SegmentKind`] to its (zero-sized) [`Segment`] implementation.
     pub fn as_segment(self) -> &'static dyn Segment {
         match self {
+            SegmentKind::Clock => &clock::Clock,
+            SegmentKind::Project => &project::Project,
             SegmentKind::Directory => &directory::Directory,
             SegmentKind::Git => &git::Git,
+            SegmentKind::Stash => &stash::Stash,
             SegmentKind::Context => &context::Context,
             SegmentKind::RateLimits => &rate_limits::RateLimits,
             SegmentKind::DevContext => &dev_context::DevContext,
             SegmentKind::Model => &model::Model,
+            SegmentKind::Effort => &effort::Effort,
+            SegmentKind::Cost => &cost::Cost,
+            SegmentKind::Lines => &lines::Lines,
+            SegmentKind::Duration => &duration::Duration,
+            SegmentKind::Burn => &burn::Burn,
         }
     }
 }

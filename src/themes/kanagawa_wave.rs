@@ -12,14 +12,21 @@ pub fn theme() -> Theme {
         modified: Color(143),
         untracked: Color(242),
         token: Color(110),
-        bar_ok: Color(101),
+        bar_ok: Color(107),
         bar_warn: Color(143),
         bar_crit: Color(131),
         bar_track: Color(240),
         separator: Color(242),
         dim: Color(242),
         reset: Color(66),
-        effort_max: Color(169),
+        effort: Color(169),
         model: Color(143),
+        project: Color(110),
+        stash: Color(103),
+        lines: Color(242),
+        cost: Color(180),    // Warm gold — informational, not alarm
+        duration: Color(66),
+        clock: Color(107),
+        burn: Color(131),
     }
 }

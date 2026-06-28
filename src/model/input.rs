@@ -32,6 +32,10 @@ pub struct InputData {
     pub workspace: Option<WorkspaceInfo>,
     #[serde(default)]
     pub agent: AgentInfo,
+    #[serde(default)]
+    pub cost: CostInfo,
+    #[serde(default)]
+    pub output_style: OutputStyle,
 }
 
 #[derive(Debug, Default, Deserialize)]
@@ -104,6 +108,30 @@ pub struct WorkspaceInfo {
 /// `agent.name` — name of the active sub-agent, if any.
 #[derive(Debug, Default, Deserialize)]
 pub struct AgentInfo {
+    #[serde(default)]
+    pub name: Option<String>,
+}
+
+/// `cost` sub-object: session billing and stats.
+#[derive(Debug, Default, Deserialize)]
+pub struct CostInfo {
+    /// Total cost in USD this session.
+    #[serde(default)]
+    pub total_cost_usd: Coerce<f64>,
+    /// Lines added this session.
+    #[serde(default)]
+    pub total_lines_added: Coerce<u64>,
+    /// Lines removed this session.
+    #[serde(default)]
+    pub total_lines_removed: Coerce<u64>,
+    /// Wall-clock duration in milliseconds.
+    #[serde(default)]
+    pub total_duration_ms: Coerce<u64>,
+}
+
+/// `output_style` — the active output style name.
+#[derive(Debug, Default, Deserialize)]
+pub struct OutputStyle {
     #[serde(default)]
     pub name: Option<String>,
 }

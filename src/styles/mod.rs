@@ -3,6 +3,7 @@
 //! shared list.
 
 pub mod ascii;
+pub mod lean;
 pub mod minimal;
 pub mod plain;
 pub mod powerline;
@@ -14,6 +15,7 @@ use crate::model::Style;
 /// All built-in style names, in display order. Powerline is the default.
 pub const NAMES: &[&str] = &[
     "powerline",
+    "lean",
     "plain",
     "rounded",
     "minimal",
@@ -25,6 +27,7 @@ pub const NAMES: &[&str] = &[
 /// Powerline.
 pub fn get(name: &str) -> Style {
     match name {
+        "lean" => lean::style(),
         "plain" => plain::style(),
         "rounded" => rounded::style(),
         "minimal" => minimal::style(),

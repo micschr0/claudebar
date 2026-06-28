@@ -44,7 +44,7 @@ mod tests {
         };
         let theme = themes::get(&cfg.theme);
         let style = styles::get(&cfg.style);
-        render_with(&input, &cfg, &theme, &style, 0, home)
+        render_with(&input, &cfg, &theme, &style, 0, home, 0)
     }
 
     #[test]

@@ -21,13 +21,15 @@ pub(crate) enum Dir {
     Down,
 }
 
-/// A threshold field that can be nudged with h/l/H/L.
+/// A threshold field in the TUI configurator.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum ThresholdField {
     Warn,
     Crit,
     WeeklyShowAt,
     BarWidth,
+    ClockMode,
+    Layout,
 }
 
 /// Identifies which of the two top-row panels is active.
@@ -303,6 +305,30 @@ impl App {
                 let val = (t.bar_width as i16 + delta).clamp(2, 20) as u8;
                 t.bar_width = val;
             }
+            ThresholdField::ClockMode | ThresholdField::Layout => {
+                // Nudging has no effect on enum-cycled fields; use cycle_threshold_enum.
+            }
+        }
+    }
+
+    /// Cycle a threshold enum-typed field through its options (clock_mode, layout).
+    pub(crate) fn cycle_threshold_enum(&mut self, field: ThresholdField) {
+        match field {
+            ThresholdField::ClockMode => {
+                self.config.thresholds.clock_mode = match self.config.thresholds.clock_mode.as_str() {
+                    "auto" => "12h".into(),
+                    "12h" => "24h".into(),
+                    "24h" => "off".into(),
+                    _ => "auto".into(),
+                };
+            }
+            ThresholdField::Layout => {
+                self.config.thresholds.layout = match self.config.thresholds.layout.as_str() {
+                    "fixed" => "auto".into(),
+                    _ => "fixed".into(),
+                };
+            }
+            _ => {}
         }
     }
 
@@ -433,7 +459,7 @@ pub(crate) fn detail_len(app: &App) -> usize {
         0 => crate::model::SegmentKind::ALL.len(),
         1 => crate::themes::NAMES.len(),
         2 => crate::styles::NAMES.len(),
-        3 => 4, // ThresholdField variants: Warn, Crit, WeeklyShowAt, BarWidth
+        3 => 6, // ThresholdField variants: Warn, Crit, WeeklyShowAt, BarWidth, ClockMode, Layout
         _ => 0,
     }
 }

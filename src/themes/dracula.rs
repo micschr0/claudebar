@@ -9,7 +9,7 @@
 //!
 //! Semantic slots: bar_ok green, bar_warn yellow, bar_crit red; ahead green,
 //! behind red, modified orange, untracked comment grey; dir purple, git_branch
-//! pink, token/reset cyan, model orange, effort_max pink; separator & bar_track
+//! pink, token/reset cyan, model orange, effort pink; separator & bar_track
 //! a muted background tone, dim a comment grey.
 
 use crate::model::{Color, Theme};
@@ -30,8 +30,15 @@ pub fn theme() -> Theme {
         separator: Color(240),  // muted background tone
         dim: Color(245),        // comment grey
         reset: Color(117),      // cyan #8be9fd
-        effort_max: Color(212), // pink #ff79c6
+        effort: Color(135),     // Magenta — distinct from git_branch (212)
         model: Color(215),      // orange #ffb86c
+        project: Color(141),
+        stash: Color(212),
+        lines: Color(245),
+        cost: Color(228),     // Dracula yellow — informational, not alarm
+        duration: Color(117),
+        clock: Color(84),
+        burn: Color(203),
     }
 }
 

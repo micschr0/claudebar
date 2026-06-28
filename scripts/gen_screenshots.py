@@ -111,18 +111,41 @@ def esc(s):
     return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;")
 
 def run_sl(ctx_pct, tok_in, tok_out, rl_5h_pct, rl_5h_reset,
-           rl_7d_pct=None, rl_7d_reset=None, model="Claude Sonnet 4.6", effort=None, cwd=None):
+           rl_7d_pct=None, rl_7d_reset=None, model="Claude Sonnet 4.6", effort=None, cwd=None,
+           cost=None, lines_added=None, lines_removed=None, duration_ms=None,
+           segments=None):
+    """Render the status line via ``claudebar render``.
+
+    New keyword arguments for opt-in segments:
+        cost: USD float (enables cost segment)
+        lines_added, lines_removed: u64 (enables lines segment)
+        duration_ms: u64 (enables duration segment)
+        segments: list of kebab-case names → ``--segments …``
+    """
     now = int(time.time())
     rl  = f'"five_hour":{{"used_percentage":{rl_5h_pct},"resets_at":{now+rl_5h_reset}}}'
     if rl_7d_pct is not None:
         rl += f',"seven_day":{{"used_percentage":{rl_7d_pct},"resets_at":{now+rl_7d_reset}}}'
     effort_field = f',"effort":{{"level":"{effort}"}}' if effort else ""
+    cost_parts = []
+    if cost is not None:
+        cost_parts.append(f'"total_cost_usd":{cost}')
+    if lines_added is not None:
+        cost_parts.append(f'"total_lines_added":{lines_added}')
+    if lines_removed is not None:
+        cost_parts.append(f'"total_lines_removed":{lines_removed}')
+    if duration_ms is not None:
+        cost_parts.append(f'"total_duration_ms":{duration_ms}')
+    cost_field = f',"cost":{{{",".join(cost_parts)}}}' if cost_parts else ""
     j = (f'{{"cwd":"{cwd or DEMO_CWD}",'
          f'"context_window":{{"total_input_tokens":{tok_in},'
          f'"total_output_tokens":{tok_out},"used_percentage":{ctx_pct}}},'
-         f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}{effort_field}}}')
+         f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}{effort_field}{cost_field}}}')
     env = {**os.environ, "HOME": DEMO_HOME}
-    return subprocess.run([BINARY, "render"], input=j, capture_output=True,
+    cmd = [BINARY, "render"]
+    if segments:
+        cmd.extend(["--segments", ",".join(segments)])
+    return subprocess.run(cmd, input=j, capture_output=True,
                           text=True, env=env).stdout.rstrip()
 
 # ── HTML helpers ───────────────────────────────────────────────────────────────
@@ -336,6 +359,12 @@ _EXTRA_STRIPS = [
     ("noeffort", dict(ctx_pct=55.0, tok_in=50000, tok_out=9000,
                       rl_5h_pct=40.0, rl_5h_reset=7200,
                       model="Claude Haiku 4.5", cwd="/tmp/demo-behind")),
+    ("features", dict(ctx_pct=42.0, tok_in=35000, tok_out=6000,
+                      rl_5h_pct=25.0, rl_5h_reset=12000,
+                      model="Claude Sonnet 4.6", effort="high",
+                      cost=1.23, lines_added=321, lines_removed=87, duration_ms=2820000,
+                      segments=["directory","git","context","rate-limits","model",
+                                "cost","lines","duration","clock"])),
 ]
 
 STRIP_SHOTS = _PNG_STRIPS + _EXTRA_STRIPS

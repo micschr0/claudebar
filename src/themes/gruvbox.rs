@@ -26,8 +26,15 @@ pub fn theme() -> Theme {
         separator: Color(239),  // gruvbox bg (dim gray)
         dim: Color(245),        // gruvbox gray
         reset: Color(108),      // gruvbox aqua
-        effort_max: Color(175), // gruvbox bright purple accent
+        effort: Color(175),     // gruvbox bright purple accent
         model: Color(208),      // gruvbox orange
+        project: Color(109),
+        stash: Color(108),
+        lines: Color(245),
+        cost: Color(214),     // Gruvbox yellow — informational, not alarm
+        duration: Color(108),
+        clock: Color(142),
+        burn: Color(167),
     }
 }
 
