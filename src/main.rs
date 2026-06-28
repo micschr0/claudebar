@@ -15,7 +15,7 @@ fn main() -> ExitCode {
         Command::Render => run_render(&cli),
         Command::Config => run_config(&cli),
         Command::Init { force, print } => run_init(&cli, *force, *print),
-        Command::List { segments } => run_list(*segments),
+        Command::List { list_segments } => run_list(*list_segments),
         Command::Sync => run_sync(&cli),
         Command::Smoke => run_smoke(),
         Command::Doctor => run_doctor(&cli),

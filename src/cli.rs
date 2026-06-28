@@ -49,8 +49,8 @@ pub enum Command {
     /// List the built-in themes and styles.
     List {
         /// List segments (kebab-case names, labels, default status) instead of themes/styles.
-        #[arg(long)]
-        segments: bool,
+        #[arg(long = "segments")]
+        list_segments: bool,
     },
     /// Sync the config file: add any new segments introduced in newer claudebar versions.
     Sync,
