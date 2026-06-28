@@ -1,0 +1,16 @@
+# GitLab Pages — serve docs/ as static landing page at <namespace>.gitlab.io/claudebar
+#
+# Mirror setup (one-time):
+#   GitLab → Settings → Repository → Mirroring
+#   Pull from: https://github.com/micschr0/claudebar
+#   Trigger: push events → GitLab CI runs → Pages deploys
+
+pages:
+  stage: deploy
+  script:
+    - cp -r docs public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
