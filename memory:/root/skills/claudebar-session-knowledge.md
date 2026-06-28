@@ -48,14 +48,14 @@
 - gen_screenshots.py: run_sl() erweitert um cost/lines_added/lines_removed/duration_ms/segments kwargs
 
 ## Noch offen (5 Items)
-- P2: Project icon ⬢ (U+2B22) ersetzen — unicode.rs + powerline.rs
+- P2: Project icon ⬢→⎔ (U+2394) — ✅ erledigt (2026-06-28)
 - P3: TUI theme swatches + glyph preview (ratatui Farbquadrate neben Theme-Namen)
 - P3: TUI "Try before Save"-Modus (Preview ohne Commit)
 - P3: TUI Segment-Hilfetexte / Threshold-Tooltips (?-Overlay)
 - P3: Nerd-Font-Auto-Detect bei Install (install.sh check)
 
 ## Gate Status
-- 217 Tests pass
+- 220 Tests pass
 - cargo clippy -- -D warnings clean
 - cargo check --no-default-features clean
 - cargo fmt --check clean
@@ -79,3 +79,25 @@
   b) Effort aus Model-Segment entfernen (nur separates Segment)
   c) Model prüft, ob Effort-Segment in der Liste ist, und unterdrückt dann Inline-Rendering
 - UI/UX-Review-Teams wurden beauftragt (2026-06-28)
+
+
+## Erledigt (2026-06-28)
+- P2: Project icon ⬢→⎔ (U+2394) ✅
+- P2: Duration icon ⧖→⏱ (U+23F1) ✅
+- P2: Agent/DevContext icon → ⚙ (U+2699) ✅
+- P0: Burn-Segment nutzt Theme-Slots statt Hardcodes ✅
+- P0: 4 Themes Deuteranopie-fix (solarized, everforest, kanagawa, github) ✅
+- P0: 7 model/effort/git_branch Kollisionen behoben ✅
+- P0: 5 bar_track Sichtbarkeit verbessert ✅
+- P0: DEFAULT 14→8 Core-Segmente, Effort-Duplizierung behoben ✅
+- P0: TUI h/l-Überladung getrennt, clock_mode/layout editierbar ✅
+- P0: CLI: stdin-Terminal-Check, --list-segments→--segments, test→smoke, migrate→sync ✅
+- P1: CLI: --segments-Warnung für unbekannte Namen, init→stdout ✅
+- P1: CLI: completions-Befehl hinzugefügt ✅
+- Neue Screenshots (7 Strips) ✅
+
+## Noch offen (4 Items)
+- P3: TUI theme swatches + glyph preview (ratatui Farbquadrate neben Theme-Namen)
+- P3: TUI "Try before Save"-Modus (Preview ohne Commit)
+- P3: TUI Segment-Hilfetexte / Threshold-Tooltips (?-Overlay)
+- P3: Nerd-Font-Auto-Detect bei Install (install.sh check)
