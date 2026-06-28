@@ -4,3 +4,4 @@ chrome-headless-shell/
 # Render scratch
 out/work-*/
 *.log
+video/renders/

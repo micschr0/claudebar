@@ -35,13 +35,18 @@
 - Output: `screenshots/strip-{normal,critical,overlimit,green,nogit,noeffort,features}.png`
 - Dokumentiert in `.claude/CLAUDE.md`
 
-## Video Pipeline
-- hve-spielberg: 6-Phasen-Pipeline (Promo-Mode, 25s, silent)
-- Scenes: `video/scenes/*.html` (GSAP-Animationen)
-- Render: `HYPERFRAMES_BROWSER_PATH=<chromium> npx hyperframes render . --fps 30`
-- Braucht: ffmpeg, HyperFrames CLI, Chromium
-- Scene 01: project/context/cost/clock (4 Labels für 8-Core-Default)
-- Scene 03: 16 Themes·7 Styles, burn-rate, cost/lines, TUI configurator, responsive layout
+## Video Pipeline (final)
+- hve-spielberg: 6-Phasen-Pipeline (Promo-Mode, 25s, silent, 1920×1080@30)
+- Scenes: `video/scenes/00-05.html` (GSAP-Animationen, Tokyo Night #16161e)
+- 00 Logo · 01 Strip reveal (8 Core-Labels) · 02 Live states · 03 Features (6 Chips) · 04 Speed (Datenfluss-Visualisierung) · 05 CTA
+### Render-Workflow
+1. `cd video && HYPERFRAMES_BROWSER_PATH=<chromium> npx hyperframes render . --fps 30`
+2. Output: `video/renders/video_<timestamp>.mp4` (HyperFrames legt timestamp-Datei an)
+3. `cp video/renders/video_*.mp4 docs/assets/claudebar-demo.mp4` (Produktion)
+4. Alte `video/renders/video_*.mp4` + `video/renders/work-*/` löschen (nur aktuellen Render behalten)
+5. `git add docs/assets/claudebar-demo.mp4 && git commit && git push`
+- NIE `video/out/final.mp4` verwenden (veraltet)
+- Nur `docs/assets/claudebar-demo.mp4` ist die Landing-Page-Quelle
 
 ## Release-Profil (final)
 ```toml
@@ -97,7 +102,7 @@ codegen-units = 1
 ✅ 4 Themes Deuteranopie-fix + 7 model/effort/git_branch Kollisionen + 5 bar_track Sichtbarkeit
 ✅ Icons: Project ⎔ (U+2394), Duration ⏱ (U+23F1), Agent ⚙ (U+2699)
 ✅ TUI: h/l-Navigation getrennt, clock_mode/layout editierbar, Scroll-Indikatoren
-✅ TUI: Swatch-Cache 5→6 (model), Style-Row-Glyphen, Dirty-Indikator, Tooltips
+✅ Video: Scenes 01-04 aktualisiert, 3-Experten-Review, Render-Workflow dokumentiert
 ✅ CLI: stdin-Terminal-Check, test→smoke, migrate→sync, completions, --segments-Warnung
 ✅ install.sh: Nerd-Font-Auto-Detect
 ✅ README: Komplett-Rewrite (3-Expert-Review)
