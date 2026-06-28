@@ -4,7 +4,7 @@ use clap::Parser;
 use claudebar::model::{Config, SegmentKind};
 use claudebar::{InputData, render_line, styles, themes};
 use cli::{Cli, Command};
-use std::io::Read;
+use std::io::{IsTerminal, Read};
 use std::path::PathBuf;
 use std::process::ExitCode;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -15,11 +15,12 @@ fn main() -> ExitCode {
         Command::Render => run_render(&cli),
         Command::Config => run_config(&cli),
         Command::Init { force, print } => run_init(&cli, *force, *print),
-        Command::List { list_segments } => run_list(*list_segments),
-        Command::Migrate => run_migrate(&cli),
-        Command::Test => run_test(),
+        Command::List { segments } => run_list(*segments),
+        Command::Sync => run_sync(&cli),
+        Command::Smoke => run_smoke(),
         Command::Doctor => run_doctor(&cli),
         Command::Edit => run_edit(&cli),
+        Command::Completions { shell } => run_completions(*shell),
     }
 }
 
@@ -50,21 +51,24 @@ fn resolve_config(cli: &Cli) -> Config {
         cfg.style = s.clone();
     }
     if let Some(segs) = &cli.segments {
-        let parsed: Vec<SegmentKind> = segs
-            .iter()
-            .filter_map(|s| SegmentKind::from_kebab(s))
-            .collect();
+        let mut parsed: Vec<SegmentKind> = Vec::with_capacity(segs.len());
+        for s in segs {
+            match SegmentKind::from_kebab(s) {
+                Some(k) => parsed.push(k),
+                None => eprintln!("claudebar: warning: unknown segment '{s}' — ignored"),
+            }
+        }
         if !parsed.is_empty() {
             cfg.segments = parsed;
         }
     }
     cfg
 }
-
 fn run_render(cli: &Cli) -> ExitCode {
     let mut buf = String::new();
-    // Reading stdin can't meaningfully fail the line; ignore errors and parse
-    // whatever we got (InputData::parse is itself infallible).
+    if std::io::stdin().is_terminal() {
+        eprintln!("claudebar: reading from stdin — pipe session JSON or press Ctrl+D");
+    }
     let _ = std::io::stdin().read_to_string(&mut buf);
     let input = InputData::parse(&buf);
     let cfg = resolve_config(cli);
@@ -127,7 +131,7 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
         }
         match cfg.save(&path) {
             Ok(()) => {
-                eprintln!("claudebar: wrote default config to {}", path.display());
+                println!("claudebar: wrote default config to {}", path.display());
                 ExitCode::SUCCESS
             }
             Err(e) => {
@@ -162,7 +166,7 @@ fn run_list(segments: bool) -> ExitCode {
     ExitCode::SUCCESS
 }
 
-fn run_migrate(cli: &Cli) -> ExitCode {
+fn run_sync(cli: &Cli) -> ExitCode {
     use claudebar::model::SegmentKind;
 
     let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
@@ -186,7 +190,7 @@ fn run_migrate(cli: &Cli) -> ExitCode {
     // Check if the config file actually exists (load returns default for missing files).
     if !path.exists() {
         eprintln!(
-            "claudebar: no config file at {} — nothing to migrate.",
+            "claudebar: no config file at {} — nothing to sync.",
             path.display()
         );
         eprintln!("Run `claudebar init` to create one.");
@@ -241,7 +245,7 @@ fn run_migrate(cli: &Cli) -> ExitCode {
     }
 }
 
-fn run_test() -> ExitCode {
+fn run_smoke() -> ExitCode {
     let fixture = include_str!("../fixtures/typical.json");
     let input = InputData::parse(fixture);
     let cfg = Config::default();
@@ -249,6 +253,13 @@ fn run_test() -> ExitCode {
     let now: i64 = 1_900_000_000;
     let output = render_line(&input, &cfg, now);
     println!("{output}");
+    ExitCode::SUCCESS
+}
+
+fn run_completions(shell: clap_complete::Shell) -> ExitCode {
+    let mut cmd = <Cli as clap::CommandFactory>::command();
+    let name = cmd.get_name().to_string();
+    clap_complete::generate(shell, &mut cmd, &name, &mut std::io::stdout());
     ExitCode::SUCCESS
 }
 

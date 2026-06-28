@@ -50,14 +50,20 @@ pub enum Command {
     List {
         /// List segments (kebab-case names, labels, default status) instead of themes/styles.
         #[arg(long)]
-        list_segments: bool,
+        segments: bool,
     },
-    /// Add any new segments (from a newer claudebar version) to an existing config.
-    Migrate,
+    /// Sync the config file: add any new segments introduced in newer claudebar versions.
+    Sync,
     /// Render a built-in fixture to verify the install works.
-    Test,
+    Smoke,
     /// Run diagnostics: font, git, config, PATH.
     Doctor,
     /// Open the config file in $EDITOR (falls back to vi).
     Edit,
+    /// Generate shell completions.
+    Completions {
+        /// Target shell.
+        #[arg(value_enum)]
+        shell: clap_complete::Shell,
+    },
 }
