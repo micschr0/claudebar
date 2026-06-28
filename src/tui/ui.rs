@@ -456,7 +456,8 @@ fn render_style_row(
 
     let style = crate::styles::get(name);
     let sep_span = Span::raw(style.separator);
-    let gap_span = Span::raw("  ");
+    let gap_a = Span::raw("  ");
+    let gap_b = Span::raw("  ");
     let fill2 = format!("{0}{0}", style.bar_fill);
     let empty2 = format!("{0}{0}", style.bar_empty);
     let fill_span = Span::styled(fill2, Style::default().fg(CHROME_OK));
@@ -470,10 +471,10 @@ fn render_style_row(
         name_span,
         Span::raw(" "),
         sep_span,
-        gap_span.clone(),
+        gap_a,
         fill_span,
         empty_span,
-        gap_span,
+        gap_b,
         project_span,
         Span::raw(" "),
         duration_span,

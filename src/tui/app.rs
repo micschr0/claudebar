@@ -85,7 +85,6 @@ pub(crate) struct App {
     pub right_panel_area: std::cell::Cell<ratatui::layout::Rect>,
     /// Swatch cache built in themes::NAMES order.
     /// Slot order: [separator, dir, git_branch, bar_ok, bar_crit, model].
-    /// Reordering themes::NAMES or changing Theme struct fields requires updating here.
     pub swatch_cache: Vec<[u8; 6]>,
     pub samples: Vec<Sample>,
     pub sample_idx: usize,
@@ -363,6 +362,31 @@ impl App {
             }
         }
     }
+
+    pub(crate) fn context_help(&self) -> Option<&'static str> {
+        if self.focused_panel != Panel::Right {
+            return None;
+        }
+        match self.menu_cursor {
+            0 => {
+                let mut order: Vec<SegmentKind> = self.config.segments.clone();
+                for &kind in &SegmentKind::ALL {
+                    if !self.config.segments.contains(&kind) {
+                        order.push(kind);
+                    }
+                }
+                order.get(self.detail_cursor).map(|&kind| segment_help(kind))
+            }
+            3 => {
+                const ORDER: [ThresholdField; 6] = [
+                    ThresholdField::Warn, ThresholdField::Crit, ThresholdField::WeeklyShowAt,
+                    ThresholdField::BarWidth, ThresholdField::ClockMode, ThresholdField::Layout,
+                ];
+                ORDER.get(self.detail_cursor).map(|&field| threshold_help(field))
+            }
+            _ => None,
+        }
+    }
 }
 
 /// Build list_rows, selectable_indices, and section_starts from config.
@@ -469,75 +493,34 @@ pub(crate) fn detail_len(app: &App) -> usize {
 /// when the segment is selected in the right panel.
 pub(crate) fn segment_help(kind: SegmentKind) -> &'static str {
     match kind {
-        SegmentKind::Directory => "Directory — current working directory, abbreviated with ~ for $HOME",
-        SegmentKind::Git => "Git — current branch and dirty/clean working-tree status",
-        SegmentKind::Context => "Context — context window usage (tokens used vs budget)",
-        SegmentKind::RateLimits => "Rate Limits — API rate limit usage across input/output tiers",
-        SegmentKind::DevContext => "Dev Context — tool-use statistics (bash, read, write, grep, glob)",
-        SegmentKind::Model => "Model — current AI model name and provider",
-        SegmentKind::Effort => "Effort — computational effort consumed this session",
-        SegmentKind::Clock => "Clock — current time (12h / 24h, configurable seconds display)",
-        SegmentKind::Cost => "Cost — estimated session cost in USD",
-        SegmentKind::Lines => "Lines — lines added/removed in the current session",
-        SegmentKind::Duration => "Duration — wall-clock session time",
-        SegmentKind::Stash => "Stash — number of git stash entries",
-        SegmentKind::Project => "Project — repository or directory name",
-        SegmentKind::Burn => "Burn — projected time until rate limits reset",
+        SegmentKind::Project => "Project — root repository name, stable across worktrees",
+        SegmentKind::Directory => "Directory — current working directory",
+        SegmentKind::Git => "Git — current branch and working-tree status",
+        SegmentKind::Model => "Model — active Claude model and reasoning effort",
+        SegmentKind::Context => "Context — token usage vs. context window budget",
+        SegmentKind::RateLimits => "Rate Limits — 5-hour and 7-day API rate-limit usage",
+        SegmentKind::DevContext => "Dev Context — current development context name",
+        SegmentKind::Stash => "Stash — count of stashed git changes",
+        SegmentKind::Effort => "Effort — reasoning effort level (low/medium/high/xhigh/max)",
+        SegmentKind::Cost => "Cost — session cost in USD",
+        SegmentKind::Lines => "Lines — lines added and removed this session",
+        SegmentKind::Duration => "Duration — session wall-clock duration",
+        SegmentKind::Burn => "Burn — projected time until rate limit is exhausted",
+        SegmentKind::Clock => "Clock — current time (12h/24h, configurable seconds)",
     }
 }
 
-/// Human-readable description for each threshold field, shown in the status
-/// line when a threshold row is selected in the right panel.
-pub(crate) fn threshold_help(field: ThresholdField) -> &'static str {
+fn threshold_help(field: ThresholdField) -> &'static str {
     match field {
-        ThresholdField::Warn => "Warn % — usage bar turns warning-coloured above this percentage",
-        ThresholdField::Crit => "Crit % — usage bar turns critical-coloured above this percentage",
-        ThresholdField::WeeklyShowAt => "Weekly Show At — show weekly rate limit when ≤ this many hours remain in the week",
-        ThresholdField::BarWidth => "Bar Width — width in character cells of progress-bar widgets",
-        ThresholdField::ClockMode => "Clock Mode — 12h or 24h clock display format",
-        ThresholdField::Layout => "Layout — status-line visual style (powerline or compact)",
+        ThresholdField::Warn => "warn — bar turns yellow above this context usage %",
+        ThresholdField::Crit => "crit — bar turns red above this context usage %",
+        ThresholdField::WeeklyShowAt => "weekly_show_at — weekly window shown once usage reaches this %",
+        ThresholdField::BarWidth => "bar_width — width of progress bars in cells",
+        ThresholdField::ClockMode => "clock_mode — 12h, 24h, or off",
+        ThresholdField::Layout => "layout — fixed (single line) or auto (responsive wrap)",
     }
 }
 
-impl App {
-    /// Return a contextual help string for the currently selected item in the
-    /// right panel, when the right panel is focused and the section is Segments
-    /// or Thresholds.  Returns `None` when no contextual help applies.
-    pub(crate) fn context_help(&self) -> Option<&'static str> {
-        if self.focused_panel != Panel::Right {
-            return None;
-        }
-        match self.menu_cursor {
-            0 => {
-                // Segments: build display order (same as build_segment_lines).
-                let mut order: Vec<SegmentKind> = self.config.segments.clone();
-                for &kind in &SegmentKind::ALL {
-                    if !self.config.segments.contains(&kind) {
-                        order.push(kind);
-                    }
-                }
-                order
-                    .get(self.detail_cursor)
-                    .map(|&kind| segment_help(kind))
-            }
-            3 => {
-                // Thresholds: same order as build_threshold_lines.
-                const THRESHOLD_ORDER: [ThresholdField; 6] = [
-                    ThresholdField::Warn,
-                    ThresholdField::Crit,
-                    ThresholdField::WeeklyShowAt,
-                    ThresholdField::BarWidth,
-                    ThresholdField::ClockMode,
-                    ThresholdField::Layout,
-                ];
-                THRESHOLD_ORDER
-                    .get(self.detail_cursor)
-                    .map(|&field| threshold_help(field))
-            }
-            _ => None,
-        }
-    }
-}
 
 #[cfg(test)]
 mod tests {
