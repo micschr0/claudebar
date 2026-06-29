@@ -252,10 +252,8 @@ mod tests {
         let input = InputData::default();
         let cfg = float_cfg("model context cost");
         let line = render_float(&input, &cfg, 0, None);
-        assert!(
-            line.is_empty(),
-            "all-empty input yields empty float: {line:?}"
-        );
+        // Context renders "0" at zero tokens (new-user onboarding).
+        assert_eq!(line, "0", "all-empty input yields just context zero: {line:?}");
 
         // Mixed: model present, cost empty — the empty segment is dropped, leaving
         // no dangling separator around the model text.

@@ -235,10 +235,10 @@ mod tests {
     fn weekly_shown_at_or_above_show_at() {
         let out = render_rl(
             r#"{"rate_limits":{"five_hour":{"used_percentage":60.0,"resets_at":1900000000},
-                "seven_day":{"used_percentage":64.0,"resets_at":1905000000}}}"#,
+                "seven_day":{"used_percentage":76.0,"resets_at":1905000000}}}"#,
         );
         assert!(out.contains("60%"), "5h pct missing: {out:?}");
-        assert!(out.contains("64%"), "weekly pct missing: {out:?}");
+        assert!(out.contains("76%"), "weekly pct missing: {out:?}");
     }
 
     #[test]

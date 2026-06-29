@@ -47,12 +47,12 @@ impl SegmentKind {
         SegmentKind::Clock,
     ];
 
-    /// The core default segment set (8 segments). Model renders Effort inline.
-    pub const DEFAULT: [SegmentKind; 7] = [
+    pub const DEFAULT: [SegmentKind; 8] = [
         SegmentKind::Directory,
         SegmentKind::Git,
         SegmentKind::Model,
         SegmentKind::Context,
+        SegmentKind::Lines,
         SegmentKind::RateLimits,
         SegmentKind::Cost,
         SegmentKind::Duration,
@@ -136,7 +136,7 @@ impl Default for Thresholds {
         Self {
             warn: 50,
             crit: 80,
-            weekly_show_at: 50,
+            weekly_show_at: 75,
             bar_width: 6,
             cost_decimals: 2,
             name_max: 0,
