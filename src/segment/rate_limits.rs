@@ -223,7 +223,7 @@ mod tests {
                 "seven_day":{"used_percentage":30.0,"resets_at":1905000000}}}"#,
         );
         assert!(out.contains("30%"), "5h pct missing: {out:?}");
-        // Only one percentage value (the 5h one); weekly is hidden below 50%.
+        // Only one percentage value (the 5h one); weekly is hidden below 75%.
         assert_eq!(
             out.matches('%').count(),
             1,

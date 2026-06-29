@@ -93,6 +93,14 @@ mod tests {
     }
 
     #[test]
+    fn zero_tokens_without_percentage_renders_count_only() {
+        // No percentage → bar branch skipped, just the count.
+        let out = render_ctx(Some(0), Some(0), None);
+        assert!(out.contains("0"), "zero count missing: {out:?}");
+        assert!(!out.contains('%'), "unexpected percent bar: {out:?}");
+    }
+
+    #[test]
     fn renders_count_and_percent_in_token_color() {
         // 35000 + 7300 = 42300 -> 42.3k, 67% in warn band.
         let out = render_ctx(Some(35000), Some(7300), Some(67.0));
