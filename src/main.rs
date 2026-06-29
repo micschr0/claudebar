@@ -45,9 +45,15 @@ fn resolve_config(cli: &Cli) -> Config {
         None => Config::default(),
     };
     if let Some(t) = &cli.theme {
+        if !themes::NAMES.contains(&t.as_str()) {
+            eprintln!("claudebar: warning: unknown theme '{t}' — using tokyo-night");
+        }
         cfg.theme = t.clone();
     }
     if let Some(s) = &cli.style {
+        if !styles::NAMES.contains(&s.as_str()) {
+            eprintln!("claudebar: warning: unknown style '{s}' — using powerline");
+        }
         cfg.style = s.clone();
     }
     if let Some(segs) = &cli.segments {

@@ -26,8 +26,9 @@ TRACK = (47, 51, 77)       # #2f334d
 GRAD_A = (122, 162, 247)   # #7aa2f7
 GRAD_B = (125, 207, 255)   # #7dcfff
 
-FONT_BOLD = "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"
-FONT_REG = "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"
+FONT_DIR  = os.environ.get("NF_FONT_DIR", "/tmp/fonts")
+FONT_BOLD = os.environ.get("SOCIAL_BOLD_FONT", os.path.join(FONT_DIR, "HackNerdFontMono-Bold.ttf"))
+FONT_REG  = os.environ.get("SOCIAL_REG_FONT", os.path.join(FONT_DIR, "HackNerdFontMono-Regular.ttf"))
 
 STRIP = os.path.join(SHOTS, "strip-critical.png")
 TAGLINE = "A fast, themeable statusline for Claude Code"
