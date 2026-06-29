@@ -32,7 +32,7 @@ pub enum SegmentKind {
 
 impl SegmentKind {
     /// All segments in canonical order.
-    pub const ALL: [SegmentKind; 14] = [
+    pub const ALL: [SegmentKind; 13] = [
         SegmentKind::Project,
         SegmentKind::Directory,
         SegmentKind::Git,
@@ -41,7 +41,6 @@ impl SegmentKind {
         SegmentKind::RateLimits,
         SegmentKind::DevContext,
         SegmentKind::Stash,
-        SegmentKind::Effort,
         SegmentKind::Cost,
         SegmentKind::Lines,
         SegmentKind::Duration,
@@ -56,9 +55,9 @@ impl SegmentKind {
         SegmentKind::Git,
         SegmentKind::Model,
         SegmentKind::Context,
+        SegmentKind::RateLimits,
         SegmentKind::Cost,
         SegmentKind::Duration,
-        SegmentKind::Clock,
     ];
 
     /// Human label for the TUI list.

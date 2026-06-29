@@ -12,7 +12,6 @@ pub mod cost;
 pub mod dev_context;
 pub mod directory;
 pub mod duration;
-pub mod effort;
 pub mod git;
 pub mod limit_sync;
 pub mod lines;
@@ -62,7 +61,7 @@ impl SegmentKind {
             SegmentKind::RateLimits => &rate_limits::RateLimits,
             SegmentKind::DevContext => &dev_context::DevContext,
             SegmentKind::Model => &model::Model,
-            SegmentKind::Effort => &effort::Effort,
+            SegmentKind::Effort => &NOOP,
             SegmentKind::Cost => &cost::Cost,
             SegmentKind::Lines => &lines::Lines,
             SegmentKind::Duration => &duration::Duration,
@@ -70,3 +69,10 @@ impl SegmentKind {
         }
     }
 }
+
+/// No-op segment for deprecated variants (e.g. Effort — rendered inline by Model).
+struct Noop;
+impl Segment for Noop {
+    fn render(&self, _ctx: &RenderCtx, _out: &mut SegmentWriter) -> bool { false }
+}
+static NOOP: Noop = Noop;

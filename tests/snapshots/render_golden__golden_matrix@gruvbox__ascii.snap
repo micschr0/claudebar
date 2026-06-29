@@ -2,4 +2,4 @@
 source: tests/render_golden.rs
 expression: rendered
 ---
-\e[38;5;109m ~/p/claude-code-statusline\e[0m \e[38;5;239m|\e[0m \e[38;5;208mOpus 4.8\e[0m \e[38;5;142mhigh\e[0m \e[38;5;239m|\e[0m \e[38;5;214m####\e[38;5;241m--\e[0m \e[38;5;214m67%\e[0m \e[38;5;109m42.3k\e[0m \e[38;5;239m|\e[0m \e[38;5;142m 15:00:00 \e[0m
+\e[38;5;109m ~/p/claude-code-statusline\e[0m \e[38;5;239m|\e[0m \e[38;5;208mOpus 4.8\e[0m \e[38;5;142mhigh\e[0m \e[38;5;239m|\e[0m \e[38;5;214m####\e[38;5;241m--\e[0m \e[38;5;214m67%\e[0m \e[38;5;109m42.3k\e[0m \e[38;5;239m|\e[0m \e[38;5;142m##\e[38;5;241m----\e[0m \e[38;5;142m48%\e[0m \e[38;5;108m2h46m\e[0m

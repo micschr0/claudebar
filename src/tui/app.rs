@@ -501,7 +501,7 @@ pub(crate) fn segment_help(kind: SegmentKind) -> &'static str {
         SegmentKind::RateLimits => "Rate Limits — 5-hour and 7-day API rate-limit usage",
         SegmentKind::DevContext => "Dev Context — current development context name",
         SegmentKind::Stash => "Stash — count of stashed git changes",
-        SegmentKind::Effort => "Effort — reasoning effort level (low/medium/high/xhigh/max)",
+        SegmentKind::Effort => "(deprecated — rendered inline by Model)",
         SegmentKind::Cost => "Cost — session cost in USD",
         SegmentKind::Lines => "Lines — lines added and removed this session",
         SegmentKind::Duration => "Duration — session wall-clock duration",
