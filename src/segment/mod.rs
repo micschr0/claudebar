@@ -16,7 +16,6 @@ pub mod git;
 pub mod limit_sync;
 pub mod lines;
 pub mod model;
-pub mod project;
 pub mod rate_limits;
 pub mod stash;
 
@@ -53,7 +52,7 @@ impl SegmentKind {
     pub fn as_segment(self) -> &'static dyn Segment {
         match self {
             SegmentKind::Clock => &clock::Clock,
-            SegmentKind::Project => &project::Project,
+            SegmentKind::Project => &NOOP,
             SegmentKind::Directory => &directory::Directory,
             SegmentKind::Git => &git::Git,
             SegmentKind::Stash => &stash::Stash,
@@ -70,7 +69,7 @@ impl SegmentKind {
     }
 }
 
-/// No-op segment for deprecated variants (e.g. Effort — rendered inline by Model).
+/// No-op segment for deprecated variants (Project, Effort).
 struct Noop;
 impl Segment for Noop {
     fn render(&self, _ctx: &RenderCtx, _out: &mut SegmentWriter) -> bool { false }

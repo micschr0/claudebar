@@ -493,7 +493,7 @@ pub(crate) fn detail_len(app: &App) -> usize {
 /// when the segment is selected in the right panel.
 pub(crate) fn segment_help(kind: SegmentKind) -> &'static str {
     match kind {
-        SegmentKind::Project => "Project — root repository name, stable across worktrees",
+        SegmentKind::Project => "(deprecated — directory covers project identity)",
         SegmentKind::Directory => "Directory — current working directory",
         SegmentKind::Git => "Git — current branch and working-tree status",
         SegmentKind::Model => "Model — active Claude model and reasoning effort",
