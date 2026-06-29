@@ -4,9 +4,9 @@
       <div id="wm" class="wordmark"><span class="c-claude">claude</span><span class="c-bar">bar</span></div>
       <div id="term" class="term">
         <span class="prompt">$</span>
-        <span class="cmd">curl -fsSL raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash</span>
+        <span class="cmd">curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash</span>
       </div>
-      <p id="repo" class="repo">github.com/micschr0/claudebar</p>
+      <p id="hint" class="hint">Nerd Font recommended · git optional · open source</p>
     </div>
 
     <style>
@@ -40,6 +40,10 @@
         font-family: "JetBrains Mono", ui-monospace, monospace;
         visibility: hidden; opacity: 0;
       }
+      [data-composition-id="scene-05-cta"] .hint {
+        margin: 0; font-size: 28px; font-weight: 400; color: #565f89;
+        visibility: hidden; opacity: 0;
+      }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
@@ -49,6 +53,7 @@
       tl.fromTo("#wm",   { y: 34, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, ease: "expo.out" }, 0.1);
       tl.fromTo("#term", { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.6);
       tl.fromTo("#repo", { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 1.1);
+      tl.fromTo("#hint", { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 1.6);
       window.__timelines["scene-05-cta"] = tl;
     </script>
   </div>
