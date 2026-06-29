@@ -23,17 +23,18 @@ green() { printf '\033[32m%s\033[0m\n' "$*"; }
 bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 
 # ── Preflight ──────────────────────────────────────────────────────────────────
-# git is the only soft runtime dependency (the git segment). jq is needed only
-# for the bash fallback and for merging into an *existing* settings.json — both
-# checked at the point of use, not gated here. The happy path (prebuilt binary,
-# fresh settings.json) needs nothing but a terminal.
+# git is a soft runtime dependency (the git segment). curl and jq are needed for
+# the prebuilt binary download path (fetch_latest_tag, download_prebuilt) and are
+# also required for the bash fallback and settings.json merge respectively.
+# The happy path (prebuilt binary) needs curl + jq. Nothing else is required.
 bold "Checking dependencies..."
 echo "  Tip: set a Nerd Font as your terminal font for the glyphs — https://www.nerdfonts.com"
 echo ""
 install_hint() {
   case "$1" in
-    jq)  echo "  macOS:  brew install jq" ;;
-    git) echo "  macOS:  brew install git" ;;
+    curl) echo "  macOS:  brew install curl" ;;
+    git)  echo "  macOS:  brew install git" ;;
+    jq)   echo "  macOS:  brew install jq" ;;
   esac
   echo "  Linux:  sudo apt install $1   # or: sudo dnf install $1"
 }
@@ -43,6 +44,20 @@ if command -v git >/dev/null 2>&1; then
 else
   red "  git    not found — the git segment stays hidden until you install it"
   install_hint git
+fi
+
+if command -v curl >/dev/null 2>&1; then
+  printf '  %-6s %s\n' "curl" "$(command -v curl)"
+else
+  red "  curl   not found — prebuilt binary download will fail"
+  install_hint curl
+fi
+
+if command -v jq >/dev/null 2>&1; then
+  printf '  %-6s %s\n' "jq" "$(command -v jq)"
+else
+  red "  jq     not found — prebuilt binary download and settings merge will fail"
+  install_hint jq
 fi
 echo ""
 

@@ -19,14 +19,15 @@ tasks:
 
   test-update:
     desc: Update insta snapshots
-    cmd: cargo insta review
-    deps: [test]
+    cmd: cargo test
+    env:
+      INSTA_UPDATE: always
 
   lint:
     desc: Clippy + shellcheck
     cmds:
       - cargo clippy -- -D warnings
-      - shellcheck statusline-command.sh
+      - shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
 
   syntax:
     desc: Syntax-check the bash script (no deps needed)
@@ -50,7 +51,7 @@ tasks:
       done
 
   screenshots:
-    desc: Regenerate all screenshots (requires Docker + fonts)
+    desc: Regenerate all screenshots (Docker or host-Chrome via CLAUDEBAR_CHROME env)
     cmd: python3 scripts/gen_screenshots.py
 
   screenshots-svg:
