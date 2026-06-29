@@ -1,12 +1,16 @@
 # claudebar Session Knowledge (2026-06-29)
 
-## Architecture State
-- 14 Segmente: Project, Directory, Git, Model, Context, RateLimits, DevContext, Stash, Effort, Cost, Lines, Duration, Burn, Clock
-- DEFAULT = 8 Core: [Project, Directory, Git, Model, Context, Cost, Duration, Clock]
-- model_show_effort: true → Model rendert Effort inline (kein separates Effort-Segment im Default)
+## Architecture State (final)
+- 12 aktive Segmente + 2 deprecated (Project, Effort → no-op)
+- ALL: [Directory, Git, Model, Context, RateLimits, DevContext, Stash, Cost, Lines, Duration, Burn, Clock]
+- DEFAULT = 8 Core: [Directory, Git, Model, Context, Lines, RateLimits, Cost, Duration]
+- Opt-in (4): DevContext, Stash, Burn, Clock
+- Deprecated (2): Project, Effort — Varianten bleiben für TOML-Kompat, mappen auf Noop
+- model_show_effort: true → Model rendert Effort inline
+- weekly_show_at: 75 (Normie-Schutz: Weekly-Bar erst ab 75%, vorher nur 5h-Bar)
+- Context rendert bei 0 Tokens (new-user onboarding: Segment von Anfang an sichtbar)
 - RenderCtx hat `tz_offset_seconds: i32` (DI-Pattern)
-- clock_mode = "auto" (Default), "12h", "24h", "off"
-- clock_seconds = true (Default)
+- clock_mode = "auto" (Default), "12h", "24h", "off"; clock_seconds = true (Default)
 
 ## CLI (final)
 - `claudebar` / `claudebar render` — stdin → statusline
@@ -96,17 +100,22 @@ codegen-units = 1
 - NICHT `UtcOffset::current_local_offset()` — blockiert in gVisor/sandboxed Umgebungen
 - TZ-Offset: `date +%z` Subprocess via `detect_tz_offset()`, LazyLock-cached
 
-## Alles erledigt (2026-06-28/29)
-✅ 14→8 Core-DEFAULT + Effort-Duplizierung behoben + model_show_effort
-✅ Burn: Theme-Slots statt Hardcodes (203/221/114/245 → theme.burn/bar_warn/bar_ok/dim)
-✅ 4 Themes Deuteranopie-fix + 7 model/effort/git_branch Kollisionen + 5 bar_track Sichtbarkeit
-✅ Icons: Project ⎔ (U+2394), Duration ⏱ (U+23F1), Agent ⚙ (U+2699)
-✅ TUI: h/l-Navigation getrennt, clock_mode/layout editierbar, Scroll-Indikatoren
-✅ Video: Scenes 01-04 aktualisiert, 3-Experten-Review, Render-Workflow dokumentiert
-✅ CLI: stdin-Terminal-Check, test→smoke, migrate→sync, completions, --segments-Warnung
+## Erledigt (2026-06-29)
+✅ 14→12 Segmente, Project+Effort deprecated, Noop für backward compat
+✅ DEFAULT 8: Directory·Git·Model·Context·Lines·RateLimits·Cost·Duration
+✅ 5-Runden Experten-Debatte (CC·Dev·Normie) → Konvergenz auf aktuellen DEFAULT
+✅ weekly_show_at: 50→75 (Normie-Tag-1-Schutz)
+✅ Context rendert bei 0 Tokens (new-user onboarding)
+✅ Lines in DEFAULT befördert (selbst-unterdrückend, harmlos)
+✅ Burn: Theme-Slots statt Hardcodes
+✅ 4 Themes Deuteranopie-fix + 7 Kollisionen + 5 bar_track
+✅ Icons: Duration ⏱ (U+23F1), Agent ⚙ (U+2699)
+✅ TUI: h/l-Navigation, clock_mode/layout, Scroll-Indikatoren, Swatch-Cache, Tooltips
+✅ CLI: stdin-Check, smoke, sync, completions, --segments-Warnung
 ✅ install.sh: Nerd-Font-Auto-Detect
-✅ README: Komplett-Rewrite (3-Expert-Review)
+✅ README: Komplett-Rewrite (3-Experten-Review)
 ✅ Screenshots: 7 Strips via gen_screenshots.py
-✅ Video: Scenes 01+03 aktualisiert (Render braucht ffmpeg)
-✅ Rust-Audit: Release-Profil, Lint-Attrs
-✅ Branch: feat/latest-improvements, 220 Tests, Clippy clean
+✅ Video: 6 Scenes, Scene 04 Datenfluss-Visualisierung, Render-Workflow, .gitlab-ci.yml
+✅ Rust-Audit: Release-Profil, Lint-Attrs, panic="abort", lto="fat"
+✅ Code-Review: Rust Skills + CleanCode + TestReview — 0.92 confidence, Nits gefixt
+✅ Branch: feat/latest-improvements, 213 Tests, Clippy clean
