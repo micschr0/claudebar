@@ -1,5 +1,7 @@
 # Local-only Claude Code project context — intentionally kept out of the
 # public repo. Claude Code still reads it from disk on every session.
+# GitLab mirror CI — deployment infra, not part of the public repo
+.gitlab-ci.yml
 CLAUDE.md
 
 # OS / editor cruft

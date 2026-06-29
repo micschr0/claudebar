@@ -1,7 +1,10 @@
+# Generated screenshots — copy from ../../screenshots/ before rendering
+public/screenshots/
+public/logo.svg
+# Render output — only docs/assets/claudebar-demo.mp4 is committed (copied manually)
+renders/
 # Downloaded render browser — do not commit (261 MB)
 chrome-headless-shell/
-
 # Render scratch
 out/work-*/
 *.log
-video/renders/
