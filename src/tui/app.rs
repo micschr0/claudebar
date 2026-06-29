@@ -392,8 +392,12 @@ impl App {
 /// Build list_rows, selectable_indices, and section_starts from config.
 /// Called in App::new(), toggle_cursor(), reset(), and move_segment().
 pub(crate) fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 4]) {
-    let mut list_rows: Vec<RowItem> = Vec::new();
-    let mut selectable_indices: Vec<usize> = Vec::new();
+    let mut list_rows: Vec<RowItem> = Vec::with_capacity(
+        4 + SegmentKind::ALL.len() + 1 + crate::themes::NAMES.len() + crate::styles::NAMES.len() + 4,
+    );
+    let mut selectable_indices: Vec<usize> = Vec::with_capacity(
+        SegmentKind::ALL.len() + crate::themes::NAMES.len() + crate::styles::NAMES.len() + 4,
+    );
 
     // --- Section 0: Segments ---
     list_rows.push(RowItem::SectionHeader(0));
