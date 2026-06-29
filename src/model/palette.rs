@@ -11,12 +11,18 @@ pub struct Color(pub u8);
 
 impl Color {
     /// SGR foreground sequence, e.g. `\x1b[38;5;33m`.
+    #[must_use = "returns ANSI escape string; ignoring it is a bug"]
     pub fn fg(self) -> String {
         format!("\x1b[38;5;{}m", self.0)
     }
 
     /// Append the SGR foreground sequence directly into `buf`, avoiding the
     /// throwaway `String` that [`Color::fg`] allocates on the render hot path.
+    ///
+    /// # Panics
+    ///
+    /// The internal `write!` to a `String` buffer is infallible and will never panic.
+    #[inline]
     pub fn write_fg(self, buf: &mut String) {
         buf.push_str("\x1b[38;5;");
         write!(buf, "{}", self.0).unwrap();

@@ -35,6 +35,7 @@ impl<'a> SegmentWriter<'a> {
 
     /// True if nothing has been written yet.
     #[must_use]
+    #[inline]
     pub fn is_empty(&self) -> bool {
         self.buf.is_empty()
     }
@@ -65,6 +66,10 @@ impl<'a> SegmentWriter<'a> {
     /// so callers can pass `format_args!(...)` and write directly into the buffer
     /// instead of allocating a throwaway `String` per emission. Emits the same
     /// byte order as [`SegmentWriter::colored`]: fg color → args → reset.
+    ///
+    /// # Panics
+    ///
+    /// The internal `write_fmt` on a `String` buffer is infallible and will never panic.
     pub fn colored_fmt(&mut self, color: Color, args: std::fmt::Arguments) {
         color.write_fg(&mut self.buf);
         self.buf.write_fmt(args).unwrap();
@@ -96,6 +101,10 @@ impl<'a> SegmentWriter<'a> {
     /// Like [`SegmentWriter::raw`] but formats directly into the buffer
     /// via [`std::fmt::Arguments`] — avoids allocating a throwaway
     /// `String` for numeric or formatted values.
+    ///
+    /// # Panics
+    ///
+    /// The internal `write!` to a `String` buffer is infallible and will never panic.
     pub fn raw_fmt(&mut self, args: std::fmt::Arguments) {
         write!(self.buf, "{}", args).unwrap();
     }
@@ -116,6 +125,7 @@ impl<'a> SegmentWriter<'a> {
 
     /// The accumulated segment body.
     #[must_use]
+    #[inline]
     pub fn as_str(&self) -> &str {
         &self.buf
     }

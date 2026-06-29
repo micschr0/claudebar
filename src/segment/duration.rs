@@ -8,17 +8,20 @@ use crate::segment::{RenderCtx, Segment};
 pub struct Duration;
 
 fn fmt_duration(ms: u64) -> String {
-    let s = ms / 1000;
-    let h = s / 3600;
-    let m = (s % 3600) / 60;
-    let secs = s % 60;
+    let total_s = ms / 1000;
+    let h = total_s / 3600;
+    let m = (total_s % 3600) / 60;
+    let s = total_s % 60;
+    let mut buf = String::with_capacity(7); // "1h02m" ≤ 7 bytes
+    use std::fmt::Write as _;
     if h > 0 {
-        format!("{}h{:02}m", h, m)
+        write!(buf, "{h}h{m:02}m").unwrap();
     } else if m > 0 {
-        format!("{}m", m)
+        write!(buf, "{m}m").unwrap();
     } else {
-        format!("{}s", secs)
+        write!(buf, "{s}s").unwrap();
     }
+    buf
 }
 
 impl Segment for Duration {

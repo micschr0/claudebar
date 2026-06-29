@@ -74,4 +74,4 @@ struct Noop;
 impl Segment for Noop {
     fn render(&self, _ctx: &RenderCtx, _out: &mut SegmentWriter) -> bool { false }
 }
-static NOOP: Noop = Noop;
+const NOOP: Noop = Noop;

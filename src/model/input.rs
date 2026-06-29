@@ -170,6 +170,7 @@ impl<T> Default for Coerce<T> {
 
 impl<T> Coerce<T> {
     /// The contained value, or `T::default()` when absent.
+    #[inline]
     pub fn or_default(self) -> T
     where
         T: Default,
@@ -177,6 +178,7 @@ impl<T> Coerce<T> {
         self.0.unwrap_or_default()
     }
 
+    /// The contained value, or `None` when the field was absent or coerced.
     pub fn get(self) -> Option<T> {
         self.0
     }
