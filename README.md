@@ -43,28 +43,25 @@ claudebar doctor   # checks fonts, git, config — tells you what's missing
 
 | Segment | What it shows |
 |---------|---------------|
-| **Project** | Repo-root name — stable across worktrees |
 | **Directory** | Current working directory (abbreviated with `~` for `$HOME`) |
 | **Git** | Branch, ahead/behind, modified + untracked files |
 | **Model** | Active Claude model with inline reasoning effort |
 | **Context** | Context-window gauge with token counts |
+| **Lines** | Lines added and removed this session (`+321 −87`) |
+| **Rate Limits** | 5-hour + 7-day rate-limit countdowns with color-coded bars |
 | **Cost** | Session cost in USD |
 | **Duration** | Session wall-clock time |
-| **Clock** | Current time — 12h/24h auto-detected with timezone |
 
-### 6 opt-in segments
+### 4 opt-in segments
 
 Enable any of these in `~/.config/claudebar/config.toml` or toggle via `claudebar config`:
 
 | Segment | kebab-case key | What it shows |
 |---------|---------------|---------------|
-| Rate Limits | `rate-limits` | 5-hour + 7-day rate-limit countdowns with color-coded bars |
-| Dev Context | `dev-context` | Current development context name |
-| Effort | `effort` | Reasoning effort level (`low`/`medium`/`high`/`xhigh`/`max`) — separate from the inline effort in Model |
-| Lines | `lines` | Lines added and removed this session (`+321 −87`) |
+| Dev Context | `dev-context` | Current development context name (worktree, PR, agent) |
 | Stash | `stash` | Git stash count |
 | Burn | `burn` | Projected time until a rate-limit window runs dry — with 5 urgency levels |
-
+| Clock | `clock` | Current time — 12h/24h auto-detected with timezone |
 - **Live rate-limit countdowns** with burn-rate projection (green → yellow → red as windows fill)
 - **Responsive auto-wrap layout** — set `layout = "auto"` and the bar flows across up to 3 lines on narrow terminals
 - **Plain-text float companion** — write a segment summary to a file for tmux, menu bars, or scripting
@@ -83,7 +80,7 @@ Enable any of these in `~/.config/claudebar/config.toml` or toggle via `claudeba
 | Segments | 6 | 14 |
 | Burn-rate projection | — | ✓ |
 | Responsive layout | — | ✓ |
-| Float companion | — | ✓ |
+| Segments | 6 | 12 |
 
 ## Screenshots
 
@@ -120,12 +117,12 @@ Prefer editing by hand? The config is plain TOML at `~/.config/claudebar/config.
 ```toml
 theme = "tokyo-night"
 style = "powerline"
-segments = ["project", "directory", "git", "model", "context", "cost", "duration", "clock"]
+segments = ["directory", "git", "model", "context", "lines", "rate-limits", "cost", "duration"]
 
 [thresholds]
 warn           = 50    # bar turns yellow at this %
 crit           = 80    # bar turns red at this %
-weekly_show_at = 50    # weekly window shown at this % and above
+weekly_show_at = 75    # weekly window shown at this % and above
 bar_width      = 6     # width of progress bars in cells
 clock_mode     = "auto"   # "auto" detects 12h/24h; "12h" / "24h" / "off"
 clock_seconds  = true
@@ -138,7 +135,6 @@ burn_lookback  = 600   # seconds of history for burn-rate projection
 model_show_effort = true
 limit_sync     = false
 float          = false
-```
 
 ## CLI
 
