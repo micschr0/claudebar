@@ -25,6 +25,7 @@ pub const NAMES: &[&str] = &[
 
 /// Resolve a style by name. Unknown names (and the default) fall back to
 /// Powerline.
+#[must_use]
 pub fn get(name: &str) -> Style {
     match name {
         "lean" => lean::style(),

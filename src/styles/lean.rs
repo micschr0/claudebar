@@ -7,15 +7,14 @@
 
 use crate::model::Style;
 
-pub fn style() -> Style {
-    Style {
-        separator: "",
-        icons: true,
-        glyphs: super::powerline::style().glyphs,
-        bar_fill: '\u{2501}',  // ━ heavy horizontal
-        bar_empty: '\u{254c}', // ╌ light double dash
-    }
-}
+#[must_use]
+pub fn style() -> Style { Style {
+    separator: "",
+    icons: true,
+    glyphs: super::powerline::style().glyphs,
+    bar_fill: '\u{2501}',  // ━ heavy horizontal
+    bar_empty: '\u{254c}', // ╌ light double dash
+} }
 
 #[cfg(test)]
 mod tests {

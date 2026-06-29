@@ -199,7 +199,7 @@ fn run_sync(cli: &Cli) -> ExitCode {
 
     // Find segments present in ALL but absent from the user's segments list.
     // Insert each at its canonical position relative to its neighbors in ALL.
-    let mut added: Vec<&str> = Vec::new();
+    let mut added: Vec<&str> = Vec::with_capacity(SegmentKind::ALL.len());
     for (canonical_pos, &kind) in SegmentKind::ALL.iter().enumerate() {
         if cfg.segments.contains(&kind) {
             continue;

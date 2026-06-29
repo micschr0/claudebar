@@ -14,33 +14,32 @@
 
 use crate::model::{Color, Theme};
 
-pub fn theme() -> Theme {
-    Theme {
-        dir: Color(116),        // foam  #9ccfd8
-        git_branch: Color(183), // iris  #c4a7e7
-        ahead: Color(116),      // foam  #9ccfd8 (green-ish)
-        behind: Color(211),     // love  #eb6f92 (red-ish)
-        modified: Color(222),   // gold  #f6c177
-        untracked: Color(60),   // muted #6e6a86
-        token: Color(116),      // foam  #9ccfd8
-        bar_ok: Color(116),     // foam  #9ccfd8
-        bar_warn: Color(222),   // gold  #f6c177
-        bar_crit: Color(211),   // love  #eb6f92
-        bar_track: Color(103),  // subtle #908caa (overlay tone, lifted for contrast)
-        separator: Color(103),  // subtle #908caa
-        dim: Color(103),        // subtle #908caa
-        reset: Color(66),       // pine  #31748f
-        effort: Color(139),     // iris neighbour, distinct from git_branch (183)
-        model: Color(181),      // rose  #ebbcba
-        project: Color(116),
-        stash: Color(183),
-        lines: Color(103),
-        cost: Color(222),    // Rosé Pine gold — informational, not alarm
-        duration: Color(66),
-        clock: Color(116),
-        burn: Color(211),
-    }
-}
+#[must_use]
+pub fn theme() -> Theme { Theme {
+    dir: Color(116),        // foam  #9ccfd8
+    git_branch: Color(183), // iris  #c4a7e7
+    ahead: Color(116),      // foam  #9ccfd8 (green-ish)
+    behind: Color(211),     // love  #eb6f92 (red-ish)
+    modified: Color(222),   // gold  #f6c177
+    untracked: Color(60),   // muted #6e6a86
+    token: Color(116),      // foam  #9ccfd8
+    bar_ok: Color(116),     // foam  #9ccfd8
+    bar_warn: Color(222),   // gold  #f6c177
+    bar_crit: Color(211),   // love  #eb6f92
+    bar_track: Color(103),  // subtle #908caa (overlay tone, lifted for contrast)
+    separator: Color(103),  // subtle #908caa
+    dim: Color(103),        // subtle #908caa
+    reset: Color(66),       // pine  #31748f
+    effort: Color(139),     // iris neighbour, distinct from git_branch (183)
+    model: Color(181),      // rose  #ebbcba
+    project: Color(116),
+    stash: Color(183),
+    lines: Color(103),
+    cost: Color(222),    // Rosé Pine gold — informational, not alarm
+    duration: Color(66),
+    clock: Color(116),
+    burn: Color(211),
+} }
 
 #[cfg(test)]
 mod tests {

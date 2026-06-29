@@ -6,38 +6,37 @@
 
 use crate::model::{GlyphSet, Style};
 
-pub fn style() -> Style {
-    Style {
-        separator: "❯", // U+276F HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT
-        icons: true,
-        glyphs: GlyphSet {
-            branch: "⎇",   // U+2387 ALTERNATIVE KEY SYMBOL
-            ahead: "↑",    // U+2191 UPWARDS ARROW
-            behind: "↓",   // U+2193 DOWNWARDS ARROW
-            modified: "±", // U+00B1 PLUS-MINUS SIGN
-            untracked: "?",
-            context: "◉",      // U+25C9 FISHEYE
-            token: "⬡",        // U+2B21 WHITE HEXAGON
-            clock: "◷",        // U+25F7 WHITE CIRCLE WITH UPPER RIGHT QUADRANT
-            weekly: "◈",       // U+25C8 WHITE DIAMOND CONTAINING BLACK SMALL DIAMOND
-            reset: "↺",        // U+21BA ANTICLOCKWISE OPEN CIRCLE ARROW
-            model: "▪",        // U+25AA BLACK SMALL SQUARE
-            effort: "⚡",      // U+26A1 HIGH VOLTAGE SIGN
-            worktree: "⑂",     // U+2442 OCR FORK OR BRANCH
-            pull_request: "⇐", // U+21D0 LEFTWARDS DOUBLE ARROW
-            agent: "⚙",        // U+2699 GEAR
-            project: "⎔",      // U+2394 SOFTWARE-FUNCTION SYMBOL
-            stash: "⚑",        // U+2691 FLAG
-            lines: "–",        // U+2013 EN DASH
-            cost: "$",
-            duration: "⏱", // U+23F1 STOPWATCH
-            time: "◷",     // U+25F7 WHITE CIRCLE WITH UPPER RIGHT QUADRANT (clock face)
-            burn: "↗",     // U+2197 ↗
-        },
-        bar_fill: '█',  // U+2588 FULL BLOCK
-        bar_empty: '░', // U+2591 LIGHT SHADE
-    }
-}
+#[must_use]
+pub fn style() -> Style { Style {
+    separator: "❯", // U+276F HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT
+    icons: true,
+    glyphs: GlyphSet {
+        branch: "⎇",   // U+2387 ALTERNATIVE KEY SYMBOL
+        ahead: "↑",    // U+2191 UPWARDS ARROW
+        behind: "↓",   // U+2193 DOWNWARDS ARROW
+        modified: "±", // U+00B1 PLUS-MINUS SIGN
+        untracked: "?",
+        context: "◉",      // U+25C9 FISHEYE
+        token: "⬡",        // U+2B21 WHITE HEXAGON
+        clock: "◷",        // U+25F7 WHITE CIRCLE WITH UPPER RIGHT QUADRANT
+        weekly: "◈",       // U+25C8 WHITE DIAMOND CONTAINING BLACK SMALL DIAMOND
+        reset: "↺",        // U+21BA ANTICLOCKWISE OPEN CIRCLE ARROW
+        model: "▪",        // U+25AA BLACK SMALL SQUARE
+        effort: "⚡",      // U+26A1 HIGH VOLTAGE SIGN
+        worktree: "⑂",     // U+2442 OCR FORK OR BRANCH
+        pull_request: "⇐", // U+21D0 LEFTWARDS DOUBLE ARROW
+        agent: "⚙",        // U+2699 GEAR
+        project: "⎔",      // U+2394 SOFTWARE-FUNCTION SYMBOL
+        stash: "⚑",        // U+2691 FLAG
+        lines: "–",        // U+2013 EN DASH
+        cost: "$",
+        duration: "⏱", // U+23F1 STOPWATCH
+        time: "◷",     // U+25F7 WHITE CIRCLE WITH UPPER RIGHT QUADRANT (clock face)
+        burn: "↗",     // U+2197 ↗
+    },
+    bar_fill: '█',  // U+2588 FULL BLOCK
+    bar_empty: '░', // U+2591 LIGHT SHADE
+} }
 
 #[cfg(test)]
 mod tests {

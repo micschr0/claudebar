@@ -23,33 +23,32 @@
 
 use crate::model::{Color, Theme};
 
-pub fn theme() -> Theme {
-    Theme {
-        dir: Color(67),
-        git_branch: Color(110),
-        ahead: Color(150),
-        behind: Color(131),
-        modified: Color(222),
-        untracked: Color(240),
-        token: Color(108),
-        bar_ok: Color(150),
-        bar_warn: Color(222),
-        bar_crit: Color(131),
-        bar_track: Color(239),
-        separator: Color(60),
-        dim: Color(245),
-        reset: Color(110),
-        effort: Color(133), // Magenta-pink — distinct from model (139)
-        model: Color(139),
-        project: Color(67),
-        stash: Color(110),
-        lines: Color(245),
-        cost: Color(222),     // Aurora yellow — informational, not alarm
-        duration: Color(110),
-        clock: Color(150),
-        burn: Color(131),
-    }
-}
+#[must_use]
+pub fn theme() -> Theme { Theme {
+    dir: Color(67),
+    git_branch: Color(110),
+    ahead: Color(150),
+    behind: Color(131),
+    modified: Color(222),
+    untracked: Color(240),
+    token: Color(108),
+    bar_ok: Color(150),
+    bar_warn: Color(222),
+    bar_crit: Color(131),
+    bar_track: Color(239),
+    separator: Color(60),
+    dim: Color(245),
+    reset: Color(110),
+    effort: Color(133), // Magenta-pink — distinct from model (139)
+    model: Color(139),
+    project: Color(67),
+    stash: Color(110),
+    lines: Color(245),
+    cost: Color(222),     // Aurora yellow — informational, not alarm
+    duration: Color(110),
+    clock: Color(150),
+    burn: Color(131),
+} }
 
 #[cfg(test)]
 mod tests {

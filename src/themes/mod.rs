@@ -44,6 +44,7 @@ pub const NAMES: &[&str] = &[
 
 /// Resolve a theme by name. Unknown names (and the default) fall back to
 /// Tokyo Night, the byte-parity anchor.
+#[must_use]
 pub fn get(name: &str) -> Theme {
     match name {
         "ayu-mirage" => ayu_mirage::theme(),

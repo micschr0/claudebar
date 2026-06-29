@@ -53,7 +53,7 @@ fn render_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>) -
         tz_offset_seconds: 0,
     };
 
-    let mut parts: Vec<String> = Vec::new();
+    let mut parts: Vec<String> = Vec::with_capacity(SegmentKind::ALL.len());
     for name in cfg.thresholds.float_segments.split_whitespace() {
         let Some(kind) = parse_segment(name) else {
             continue;
