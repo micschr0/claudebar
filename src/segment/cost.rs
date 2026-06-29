@@ -14,7 +14,7 @@ impl Segment for Cost {
             Some(c) if c > 0.0 => c,
             _ => return false,
         };
-        let decimals = ctx.th.cost_decimals.min(4) as usize;
+        let decimals = usize::from(ctx.th.cost_decimals.min(4));
 
         out.colored_with(ctx.theme.cost, |w| {
             w.icon(ctx.style.glyphs.cost);

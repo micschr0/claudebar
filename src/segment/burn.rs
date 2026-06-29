@@ -58,7 +58,7 @@ impl Segment for Burn {
         }
 
         // Compute projection.
-        let lookback = ctx.th.burn_lookback as i64;
+        let lookback = i64::from(ctx.th.burn_lookback);
         let samples = read_samples(ctx.now, lookback);
         let burn = estimate(ctx.now, &samples, fh_pct.zip(fh_rst), wd_pct.zip(wd_rst), ctx.theme);
 
@@ -211,15 +211,18 @@ fn fmt_eta(secs: i64) -> String {
     let h = (secs % 86400) / 3600;
     let m = (secs % 3600) / 60;
     let s = secs % 60;
+    let mut buf = String::with_capacity(8); // "1d23h" ≤ 7 bytes
+    use std::fmt::Write as _;
     if days > 0 {
-        format!("{days}d{h}h")
+        write!(buf, "{days}d{h}h").unwrap();
     } else if h > 0 {
-        format!("{h}h{m:02}m")
+        write!(buf, "{h}h{m:02}m").unwrap();
     } else if m > 0 {
-        format!("{m}m")
+        write!(buf, "{m}m").unwrap();
     } else {
-        format!("{s}s")
+        write!(buf, "{s}s").unwrap();
     }
+    buf
 }
 
 /// Render the burn estimate into the writer.
@@ -314,7 +317,7 @@ fn read_samples(now: i64, lookback: i64) -> Vec<(i64, f64)> {
         return Vec::new();
     };
     let cutoff = now - lookback;
-    let mut samples = Vec::new();
+    let mut samples = Vec::with_capacity(MAX_ROWS);
     for line in content.lines() {
         let parts: Vec<&str> = line.split('\t').collect();
         if parts.len() < 2 {

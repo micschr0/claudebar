@@ -98,7 +98,7 @@ fn render_auto(ctx: &RenderCtx, cfg: &Config, theme: &Theme, style: &Style) -> S
         return String::new();
     }
 
-    let term_width = terminal_width().saturating_sub(cfg.thresholds.wrap_margin as usize);
+    let term_width = terminal_width().saturating_sub(usize::from(cfg.thresholds.wrap_margin));
     if term_width == 0 {
         // Unknown terminal: no wrapping, behave like the fixed path.
         let mut line = String::with_capacity(256);
@@ -114,7 +114,7 @@ fn render_auto(ctx: &RenderCtx, cfg: &Config, theme: &Theme, style: &Style) -> S
     }
 
     let sep_w = separator_width(style);
-    let max_lines = cfg.thresholds.max_lines.max(1) as usize;
+    let max_lines = usize::from(cfg.thresholds.max_lines.max(1));
 
     let mut out = String::with_capacity(256);
     let mut line_w = 0usize;
