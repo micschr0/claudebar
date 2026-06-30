@@ -1,14 +1,14 @@
 <template id="scene-03-features-template">
   <div data-composition-id="scene-03-features" data-width="1920" data-height="1080">
     <div class="stack">
-      <h2 id="ftitle" class="ftitle">Everything, at a glance.</h2>
+      <h2 id="ftitle" class="ftitle">Ok. This one does stuff.</h2>
       <div class="grid">
-        <span class="chip f"><b class="dot c-grn"></b> 8 core + 4 opt-in segments — everything at a glance</span>
-        <span class="chip f"><b class="dot c-ylw"></b> Live rate-limit countdowns with burn-rate projection</span>
-        <span class="chip f"><b class="dot c-blu"></b> Model auto-detects reasoning effort — inline</span>
-        <span class="chip f"><b class="dot c-mag"></b> 16 themes × 7 styles — match any setup</span>
-        <span class="chip f"><b class="dot c-cyn"></b> ~5× faster than bash — renders in ~30 ms</span>
-        <span class="chip f"><b class="dot c-org"></b> TUI configurator · one-command install · read-only</span>
+        <span class="chip f"><b class="dot c-grn"></b> Context usage — green to red, no guessing</span>
+        <span class="chip f"><b class="dot c-ylw"></b> Rate-limit windows — time left, at a glance</span>
+        <span class="chip f"><b class="dot c-blu"></b> See spend before the invoice does</span>
+        <span class="chip f"><b class="dot c-mag"></b> Branch, ahead/behind, changed lines</span>
+        <span class="chip f"><b class="dot c-cyn"></b> ~30 ms render · ~5× faster than bash</span>
+        <span class="chip f"><b class="dot c-org"></b> 16 themes × 7 styles · TUI configurator</span>
       </div>
     </div>
 
@@ -27,17 +27,18 @@
         visibility: hidden; opacity: 0;
       }
       [data-composition-id="scene-03-features"] .grid {
-        display: grid; grid-template-columns: repeat(2, auto); gap: 26px 40px; justify-content: center;
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 40px; justify-content: center;
+        width: 1700px; margin: 0 auto;
       }
       [data-composition-id="scene-03-features"] .chip {
-        display: flex; align-items: center; gap: 18px;
-        font-size: 42px; font-weight: 450; color: #c0caf5;
-        padding: 22px 38px; border-radius: 18px;
+        display: flex; align-items: center; gap: 16px;
+        font-size: 42px; font-weight: 450; color: #9aa5ce;
+        padding: 24px 40px; border-radius: 16px;
         background: rgba(122,162,247,0.07); border: 1px solid rgba(122,162,247,0.16);
         visibility: hidden; opacity: 0;
       }
       [data-composition-id="scene-03-features"] .dot {
-        flex: none; width: 20px; height: 20px; border-radius: 6px; display: inline-block;
+        flex: none; width: 20px; height: 20px; border-radius: 8px; display: inline-block;
       }
       [data-composition-id="scene-03-features"] .c-grn { background: #9ece6a; }
       [data-composition-id="scene-03-features"] .c-ylw { background: #e0af68; }
