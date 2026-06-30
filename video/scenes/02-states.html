@@ -7,7 +7,7 @@
         <div id="s-crit"   class="layer"><img class="strip" src="public/screenshots/strip-critical.png" alt="critical"></div>
         <div id="s-over"   class="layer"><img class="strip" src="public/screenshots/strip-overlimit.png" alt="overlimit"></div>
       </div>
-      <p id="cap" class="cap">Your session, <span class="hl">in one line.</span></p>
+      <p id="cap" class="cap">Context, git, limits. <span class="hl">One line.</span></p>
     </div>
 
     <style>
@@ -43,8 +43,10 @@
       tl.fromTo("#s-green",  { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power1.out" }, 0.1);
       tl.fromTo("#cap",      { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.4);
       tl.fromTo("#s-normal", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.inOut" }, 1.4);
-      tl.fromTo("#s-crit",   { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.inOut" }, 2.5);
-      tl.fromTo("#s-over",   { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.inOut" }, 3.6);
+      tl.fromTo("#s-crit",   { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.in" }, 2.2);
+      // #cap reacts as the critical state hits — color pop + small vertical nudge
+      tl.to("#cap", { color: "#c0caf5", y: -2, duration: 0.1, ease: "power1.inOut", yoyo: true, repeat: 1 }, 2.2);
+      tl.fromTo("#s-over",   { autoAlpha: 0, scale: 1 }, { autoAlpha: 1, scale: 1.03, duration: 0.3, ease: "power3.in" }, 3.3);
       window.__timelines["scene-02-states"] = tl;
     </script>
   </div>
