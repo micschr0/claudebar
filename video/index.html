@@ -10,7 +10,7 @@
 </head>
 <body>
   <!--
-    claudebar promo. Silent (on-screen text only). 25s, 16:9 1920×1080.
+    claudebar promo. Silent (on-screen text only). 27.5s, 16:9 1920×1080.
     Each scene's data-duration extends 0.4s past its nominal end; the next scene
     starts at that nominal boundary and fades 0→1 over the 0.4s overlap, on top of
     the still-opaque outgoing scene. Unique track index per scene. Last scene (CTA)
@@ -21,7 +21,7 @@
        data-width="1920"
        data-height="1080"
        data-start="0"
-       data-duration="25">
+       data-duration="27.5">
 
     <div data-composition-id="scene-00-logo"
          data-composition-src="scenes/00-logo.html"
@@ -39,17 +39,17 @@
 
     <div data-composition-id="scene-03-features"
          data-composition-src="scenes/03-features.html"
-         data-start="13.5" data-duration="4.9"  data-track-index="4"
+         data-start="13.5" data-duration="7.4"  data-track-index="4"
          style="opacity:0"></div>
 
     <div data-composition-id="scene-04-speed"
          data-composition-src="scenes/04-speed.html"
-         data-start="18"   data-duration="3.9"  data-track-index="5"
+         data-start="20.5" data-duration="3.9"  data-track-index="5"
          style="opacity:0"></div>
 
     <div data-composition-id="scene-05-cta"
          data-composition-src="scenes/05-cta.html"
-         data-start="21.5" data-duration="3.5"  data-track-index="6"
+         data-start="24.0" data-duration="3.5"  data-track-index="6"
          style="opacity:0"></div>
   </div>
 
@@ -61,8 +61,8 @@
     tl.to('[data-composition-id="scene-01-strip"]',    { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 3.5);
     tl.to('[data-composition-id="scene-02-states"]',   { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 8.5);
     tl.to('[data-composition-id="scene-03-features"]', { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 13.5);
-    tl.to('[data-composition-id="scene-04-speed"]',    { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 18);
-    tl.to('[data-composition-id="scene-05-cta"]',      { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 21.5);
+    tl.to('[data-composition-id="scene-04-speed"]',    { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 20.5);
+    tl.to('[data-composition-id="scene-05-cta"]',      { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 24.0);
     window.__timelines["main"] = tl;
   </script>
 </body>
