@@ -1,14 +1,19 @@
 <template id="scene-03-features-template">
   <div data-composition-id="scene-03-features" data-width="1920" data-height="1080">
     <div class="stack">
-      <h2 id="ftitle" class="ftitle">What it actually shows you.</h2>
-      <div class="grid">
-        <span class="chip f"><b class="dot c-grn"></b> Context usage — green to red, no guessing</span>
-        <span class="chip f"><b class="dot c-ylw"></b> Rate-limit windows — time left, at a glance</span>
-        <span class="chip f"><b class="dot c-blu"></b> See spend before the invoice does</span>
-        <span class="chip f"><b class="dot c-mag"></b> Branch, ahead/behind, changed lines</span>
-        <span class="chip f"><b class="dot c-cyn"></b> ~30 ms render · ~5× faster than bash</span>
-        <span class="chip f"><b class="dot c-org"></b> 16 themes × 7 styles · TUI configurator</span>
+      <h2 id="ftitle" class="ftitle">What it tracks.</h2>
+      <div class="waves">
+        <div class="grid wave-1">
+          <span class="chip f hero"><span class="shot" aria-hidden="true"></span> Token usage — bar + percentage</span>
+          <span class="chip f"><b class="dot c-cyn"></b> Up to 5× faster than the bash equivalent <span class="num">140ms</span></span>
+          <span class="chip f"><span class="swatches" aria-hidden="true"><i style="background:#7aa2f7"></i><i style="background:#f5c2e7"></i><i style="background:#fe8019"></i><i style="background:#88c0d0"></i><i style="background:#bd93f9"></i></span> 16 themes, 7 styles, configurable</span>
+          <span class="chip f"><b class="dot c-mag"></b> Branch, ahead/behind</span>
+        </div>
+        <div class="grid wave-2">
+          <span class="chip f"><b class="dot c-ylw"></b> 5h + weekly windows, countdown to reset</span>
+          <span class="chip f"><b class="dot c-org"></b> Predicts when you'll hit the limit</span>
+          <span class="chip f"><b class="dot c-grn"></b> Worktree, PR status, sub-agent — one line</span>
+        </div>
       </div>
     </div>
 
@@ -26,9 +31,13 @@
         margin: 0; font-size: 78px; font-weight: 600; letter-spacing: -2px; color: #c0caf5;
         visibility: hidden; opacity: 0;
       }
+      [data-composition-id="scene-03-features"] .waves {
+        position: relative; width: 1700px; min-height: 380px; margin: 0 auto;
+      }
       [data-composition-id="scene-03-features"] .grid {
-        display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 40px; justify-content: center;
-        width: 1700px; margin: 0 auto;
+        position: absolute; inset: 0;
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 40px;
+        align-items: start; justify-content: center;
       }
       [data-composition-id="scene-03-features"] .chip {
         display: flex; align-items: center; gap: 16px;
@@ -37,8 +46,29 @@
         background: rgba(122,162,247,0.07); border: 1px solid rgba(122,162,247,0.16);
         visibility: hidden; opacity: 0;
       }
+      [data-composition-id="scene-03-features"] .chip.hero {
+        grid-column: 1 / -1;
+        align-items: flex-start;
+        padding: 32px 48px; gap: 24px;
+      }
       [data-composition-id="scene-03-features"] .dot {
         flex: none; width: 20px; height: 20px; border-radius: 8px; display: inline-block;
+      }
+      [data-composition-id="scene-03-features"] .shot {
+        flex: none; width: 180px; height: 50px; border-radius: 10px;
+        background-image: url(public/screenshots/strip-critical.png);
+        background-repeat: no-repeat;
+        background-size: 1390px 136px;
+        background-position: -556px -42px;
+      }
+      [data-composition-id="scene-03-features"] .num {
+        flex: none; font-variant-numeric: tabular-nums; font-weight: 600; color: #7dcfff;
+      }
+      [data-composition-id="scene-03-features"] .swatches {
+        flex: none; display: flex; gap: 6px;
+      }
+      [data-composition-id="scene-03-features"] .swatches i {
+        width: 14px; height: 14px; border-radius: 4px; display: block;
       }
       [data-composition-id="scene-03-features"] .c-grn { background: #9ece6a; }
       [data-composition-id="scene-03-features"] .c-ylw { background: #e0af68; }
@@ -52,10 +82,29 @@
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
+      const root = "[data-composition-id='scene-03-features']";
+
       tl.fromTo("#ftitle", { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, ease: "expo.out" }, 0.1);
-      tl.fromTo("[data-composition-id='scene-03-features'] .chip",
+
+      tl.fromTo(root + " .wave-1 .chip",
         { y: 26, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 0.6);
+        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 0.8);
+
+      const spd = { v: 140 };
+      tl.to(spd, {
+        v: 30, duration: 0.4, ease: "power4.out",
+        onUpdate: () => {
+          const n = document.querySelector(root + " .num");
+          if (n) n.textContent = Math.round(spd.v) + "ms";
+        }
+      }, 0.95);
+
+      tl.to(root + " .wave-1 .chip", { autoAlpha: 0, duration: 0.4, ease: "power2.inOut" }, 3.4);
+
+      tl.fromTo(root + " .wave-2 .chip",
+        { y: 26, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 3.6);
+
       window.__timelines["scene-03-features"] = tl;
     </script>
   </div>
