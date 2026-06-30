@@ -11,31 +11,33 @@
 use crate::model::{Color, Theme};
 
 #[must_use]
-pub fn theme() -> Theme { Theme {
-    dir: Color(109),        // gruvbox bright blue
-    git_branch: Color(108), // gruvbox aqua
-    ahead: Color(142),      // gruvbox green
-    behind: Color(167),     // gruvbox red
-    modified: Color(214),   // gruvbox yellow/orange
-    untracked: Color(245),  // gruvbox gray
-    token: Color(109),      // gruvbox bright blue
-    bar_ok: Color(142),     // gruvbox green
-    bar_warn: Color(214),   // gruvbox yellow
-    bar_crit: Color(167),   // gruvbox red
-    bar_track: Color(241),  // gruvbox bg3 (muted)
-    separator: Color(239),  // gruvbox bg (dim gray)
-    dim: Color(245),        // gruvbox gray
-    reset: Color(108),      // gruvbox aqua
-    effort: Color(175),     // gruvbox bright purple accent
-    model: Color(208),      // gruvbox orange
-    project: Color(109),
-    stash: Color(108),
-    lines: Color(245),
-    cost: Color(214),     // Gruvbox yellow — informational, not alarm
-    duration: Color(108),
-    clock: Color(142),
-    burn: Color(167),
-} }
+pub fn theme() -> Theme {
+    Theme {
+        dir: Color(109),        // gruvbox bright blue
+        git_branch: Color(108), // gruvbox aqua
+        ahead: Color(142),      // gruvbox green
+        behind: Color(167),     // gruvbox red
+        modified: Color(214),   // gruvbox yellow/orange
+        untracked: Color(245),  // gruvbox gray
+        token: Color(109),      // gruvbox bright blue
+        bar_ok: Color(142),     // gruvbox green
+        bar_warn: Color(214),   // gruvbox yellow
+        bar_crit: Color(167),   // gruvbox red
+        bar_track: Color(241),  // gruvbox bg3 (muted)
+        separator: Color(241),  // gruvbox bg (dim gray)
+        dim: Color(245),        // gruvbox gray
+        reset: Color(108),      // gruvbox aqua
+        effort: Color(175),     // gruvbox bright purple accent
+        model: Color(208),      // gruvbox orange
+        project: Color(109),
+        stash: Color(108),
+        lines: Color(245),
+        cost: Color(214), // Gruvbox yellow — informational, not alarm
+        duration: Color(108),
+        clock: Color(142),
+        burn: Color(167),
+    }
+}
 
 #[cfg(test)]
 mod tests {

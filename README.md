@@ -13,16 +13,19 @@ Context budget running hot? Rate limit about to reset? Session cost climbing?
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![~5× faster than bash](https://img.shields.io/badge/render-~5%C3%97_faster_than_bash-9ece6a)
 
-<img src="screenshots/intro.png" width="880" alt="claudebar in a real Claude Code session">
-<sub>claudebar living at the bottom of a Claude Code session.</sub>
+<img src="screenshots/strip-normal.png" width="880" alt="claudebar statusline in a real Claude Code session">
+<sub>claudebar living at the bottom of a Claude Code session — auth middleware refactor in progress.</sub>
 
 </div>
 
 ## Install
 
-**Prerequisites:** A [Nerd Font](https://www.nerdfonts.com/) (or use the `ascii` / `unicode` style) · `git` on your `PATH` (optional; the git segment hides without it)
+**Prerequisites:** A [Nerd Font](https://www.nerdfonts.com/) (or use the `ascii`, `plain`, or `unicode` style) · `git` on your `PATH` (optional; the git segment hides without it)
 
 ```bash
+# Inspect the script first:
+curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh
+# Then run it:
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
@@ -77,10 +80,9 @@ Enable any of these in `~/.config/claudebar/config.toml` or toggle via `claudeba
 | Render time | ~200 ms | ~30 ms |
 | Themes | — | 16 |
 | TUI configurator | — | ✓ |
-| Segments | 6 | 14 |
+| Segments | 6 | 12 |
 | Burn-rate projection | — | ✓ |
 | Responsive layout | — | ✓ |
-| Segments | 6 | 12 |
 
 ## Screenshots
 
@@ -110,7 +112,8 @@ claudebar config
 
 Launch the interactive TUI configurator — toggle and reorder segments, preview themes and styles live, and nudge thresholds. Press `?` for key bindings, `s` to save, `q` to quit.
 
-<img src="screenshots/tui.png" width="860" alt="Navigating the claudebar TUI configurator">
+<img src="screenshots/config-tui.png" width="860" alt="claudebar TUI configurator — segments panel with live preview">
+<sub>Toggle segments with <kbd>Space</kbd>, reorder with <kbd>m</kbd>, live preview updates instantly.</sub>
 
 Prefer editing by hand? The config is plain TOML at `~/.config/claudebar/config.toml`:
 
@@ -165,13 +168,18 @@ cargo build --release --no-default-features  # render-only, no TUI (smaller)
 | Symptom | Fix |
 |---------|-----|
 | **Statusline is blank** | Check `~/.claude/settings.json` has `"statusLine": {"type": "command", ...}`, then restart Claude Code. |
-| **Glyphs show as boxes (□)** | Install a [Nerd Font](https://www.nerdfonts.com/) or switch to the `ascii` or `unicode` style. macOS Terminal.app can't render Nerd Font PUA glyphs — use iTerm2, Kitty, WezTerm, Ghostty, or Alacritty. |
+| **Glyphs show as boxes (□)** | Install a [Nerd Font](https://www.nerdfonts.com/) or switch to the `ascii`, `plain`, or `unicode` style. macOS Terminal.app can't render Nerd Font PUA glyphs — use iTerm2, Kitty, WezTerm, Ghostty, or Alacritty. |
 | **Git segment missing** | Appears only inside a git repo; needs `git` on your `PATH`. |
 | **Rate-limit windows missing** | Pro/Max plans only; the weekly window appears only when weekly usage meets or exceeds `weekly_show_at` (default 50%). |
 | **`command not found: claudebar`** | The curl installer places the binary at `~/.claude/claudebar`; `cargo install` places it in `~/.cargo/bin`. Use the full path in `settings.json`, or ensure the directory is on your `PATH`. |
 
 > **Something seems wrong?** Run `claudebar doctor` first — it checks your setup and suggests fixes.
 > **Install verification:** Run `claudebar smoke` — renders a fixture so you can confirm everything works.
+
+### 🥚 Easter egg
+
+<img src="screenshots/skynet.png" width="860" alt="claudebar catching a suspicious Claude Code session">
+<sub>claudebar keeping an eye on Skynet 4.2.0's missile-command deployment. It sees everything.</sub>
 
 ## License
 

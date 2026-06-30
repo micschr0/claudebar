@@ -6,36 +6,38 @@
 use crate::model::{GlyphSet, Style};
 
 #[must_use]
-pub fn style() -> Style { Style {
-    separator: "|",
-    icons: false,
-    glyphs: GlyphSet {
-        branch: "",
-        ahead: "^",
-        behind: "v",
-        modified: "M",
-        untracked: "?",
-        context: "",
-        token: "#",
-        clock: "",
-        weekly: "W",
-        reset: "~",
-        model: "@",
-        effort: "*",
-        worktree: ">",
-        pull_request: "#",
-        agent: "&",
-        project: "P",
-        stash: "s",
-        lines: "-",
-        cost: "$",
-        duration: "d",
-        time: "T",
-        burn: "B",
-    },
-    bar_fill: '#',
-    bar_empty: '-',
-} }
+pub fn style() -> Style {
+    Style {
+        separator: "|",
+        icons: false,
+        glyphs: GlyphSet {
+            branch: "",
+            ahead: "^",
+            behind: "v",
+            modified: "M",
+            untracked: "?",
+            context: "",
+            token: "#",
+            clock: "",
+            weekly: "W",
+            reset: "~",
+            model: "@",
+            effort: "*",
+            worktree: ">",
+            pull_request: "#",
+            agent: "&",
+            project: "P",
+            stash: "s",
+            lines: "-",
+            cost: "$",
+            duration: "d",
+            time: "T",
+            burn: "B",
+        },
+        bar_fill: '#',
+        bar_empty: '-',
+    }
+}
 
 #[cfg(test)]
 mod tests {

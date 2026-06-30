@@ -11,15 +11,15 @@ use ratatui::widgets::{Block, BorderType, Borders, Clear, Paragraph};
 
 // ── Chrome color constants (Rgb — immune to 256-color palette remapping) ──────
 
-const CHROME_BG: Color = Color::Rgb(26, 27, 38); // Tokyo Night bg
-const CHROME_SURFACE: Color = Color::Rgb(36, 40, 59); // cursor row highlight
+const CHROME_BG: Color = Color::Rgb(16, 16, 24); // #101018 — statusline background
+const CHROME_SURFACE: Color = Color::Rgb(45, 49, 72); // cursor row highlight
 const CHROME_ACCENT: Color = Color::Rgb(122, 162, 247); // title, reorder mode header
 const CHROME_HEADER: Color = Color::Rgb(169, 177, 214); // section headers, hint text
 const CHROME_TEXT: Color = Color::Rgb(192, 202, 245); // primary list content
 const CHROME_OK: Color = Color::Rgb(158, 206, 106); // enabled bullet, save success
 const CHROME_WARN: Color = Color::Rgb(224, 175, 104); // dirty dot, pending banners
 const CHROME_CRIT: Color = Color::Rgb(247, 118, 142); // errors, disabled call-to-action
-const CHROME_DISABLED: Color = Color::Rgb(86, 95, 137); // disabled labels, section fills
+const CHROME_DISABLED: Color = Color::Rgb(115, 122, 164); // disabled labels, section fills
 const CHROME_KEY_BG: Color = Color::Rgb(65, 72, 104); // hint line [x] button bg
 
 /// Build an active or inactive bordered panel block.
@@ -66,6 +66,14 @@ pub fn draw(f: &mut Frame, app: &App) {
         return;
     }
 
+    // Inset by 1 row top and bottom for breathing room.
+    let inner = Rect {
+        x: f.area().x,
+        y: f.area().y + 1,
+        width: f.area().width,
+        height: f.area().height.saturating_sub(2),
+    };
+
     // Three vertical zones.
     let [panels_area, preview_area, status_area, hint_area] = Layout::vertical([
         Constraint::Min(10),   // top row: left + right panels
@@ -73,9 +81,7 @@ pub fn draw(f: &mut Frame, app: &App) {
         Constraint::Length(1), // status line
         Constraint::Length(1), // hint bar
     ])
-    .areas(f.area());
-
-    // Horizontal split within panels_area.
+    .areas(inner);
     let [left_area, right_area] = Layout::horizontal([
         Constraint::Percentage(28), // left menu panel
         Constraint::Min(0),         // right detail panel
@@ -496,25 +502,29 @@ fn render_threshold_row(
     let t = &app.config.thresholds;
 
     let (label, value_str, unit_or_options) = match field {
-        ThresholdField::Warn => {
-            ("warn", format!("{:>3}", t.warn), "%".to_string())
-        }
-        ThresholdField::Crit => {
-            ("crit", format!("{:>3}", t.crit), "%".to_string())
-        }
-        ThresholdField::WeeklyShowAt => {
-            ("weekly show at", format!("{:>3}", t.weekly_show_at), "%".to_string())
-        }
-        ThresholdField::BarWidth => {
-            ("bar width", format!("{:>3}", t.bar_width), " ".to_string())
-        }
+        ThresholdField::Warn => ("warn", format!("{:>3}", t.warn), "%".to_string()),
+        ThresholdField::Crit => ("crit", format!("{:>3}", t.crit), "%".to_string()),
+        ThresholdField::WeeklyShowAt => (
+            "weekly show at",
+            format!("{:>3}", t.weekly_show_at),
+            "%".to_string(),
+        ),
+        ThresholdField::BarWidth => ("bar width", format!("{:>3}", t.bar_width), " ".to_string()),
         ThresholdField::ClockMode => {
             let options = "auto | 12h | 24h | off";
-            (if is_cursor { options } else { "clock" }, app.config.thresholds.clock_mode.clone(), String::new())
+            (
+                if is_cursor { options } else { "clock" },
+                app.config.thresholds.clock_mode.clone(),
+                String::new(),
+            )
         }
         ThresholdField::Layout => {
             let options = "fixed | auto";
-            (if is_cursor { options } else { "layout" }, app.config.thresholds.layout.clone(), String::new())
+            (
+                if is_cursor { options } else { "layout" },
+                app.config.thresholds.layout.clone(),
+                String::new(),
+            )
         }
     };
 
@@ -554,7 +564,10 @@ fn render_threshold_row(
                     .fg(CHROME_WARN)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(format!("{unit_or_options:<2}"), Style::default().fg(CHROME_HEADER)),
+            Span::styled(
+                format!("{unit_or_options:<2}"),
+                Style::default().fg(CHROME_HEADER),
+            ),
             Span::raw("  "),
             Span::styled(
                 range_str,
@@ -654,7 +667,6 @@ fn draw_status(f: &mut Frame, app: &App, area: Rect) {
 
     f.render_widget(para, area);
 }
-
 
 // ── Hint bar ──────────────────────────────────────────────────────────────────
 
@@ -957,7 +969,10 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Nudge \u{b1}1 (numeric fields only)", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  Nudge \u{b1}1 (numeric fields only)",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -966,7 +981,10 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
                     .fg(CHROME_KEY_BG)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Nudge \u{b1}5 (numeric fields only)", Style::default().fg(CHROME_TEXT)),
+            Span::styled(
+                "  Nudge \u{b1}5 (numeric fields only)",
+                Style::default().fg(CHROME_TEXT),
+            ),
         ]),
         Line::from(vec![
             Span::styled(

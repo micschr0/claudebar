@@ -51,7 +51,7 @@ mod tests {
     fn renders_abbreviated_path_in_dir_color() {
         let out = render_dir(Some("/home/me/projects/app"), Some("/home/me"));
         assert!(out.contains("~/p/app"), "got: {out:?}");
-        assert!(out.contains("\x1b[38;5;33m"), "dir color missing: {out:?}");
+        assert!(out.contains("\x1b[38;5;39m"), "dir color missing: {out:?}");
     }
 
     #[test]

@@ -65,3 +65,135 @@ pub fn get(name: &str) -> Theme {
         _ => tokyo_night::theme(),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Map a single xterm-256 colour index to its approximate sRGB hex string.
+    /// Uses the standard 6×6×6 colour cube for indices 16–231 and the 24-step
+    /// grey ramp for indices 232–255.
+    fn xterm_to_srgb(idx: u8) -> [u8; 3] {
+        match idx {
+            0..=15 => {
+                // Standard ANSI
+                const ANSI: [[u8; 3]; 16] = [
+                    [0x00, 0x00, 0x00],
+                    [0xcd, 0x00, 0x00],
+                    [0x00, 0xcd, 0x00],
+                    [0xcd, 0xcd, 0x00],
+                    [0x00, 0x00, 0xee],
+                    [0xcd, 0x00, 0xcd],
+                    [0x00, 0xcd, 0xcd],
+                    [0xe5, 0xe5, 0xe5],
+                    [0x7f, 0x7f, 0x7f],
+                    [0xff, 0x00, 0x00],
+                    [0x00, 0xff, 0x00],
+                    [0xff, 0xff, 0x00],
+                    [0x5c, 0x5c, 0xff],
+                    [0xff, 0x00, 0xff],
+                    [0x00, 0xff, 0xff],
+                    [0xff, 0xff, 0xff],
+                ];
+                ANSI[idx as usize]
+            }
+            16..=231 => {
+                let n = (idx - 16) as u32;
+                let r = n / 36;
+                let g = (n % 36) / 6;
+                let b = n % 6;
+                let comp = |v: u32| -> u8 { if v == 0 { 0 } else { (v * 40 + 55) as u8 } };
+                [comp(r), comp(g), comp(b)]
+            }
+            _ => {
+                // 232..=255 grey ramp
+                let v = (idx - 232) as u32 * 10 + 8;
+                let v = v as u8;
+                [v, v, v]
+            }
+        }
+    }
+
+    /// WCAG 2.1 relative luminance of an sRGB colour triplet.
+    fn relative_luminance(rgb: [u8; 3]) -> f64 {
+        fn linear(c: u8) -> f64 {
+            let v = c as f64 / 255.0;
+            if v <= 0.04045 {
+                v / 12.92
+            } else {
+                ((v + 0.055) / 1.055_f64).powf(2.4)
+            }
+        }
+        0.2126 * linear(rgb[0]) + 0.7152 * linear(rgb[1]) + 0.0722 * linear(rgb[2])
+    }
+
+    /// WCAG 2.1 contrast ratio between two sRGB colours.
+    fn contrast_ratio(rgb1: [u8; 3], rgb2: [u8; 3]) -> f64 {
+        let l1 = relative_luminance(rgb1);
+        let l2 = relative_luminance(rgb2);
+        let (light, dark) = if l1 > l2 { (l1, l2) } else { (l2, l1) };
+        (light + 0.05) / (dark + 0.05)
+    }
+
+    /// The canonical background for all theme contrast measurements.
+    const BG: [u8; 3] = [0x10, 0x10, 0x18]; // #101018
+
+    /// Text colour slots that MUST meet ≥4.5:1 contrast against the background.
+    const TEXT_SLOTS: &[fn(&Theme) -> crate::model::Color] = &[
+        |t| t.dir,
+        |t| t.git_branch,
+        |t| t.ahead,
+        |t| t.behind,
+        |t| t.modified,
+        |t| t.untracked,
+        |t| t.token,
+        |t| t.dim,
+        |t| t.reset,
+        |t| t.effort,
+        |t| t.model,
+        |t| t.project,
+        |t| t.stash,
+        |t| t.lines,
+        |t| t.cost,
+        |t| t.duration,
+        |t| t.clock,
+        |t| t.burn,
+    ];
+
+    /// Decorative colour slots (separators, bar tracks/fills) that MUST meet
+    /// ≥3:1 contrast against the background.
+    const DECORATIVE_SLOTS: &[fn(&Theme) -> crate::model::Color] = &[
+        |t| t.separator,
+        |t| t.bar_track,
+        |t| t.bar_ok,
+        |t| t.bar_warn,
+        |t| t.bar_crit,
+    ];
+
+    #[test]
+    fn wcag_contrast() {
+        for &name in NAMES {
+            let theme = get(name);
+            for slot_fn in TEXT_SLOTS {
+                let color = slot_fn(&theme);
+                let rgb = xterm_to_srgb(color.0);
+                let cr = contrast_ratio(rgb, BG);
+                assert!(
+                    cr >= 4.5,
+                    "theme {name}: text slot xterm {} ({rgb:?}) → {cr:.2}:1 < 4.5:1",
+                    color.0
+                );
+            }
+            for slot_fn in DECORATIVE_SLOTS {
+                let color = slot_fn(&theme);
+                let rgb = xterm_to_srgb(color.0);
+                let cr = contrast_ratio(rgb, BG);
+                assert!(
+                    cr >= 3.0,
+                    "theme {name}: decorative slot xterm {} ({rgb:?}) → {cr:.2}:1 < 3.0:1",
+                    color.0
+                );
+            }
+        }
+    }
+}

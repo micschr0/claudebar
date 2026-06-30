@@ -60,7 +60,13 @@ impl Segment for Burn {
         // Compute projection.
         let lookback = i64::from(ctx.th.burn_lookback);
         let samples = read_samples(ctx.now, lookback);
-        let burn = estimate(ctx.now, &samples, fh_pct.zip(fh_rst), wd_pct.zip(wd_rst), ctx.theme);
+        let burn = estimate(
+            ctx.now,
+            &samples,
+            fh_pct.zip(fh_rst),
+            wd_pct.zip(wd_rst),
+            ctx.theme,
+        );
 
         render_burn(ctx, out, &burn);
         true
@@ -484,5 +490,4 @@ mod tests {
         assert_eq!(est.state, BurnState::Active);
         assert_eq!(est.label, "7d");
     }
-
 }

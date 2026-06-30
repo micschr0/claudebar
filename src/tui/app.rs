@@ -315,7 +315,8 @@ impl App {
     pub(crate) fn cycle_threshold_enum(&mut self, field: ThresholdField) {
         match field {
             ThresholdField::ClockMode => {
-                self.config.thresholds.clock_mode = match self.config.thresholds.clock_mode.as_str() {
+                self.config.thresholds.clock_mode = match self.config.thresholds.clock_mode.as_str()
+                {
                     "auto" => "12h".into(),
                     "12h" => "24h".into(),
                     "24h" => "off".into(),
@@ -375,14 +376,22 @@ impl App {
                         order.push(kind);
                     }
                 }
-                order.get(self.detail_cursor).map(|&kind| segment_help(kind))
+                order
+                    .get(self.detail_cursor)
+                    .map(|&kind| segment_help(kind))
             }
             3 => {
                 const ORDER: [ThresholdField; 6] = [
-                    ThresholdField::Warn, ThresholdField::Crit, ThresholdField::WeeklyShowAt,
-                    ThresholdField::BarWidth, ThresholdField::ClockMode, ThresholdField::Layout,
+                    ThresholdField::Warn,
+                    ThresholdField::Crit,
+                    ThresholdField::WeeklyShowAt,
+                    ThresholdField::BarWidth,
+                    ThresholdField::ClockMode,
+                    ThresholdField::Layout,
                 ];
-                ORDER.get(self.detail_cursor).map(|&field| threshold_help(field))
+                ORDER
+                    .get(self.detail_cursor)
+                    .map(|&field| threshold_help(field))
             }
             _ => None,
         }
@@ -393,7 +402,11 @@ impl App {
 /// Called in App::new(), toggle_cursor(), reset(), and move_segment().
 pub(crate) fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 4]) {
     let mut list_rows: Vec<RowItem> = Vec::with_capacity(
-        4 + SegmentKind::ALL.len() + 1 + crate::themes::NAMES.len() + crate::styles::NAMES.len() + 4,
+        4 + SegmentKind::ALL.len()
+            + 1
+            + crate::themes::NAMES.len()
+            + crate::styles::NAMES.len()
+            + 4,
     );
     let mut selectable_indices: Vec<usize> = Vec::with_capacity(
         SegmentKind::ALL.len() + crate::themes::NAMES.len() + crate::styles::NAMES.len() + 4,
@@ -518,13 +531,14 @@ fn threshold_help(field: ThresholdField) -> &'static str {
     match field {
         ThresholdField::Warn => "warn — bar turns yellow above this context usage %",
         ThresholdField::Crit => "crit — bar turns red above this context usage %",
-        ThresholdField::WeeklyShowAt => "weekly_show_at — weekly window shown once usage reaches this %",
+        ThresholdField::WeeklyShowAt => {
+            "weekly_show_at — weekly window shown once usage reaches this %"
+        }
         ThresholdField::BarWidth => "bar_width — width of progress bars in cells",
         ThresholdField::ClockMode => "clock_mode — 12h, 24h, or off",
         ThresholdField::Layout => "layout — fixed (single line) or auto (responsive wrap)",
     }
 }
-
 
 #[cfg(test)]
 mod tests {

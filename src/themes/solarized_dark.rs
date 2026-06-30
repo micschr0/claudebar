@@ -5,28 +5,30 @@
 use crate::model::{Color, Theme};
 
 #[must_use]
-pub fn theme() -> Theme { Theme {
-    dir: Color(32),
-    git_branch: Color(168),
-    ahead: Color(100),
-    behind: Color(166),
-    modified: Color(136),
-    untracked: Color(242),
-    token: Color(36),
-    bar_ok: Color(108),
-    bar_warn: Color(136),
-    bar_crit: Color(160),
-    bar_track: Color(240),
-    separator: Color(240),
-    dim: Color(242),
-    reset: Color(36),
-    effort: Color(62),
-    model: Color(136),
-    project: Color(32),
-    stash: Color(168),
-    lines: Color(242),
-    cost: Color(178),    // Warm gold — informational, not alarm
-    duration: Color(36),
-    clock: Color(108),
-    burn: Color(160),
-} }
+pub fn theme() -> Theme {
+    Theme {
+        dir: Color(32),
+        git_branch: Color(168),
+        ahead: Color(100),
+        behind: Color(166),
+        modified: Color(136),
+        untracked: Color(244),
+        token: Color(36),
+        bar_ok: Color(108),
+        bar_warn: Color(136),
+        bar_crit: Color(160),
+        bar_track: Color(241),
+        separator: Color(241),
+        dim: Color(244),
+        reset: Color(36),
+        effort: Color(69),
+        model: Color(136),
+        project: Color(32),
+        stash: Color(168),
+        lines: Color(244),
+        cost: Color(178), // Warm gold — informational, not alarm
+        duration: Color(36),
+        clock: Color(108),
+        burn: Color(167),
+    }
+}

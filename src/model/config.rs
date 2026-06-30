@@ -60,22 +60,24 @@ impl SegmentKind {
 
     /// Human label for the TUI list.
     #[must_use]
-    pub fn label(self) -> &'static str { match self {
-        SegmentKind::Directory => "Directory",
-        SegmentKind::Git => "Git",
-        SegmentKind::Context => "Context",
-        SegmentKind::RateLimits => "Rate Limits",
-        SegmentKind::DevContext => "Dev Context",
-        SegmentKind::Model => "Model",
-        SegmentKind::Effort => "Effort",
-        SegmentKind::Clock => "Clock",
-        SegmentKind::Cost => "Cost",
-        SegmentKind::Lines => "Lines",
-        SegmentKind::Duration => "Duration",
-        SegmentKind::Stash => "Stash",
-        SegmentKind::Burn => "Burn",
-        SegmentKind::Project => "Project",
-    } }
+    pub fn label(self) -> &'static str {
+        match self {
+            SegmentKind::Directory => "Directory",
+            SegmentKind::Git => "Git",
+            SegmentKind::Context => "Context",
+            SegmentKind::RateLimits => "Rate Limits",
+            SegmentKind::DevContext => "Dev Context",
+            SegmentKind::Model => "Model",
+            SegmentKind::Effort => "Effort",
+            SegmentKind::Clock => "Clock",
+            SegmentKind::Cost => "Cost",
+            SegmentKind::Lines => "Lines",
+            SegmentKind::Duration => "Duration",
+            SegmentKind::Stash => "Stash",
+            SegmentKind::Burn => "Burn",
+            SegmentKind::Project => "Project",
+        }
+    }
 
     /// Parse a kebab-case name (e.g. `"rate-limits"`, `"dev-context"`) into a
     /// [`SegmentKind`]. Returns `None` for unknown names.

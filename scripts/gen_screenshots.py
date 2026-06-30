@@ -57,7 +57,7 @@ def render_shots(shots, selector, scale=2, wait=900, viewport=None):
     const page = await browser.newPage({{ {vp} }});
     await page.goto(src);
     await page.waitForTimeout({wait});
-    await page.locator("{selector}").screenshot({{ path: out, omitBackground: true }});
+    await page.locator("{selector}").screenshot({{ path: out }});
     await page.close();
     console.log("Saved:", out);
   }}"""
@@ -157,7 +157,7 @@ CSS = """
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  background: #0d0d14; padding: 28px;
+  background: #101018; padding: 28px;
   font-family: 'HackNF', monospace;
   display: flex; justify-content: center;
 }
@@ -322,7 +322,7 @@ STRIP_CSS = """
   src:url('__FONT_URL__') format('truetype');
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:transparent; }
+body { background: #101018; }
 /* Transparent padded frame so the strip's drop shadow has room to render and
    isn't clipped by the element-screenshot bounding box. */
 .stripwrap { display:inline-block; padding:22px 26px; background:transparent; }

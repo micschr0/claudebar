@@ -72,6 +72,8 @@ impl SegmentKind {
 /// No-op segment for deprecated variants (Project, Effort).
 struct Noop;
 impl Segment for Noop {
-    fn render(&self, _ctx: &RenderCtx, _out: &mut SegmentWriter) -> bool { false }
+    fn render(&self, _ctx: &RenderCtx, _out: &mut SegmentWriter) -> bool {
+        false
+    }
 }
 const NOOP: Noop = Noop;
