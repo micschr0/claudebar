@@ -1,13 +1,13 @@
 <template id="scene-04-speed-template">
   <div data-composition-id="scene-04-speed" data-width="1920" data-height="1080">
     <div class="stack">
-      <h2 id="title" class="title">Why faster?</h2>
+      <h2 id="title" class="title">1.5 MB. Compiled Rust. One fork, not five.</h2>
 
       <!-- claudebar: one process, everything in-memory -->
       <div id="row-cb" class="row">
         <span id="cb-in" class="io">stdin</span>
         <span id="cb-arrow" class="pipe">→</span>
-        <div id="cb-block" class="monolith"><span class="label">ONE PROCESS</span><span class="sublabel">all in RAM</span></div>
+        <div id="cb-block" class="monolith"><span class="label">1 FORK</span><span class="sublabel">(git)</span></div>
         <span id="cb-arrow2" class="pipe">→</span>
         <span id="cb-out" class="io">stdout</span>
       </div>
@@ -20,16 +20,16 @@
         <span id="bs-arr1" class="pipe dim">→</span>
         <div id="b-git"  class="chip"><span class="blabel">git</span><span class="bfork">fork</span></div>
         <span id="bs-arr2" class="pipe dim">→</span>
-        <div id="b-date" class="chip"><span class="blabel">date</span><span class="bfork">fork</span></div>
+        <div id="b-date" class="chip"><span class="blabel">date</span><span class="bfork" style="visibility:hidden">fork</span></div>
         <span id="bs-arr3" class="pipe dim">→</span>
-        <div id="b-wc"   class="chip"><span class="blabel">wc</span><span class="bfork">fork</span></div>
+        <div id="b-wc"   class="chip"><span class="blabel">wc</span><span class="bfork" style="visibility:hidden">fork</span></div>
         <span id="bs-arr4" class="pipe dim">→</span>
-        <div id="b-awk"  class="chip"><span class="blabel">awk</span><span class="bfork">fork</span></div>
+        <div id="b-awk"  class="chip"><span class="blabel">awk</span><span class="bfork" style="visibility:hidden">fork</span></div>
         <span id="bs-arr5" class="pipe dim">→</span>
         <span id="bs-out" class="io dim">stdout</span>
       </div>
 
-      <p id="tag" class="tag">Faster, by design.</p>
+      <p id="tag" class="tag">~30 ms per render. ~5× faster than bash.</p>
 
     <style>
       [data-composition-id="scene-04-speed"] {
@@ -77,8 +77,8 @@
         font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.6);
       }
       [data-composition-id="scene-04-speed"] .chip {
-        display: flex; flex-direction: column; align-items: center; gap: 6px;
-        padding: 16px 20px; border-radius: 10px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+        height: 84px; padding: 0 20px; border-radius: 10px;
         background: rgba(130,139,184,0.08); border: 1px solid rgba(130,139,184,0.14);
         visibility: hidden; opacity: 0;
       }
@@ -88,7 +88,7 @@
       }
       [data-composition-id="scene-04-speed"] .bfork {
         font-family: "JetBrains Mono", ui-monospace, monospace;
-        font-size: 11px; font-weight: 600; color: #f7768e;
+        font-size: 11px; font-weight: 600; color: #6b7394;
         text-transform: uppercase; letter-spacing: 1.5px;
       }
       [data-composition-id="scene-04-speed"] .tag {
@@ -109,7 +109,7 @@
       tl.fromTo("#row-cb", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.5);
       tl.fromTo("#cb-in",  { x: -12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out" }, 0.55);
       tl.fromTo("#cb-arrow", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.65);
-      tl.fromTo("#cb-block", { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.4, ease: "back.out(1.2)" }, 0.7);
+      tl.fromTo("#cb-block", { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: "back.out(0.8)" }, 0.7);
       tl.fromTo("#cb-arrow2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.9);
       tl.fromTo("#cb-out", { x: 12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out" }, 0.95);
 
@@ -118,18 +118,18 @@
       tl.fromTo("#bs-in",   { x: -12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.13);
       tl.fromTo("#bs-arr0", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.20);
 
-      // Each fork staggers 0.08s — visible but not slow-motion
+      // Each fork staggers with a widening rhythm (0.06s -> 0.11s) — tighter at first, opening out
       tl.fromTo("#b-jq",    { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.22);
-      tl.fromTo("#bs-arr1", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.30);
-      tl.fromTo("#b-git",   { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.38);
-      tl.fromTo("#bs-arr2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.46);
-      tl.fromTo("#b-date",  { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.54);
-      tl.fromTo("#bs-arr3", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.62);
-      tl.fromTo("#b-wc",    { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.70);
+      tl.fromTo("#bs-arr1", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.28);
+      tl.fromTo("#b-git",   { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.35);
+      tl.fromTo("#bs-arr2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.42);
+      tl.fromTo("#b-date",  { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.50);
+      tl.fromTo("#bs-arr3", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.59);
+      tl.fromTo("#b-wc",    { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.68);
       tl.fromTo("#bs-arr4", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.78);
-      tl.fromTo("#b-awk",   { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.86);
-      tl.fromTo("#bs-arr5", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.94);
-      tl.fromTo("#bs-out",  { x: 12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.98);
+      tl.fromTo("#b-awk",   { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.88);
+      tl.fromTo("#bs-arr5", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.99);
+      tl.fromTo("#bs-out",  { x: 12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 2.10);
 
       // Tagline
       tl.fromTo("#tag", { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 2.2);
