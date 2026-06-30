@@ -138,6 +138,10 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
         match cfg.save(&path) {
             Ok(()) => {
                 println!("claudebar: wrote default config to {}", path.display());
+                if !check_nerd_font() {
+                    println!("claudebar: tip — install a Nerd Font (https://www.nerdfonts.com) for powerline glyphs.");
+                    println!("         or run `claudebar config` and switch the style to `unicode`.");
+                }
                 ExitCode::SUCCESS
             }
             Err(e) => {
