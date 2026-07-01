@@ -99,7 +99,7 @@
 
       // Strip: zoom in on left portion, pan across as pills stagger in
       tl.fromTo("#stripwrap", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, 0.25);
-      tl.fromTo("#strip-stage", { scale: 2.2, x: 0 }, { scale: 2.2, x: 0, duration: 0.55, ease: "expo.out" }, 0.25);
+      tl.fromTo("#strip-stage", { scale: 1, x: 0 }, { scale: 2.2, x: 0, duration: 0.55, ease: "expo.out" }, 0.25);
 
       // R1 pills (segs 1-4): strip stays left
       const pills = ["#l0","#l1","#l2","#l3","#l4","#l5","#l6","#l7","#l8","#l9","#l10","#l11"];
@@ -107,11 +107,11 @@
         { y: 16, autoAlpha: 0 },
         { y: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out", stagger: 0.12 }, 1.0);
 
-      // R2 pills appearing → pan to middle (segs 4-8)
-      tl.to("#strip-stage", { x: -950, duration: 0.65, ease: "power2.inOut" }, 1.55);
+      // R2 pills appearing → pan to middle (segs 4-9)
+      tl.to("#strip-stage", { x: -1250, duration: 0.65, ease: "power2.inOut" }, 1.55);
 
       // R3 pills appearing → pan to right (segs 7-12)
-      tl.to("#strip-stage", { x: -1920, duration: 0.65, ease: "power2.inOut" }, 2.1);
+      tl.to("#strip-stage", { x: -2100, duration: 0.65, ease: "power2.inOut" }, 2.1);
 
       // Settle: zoom out to full strip
       tl.to("#strip-stage", { scale: 1, x: 0, duration: 0.9, ease: "power3.inOut" }, 4.0);
