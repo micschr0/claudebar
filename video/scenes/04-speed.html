@@ -1,13 +1,13 @@
 <template id="scene-04-speed-template">
   <div data-composition-id="scene-04-speed" data-width="1920" data-height="1080">
     <div class="stack">
-      <h2 id="title" class="title">1.5 MB. Compiled Rust. One fork, not five.</h2>
+      <h2 id="title" class="title">1.5 MB. Compiled Rust. One fork, not five forks.</h2>
 
       <!-- claudebar: one process, everything in-memory -->
       <div id="row-cb" class="row">
         <span id="cb-in" class="io">stdin</span>
         <span id="cb-arrow" class="pipe">→</span>
-        <div id="cb-block" class="monolith"><span class="label">1 FORK</span><span class="sublabel">(git)</span></div>
+        <div id="cb-block" class="monolith"><span class="label">1 FORK</span><span class="sublabel">(the only subprocess)</span></div>
         <span id="cb-arrow2" class="pipe">→</span>
         <span id="cb-out" class="io">stdout</span>
       </div>
@@ -82,6 +82,11 @@
         background: rgba(130,139,184,0.08); border: 1px solid rgba(130,139,184,0.14);
         visibility: hidden; opacity: 0;
       }
+      [data-composition-id="scene-04-speed"] #b-jq  { border-left: 3px solid #c0caf5; }
+      [data-composition-id="scene-04-speed"] #b-git { border-left: 3px solid #f7768e; }
+      [data-composition-id="scene-04-speed"] #b-date { border-left: 3px solid #e0af68; }
+      [data-composition-id="scene-04-speed"] #b-wc  { border-left: 3px solid #9ece6a; }
+      [data-composition-id="scene-04-speed"] #b-awk { border-left: 3px solid #bb9af7; }
       [data-composition-id="scene-04-speed"] .blabel {
         font-family: "Hack Nerd Font", "JetBrainsMono Nerd Font", "FiraCode Nerd Font", monospace;
         font-size: 20px; font-weight: 600; color: #c0caf5;

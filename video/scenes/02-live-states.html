@@ -5,6 +5,7 @@
         <div id="lv-green" class="layer"><img class="strip" src="public/screenshots/strip-green.png" alt="calm"></div>
         <div id="lv-normal" class="layer"><img class="strip" src="public/screenshots/strip-normal.png" alt="normal"></div>
         <div id="lv-critical" class="layer"><img class="strip" src="public/screenshots/strip-critical.png" alt="critical"></div>
+        <div id="lv-over" class="layer"><img class="strip" src="public/screenshots/strip-overlimit.png" alt="overlimit"></div>
       </div>
       <p id="lv-cap" class="cap">Color-coded. It watches your back.</p>
     </div>
@@ -46,16 +47,20 @@
       tl.fromTo("#lv-cap", { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.2);
 
       // Green → normal cross-dissolve
-      tl.fromTo("#lv-normal", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, ease: "power1.inOut" }, 1.5);
-      tl.to("#lv-green", { autoAlpha: 0, duration: 0.7, ease: "power1.inOut" }, 1.5);
+      tl.fromTo("#lv-normal", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, ease: "power1.inOut" }, 1.2);
+      tl.to("#lv-green", { autoAlpha: 0, duration: 0.7, ease: "power1.inOut" }, 1.2);
 
       // Normal → critical cross-dissolve
-      tl.fromTo("#lv-critical", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, ease: "power1.inOut" }, 3.2);
-      tl.to("#lv-normal", { autoAlpha: 0, duration: 0.7, ease: "power1.inOut" }, 3.2);
+      tl.fromTo("#lv-critical", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, ease: "power1.inOut" }, 2.5);
+      tl.to("#lv-normal", { autoAlpha: 0, duration: 0.7, ease: "power1.inOut" }, 2.5);
 
-      // Gentle scale pulse when critical lands
-      tl.to(".hero-stage", { scale: 1.06, duration: 0.12, ease: "power2.out" }, 3.75);
-      tl.to(".hero-stage", { scale: 1.0, duration: 0.12, ease: "power2.inOut" }, 3.87);
+      // Critical → overlimit cross-dissolve
+      tl.fromTo("#lv-over", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, ease: "power1.inOut" }, 3.8);
+      tl.to("#lv-critical", { autoAlpha: 0, duration: 0.7, ease: "power1.inOut" }, 3.8);
+
+      // Scale pop when overlimit lands
+      tl.to(".hero-stage", { scale: 1.10, duration: 0.12, ease: "power2.out" }, 4.4);
+      tl.to(".hero-stage", { scale: 1.0, duration: 0.12, ease: "power2.inOut" }, 4.5);
 
       window.__timelines["scene-02-live"] = tl;
     </script>

@@ -47,11 +47,11 @@
       [data-composition-id="scene-01-strip"] .strip { width: 1560px; height: auto; display: block; }
 
       [data-composition-id="scene-01-strip"] .legend {
-        display: flex; gap: 14px;
+        display: flex; gap: 18px;
       }
       [data-composition-id="scene-01-strip"] .seg {
         display: flex; flex-direction: column; align-items: center; gap: 2px;
-        min-width: 210px;
+        min-width: 240px;
         padding: 10px 16px; border-radius: 12px;
         background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
         visibility: hidden; opacity: 0;
@@ -60,7 +60,7 @@
         font-size: 20px; font-weight: 600; line-height: 1.25;
       }
       [data-composition-id="scene-01-strip"] .seg .sub {
-        font-size: 14px; font-weight: 400; line-height: 1.2;
+        font-size: 16px; font-weight: 400; line-height: 1.2;
         color: #565f89;
       }
 
@@ -72,10 +72,23 @@
       [data-composition-id="scene-01-strip"] .s-rl .t    { color: #9ece6a; }
       [data-composition-id="scene-01-strip"] .s-burn .t  { color: #7dcfff; }
       [data-composition-id="scene-01-strip"] .s-dev .t   { color: #bb9af7; }
-      [data-composition-id="scene-01-strip"] .s-clk .t   { color: #c0caf5; }
+      [data-composition-id="scene-01-strip"] .s-clk .t   { color: #9ece6a; }
       [data-composition-id="scene-01-strip"] .s-lns .t   { color: #bb9af7; }
       [data-composition-id="scene-01-strip"] .s-cst .t   { color: #7dcfff; }
       [data-composition-id="scene-01-strip"] .s-dur .t   { color: #c0caf5; }
+
+      [data-composition-id="scene-01-strip"] .s-dir   { border-top: 3px solid #7aa2f7; }
+      [data-composition-id="scene-01-strip"] .s-git   { border-top: 3px solid #f7768e; }
+      [data-composition-id="scene-01-strip"] .s-stash { border-top: 3px solid #bb9af7; }
+      [data-composition-id="scene-01-strip"] .s-mdl   { border-top: 3px solid #ff9e64; }
+      [data-composition-id="scene-01-strip"] .s-ctx   { border-top: 3px solid #e0af68; }
+      [data-composition-id="scene-01-strip"] .s-rl    { border-top: 3px solid #9ece6a; }
+      [data-composition-id="scene-01-strip"] .s-burn  { border-top: 3px solid #7dcfff; }
+      [data-composition-id="scene-01-strip"] .s-dev   { border-top: 3px solid #bb9af7; }
+      [data-composition-id="scene-01-strip"] .s-clk   { border-top: 3px solid #9ece6a; }
+      [data-composition-id="scene-01-strip"] .s-lns   { border-top: 3px solid #bb9af7; }
+      [data-composition-id="scene-01-strip"] .s-cst   { border-top: 3px solid #7dcfff; }
+      [data-composition-id="scene-01-strip"] .s-dur   { border-top: 3px solid #c0caf5; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
@@ -84,13 +97,13 @@
       const tl = gsap.timeline({ paused: true });
 
       // Strip floats up
-      tl.fromTo("#stripwrap", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out" }, 0.15);
+      tl.fromTo("#stripwrap", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out" }, 0.3);
 
-      // All 12 pills stagger in — 3 rows × 4, 0.08s apart, reading left-to-right then top-to-bottom
+      // All 12 pills stagger in — 3 rows × 4, 0.12s apart, reading left-to-right then top-to-bottom
       const pills = ["#l0","#l1","#l2","#l3","#l4","#l5","#l6","#l7","#l8","#l9","#l10","#l11"];
       tl.fromTo(pills,
         { y: 16, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out", stagger: 0.08 }, 0.9);
+        { y: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out", stagger: 0.12 }, 1.0);
 
       window.__timelines["scene-01-strip"] = tl;
     </script>
