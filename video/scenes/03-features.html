@@ -99,13 +99,18 @@
       tl.fromTo("#ftitle", { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, ease: "expo.out" }, 0.1);
 
       // Hero: green reveal -> slow cross-dissolve to critical -> scale-pop landing.
-      tl.fromTo("#h-green", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power1.out" }, 0.8);
-      tl.fromTo(".hero-cap", { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.9);
+      // Reveal starts early so the green strip is fully settled well before the
+      // dissolve begins at t=1.0 (checkpoint snapshot at scene-local t=0.8 must
+      // already show a clean, fully-opaque green hero, not a mid-fade one).
+      tl.fromTo("#h-green", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power1.out" }, 0.2);
+      tl.fromTo(".hero-cap", { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.3);
       tl.fromTo("#h-crit", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.5, ease: "power1.inOut" }, 1.0);
       tl.to("#h-green", { autoAlpha: 0, duration: 1.5, ease: "power1.inOut" }, 1.0);
 
-      tl.to(".hero-stage", { scale: 1.18, duration: 0.15, ease: "power2.out" }, 2.5);
-      tl.to(".hero-stage", { scale: 1.0, duration: 0.15, ease: "power2.inOut" }, 2.65);
+      // Peaks exactly at t=2.5 (when the dissolve lands) so the pop reads clearly
+      // at the checkpoint's t=10.0 absolute snapshot, not mid-ramp.
+      tl.to(".hero-stage", { scale: 1.18, duration: 0.15, ease: "power2.out" }, 2.35);
+      tl.to(".hero-stage", { scale: 1.0, duration: 0.15, ease: "power2.inOut" }, 2.5);
 
       tl.fromTo(root + " .wave-1 .chip",
         { y: 26, autoAlpha: 0 },
