@@ -2,19 +2,31 @@
   <div data-composition-id="scene-01-strip" data-width="1920" data-height="1080">
     <div class="stack">
       <div id="stripwrap" class="stripwrap">
-        <img class="strip" src="public/screenshots/strip-normal.png" alt="claudebar statusline">
+        <img class="strip" src="public/screenshots/strip-all.png" alt="claudebar statusline">
       </div>
+
+      <!-- Row 1: What & where -->
       <div class="legend">
-        <span id="l0" class="seg s-dir">directory</span>
-        <span id="l1" class="seg s-git">git</span>
-        <span id="l2" class="seg s-mdl">model</span>
-        <span id="l3" class="seg s-ctx">context</span>
+        <span id="l0"  class="seg s-dir"><b class="t">directory</b><span class="sub">your path</span></span>
+        <span id="l1"  class="seg s-git"><b class="t">git</b><span class="sub">branch · dirty</span></span>
+        <span id="l2"  class="seg s-stash"><b class="t">stash</b><span class="sub">WIP changes</span></span>
+        <span id="l3"  class="seg s-mdl"><b class="t">model</b><span class="sub">current LLM</span></span>
       </div>
+
+      <!-- Row 2: Session health -->
       <div class="legend">
-        <span id="l4" class="seg s-lns">lines</span>
-        <span id="l5" class="seg s-rl">rate-limits</span>
-        <span id="l6" class="seg s-cst">cost</span>
-        <span id="l7" class="seg s-dur">duration</span>
+        <span id="l4"  class="seg s-ctx"><b class="t">context</b><span class="sub">token usage</span></span>
+        <span id="l5"  class="seg s-rl"><b class="t">rate-limits</b><span class="sub">5h + weekly</span></span>
+        <span id="l6"  class="seg s-burn"><b class="t">burn</b><span class="sub">pace to limit</span></span>
+        <span id="l7"  class="seg s-dev"><b class="t">dev-context</b><span class="sub">PR · agent</span></span>
+      </div>
+
+      <!-- Row 3: Session stats -->
+      <div class="legend">
+        <span id="l8"  class="seg s-clk"><b class="t">clock</b><span class="sub">local time</span></span>
+        <span id="l9"  class="seg s-lns"><b class="t">lines</b><span class="sub">code stats</span></span>
+        <span id="l10" class="seg s-cst"><b class="t">cost</b><span class="sub">session $</span></span>
+        <span id="l11" class="seg s-dur"><b class="t">duration</b><span class="sub">time spent</span></span>
       </div>
     </div>
 
@@ -23,42 +35,63 @@
         position: absolute; inset: 0;
         display: flex; flex-direction: column; align-items: center; gap: 28px;
         background: #16161e;
-        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        font-family: "Hack Nerd Font", "JetBrainsMono Nerd Font", "FiraCode Nerd Font", monospace;
       }
       [data-composition-id="scene-01-strip"] .stack {
-        display: flex; flex-direction: column; align-items: center; gap: 40px;
+        display: flex; flex-direction: column; align-items: center; gap: 32px;
       }
       [data-composition-id="scene-01-strip"] .stripwrap {
         visibility: hidden; opacity: 0;
         filter: drop-shadow(0 28px 60px rgba(0,0,0,0.55));
       }
       [data-composition-id="scene-01-strip"] .strip { width: 1560px; height: auto; display: block; }
+
       [data-composition-id="scene-01-strip"] .legend {
-        display: flex; gap: 22px; font-size: 34px; font-weight: 500;
+        display: flex; gap: 14px;
       }
       [data-composition-id="scene-01-strip"] .seg {
-        visibility: hidden; opacity: 0;
-        padding: 8px 22px; border-radius: 999px;
+        display: flex; flex-direction: column; align-items: center; gap: 2px;
+        min-width: 210px;
+        padding: 10px 16px; border-radius: 12px;
         background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+        visibility: hidden; opacity: 0;
       }
-      [data-composition-id="scene-01-strip"] .s-dir { color: #7aa2f7; }
-      [data-composition-id="scene-01-strip"] .s-git { color: #f7768e; }
-      [data-composition-id="scene-01-strip"] .s-mdl { color: #ff9e64; }
-      [data-composition-id="scene-01-strip"] .s-ctx { color: #e0af68; }
-      [data-composition-id="scene-01-strip"] .s-lns { color: #bb9af7; }
-      [data-composition-id="scene-01-strip"] .s-rl { color: #9ece6a; }
-      [data-composition-id="scene-01-strip"] .s-cst { color: #7dcfff; }
-      [data-composition-id="scene-01-strip"] .s-dur { color: #c0caf5; }
+      [data-composition-id="scene-01-strip"] .seg .t {
+        font-size: 20px; font-weight: 600; line-height: 1.25;
+      }
+      [data-composition-id="scene-01-strip"] .seg .sub {
+        font-size: 14px; font-weight: 400; line-height: 1.2;
+        color: #565f89;
+      }
+
+      [data-composition-id="scene-01-strip"] .s-dir .t   { color: #7aa2f7; }
+      [data-composition-id="scene-01-strip"] .s-git .t   { color: #f7768e; }
+      [data-composition-id="scene-01-strip"] .s-stash .t { color: #bb9af7; }
+      [data-composition-id="scene-01-strip"] .s-mdl .t   { color: #ff9e64; }
+      [data-composition-id="scene-01-strip"] .s-ctx .t   { color: #e0af68; }
+      [data-composition-id="scene-01-strip"] .s-rl .t    { color: #9ece6a; }
+      [data-composition-id="scene-01-strip"] .s-burn .t  { color: #7dcfff; }
+      [data-composition-id="scene-01-strip"] .s-dev .t   { color: #bb9af7; }
+      [data-composition-id="scene-01-strip"] .s-clk .t   { color: #c0caf5; }
+      [data-composition-id="scene-01-strip"] .s-lns .t   { color: #bb9af7; }
+      [data-composition-id="scene-01-strip"] .s-cst .t   { color: #7dcfff; }
+      [data-composition-id="scene-01-strip"] .s-dur .t   { color: #c0caf5; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#stripwrap", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out" }, 0.2);
-      tl.fromTo(["#l0","#l1","#l2","#l3","#l4","#l5","#l6","#l7"],
-        { y: 20, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.35, ease: "power2.out", stagger: 0.10 }, 1.0);
+
+      // Strip floats up
+      tl.fromTo("#stripwrap", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out" }, 0.15);
+
+      // All 12 pills stagger in — 3 rows × 4, 0.08s apart, reading left-to-right then top-to-bottom
+      const pills = ["#l0","#l1","#l2","#l3","#l4","#l5","#l6","#l7","#l8","#l9","#l10","#l11"];
+      tl.fromTo(pills,
+        { y: 16, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out", stagger: 0.08 }, 0.9);
+
       window.__timelines["scene-01-strip"] = tl;
     </script>
   </div>

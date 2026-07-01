@@ -1,0 +1,63 @@
+<template id="scene-02-live-template">
+  <div data-composition-id="scene-02-live" data-width="1920" data-height="1080">
+    <div class="stack">
+      <div class="hero-stage">
+        <div id="lv-green" class="layer"><img class="strip" src="public/screenshots/strip-green.png" alt="calm"></div>
+        <div id="lv-normal" class="layer"><img class="strip" src="public/screenshots/strip-normal.png" alt="normal"></div>
+        <div id="lv-critical" class="layer"><img class="strip" src="public/screenshots/strip-critical.png" alt="critical"></div>
+      </div>
+      <p id="lv-cap" class="cap">Color-coded. It watches your back.</p>
+    </div>
+
+    <style>
+      [data-composition-id="scene-02-live"] {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: #16161e;
+        font-family: "Hack Nerd Font", "JetBrainsMono Nerd Font", "FiraCode Nerd Font", monospace;
+      }
+      [data-composition-id="scene-02-live"] .stack {
+        display: flex; flex-direction: column; align-items: center; gap: 44px;
+      }
+      [data-composition-id="scene-02-live"] .hero-stage {
+        position: relative; width: 1560px; height: 152px;
+        filter: drop-shadow(0 28px 60px rgba(0,0,0,0.55));
+        transform-origin: center center;
+      }
+      [data-composition-id="scene-02-live"] .layer {
+        position: absolute; inset: 0; visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-02-live"] .strip { width: 1560px; height: auto; display: block; }
+      [data-composition-id="scene-02-live"] .cap {
+        margin: 0; font-size: 34px; font-weight: 500; letter-spacing: -0.3px;
+        color: #9aa5ce; visibility: hidden; opacity: 0;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Green strip fades in
+      tl.fromTo("#lv-green", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power1.out" }, 0.1);
+
+      // Caption appears
+      tl.fromTo("#lv-cap", { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.2);
+
+      // Green → normal cross-dissolve
+      tl.fromTo("#lv-normal", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, ease: "power1.inOut" }, 1.5);
+      tl.to("#lv-green", { autoAlpha: 0, duration: 0.7, ease: "power1.inOut" }, 1.5);
+
+      // Normal → critical cross-dissolve
+      tl.fromTo("#lv-critical", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.7, ease: "power1.inOut" }, 3.2);
+      tl.to("#lv-normal", { autoAlpha: 0, duration: 0.7, ease: "power1.inOut" }, 3.2);
+
+      // Gentle scale pulse when critical lands
+      tl.to(".hero-stage", { scale: 1.06, duration: 0.12, ease: "power2.out" }, 3.75);
+      tl.to(".hero-stage", { scale: 1.0, duration: 0.12, ease: "power2.inOut" }, 3.87);
+
+      window.__timelines["scene-02-live"] = tl;
+    </script>
+  </div>
+</template>

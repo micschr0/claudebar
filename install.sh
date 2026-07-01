@@ -103,13 +103,32 @@ detect_target() {
   esac
 }
 
+# fetch_latest_release — print the full "latest" release JSON, or empty
+# string if no release exists yet. Cached in LATEST_RELEASE_JSON so callers
+# that need both the tag and its asset list only hit the API once.
+LATEST_RELEASE_JSON=""
+fetch_latest_release() {
+  if [ -z "$LATEST_RELEASE_JSON" ]; then
+    LATEST_RELEASE_JSON=$(curl -fsSL "https://api.github.com/repos/micschr0/claudebar/releases/latest")
+  fi
+  printf '%s' "$LATEST_RELEASE_JSON"
+}
+
 # fetch_latest_tag — print the latest GitHub release tag, or empty string if
 # no release exists yet.
 fetch_latest_tag() {
-  local tag
-  tag=$(curl -fsSL "https://api.github.com/repos/micschr0/claudebar/releases/latest" \
-        | jq -r '.tag_name // empty')
-  printf '%s' "$tag"
+  fetch_latest_release | jq -r '.tag_name // empty'
+}
+
+# find_asset_url <json> <regex> — print the browser_download_url of the first
+# release asset whose name matches <regex> (extended regex, jq `test`), or
+# empty string if none match. Resolving by pattern instead of hand-building
+# the filename keeps this in sync with whatever naming scheme the release
+# workflow (cargo-dist) actually uses.
+find_asset_url() {
+  local json="$1" regex="$2"
+  printf '%s' "$json" | jq -r --arg re "$regex" \
+    '[.assets[] | select(.name | test($re))][0].browser_download_url // empty'
 }
 
 # sha256_of <file> — print the SHA256 hex digest of <file>.
@@ -149,17 +168,31 @@ verify_checksum() {
 # Checksum mismatch is fatal and does NOT trigger a fallback.
 download_prebuilt() {
   local target="$1"
-  local tag archive url sums_url
-  tag=$(fetch_latest_tag)
+  local release tag archive url sums_url
+  release=$(fetch_latest_release)
+  tag=$(printf '%s' "$release" | jq -r '.tag_name // empty')
   if [ -z "$tag" ]; then
     bold "No prebuilt release found — falling back to cargo build"
     return 1
   fi
 
-  # dist names archives by target only (no tag segment): claudebar-<target>.tar.gz.
-  archive="claudebar-${target}.tar.gz"
-  url="https://github.com/micschr0/claudebar/releases/download/${tag}/${archive}"
-  sums_url="https://github.com/micschr0/claudebar/releases/download/${tag}/sha256.sum"
+  # Resolve the actual asset names from the release instead of hand-building
+  # them — the naming scheme is owned by the release workflow (cargo-dist),
+  # not by this script, and has changed before (tag embedded in the archive
+  # name, sums file renamed from sha256.sum to SHA256SUMS.txt).
+  url=$(find_asset_url "$release" "^claudebar-.*-${target}\\.tar\\.gz$")
+  sums_url=$(find_asset_url "$release" '^(SHA256SUMS\.txt|sha256\.sum)$')
+  if [ -z "$url" ]; then
+    red "No release asset found for target ${target} in ${tag}"
+    bold "Falling back to cargo build..."
+    return 1
+  fi
+  if [ -z "$sums_url" ]; then
+    red "No checksum file found in release ${tag}"
+    bold "Falling back to cargo build..."
+    return 1
+  fi
+  archive="${url##*/}"
 
   bold "Downloading ${archive}..."
   if ! curl -fsSL "$url" -o "${TMPDIR_WORK}/${archive}"; then

@@ -10,7 +10,7 @@
 </head>
 <body>
   <!--
-    claudebar promo. Silent (on-screen text only). 5 scenes, 25.0s, 16:9 1920×1080.
+    claudebar promo. Silent (on-screen text only). 6 scenes, 25.0s, 16:9 1920×1080.
     Each scene's data-duration extends 0.4s past its nominal end; the next scene
     starts at that nominal boundary and fades 0→1 over the 0.4s overlap, on top of
     the still-opaque outgoing scene. Unique track index per scene. Last scene (CTA)
@@ -32,19 +32,24 @@
          data-start="3.0"  data-duration="4.9"  data-track-index="2"
          style="opacity:0"></div>
 
+    <div data-composition-id="scene-02-live"
+         data-composition-src="scenes/02-live-states.html"
+         data-start="7.5"  data-duration="5.4"  data-track-index="3"
+         style="opacity:0"></div>
+
     <div data-composition-id="scene-03-features"
          data-composition-src="scenes/03-features.html"
-         data-start="7.5"  data-duration="10.4" data-track-index="3"
+         data-start="12.5" data-duration="4.9"  data-track-index="4"
          style="opacity:0"></div>
 
     <div data-composition-id="scene-04-speed"
          data-composition-src="scenes/04-speed.html"
-         data-start="17.5" data-duration="4.4"  data-track-index="4"
+         data-start="17.0" data-duration="4.4"  data-track-index="5"
          style="opacity:0"></div>
 
     <div data-composition-id="scene-05-cta"
          data-composition-src="scenes/05-cta.html"
-         data-start="21.5" data-duration="3.5"  data-track-index="5"
+         data-start="21.0" data-duration="4.0"  data-track-index="6"
          style="opacity:0"></div>
   </div>
 
@@ -54,9 +59,10 @@
     const tl = gsap.timeline({ paused: true });
     // Only fade the INCOMING scene in; the outgoing stays opaque underneath until its duration ends.
     tl.to('[data-composition-id="scene-01-strip"]',    { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 3.0);
-    tl.to('[data-composition-id="scene-03-features"]', { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 7.5);
-    tl.to('[data-composition-id="scene-04-speed"]',    { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 17.5);
-    tl.to('[data-composition-id="scene-05-cta"]',      { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 21.5);
+    tl.to('[data-composition-id="scene-02-live"]',     { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 7.5);
+    tl.to('[data-composition-id="scene-03-features"]', { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 12.5);
+    tl.to('[data-composition-id="scene-04-speed"]',    { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 17.0);
+    tl.to('[data-composition-id="scene-05-cta"]',      { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 21.0);
     window.__timelines["main"] = tl;
   </script>
 </body>

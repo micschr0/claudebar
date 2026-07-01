@@ -5,8 +5,9 @@
 
       <div class="hero-block">
         <div class="hero-stage">
-          <div id="h-green" class="layer"><img class="strip" src="public/screenshots/strip-green.png" alt="calm"></div>
-          <div id="h-crit"  class="layer"><img class="strip" src="public/screenshots/strip-critical.png" alt="critical"></div>
+          <div id="h-green"  class="layer"><img class="strip" src="public/screenshots/strip-green.png" alt="calm"></div>
+          <div id="h-normal" class="layer"><img class="strip" src="public/screenshots/strip-normal.png" alt="normal"></div>
+          <div id="h-crit"   class="layer"><img class="strip" src="public/screenshots/strip-critical.png" alt="critical"></div>
         </div>
         <p class="hero-cap">Token usage — bar + percentage</p>
       </div>
@@ -30,7 +31,7 @@
         position: absolute; inset: 0;
         display: flex; align-items: center; justify-content: center;
         background: #16161e;
-        font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+        font-family: "Hack Nerd Font", "JetBrainsMono Nerd Font", "FiraCode Nerd Font", monospace;
       }
       [data-composition-id="scene-03-features"] .stack {
         display: flex; flex-direction: column; align-items: center; gap: 44px;
@@ -96,41 +97,45 @@
       const tl = gsap.timeline({ paused: true });
       const root = "[data-composition-id='scene-03-features']";
 
-      tl.fromTo("#ftitle", { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, ease: "expo.out" }, 0.1);
+      tl.fromTo("#ftitle", { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4, ease: "expo.out" }, 0.05);
 
-      // Hero: green reveal -> slow cross-dissolve to critical -> scale-pop landing.
-      // Reveal starts early so the green strip is fully settled well before the
-      // dissolve begins at t=1.0 (checkpoint snapshot at scene-local t=0.8 must
-      // already show a clean, fully-opaque green hero, not a mid-fade one).
-      tl.fromTo("#h-green", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power1.out" }, 0.2);
-      tl.fromTo(".hero-cap", { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.3);
-      tl.fromTo("#h-crit", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.5, ease: "power1.inOut" }, 1.0);
-      tl.to("#h-green", { autoAlpha: 0, duration: 1.5, ease: "power1.inOut" }, 1.0);
+      // Hero strip: green reveal at 0.15
+      tl.fromTo("#h-green", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, 0.15);
+      tl.fromTo(".hero-cap", { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4, ease: "power2.out" }, 0.2);
 
-      // Peaks exactly at t=2.5 (when the dissolve lands) so the pop reads clearly
-      // at the checkpoint's t=10.0 absolute snapshot, not mid-ramp.
-      tl.to(".hero-stage", { scale: 1.18, duration: 0.15, ease: "power2.out" }, 2.35);
-      tl.to(".hero-stage", { scale: 1.0, duration: 0.15, ease: "power2.inOut" }, 2.5);
+      // Green -> Normal (0.6-1.2)
+      tl.fromTo("#h-normal", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.inOut" }, 0.6);
+      tl.to("#h-green", { autoAlpha: 0, duration: 0.6, ease: "power1.inOut" }, 0.6);
 
+      // Normal -> Critical (1.2-1.8)
+      tl.fromTo("#h-crit", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: "power1.inOut" }, 1.2);
+      tl.to("#h-normal", { autoAlpha: 0, duration: 0.6, ease: "power1.inOut" }, 1.2);
+
+      // Scale pop at 1.7 (just before critical lands at 1.8)
+      tl.to(".hero-stage", { scale: 1.18, duration: 0.12, ease: "power2.out" }, 1.7);
+      tl.to(".hero-stage", { scale: 1.0, duration: 0.12, ease: "power2.inOut" }, 1.82);
+
+      // Wave-1 chips stagger in at 2.0
       tl.fromTo(root + " .wave-1 .chip",
-        { y: 26, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 2.8);
+        { y: 20, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.35, ease: "power2.out", stagger: 0.1 }, 2.0);
 
+      // Speed counter 140ms -> 30ms
       const spd = { v: 140 };
       tl.to(spd, {
-        v: 30, duration: 0.4, ease: "power4.out",
+        v: 30, duration: 0.35, ease: "power4.out",
         onUpdate: () => {
           const n = document.querySelector(root + " .num");
           if (n) n.textContent = Math.round(spd.v) + "ms";
         }
-      }, 2.95);
+      }, 2.15);
 
-      // Hero stays opaque — only the small wave-1 chips fade out for the swap.
-      tl.to(root + " .wave-1 .chip", { autoAlpha: 0, duration: 0.4, ease: "power2.inOut" }, 6.6);
+      // Wave swap at 3.3: wave-1 out, wave-2 in
+      tl.to(root + " .wave-1 .chip", { autoAlpha: 0, duration: 0.3, ease: "power2.inOut" }, 3.3);
 
       tl.fromTo(root + " .wave-2 .chip",
-        { y: 26, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 6.8);
+        { y: 20, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.35, ease: "power2.out", stagger: 0.1 }, 3.5);
 
       window.__timelines["scene-03-features"] = tl;
     </script>
