@@ -2,9 +2,17 @@
   <div data-composition-id="scene-03-features" data-width="1920" data-height="1080">
     <div class="stack">
       <h2 id="ftitle" class="ftitle">What it tracks.</h2>
+
+      <div class="hero-block">
+        <div class="hero-stage">
+          <div id="h-green" class="layer"><img class="strip" src="public/screenshots/strip-green.png" alt="calm"></div>
+          <div id="h-crit"  class="layer"><img class="strip" src="public/screenshots/strip-critical.png" alt="critical"></div>
+        </div>
+        <p class="hero-cap">Token usage — bar + percentage</p>
+      </div>
+
       <div class="waves">
         <div class="grid wave-1">
-          <span class="chip f hero"><span class="shot" aria-hidden="true"></span> Token usage — bar + percentage</span>
           <span class="chip f"><b class="dot c-cyn"></b> Up to 5× faster than the bash equivalent <span class="num">140ms</span></span>
           <span class="chip f"><span class="swatches" aria-hidden="true"><i style="background:#7aa2f7"></i><i style="background:#f5c2e7"></i><i style="background:#fe8019"></i><i style="background:#88c0d0"></i><i style="background:#bd93f9"></i></span> 16 themes, 7 styles, configurable</span>
           <span class="chip f"><b class="dot c-mag"></b> Branch, ahead/behind</span>
@@ -25,41 +33,45 @@
         font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
       }
       [data-composition-id="scene-03-features"] .stack {
-        display: flex; flex-direction: column; align-items: center; gap: 56px;
+        display: flex; flex-direction: column; align-items: center; gap: 44px;
       }
       [data-composition-id="scene-03-features"] .ftitle {
         margin: 0; font-size: 78px; font-weight: 600; letter-spacing: -2px; color: #c0caf5;
         visibility: hidden; opacity: 0;
       }
+      [data-composition-id="scene-03-features"] .hero-block {
+        display: flex; flex-direction: column; align-items: center; gap: 26px;
+      }
+      [data-composition-id="scene-03-features"] .hero-stage {
+        position: relative; width: 1560px; height: 152px;
+        filter: drop-shadow(0 28px 60px rgba(0,0,0,0.55));
+        transform-origin: center center;
+      }
+      [data-composition-id="scene-03-features"] .layer {
+        position: absolute; inset: 0; visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-03-features"] .strip { width: 1560px; height: auto; display: block; }
+      [data-composition-id="scene-03-features"] .hero-cap {
+        margin: 0; font-size: 34px; font-weight: 500; letter-spacing: -0.3px;
+        color: #9aa5ce; visibility: hidden; opacity: 0;
+      }
       [data-composition-id="scene-03-features"] .waves {
-        position: relative; width: 1700px; min-height: 380px; margin: 0 auto;
+        position: relative; width: 1760px; min-height: 180px; margin: 0 auto;
       }
       [data-composition-id="scene-03-features"] .grid {
         position: absolute; inset: 0;
-        display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 40px;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px 28px;
         align-items: start; justify-content: center;
       }
       [data-composition-id="scene-03-features"] .chip {
-        display: flex; align-items: center; gap: 16px;
-        font-size: 42px; font-weight: 450; color: #9aa5ce;
-        padding: 24px 40px; border-radius: 16px;
+        display: flex; align-items: center; gap: 14px;
+        font-size: 33px; font-weight: 450; color: #9aa5ce; line-height: 1.25;
+        padding: 22px 26px; border-radius: 16px;
         background: rgba(122,162,247,0.07); border: 1px solid rgba(122,162,247,0.16);
         visibility: hidden; opacity: 0;
       }
-      [data-composition-id="scene-03-features"] .chip.hero {
-        grid-column: 1 / -1;
-        align-items: flex-start;
-        padding: 32px 48px; gap: 24px;
-      }
       [data-composition-id="scene-03-features"] .dot {
-        flex: none; width: 20px; height: 20px; border-radius: 8px; display: inline-block;
-      }
-      [data-composition-id="scene-03-features"] .shot {
-        flex: none; width: 180px; height: 50px; border-radius: 10px;
-        background-image: url(public/screenshots/strip-critical.png);
-        background-repeat: no-repeat;
-        background-size: 974px 95px;
-        background-position: -400px -22px;
+        flex: none; width: 18px; height: 18px; border-radius: 7px; display: inline-block;
       }
       [data-composition-id="scene-03-features"] .num {
         flex: none; font-variant-numeric: tabular-nums; font-weight: 600; color: #7dcfff;
@@ -86,9 +98,18 @@
 
       tl.fromTo("#ftitle", { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.55, ease: "expo.out" }, 0.1);
 
+      // Hero: green reveal -> slow cross-dissolve to critical -> scale-pop landing.
+      tl.fromTo("#h-green", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power1.out" }, 0.8);
+      tl.fromTo(".hero-cap", { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.9);
+      tl.fromTo("#h-crit", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.5, ease: "power1.inOut" }, 1.0);
+      tl.to("#h-green", { autoAlpha: 0, duration: 1.5, ease: "power1.inOut" }, 1.0);
+
+      tl.to(".hero-stage", { scale: 1.18, duration: 0.15, ease: "power2.out" }, 2.5);
+      tl.to(".hero-stage", { scale: 1.0, duration: 0.15, ease: "power2.inOut" }, 2.65);
+
       tl.fromTo(root + " .wave-1 .chip",
         { y: 26, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 0.8);
+        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 2.8);
 
       const spd = { v: 140 };
       tl.to(spd, {
@@ -97,13 +118,14 @@
           const n = document.querySelector(root + " .num");
           if (n) n.textContent = Math.round(spd.v) + "ms";
         }
-      }, 0.95);
+      }, 2.95);
 
-      tl.to(root + " .wave-1 .chip", { autoAlpha: 0, duration: 0.4, ease: "power2.inOut" }, 3.4);
+      // Hero stays opaque — only the small wave-1 chips fade out for the swap.
+      tl.to(root + " .wave-1 .chip", { autoAlpha: 0, duration: 0.4, ease: "power2.inOut" }, 6.6);
 
       tl.fromTo(root + " .wave-2 .chip",
         { y: 26, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 3.6);
+        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.13 }, 6.8);
 
       window.__timelines["scene-03-features"] = tl;
     </script>
