@@ -4,12 +4,6 @@
   <meta charset="utf-8">
   <title>claudebar — promo</title>
   <style>
-    @font-face {
-      font-family: "Hack Nerd Font";
-      src: local("Hack Nerd Font"), url("file:///usr/local/share/fonts/HackNerdFontMono-Regular.ttf") format("truetype");
-      font-weight: 400;
-      font-style: normal;
-    }
 
     html, body { margin: 0; padding: 0; background: #16161e; overflow: hidden; }
 
@@ -25,8 +19,7 @@
   <!--
     claudebar promo. Silent (on-screen text only). 6 scenes, 30.0s, 16:9 1920×1080.
     Each scene's data-duration extends 0.4s past its nominal end; the next scene
-    starts at that nominal boundary and fades 0→1 over the 0.4s overlap.
-    Outgoing scene gets subtle scale push (1.0 → 1.02) during the crossfade.
+    starts at that nominal boundary and fades 0→1 over the 0.4s crossfade.
     Last scene (CTA) holds to t=30 for clean looping.
   -->
   <div id="bg-pulse"></div>
@@ -93,19 +86,6 @@
     transitions.forEach(({id, t}) => {
       // Incoming scene fades in over 0.4s
       tl.to(`[data-composition-id="${id}"]`, { opacity: 1, duration: 0.4, ease: "power2.inOut" }, t);
-    });
-
-    // Outgoing scale push: each track's previous scene scales 1→1.02 during the 0.4s crossfade
-    const outgoing = [
-      { id: "scene-00-logo",     t: 3.1  },
-      { id: "scene-01-strip",    t: 9.1  },
-      { id: "scene-02-live",     t: 14.6 },
-      { id: "scene-03-features", t: 21.6 },
-      { id: "scene-04-speed",    t: 26.1 },
-    ];
-
-    outgoing.forEach(({id, t}) => {
-      tl.to(`[data-composition-id="${id}"]`, { scale: 1.02, duration: 0.4, ease: "power2.inOut", transformOrigin: "center center" }, t);
     });
 
     window.__timelines["main"] = tl;
