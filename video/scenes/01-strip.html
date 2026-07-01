@@ -27,6 +27,7 @@
         position: absolute; inset: 0;
         display: flex; align-items: center; justify-content: center;
         background: #16161e;
+        overflow: hidden;
         font-family: "Inter", "SF Pro Display", system-ui, sans-serif;
       }
       [data-composition-id="scene-01-strip"] .stack {
@@ -35,7 +36,7 @@
 
       /* ── Strip ────────────────────────────────────── */
       [data-composition-id="scene-01-strip"] .stripwrap {
-        width: 1750px; overflow: hidden;
+        width: 1750px; overflow: visible;
         visibility: hidden; opacity: 0;
         filter: drop-shadow(0 0 40px rgba(122,162,247,0.15)); margin-bottom: 38px;
       }
