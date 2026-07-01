@@ -2,7 +2,7 @@
   <div data-composition-id="scene-01-strip" data-width="1920" data-height="1080">
     <div class="stack">
       <div id="stripwrap" class="stripwrap">
-        <img class="strip" src="public/screenshots/strip-all.png" alt="claudebar statusline">
+        <div id="strip-stage"><img class="strip" src="public/screenshots/strip-all.png" alt="claudebar statusline"></div>
       </div>
 
       <!-- Row 1: What & where -->
@@ -41,9 +41,11 @@
         display: flex; flex-direction: column; align-items: center; gap: 36px;
       }
       [data-composition-id="scene-01-strip"] .stripwrap {
+        width: 1750px; overflow: hidden;
         visibility: hidden; opacity: 0;
         filter: drop-shadow(0 28px 60px rgba(0,0,0,0.55));
       }
+      [data-composition-id="scene-01-strip"] .strip-stage { width: 1750px; }
       [data-composition-id="scene-01-strip"] .strip { width: 1750px; height: auto; display: block; }
 
       [data-composition-id="scene-01-strip"] .legend {
@@ -95,14 +97,24 @@
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
 
-      // Strip floats up
-      tl.fromTo("#stripwrap", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out" }, 0.3);
+      // Strip: zoom in on left portion, pan across as pills stagger in
+      tl.fromTo("#stripwrap", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, 0.25);
+      tl.fromTo("#strip-stage", { scale: 2.2, x: 0 }, { scale: 2.2, x: 0, duration: 0.55, ease: "expo.out" }, 0.25);
 
-      // All 12 pills stagger in — 3 rows × 4, 0.12s apart, reading left-to-right then top-to-bottom
+      // R1 pills (segs 1-4): strip stays left
       const pills = ["#l0","#l1","#l2","#l3","#l4","#l5","#l6","#l7","#l8","#l9","#l10","#l11"];
       tl.fromTo(pills,
         { y: 16, autoAlpha: 0 },
         { y: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out", stagger: 0.12 }, 1.0);
+
+      // R2 pills appearing → pan to middle (segs 4-8)
+      tl.to("#strip-stage", { x: -950, duration: 0.65, ease: "power2.inOut" }, 1.55);
+
+      // R3 pills appearing → pan to right (segs 7-12)
+      tl.to("#strip-stage", { x: -1920, duration: 0.65, ease: "power2.inOut" }, 2.1);
+
+      // Settle: zoom out to full strip
+      tl.to("#strip-stage", { scale: 1, x: 0, duration: 0.9, ease: "power3.inOut" }, 4.0);
 
       window.__timelines["scene-01-strip"] = tl;
     </script>
