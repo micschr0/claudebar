@@ -80,20 +80,35 @@
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
 
-      /* ── Beat 0: Establishing shot (0.0–0.65s) ────── */
-      // Full strip fades in at scale 1 — viewer sees the whole product first
-      /* ── Beat 0: Establishing shot (0.0–0.5s) ────── */
+      /* ── PROTOTYPE: 3-beat pan/zoom, synced pill groups ──
+         Pan math (equal 4-seg groups, scale S=2.2, stripwrap center=875 of 1750):
+         x = S * (875 - 1750 * f_center); groups A/B/C center f = 1/6, 1/2, 5/6
+         → x_A = +1283, x_B = 0, x_C = -1283. Every strip-stage tween is an
+         explicit fromTo (matches previous start) — never an implicit .to(). */
+
+      /* ── Beat 0: Establishing shot ───────────────── */
       tl.fromTo("#stripwrap", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power2.out" }, 0.0);
 
-      /* ── Zoom in on left portion ─────────────────── */
-      gsap.set("#strip-stage", { scale: 1, x: 0 });
-      tl.to("#strip-stage", { scale: 2.2, x: 0, duration: 0.5, ease: "power3.out" }, 0.5);
-
-      /* ── All pills stagger in ────────────────────── */
-      const all = ["#p0","#p1","#p2","#p3","#p4","#p5","#p6","#p7","#p8","#p9","#p10","#p11"];
-      tl.fromTo(all,
+      /* ── Beat 1: zoom into segs 1-4 (directory…model) ── */
+      tl.fromTo("#strip-stage", { scale: 1, x: 0 }, { scale: 2.2, x: 1283, duration: 0.5, ease: "expo.out" }, 0.4);
+      tl.fromTo(["#p0","#p1","#p2","#p3"],
         { y: 12, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.2, ease: "power2.out", stagger: 0.04 }, 0.7);
+        { y: 0, autoAlpha: 1, duration: 0.2, ease: "power2.out", stagger: 0.06 }, 0.7);
+
+      /* ── Beat 2: pan to segs 5-8 (context…dev-context) ── */
+      tl.fromTo("#strip-stage", { scale: 2.2, x: 1283 }, { scale: 2.2, x: 0, duration: 0.5, ease: "power2.inOut" }, 1.6);
+      tl.fromTo(["#p4","#p5","#p6","#p7"],
+        { y: 12, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.2, ease: "power2.out", stagger: 0.06 }, 1.85);
+
+      /* ── Beat 3: pan to segs 9-12 (clock…duration) ───── */
+      tl.fromTo("#strip-stage", { scale: 2.2, x: 0 }, { scale: 2.2, x: -1283, duration: 0.5, ease: "power2.inOut" }, 2.7);
+      tl.fromTo(["#p8","#p9","#p10","#p11"],
+        { y: 12, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.2, ease: "power2.out", stagger: 0.06 }, 2.95);
+
+      /* ── Beat 4: settle — zoom out to full strip, hold ── */
+      tl.fromTo("#strip-stage", { scale: 2.2, x: -1283 }, { scale: 1, x: 0, duration: 0.7, ease: "power3.inOut" }, 3.8);
 
       window.__timelines["scene-01-strip"] = tl;
     </script>

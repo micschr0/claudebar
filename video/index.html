@@ -17,7 +17,7 @@
 </head>
 <body>
   <!--
-    claudebar promo. Silent (on-screen text only). 6 scenes, 30.0s, 16:9 1920×1080.
+    claudebar promo. Silent (on-screen text only). 6 scenes, 27.6s, 16:9 1920×1080.
     Each scene's data-duration extends 0.4s past its nominal end; the next scene
     starts at that nominal boundary and fades 0→1 over the 0.4s crossfade.
     Last scene (CTA) holds to t=30 for clean looping.
@@ -29,7 +29,7 @@
        data-width="1920"
        data-height="1080"
        data-start="0"
-       data-duration="30.0">
+       data-duration="27.6">
 
     <div data-composition-id="scene-00-logo"
          data-composition-src="scenes/00-logo.html"
@@ -47,17 +47,17 @@
 
     <div data-composition-id="scene-03-features"
          data-composition-src="scenes/03-features.html"
-         data-start="14.6" data-duration="7.4"  data-track-index="4"
+         data-start="14.6" data-duration="5.0"  data-track-index="4"
          style="opacity:0"></div>
 
     <div data-composition-id="scene-04-speed"
          data-composition-src="scenes/04-speed.html"
-         data-start="21.6" data-duration="4.9"  data-track-index="5"
+         data-start="19.2" data-duration="4.9"  data-track-index="5"
          style="opacity:0"></div>
 
     <div data-composition-id="scene-05-cta"
          data-composition-src="scenes/05-cta.html"
-         data-start="26.1" data-duration="3.9"  data-track-index="6"
+         data-start="23.7" data-duration="3.9"  data-track-index="6"
          style="opacity:0"></div>
   </div>
 
@@ -70,17 +70,17 @@
     tl.fromTo("#bg-pulse", { autoAlpha: 0 }, { autoAlpha: 1, duration: 2, ease: "power1.inOut" }, 0);
     tl.to("#bg-pulse", { autoAlpha: 0.3, duration: 3, ease: "sine.inOut" }, 3);
     tl.to("#bg-pulse", { autoAlpha: 0.6, duration: 3, ease: "sine.inOut" }, 9);
-    tl.to("#bg-pulse", { autoAlpha: 0.3, duration: 3, ease: "sine.inOut" }, 15);
-    tl.to("#bg-pulse", { autoAlpha: 0.6, duration: 3, ease: "sine.inOut" }, 21);
-    tl.to("#bg-pulse", { autoAlpha: 0.2, duration: 3, ease: "sine.inOut" }, 27);
+    tl.to("#bg-pulse", { autoAlpha: 0.3, duration: 3, ease: "sine.inOut" }, 14.5);
+    tl.to("#bg-pulse", { autoAlpha: 0.6, duration: 3, ease: "sine.inOut" }, 19);
+    tl.to("#bg-pulse", { autoAlpha: 0.2, duration: 3, ease: "sine.inOut" }, 23.5);
 
     /* ── Scene transitions — incoming fade-in + outgoing scale push ── */
     const transitions = [
       { id: "scene-01-strip",    t: 3.1  },
       { id: "scene-02-live",     t: 9.1  },
       { id: "scene-03-features", t: 14.6 },
-      { id: "scene-04-speed",    t: 21.6 },
-      { id: "scene-05-cta",      t: 26.1 },
+      { id: "scene-04-speed",    t: 19.2 },
+      { id: "scene-05-cta",      t: 23.7 },
     ];
 
     transitions.forEach(({id, t}) => {
