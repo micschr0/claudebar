@@ -23,7 +23,7 @@ Statusline renderer for Claude Code.
 ## Install
 
 **Prerequisites:**
-- [Nerd Font](https://www.nerdfonts.com/) for powerline glyphs (or use the `ascii` / `plain` / `unicode` style)
+- [Nerd Font](https://www.nerdfonts.com/) for powerline glyphs (or use the `ascii` / `plain` / `unicode` style) — macOS: `brew install --cask font-hack-nerd-font`
 - `git` on `PATH` (optional)
 
 ```bash

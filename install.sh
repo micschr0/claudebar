@@ -298,6 +298,9 @@ if check_nerd_font; then
     green "✓ Nerd Font detected"
 else
     red "⚠ No Nerd Font detected. The statusline uses powerline glyphs — install a Nerd Font for best results: https://www.nerdfonts.com"
+    if [ "$(uname -s)" = "Darwin" ]; then
+        echo "  macOS:  brew install --cask font-hack-nerd-font"
+    fi
     echo "Tip: run 'claudebar config' and choose the 'ascii' style for glyph-free rendering."
 fi
 echo ""

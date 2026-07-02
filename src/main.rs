@@ -149,6 +149,9 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
                     println!(
                         "claudebar: install a Nerd Font (https://www.nerdfonts.com) and run `claudebar config` to switch to `powerline`."
                     );
+                    if cfg!(target_os = "macos") {
+                        println!("claudebar:   macOS: brew install --cask font-hack-nerd-font");
+                    }
                 }
                 ExitCode::SUCCESS
             }
