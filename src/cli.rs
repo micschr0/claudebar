@@ -66,4 +66,19 @@ pub enum Command {
         #[arg(value_enum)]
         shell: clap_complete::Shell,
     },
+    /// Wire `claudebar render` into Claude Code's settings.json `statusLine` key.
+    Setup {
+        /// Path to settings.json (defaults to $SETTINGS env var, then ~/.claude/settings.json).
+        #[arg(long, value_name = "FILE")]
+        settings_path: Option<PathBuf>,
+        /// Only show what would change; never write.
+        #[arg(long)]
+        print: bool,
+        /// Skip the confirmation prompt.
+        #[arg(long, short = 'y')]
+        yes: bool,
+        /// Overwrite an existing, different statusLine value.
+        #[arg(long)]
+        force: bool,
+    },
 }

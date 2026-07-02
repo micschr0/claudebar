@@ -4,7 +4,7 @@ use clap::Parser;
 use claudebar::model::{Config, SegmentKind};
 use claudebar::{InputData, render_line, styles, themes};
 use cli::{Cli, Command};
-use std::io::{IsTerminal, Read};
+use std::io::{IsTerminal, Read, Write};
 use std::path::PathBuf;
 use std::process::ExitCode;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -21,6 +21,12 @@ fn main() -> ExitCode {
         Command::Doctor => run_doctor(&cli),
         Command::Edit => run_edit(&cli),
         Command::Completions { shell } => run_completions(*shell),
+        Command::Setup {
+            settings_path,
+            print,
+            yes,
+            force,
+        } => run_setup(settings_path.clone(), *print, *yes, *force),
     }
 }
 
@@ -162,6 +168,133 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
         }
     }
 }
+/// Print the `statusLine:` diff block shared by the `WillSet` and `Conflict` outcomes.
+fn print_status_line_diff(previous: Option<&serde_json::Value>, desired: &serde_json::Value) {
+    let old_line = previous.map_or_else(
+        || "(none)".to_string(),
+        |v| serde_json::to_string(v).unwrap_or_else(|_| "(none)".to_string()),
+    );
+    let new_line = serde_json::to_string(desired).unwrap_or_default();
+    println!("statusLine:");
+    println!("- {old_line}");
+    println!("+ {new_line}");
+}
+
+fn run_setup(settings_path: Option<PathBuf>, print: bool, yes: bool, force: bool) -> ExitCode {
+    let path = match settings_path.or_else(claudebar::setup::default_settings_path) {
+        Some(p) => p,
+        None => {
+            eprintln!(
+                "claudebar: no settings path found — set $HOME, $SETTINGS, or use --settings-path."
+            );
+            return ExitCode::FAILURE;
+        }
+    };
+
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_secs() as i64)
+        .unwrap_or(0);
+
+    let existed = path.exists();
+
+    let mut settings = match claudebar::setup::load_settings(&path) {
+        Ok(s) => s,
+        Err(claudebar::setup::SetupError::Parse(msg)) => {
+            if existed {
+                match claudebar::setup::backup_settings(&path, now) {
+                    Ok(backup_path) => {
+                        println!(
+                            "claudebar: backed up existing settings to {}",
+                            backup_path.display()
+                        );
+                    }
+                    Err(e) => eprintln!("claudebar: {e}"),
+                }
+            }
+            eprintln!("claudebar: {} is not valid JSON: {msg}", path.display());
+            return ExitCode::FAILURE;
+        }
+        Err(claudebar::setup::SetupError::Io(msg)) => {
+            eprintln!("claudebar: {msg}");
+            return ExitCode::FAILURE;
+        }
+        Err(e) => {
+            eprintln!("claudebar: {e}");
+            return ExitCode::FAILURE;
+        }
+    };
+
+    let desired = claudebar::setup::desired_status_line();
+
+    match claudebar::setup::classify(&settings, &desired, force) {
+        claudebar::setup::Outcome::AlreadyConfigured => {
+            println!("claudebar: statusLine already configured — nothing to do.");
+            ExitCode::SUCCESS
+        }
+        claudebar::setup::Outcome::Conflict { existing } => {
+            print_status_line_diff(Some(&existing), &desired);
+            eprintln!(
+                "claudebar: statusLine is set to a different value — rerun with --force to overwrite."
+            );
+            ExitCode::FAILURE
+        }
+        claudebar::setup::Outcome::WillSet { previous } => {
+            print_status_line_diff(previous.as_ref(), &desired);
+
+            if print {
+                return ExitCode::SUCCESS;
+            }
+
+            let confirmed = if yes {
+                true
+            } else if std::io::stdin().is_terminal() {
+                print!("Apply this change? [y/N] ");
+                let _ = std::io::stdout().flush();
+                let mut answer = String::new();
+                let _ = std::io::stdin().read_line(&mut answer);
+                let answer = answer.trim().to_lowercase();
+                answer == "y" || answer == "yes"
+            } else {
+                eprintln!("claudebar: non-interactive session — pass --yes to confirm.");
+                return ExitCode::FAILURE;
+            };
+
+            if !confirmed {
+                println!("claudebar: aborted.");
+                return ExitCode::FAILURE;
+            }
+
+            if existed {
+                match claudebar::setup::backup_settings(&path, now) {
+                    Ok(backup_path) => {
+                        println!(
+                            "claudebar: backed up existing settings to {}",
+                            backup_path.display()
+                        );
+                    }
+                    Err(e) => {
+                        eprintln!("claudebar: {e}");
+                        return ExitCode::FAILURE;
+                    }
+                }
+            }
+
+            claudebar::setup::apply(&mut settings, desired);
+            match claudebar::setup::save_settings(&path, &settings) {
+                Ok(()) => {
+                    println!("claudebar: statusLine configured -> {}", path.display());
+                    ExitCode::SUCCESS
+                }
+                Err(e) => {
+                    eprintln!("claudebar: {e}");
+                    ExitCode::FAILURE
+                }
+            }
+        }
+    }
+}
+
 fn run_list(segments: bool) -> ExitCode {
     if segments {
         println!("Segments:");
