@@ -108,7 +108,11 @@ fn run_config(cli: &Cli) -> ExitCode {
 }
 
 fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
-    let cfg = Config::default();
+    let mut cfg = Config::default();
+    let no_nerd_font = !check_nerd_font();
+    if no_nerd_font {
+        cfg.style = "unicode".into();
+    }
     if print {
         match toml::to_string_pretty(&cfg) {
             Ok(s) => {
@@ -138,12 +142,12 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
         match cfg.save(&path) {
             Ok(()) => {
                 println!("claudebar: wrote default config to {}", path.display());
-                if !check_nerd_font() {
+                if no_nerd_font {
                     println!(
-                        "claudebar: tip — install a Nerd Font (https://www.nerdfonts.com) for powerline glyphs."
+                        "claudebar: no Nerd Font detected — falling back to style \"unicode\" in config."
                     );
                     println!(
-                        "         or run `claudebar config` and switch the style to `unicode`."
+                        "claudebar: install a Nerd Font (https://www.nerdfonts.com) and run `claudebar config` to switch to `powerline`."
                     );
                 }
                 ExitCode::SUCCESS
