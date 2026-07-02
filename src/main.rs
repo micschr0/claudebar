@@ -26,7 +26,7 @@ fn main() -> ExitCode {
             print,
             yes,
             force,
-        } => run_setup(settings_path.clone(), *print, *yes, *force),
+        } => run_setup(&cli, settings_path.clone(), *print, *yes, *force),
     }
 }
 
@@ -193,7 +193,7 @@ fn print_status_line_diff(previous: Option<&serde_json::Value>, desired: &serde_
     println!("+ {new_line}");
 }
 
-fn run_setup(settings_path: Option<PathBuf>, print: bool, yes: bool, force: bool) -> ExitCode {
+fn run_setup(cli: &Cli, settings_path: Option<PathBuf>, print: bool, yes: bool, force: bool) -> ExitCode {
     let path = match settings_path.or_else(claudebar::setup::default_settings_path) {
         Some(p) => p,
         None => {
@@ -243,6 +243,7 @@ fn run_setup(settings_path: Option<PathBuf>, print: bool, yes: bool, force: bool
     match claudebar::setup::classify(&settings, &desired, force) {
         claudebar::setup::Outcome::AlreadyConfigured => {
             println!("claudebar: statusLine already configured — nothing to do.");
+            print_setup_preview(cli);
             ExitCode::SUCCESS
         }
         claudebar::setup::Outcome::Conflict { existing } => {
@@ -297,6 +298,7 @@ fn run_setup(settings_path: Option<PathBuf>, print: bool, yes: bool, force: bool
             match claudebar::setup::save_settings(&path, &settings) {
                 Ok(()) => {
                     println!("claudebar: statusLine configured -> {}", path.display());
+                    print_setup_preview(cli);
                     ExitCode::SUCCESS
                 }
                 Err(e) => {
@@ -306,6 +308,21 @@ fn run_setup(settings_path: Option<PathBuf>, print: bool, yes: bool, force: bool
             }
         }
     }
+}
+
+/// Mirrors `run_smoke`'s fixture/now setup, but resolves the user's real
+/// config via `resolve_config` instead of always rendering the default.
+/// Exists so `setup` proves the wiring works without the user needing to
+/// restart Claude Code and hope.
+fn print_setup_preview(cli: &Cli) {
+    let fixture = include_str!("../fixtures/typical.json");
+    let input = InputData::parse(fixture);
+    let cfg = resolve_config(cli);
+    let now: i64 = 1_900_000_000;
+    let output = render_line(&input, &cfg, now);
+    println!();
+    println!("Preview:");
+    println!("{output}");
 }
 
 fn run_list(segments: bool) -> ExitCode {
