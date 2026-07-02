@@ -77,8 +77,8 @@ unix-archive = ".tar.gz"
 ci = ["github"]
 hosting = ["github"]
 
-# Pin macOS runners to the existing macos-13 (x86_64) / macos-14 (aarch64) split;
+# Pin only the ARM macOS build to macos-14. The Intel macOS build uses dist's default
+# runner image (its old fixed pin was dropped — GitHub is retiring that hosted runner).
 # linux musl targets default to an ubuntu runner — left unset.
 [workspace.metadata.dist.github-custom-runners]
-x86_64-apple-darwin = "macos-13"
 aarch64-apple-darwin = "macos-14"
