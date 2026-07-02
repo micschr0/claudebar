@@ -15,6 +15,7 @@ pub mod model;
 pub mod render;
 pub mod sanitize;
 pub mod segment;
+pub mod setup;
 pub mod styles;
 pub mod themes;
 
