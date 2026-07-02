@@ -46,6 +46,10 @@ panic = "abort"
 strip = true
 codegen-units = 1
 
+# cargo-dist builds release artifacts with --profile dist by convention.
+[profile.dist]
+inherits = "release"
+
 [workspace.metadata.dist]
 # Pin the dist version that generated release.yml. Regenerate deliberately on bump;
 # the CI guard installs this exact version so the pipeline cannot silently drift.
