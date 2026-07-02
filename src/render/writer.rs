@@ -11,6 +11,10 @@ pub struct SegmentWriter<'a> {
     buf: String,
     theme: &'a Theme,
     style: &'a Style,
+    /// Color of the innermost open `colored_with` span, if any. Nested resets
+    /// (from `icon()` or a further-nested `colored_with`) restore this color
+    /// instead of leaving trailing text at the terminal default.
+    active: Option<Color>,
 }
 
 impl<'a> SegmentWriter<'a> {
@@ -20,6 +24,7 @@ impl<'a> SegmentWriter<'a> {
             buf: String::with_capacity(64),
             theme,
             style,
+            active: None,
         }
     }
 
@@ -35,6 +40,7 @@ impl<'a> SegmentWriter<'a> {
 
     /// True if nothing has been written yet.
     #[must_use]
+    #[inline]
     pub fn is_empty(&self) -> bool {
         self.buf.is_empty()
     }
@@ -48,10 +54,32 @@ impl<'a> SegmentWriter<'a> {
         self.buf.push_str(RESET);
     }
 
+    /// Like [`SegmentWriter::colored`] but lets the caller write the body via a
+    /// closure that has mutable access to this writer — avoids allocating a
+    /// throwaway `String` for composed spans (icon + text). Emits the same byte
+    /// order: fg color → closure body → reset.
+    pub fn colored_with<F>(&mut self, color: Color, f: F)
+    where
+        F: FnOnce(&mut Self),
+    {
+        color.write_fg(&mut self.buf);
+        let prev = self.active.replace(color);
+        f(self);
+        self.active = prev;
+        self.buf.push_str(RESET);
+        if let Some(c) = prev {
+            c.write_fg(&mut self.buf);
+        }
+    }
+
     /// Like [`SegmentWriter::colored`] but takes pre-formatted [`std::fmt::Arguments`]
     /// so callers can pass `format_args!(...)` and write directly into the buffer
     /// instead of allocating a throwaway `String` per emission. Emits the same
     /// byte order as [`SegmentWriter::colored`]: fg color → args → reset.
+    ///
+    /// # Panics
+    ///
+    /// The internal `write_fmt` on a `String` buffer is infallible and will never panic.
     pub fn colored_fmt(&mut self, color: Color, args: std::fmt::Arguments) {
         color.write_fg(&mut self.buf);
         self.buf.write_fmt(args).unwrap();
@@ -71,6 +99,9 @@ impl<'a> SegmentWriter<'a> {
             self.theme.dim.write_fg(&mut self.buf);
             self.buf.push_str(glyph);
             self.buf.push_str(RESET);
+            if let Some(c) = self.active {
+                c.write_fg(&mut self.buf);
+            }
             self.buf.push(' ');
         }
     }
@@ -78,6 +109,17 @@ impl<'a> SegmentWriter<'a> {
     /// Append raw, already-formed text (e.g. a single separating space).
     pub fn raw(&mut self, text: &str) {
         self.buf.push_str(text);
+    }
+
+    /// Like [`SegmentWriter::raw`] but formats directly into the buffer
+    /// via [`std::fmt::Arguments`] — avoids allocating a throwaway
+    /// `String` for numeric or formatted values.
+    ///
+    /// # Panics
+    ///
+    /// The internal `write!` to a `String` buffer is infallible and will never panic.
+    pub fn raw_fmt(&mut self, args: std::fmt::Arguments) {
+        write!(self.buf, "{}", args).unwrap();
     }
 
     /// Append a progress bar, using the style's bar characters, the theme's
@@ -96,6 +138,7 @@ impl<'a> SegmentWriter<'a> {
 
     /// The accumulated segment body.
     #[must_use]
+    #[inline]
     pub fn as_str(&self) -> &str {
         &self.buf
     }

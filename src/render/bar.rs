@@ -18,7 +18,7 @@ pub fn write_bar(
     fill_ch: char,
     empty_ch: char,
 ) {
-    let width = width as u32;
+    let width = u32::from(width);
     let mut filled = pct.saturating_mul(width) / 100;
     if filled > width {
         filled = width;
@@ -44,6 +44,7 @@ pub fn write_bar(
 /// Build a self-colored bar of `width` cells for `pct` percent.
 ///
 /// `pct` may exceed 100 (over-limit); the filled run is clamped to `width`.
+#[must_use]
 pub fn make_bar(
     pct: u32,
     width: u8,
@@ -52,7 +53,7 @@ pub fn make_bar(
     fill_ch: char,
     empty_ch: char,
 ) -> String {
-    let mut out = String::with_capacity(width as usize * 4 + 16);
+    let mut out = String::with_capacity(usize::from(width) * 4 + 16);
     write_bar(&mut out, pct, width, fill, track, fill_ch, empty_ch);
     out
 }

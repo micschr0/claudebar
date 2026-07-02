@@ -23,17 +23,18 @@ green() { printf '\033[32m%s\033[0m\n' "$*"; }
 bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 
 # ── Preflight ──────────────────────────────────────────────────────────────────
-# git is the only soft runtime dependency (the git segment). jq is needed only
-# for the bash fallback and for merging into an *existing* settings.json — both
-# checked at the point of use, not gated here. The happy path (prebuilt binary,
-# fresh settings.json) needs nothing but a terminal.
+# git is a soft runtime dependency (the git segment). curl and jq are needed for
+# the prebuilt binary download path (fetch_latest_tag, download_prebuilt) and are
+# also required for the bash fallback and settings.json merge respectively.
+# The happy path (prebuilt binary) needs curl + jq. Nothing else is required.
 bold "Checking dependencies..."
 echo "  Tip: set a Nerd Font as your terminal font for the glyphs — https://www.nerdfonts.com"
 echo ""
 install_hint() {
   case "$1" in
-    jq)  echo "  macOS:  brew install jq" ;;
-    git) echo "  macOS:  brew install git" ;;
+    curl) echo "  macOS:  brew install curl" ;;
+    git)  echo "  macOS:  brew install git" ;;
+    jq)   echo "  macOS:  brew install jq" ;;
   esac
   echo "  Linux:  sudo apt install $1   # or: sudo dnf install $1"
 }
@@ -44,12 +45,46 @@ else
   red "  git    not found — the git segment stays hidden until you install it"
   install_hint git
 fi
+
+if command -v curl >/dev/null 2>&1; then
+  printf '  %-6s %s\n' "curl" "$(command -v curl)"
+else
+  red "  curl   not found — prebuilt binary download will fail"
+  install_hint curl
+fi
+
+if command -v jq >/dev/null 2>&1; then
+  printf '  %-6s %s\n' "jq" "$(command -v jq)"
+else
+  red "  jq     not found — prebuilt binary download and settings merge will fail"
+  install_hint jq
+fi
 echo ""
 
 mkdir -p "$HOME/.claude"
 
 # ── Helper functions ───────────────────────────────────────────────────────────
 
+# check_nerd_font — return 0 if a Nerd Font is installed, 1 otherwise.
+# Uses fc-list when available; falls back to scanning common font directories.
+check_nerd_font() {
+    # Try fc-list first — fastest and most accurate.
+    if command -v fc-list >/dev/null 2>&1; then
+        if fc-list :family 2>/dev/null | grep -qi 'nerd'; then
+            return 0
+        fi
+    fi
+
+    # Fallback: scan common font directories (non-recursive, matching main.rs).
+    local dir
+    for dir in "/usr/share/fonts" "/usr/local/share/fonts" "$HOME/.local/share/fonts" "$HOME/.fonts"; do
+        if [ -d "$dir" ] && find "$dir" -maxdepth 1 \( -name '*Nerd*' -o -name '*nerd*' \) \( -name '*.ttf' -o -name '*.otf' \) -print -quit 2>/dev/null | grep -q .; then
+            return 0
+        fi
+    done
+
+    return 1
+}
 # detect_target — print the Rust target triple for the current OS/arch, or
 # empty string if no prebuilt binary is available for this platform.
 detect_target() {
@@ -68,13 +103,32 @@ detect_target() {
   esac
 }
 
+# fetch_latest_release — print the full "latest" release JSON, or empty
+# string if no release exists yet. Cached in LATEST_RELEASE_JSON so callers
+# that need both the tag and its asset list only hit the API once.
+LATEST_RELEASE_JSON=""
+fetch_latest_release() {
+  if [ -z "$LATEST_RELEASE_JSON" ]; then
+    LATEST_RELEASE_JSON=$(curl -fsSL "https://api.github.com/repos/micschr0/claudebar/releases/latest")
+  fi
+  printf '%s' "$LATEST_RELEASE_JSON"
+}
+
 # fetch_latest_tag — print the latest GitHub release tag, or empty string if
 # no release exists yet.
 fetch_latest_tag() {
-  local tag
-  tag=$(curl -fsSL "https://api.github.com/repos/micschr0/claudebar/releases/latest" \
-        | jq -r '.tag_name // empty')
-  printf '%s' "$tag"
+  fetch_latest_release | jq -r '.tag_name // empty'
+}
+
+# find_asset_url <json> <regex> — print the browser_download_url of the first
+# release asset whose name matches <regex> (extended regex, jq `test`), or
+# empty string if none match. Resolving by pattern instead of hand-building
+# the filename keeps this in sync with whatever naming scheme the release
+# workflow (cargo-dist) actually uses.
+find_asset_url() {
+  local json="$1" regex="$2"
+  printf '%s' "$json" | jq -r --arg re "$regex" \
+    '[.assets[] | select(.name | test($re))][0].browser_download_url // empty'
 }
 
 # sha256_of <file> — print the SHA256 hex digest of <file>.
@@ -114,17 +168,31 @@ verify_checksum() {
 # Checksum mismatch is fatal and does NOT trigger a fallback.
 download_prebuilt() {
   local target="$1"
-  local tag archive url sums_url
-  tag=$(fetch_latest_tag)
+  local release tag archive url sums_url
+  release=$(fetch_latest_release)
+  tag=$(printf '%s' "$release" | jq -r '.tag_name // empty')
   if [ -z "$tag" ]; then
     bold "No prebuilt release found — falling back to cargo build"
     return 1
   fi
 
-  # dist names archives by target only (no tag segment): claudebar-<target>.tar.gz.
-  archive="claudebar-${target}.tar.gz"
-  url="https://github.com/micschr0/claudebar/releases/download/${tag}/${archive}"
-  sums_url="https://github.com/micschr0/claudebar/releases/download/${tag}/sha256.sum"
+  # Resolve the actual asset names from the release instead of hand-building
+  # them — the naming scheme is owned by the release workflow (cargo-dist),
+  # not by this script, and has changed before (tag embedded in the archive
+  # name, sums file renamed from sha256.sum to SHA256SUMS.txt).
+  url=$(find_asset_url "$release" "^claudebar-.*-${target}\\.tar\\.gz$")
+  sums_url=$(find_asset_url "$release" '^(SHA256SUMS\.txt|sha256\.sum)$')
+  if [ -z "$url" ]; then
+    red "No release asset found for target ${target} in ${tag}"
+    bold "Falling back to cargo build..."
+    return 1
+  fi
+  if [ -z "$sums_url" ]; then
+    red "No checksum file found in release ${tag}"
+    bold "Falling back to cargo build..."
+    return 1
+  fi
+  archive="${url##*/}"
 
   bold "Downloading ${archive}..."
   if ! curl -fsSL "$url" -o "${TMPDIR_WORK}/${archive}"; then
@@ -225,5 +293,12 @@ echo ""
 bold "Installation complete."
 echo "Restart Claude Code — claudebar appears on the next turn."
 echo ""
-echo "If glyphs show as boxes, install a Nerd Font and set it as your terminal font."
+# Nerd Font check (non-blocking — always runs after install)
+if check_nerd_font; then
+    green "✓ Nerd Font detected"
+else
+    red "⚠ No Nerd Font detected. The statusline uses powerline glyphs — install a Nerd Font for best results: https://www.nerdfonts.com"
+    echo "Tip: run 'claudebar config' and choose the 'ascii' style for glyph-free rendering."
+fi
+echo ""
 echo "Troubleshooting: https://github.com/micschr0/claudebar#troubleshooting"

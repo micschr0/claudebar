@@ -1,54 +1,225 @@
 <template id="scene-01-strip-template">
-  <div data-composition-id="scene-01-strip" data-width="1920" data-height="1080">
+  <div data-composition-id="scene-01-strip" data-width="1920" data-height="1080" data-duration="28">
     <div class="stack">
-      <div id="stripwrap" class="stripwrap">
-        <img class="strip" src="public/screenshots/strip-normal.png" alt="claudebar statusline">
+      <!-- Row A: directory · git · model · context -->
+      <div id="row-a" class="row">
+        <span id="p0" class="seg seg-directory">
+          <img src="public/screenshots/seg-directory.png" alt="directory segment: /t/demo-app">
+          <span class="cap">directory</span>
+        </span>
+        <span id="p1" class="seg seg-git">
+          <img src="public/screenshots/seg-git.png" alt="git segment: branch, ahead/behind, modified count">
+          <span class="cap">git</span>
+        </span>
+        <span id="p2" class="seg seg-model">
+          <img src="public/screenshots/seg-model.png" alt="model segment: model name and effort level">
+          <span class="cap">model</span>
+        </span>
+        <span id="p3" class="seg seg-context">
+          <span class="img-stack ctx-stack">
+            <img id="ctx-green" class="layer" src="public/screenshots/seg-context-green.png" alt="context segment, calm">
+            <img id="ctx-normal" class="layer" src="public/screenshots/seg-context-normal.png" alt="context segment, normal">
+          </span>
+          <span class="cap">context</span>
+        </span>
       </div>
-      <div class="legend">
-        <span id="l0" class="seg s-dir">directory</span>
-        <span id="l1" class="seg s-ctx">context</span>
-        <span id="l2" class="seg s-rl">rate&nbsp;limits</span>
-        <span id="l3" class="seg s-mdl">model</span>
+
+      <!-- Row B: lines · rate-limits · cost · duration -->
+      <div id="row-b" class="row">
+        <span id="p4" class="seg seg-lines">
+          <img src="public/screenshots/seg-lines.png" alt="lines segment: added/removed line count">
+          <span class="cap">lines</span>
+        </span>
+        <span id="p5" class="seg seg-rate-limits">
+          <span class="img-stack rl-stack">
+            <img id="rl-normal" class="layer" src="public/screenshots/seg-rate-limits-normal.png" alt="rate-limits segment, normal">
+            <img id="rl-critical" class="layer" src="public/screenshots/seg-rate-limits-critical.png" alt="rate-limits segment, critical">
+            <img id="rl-over" class="layer" src="public/screenshots/seg-rate-limits-overlimit.png" alt="rate-limits segment, overlimit">
+          </span>
+          <span class="cap">rate&#8209;limits</span>
+        </span>
+        <span id="p6" class="seg seg-cost">
+          <img src="public/screenshots/seg-cost.png" alt="cost segment: session USD cost">
+          <span class="cap">cost</span>
+        </span>
+        <span id="p7" class="seg seg-duration">
+          <span class="img-stack dur-stack">
+            <img id="dur-a" class="layer" src="public/screenshots/seg-duration-a.png" alt="duration segment">
+            <img id="dur-b" class="layer" src="public/screenshots/seg-duration-b.png" alt="duration segment, later">
+          </span>
+          <span class="cap">duration</span>
+        </span>
+      </div>
+
+      <!-- Divider between default and optional -->
+      <div id="divider" class="divider">
+        <span class="divider-line"></span>
+        <span class="divider-cap">+ 2 optional</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- Row C: 2 optional segments -->
+      <div id="row-optional" class="row row-optional">
+        <span id="o1" class="seg seg-burn">
+          <img src="public/screenshots/seg-burn.png" alt="burn segment: projected time to rate-limit exhaustion">
+          <span class="cap">burn</span>
+        </span>
+        <span id="o2" class="seg seg-clock">
+          <span class="img-stack clk-stack">
+            <img id="clk-a" class="layer" src="public/screenshots/seg-clock-a.png" alt="clock segment">
+            <img id="clk-b" class="layer" src="public/screenshots/seg-clock-b.png" alt="clock segment, later">
+          </span>
+          <span class="cap">clock</span>
+        </span>
       </div>
     </div>
 
     <style>
+      @font-face {
+        font-family: "Hack Nerd Font Mono";
+        src: url("public/fonts/HackNerdFontMono-Regular.ttf") format("truetype");
+      }
       [data-composition-id="scene-01-strip"] {
         position: absolute; inset: 0;
         display: flex; align-items: center; justify-content: center;
         background: #16161e;
-        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        overflow: hidden;
+        font-family: "Inter", "SF Pro Display", system-ui, sans-serif;
       }
       [data-composition-id="scene-01-strip"] .stack {
-        display: flex; flex-direction: column; align-items: center; gap: 64px;
+        display: flex; flex-direction: column; align-items: center; gap: 28px;
       }
-      [data-composition-id="scene-01-strip"] .stripwrap {
-        visibility: hidden; opacity: 0;
-        filter: drop-shadow(0 28px 60px rgba(0,0,0,0.55));
+
+      /* ── Rows ─────────────────────────────────────── */
+      [data-composition-id="scene-01-strip"] .row {
+        display: flex; justify-content: center; flex-wrap: nowrap; gap: 22px;
       }
-      [data-composition-id="scene-01-strip"] .strip { width: 1560px; height: auto; display: block; }
-      [data-composition-id="scene-01-strip"] .legend {
-        display: flex; gap: 30px; font-size: 38px; font-weight: 500;
-      }
+
+      /* ── Pills ────────────────────────────────────── */
       [data-composition-id="scene-01-strip"] .seg {
+        display: flex; flex-direction: column; align-items: center;
+        background: #13141f;
+        border-top: 4px solid;
+        border-radius: 14px;
+        padding: 14px 16px;
         visibility: hidden; opacity: 0;
-        padding: 10px 26px; border-radius: 999px;
-        background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
       }
-      [data-composition-id="scene-01-strip"] .s-dir { color: #7aa2f7; }
-      [data-composition-id="scene-01-strip"] .s-ctx { color: #e0af68; }
-      [data-composition-id="scene-01-strip"] .s-rl  { color: #9ece6a; }
-      [data-composition-id="scene-01-strip"] .s-mdl { color: #ff9e64; }
+      [data-composition-id="scene-01-strip"] .seg img { height: 96px; width: auto; display: block; border-radius: 8px; }
+      [data-composition-id="scene-01-strip"] .cap {
+        font-size: 20px; font-weight: 600; letter-spacing: 0.02em;
+        margin-top: 12px;
+      }
+      [data-composition-id="scene-01-strip"] .row-optional .seg { opacity: 0.94; }
+
+      /* ── Layered (state-cycling) segments ────────────── */
+      [data-composition-id="scene-01-strip"] .img-stack { position: relative; display: block; height: 96px; }
+      [data-composition-id="scene-01-strip"] .ctx-stack, [data-composition-id="scene-01-strip"] .rl-stack { width: 332px; }
+      [data-composition-id="scene-01-strip"] .dur-stack { width: 185px; }
+      [data-composition-id="scene-01-strip"] .clk-stack { width: 258px; }
+      [data-composition-id="scene-01-strip"] .layer {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        display: block; border-radius: 8px;
+        visibility: hidden; opacity: 0;
+      }
+
+      /* ── Divider ──────────────────────────────────── */
+      [data-composition-id="scene-01-strip"] .divider {
+        display: flex; align-items: center; gap: 16px; width: 100%;
+        max-width: 640px;
+        opacity: 0;
+      }
+      [data-composition-id="scene-01-strip"] .divider-line {
+        flex: 1; height: 1px; background: #33344a;
+      }
+      [data-composition-id="scene-01-strip"] .divider-cap {
+        font-family: "Hack Nerd Font Mono", monospace;
+        font-size: 16px; font-weight: 600; letter-spacing: 0.02em;
+        color: #565f89; white-space: nowrap;
+      }
+
+      /* ── Real per-segment theme colours (tokyo-night, xterm-256 → hex) ── */
+      [data-composition-id="scene-01-strip"] .seg-directory    { border-top-color: #00afff; }
+      [data-composition-id="scene-01-strip"] .seg-directory .cap  { color: #00afff; }
+      [data-composition-id="scene-01-strip"] .seg-git           { border-top-color: #af87ff; }
+      [data-composition-id="scene-01-strip"] .seg-git .cap        { color: #af87ff; }
+      [data-composition-id="scene-01-strip"] .seg-model         { border-top-color: #ff8700; }
+      [data-composition-id="scene-01-strip"] .seg-model .cap      { color: #ff8700; }
+      [data-composition-id="scene-01-strip"] .seg-context       { border-top-color: #87d7ff; }
+      [data-composition-id="scene-01-strip"] .seg-context .cap    { color: #87d7ff; }
+      [data-composition-id="scene-01-strip"] .seg-lines         { border-top-color: #808080; }
+      [data-composition-id="scene-01-strip"] .seg-lines .cap      { color: #808080; }
+      [data-composition-id="scene-01-strip"] .seg-rate-limits   { border-top-color: #5fafaf; }
+      [data-composition-id="scene-01-strip"] .seg-rate-limits .cap { color: #5fafaf; }
+      [data-composition-id="scene-01-strip"] .seg-cost          { border-top-color: #ffd75f; }
+      [data-composition-id="scene-01-strip"] .seg-cost .cap       { color: #ffd75f; }
+      [data-composition-id="scene-01-strip"] .seg-duration      { border-top-color: #5f87af; }
+      [data-composition-id="scene-01-strip"] .seg-duration .cap   { color: #5f87af; }
+      [data-composition-id="scene-01-strip"] .seg-burn          { border-top-color: #ff5f5f; }
+      [data-composition-id="scene-01-strip"] .seg-burn .cap       { color: #ff5f5f; }
+      [data-composition-id="scene-01-strip"] .seg-clock         { border-top-color: #5faf00; }
+      [data-composition-id="scene-01-strip"] .seg-clock .cap      { color: #5faf00; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#stripwrap", { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out" }, 0.2);
-      tl.fromTo(["#l0","#l1","#l2","#l3"],
-        { y: 20, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.45, ease: "power2.out", stagger: 0.18 }, 1.0);
+
+      /* All beats doubled in length vs. the original cut per explicit
+         "deutlich langsamer" (~2x) direction — every timestamp/duration
+         below is 2x the prior version's. */
+
+      /* ── Row A: directory · git · model · context ── */
+      tl.fromTo("#p0, #p1, #p2, #p3",
+        { autoAlpha: 0, y: 18 },
+        { autoAlpha: 1, y: 0, duration: 1.0, ease: "power2.out", stagger: 0.6 }, 0.8);
+      tl.fromTo("#ctx-green", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 0.8);
+
+      /* ── Row B: lines · rate-limits · cost · duration ── */
+      tl.fromTo("#p4, #p5, #p6, #p7",
+        { autoAlpha: 0, y: 18 },
+        { autoAlpha: 1, y: 0, duration: 1.0, ease: "power2.out", stagger: 0.6 }, 4.0);
+      tl.fromTo("#rl-normal", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 4.6);
+      tl.fromTo("#dur-a", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 5.8);
+
+      /* ── Silent beat: let the 8 default pills be read ── */
+      /* (6.8s – 8.4s, intentionally empty) */
+
+      /* ── Divider + "+ 2 optional" caption ── */
+      tl.fromTo("#divider", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.4, ease: "power1.inOut" }, 8.4);
+
+      /* ── Optional row: burn · clock ── */
+      tl.fromTo("#o1, #o2",
+        { autoAlpha: 0, y: 14 },
+        { autoAlpha: 1, y: 0, duration: 1.0, ease: "power2.out", stagger: 0.5 }, 9.8);
+      tl.fromTo("#clk-a", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 9.8);
+
+      /* ── Silent beat: full 10-pill layout settles ── */
+      /* (11.3s – 12.6s, intentionally empty) */
+
+      /* ── context: green → normal ── */
+      tl.fromTo("#ctx-normal", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.4, ease: "power1.inOut" }, 12.6);
+      tl.to("#ctx-green", { autoAlpha: 0, duration: 1.4, ease: "power1.inOut" }, 12.6);
+
+      /* ── rate-limits: normal → critical ── */
+      tl.fromTo("#rl-critical", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.4, ease: "power1.inOut" }, 15.2);
+      tl.to("#rl-normal", { autoAlpha: 0, duration: 1.4, ease: "power1.inOut" }, 15.2);
+
+      /* ── rate-limits: critical → overlimit, scale-pop on that pill only ── */
+      tl.fromTo("#rl-over", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.4, ease: "power1.inOut" }, 18.0);
+      tl.to("#rl-critical", { autoAlpha: 0, duration: 1.4, ease: "power1.inOut" }, 18.0);
+      tl.to("#p5", { scale: 1.10, duration: 0.24, ease: "power2.out" }, 19.2);
+      tl.to("#p5", { scale: 1.0, duration: 0.24, ease: "power2.inOut" }, 19.44);
+
+      /* ── duration + clock tick, dezent, together at the end ── */
+      tl.fromTo("#dur-b", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.0, ease: "power1.inOut" }, 20.8);
+      tl.to("#dur-a", { autoAlpha: 0, duration: 1.0, ease: "power1.inOut" }, 20.8);
+      tl.fromTo("#clk-b", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.0, ease: "power1.inOut" }, 20.8);
+      tl.to("#clk-a", { autoAlpha: 0, duration: 1.0, ease: "power1.inOut" }, 20.8);
+
+      /* ── Hold to end ── */
+      /* (21.8s – 28.0s) */
+
       window.__timelines["scene-01-strip"] = tl;
     </script>
   </div>

@@ -27,6 +27,7 @@ use crate::model::Color;
 use crate::model::input::Window;
 use crate::render::SegmentWriter;
 use crate::sanitize::fmt_reset;
+use crate::segment::limit_sync;
 use crate::segment::{RenderCtx, Segment};
 
 pub struct RateLimits;
@@ -62,36 +63,92 @@ impl Segment for RateLimits {
 
         // 5-hour window.
         if let Some(w) = ctx.input.rate_limits.five_hour.as_ref() {
-            emitted |= render_five_hour(ctx, out, w);
+            let (pct, reset) = effective_5h(ctx, w);
+            emitted |= render_five_hour(ctx, out, pct, reset);
         }
 
         // Weekly (7-day) window.
-        if let Some(w) = ctx.input.rate_limits.seven_day.as_ref()
-            && let Some(pct) = w.used_percentage.get().and_then(pct_in_range)
-            && pct >= u32::from(ctx.th.weekly_show_at)
-        {
-            let color = if pct >= u32::from(ctx.th.crit) {
-                ctx.theme.bar_crit
-            } else {
-                ctx.theme.bar_warn
-            };
-            if emitted {
-                out.raw(" ");
+        if let Some(w) = ctx.input.rate_limits.seven_day.as_ref() {
+            let (pct, reset) = effective_7d(ctx, w);
+            if let Some(p) = pct.and_then(pct_in_range)
+                && p >= u32::from(ctx.th.weekly_show_at)
+            {
+                let color = if p >= u32::from(ctx.th.crit) {
+                    ctx.theme.bar_crit
+                } else {
+                    ctx.theme.bar_warn
+                };
+                if emitted {
+                    out.raw(" ");
+                }
+                write_window(ctx, out, ctx.style.glyphs.weekly, p, color);
+                write_reset(ctx, out, reset);
+                emitted = true;
             }
-            write_window(ctx, out, ctx.style.glyphs.weekly, pct, color);
-            write_reset(ctx, out, w.resets_at.get().unwrap_or(0));
-            emitted = true;
         }
 
         emitted
     }
 }
 
+/// Resolve the 5-hour `(pct, reset)` to display for `w`.
+///
+/// With `limit_sync` enabled, the session's own snapshot is recorded first,
+/// then the shared high-water mark is preferred when it still describes a live
+/// window (reset in the future). Otherwise the session's own values are used.
+fn effective_5h(ctx: &RenderCtx, w: &Window) -> (Option<f64>, i64) {
+    let pct = w.used_percentage.get();
+    let reset = w.resets_at.get().unwrap_or(0);
+    if ctx.th.limit_sync {
+        if let Some(p) = pct
+            && reset > ctx.now
+        {
+            limit_sync::record_5h(ctx.now, p, reset);
+        }
+        if let Some((synced_pct, synced_reset)) = limit_sync::latest_5h()
+            && synced_reset > ctx.now
+        {
+            return (Some(synced_pct), synced_reset);
+        }
+    }
+    (pct, reset)
+}
+
+/// Resolve the 7-day `(pct, reset)` to display for `w`.
+///
+/// With `limit_sync` enabled, only sessions whose own weekly usage crosses the
+/// show threshold contribute to the shared store; the displayed value is the
+/// shared high-water mark when it describes a live window, else the session's
+/// own.
+fn effective_7d(ctx: &RenderCtx, w: &Window) -> (Option<f64>, i64) {
+    let pct = w.used_percentage.get();
+    let reset = w.resets_at.get().unwrap_or(0);
+    if ctx.th.limit_sync {
+        if let Some(p) = pct
+            && pct_in_range(p).is_some_and(|pr| pr >= u32::from(ctx.th.weekly_show_at))
+            && reset > ctx.now
+        {
+            limit_sync::record_7d(ctx.now, p, reset);
+        }
+        if let Some((synced_pct, synced_reset)) = limit_sync::latest_7d()
+            && synced_reset > ctx.now
+        {
+            return (Some(synced_pct), synced_reset);
+        }
+    }
+    (pct, reset)
+}
+
 /// Render the 5-hour window: shown whenever a percentage OR a future reset is
 /// present. Returns whether anything was emitted.
-fn render_five_hour(ctx: &RenderCtx, out: &mut SegmentWriter, w: &Window) -> bool {
-    let pct = w.used_percentage.get().and_then(pct_in_range);
-    let reset = fmt_reset(w.resets_at.get().unwrap_or(0), ctx.now);
+fn render_five_hour(
+    ctx: &RenderCtx,
+    out: &mut SegmentWriter,
+    pct: Option<f64>,
+    reset: i64,
+) -> bool {
+    let pct = pct.and_then(pct_in_range);
+    let reset = fmt_reset(reset, ctx.now);
 
     // Nothing to show for this window unless it has a renderable pct or a reset.
     if pct.is_none() && reset.is_none() {
@@ -127,7 +184,7 @@ fn write_window(ctx: &RenderCtx, out: &mut SegmentWriter, glyph: &str, pct: u32,
 
 #[cfg(test)]
 mod tests {
-    use crate::model::{Config, InputData, SegmentKind};
+    use crate::model::{Config, InputData, SegmentKind, Thresholds};
     use crate::render::render_with;
     use crate::{styles, themes};
 
@@ -143,7 +200,7 @@ mod tests {
         };
         let theme = themes::get(&cfg.theme);
         let style = styles::get(&cfg.style);
-        render_with(&input, &cfg, &theme, &style, NOW, None)
+        render_with(&input, &cfg, &theme, &style, NOW, None, 0)
     }
 
     #[test]
@@ -166,7 +223,7 @@ mod tests {
                 "seven_day":{"used_percentage":30.0,"resets_at":1905000000}}}"#,
         );
         assert!(out.contains("30%"), "5h pct missing: {out:?}");
-        // Only one percentage value (the 5h one); weekly is hidden below 50%.
+        // Only one percentage value (the 5h one); weekly is hidden below 75%.
         assert_eq!(
             out.matches('%').count(),
             1,
@@ -178,10 +235,10 @@ mod tests {
     fn weekly_shown_at_or_above_show_at() {
         let out = render_rl(
             r#"{"rate_limits":{"five_hour":{"used_percentage":60.0,"resets_at":1900000000},
-                "seven_day":{"used_percentage":64.0,"resets_at":1905000000}}}"#,
+                "seven_day":{"used_percentage":76.0,"resets_at":1905000000}}}"#,
         );
         assert!(out.contains("60%"), "5h pct missing: {out:?}");
-        assert!(out.contains("64%"), "weekly pct missing: {out:?}");
+        assert!(out.contains("76%"), "weekly pct missing: {out:?}");
     }
 
     #[test]
@@ -233,5 +290,61 @@ mod tests {
     #[test]
     fn empty_input_renders_nothing() {
         assert_eq!(render_rl("{}"), "");
+    }
+
+    #[test]
+    fn limit_sync_shows_highest_seen_across_sessions() {
+        // Point the store at a unique temp dir so this test never touches the
+        // real cache. It is the sole reader/writer of CLAUDEBAR_LIMIT_SYNC_DIR,
+        // so the process-global env mutation is race-free.
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or(0);
+        let dir = std::env::temp_dir().join(format!(
+            "claudebar-rl-sync-{}-{}",
+            std::process::id(),
+            nanos,
+        ));
+        // SAFETY: edition-2024 marks env mutation `unsafe`; no other test
+        // touches this variable, so there is no data race on the environment.
+        unsafe { std::env::set_var("CLAUDEBAR_LIMIT_SYNC_DIR", &dir) };
+
+        let reset = NOW + 3600;
+        let cfg = Config {
+            segments: vec![SegmentKind::RateLimits],
+            thresholds: Thresholds {
+                limit_sync: true,
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        let theme = themes::get(&cfg.theme);
+        let style = styles::get(&cfg.style);
+        let render = |json: &str| {
+            let input = InputData::parse(json);
+            render_with(&input, &cfg, &theme, &style, NOW, None, 0)
+        };
+
+        // Session A at 80% seeds the shared store.
+        let _ = render(&format!(
+            r#"{{"rate_limits":{{"five_hour":{{"used_percentage":80.0,"resets_at":{reset}}}}}}}"#
+        ));
+        // Session B at 20% must reflect the shared 80% high-water mark rather
+        // than its own stale snapshot.
+        let out = render(&format!(
+            r#"{{"rate_limits":{{"five_hour":{{"used_percentage":20.0,"resets_at":{reset}}}}}}}"#
+        ));
+        assert!(
+            out.contains("80%"),
+            "synced high-water pct missing: {out:?}"
+        );
+        assert!(
+            !out.contains("20%"),
+            "session's own pct should be hidden by the synced value: {out:?}"
+        );
+
+        unsafe { std::env::remove_var("CLAUDEBAR_LIMIT_SYNC_DIR") };
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

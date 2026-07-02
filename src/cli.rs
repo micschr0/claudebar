@@ -24,6 +24,11 @@ pub struct Cli {
     /// Override the style for this invocation.
     #[arg(long, global = true, value_name = "NAME")]
     pub style: Option<String>,
+
+    /// Comma-separated list of segments to render (overrides config file).
+    /// Names in kebab-case, e.g. "directory,git,cost,duration".
+    #[arg(long, global = true, value_name = "SEGMENTS", value_delimiter = ',')]
+    pub segments: Option<Vec<String>>,
 }
 
 #[derive(Subcommand, Debug)]
@@ -42,7 +47,23 @@ pub enum Command {
         print: bool,
     },
     /// List the built-in themes and styles.
-    List,
-    /// Add any new segments (from a newer claudebar version) to an existing config.
-    Migrate,
+    List {
+        /// List segments (kebab-case names, labels, default status) instead of themes/styles.
+        #[arg(long = "segments")]
+        list_segments: bool,
+    },
+    /// Sync the config file: add any new segments introduced in newer claudebar versions.
+    Sync,
+    /// Render a built-in fixture to verify the install works.
+    Smoke,
+    /// Run diagnostics: font, git, config, PATH.
+    Doctor,
+    /// Open the config file in $EDITOR (falls back to vi).
+    Edit,
+    /// Generate shell completions.
+    Completions {
+        /// Target shell.
+        #[arg(value_enum)]
+        shell: clap_complete::Shell,
+    },
 }

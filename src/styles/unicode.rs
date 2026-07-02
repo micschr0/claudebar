@@ -6,6 +6,7 @@
 
 use crate::model::{GlyphSet, Style};
 
+#[must_use]
 pub fn style() -> Style {
     Style {
         separator: "❯", // U+276F HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT
@@ -21,11 +22,18 @@ pub fn style() -> Style {
             clock: "◷",        // U+25F7 WHITE CIRCLE WITH UPPER RIGHT QUADRANT
             weekly: "◈",       // U+25C8 WHITE DIAMOND CONTAINING BLACK SMALL DIAMOND
             reset: "↺",        // U+21BA ANTICLOCKWISE OPEN CIRCLE ARROW
-            model: "◆",        // U+25C6 BLACK DIAMOND
+            model: "▪",        // U+25AA BLACK SMALL SQUARE
             effort: "⚡",      // U+26A1 HIGH VOLTAGE SIGN
             worktree: "⑂",     // U+2442 OCR FORK OR BRANCH
             pull_request: "⇐", // U+21D0 LEFTWARDS DOUBLE ARROW
             agent: "⚙",        // U+2699 GEAR
+            project: "⎔",      // U+2394 SOFTWARE-FUNCTION SYMBOL
+            stash: "⚑",        // U+2691 FLAG
+            lines: "–",        // U+2013 EN DASH
+            cost: "$",
+            duration: "⏱", // U+23F1 STOPWATCH
+            time: "◷",     // U+25F7 WHITE CIRCLE WITH UPPER RIGHT QUADRANT (clock face)
+            burn: "↗",     // U+2197 ↗
         },
         bar_fill: '█',  // U+2588 FULL BLOCK
         bar_empty: '░', // U+2591 LIGHT SHADE
@@ -58,6 +66,13 @@ mod tests {
             s.glyphs.worktree,
             s.glyphs.pull_request,
             s.glyphs.agent,
+            s.glyphs.project,
+            s.glyphs.stash,
+            s.glyphs.lines,
+            s.glyphs.cost,
+            s.glyphs.duration,
+            s.glyphs.time,
+            s.glyphs.burn,
         ];
         for glyph in all {
             for c in glyph.chars() {

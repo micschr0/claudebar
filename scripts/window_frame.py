@@ -33,8 +33,10 @@ DOTS      = [(255, 95, 87), (254, 188, 46), (40, 200, 64)]
 
 
 def load_font(size):
-    for p in ("/tmp/fonts/HackNerdFont-Regular.ttf",
-              "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"):
+    nf_dir = os.environ.get("NF_FONT_DIR", "/tmp/fonts")
+    for p in (os.path.join(nf_dir, "HackNerdFontMono-Regular.ttf"),
+              "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+              "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"):
         try:
             return ImageFont.truetype(p, size)
         except OSError:

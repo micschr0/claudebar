@@ -32,6 +32,10 @@ pub struct InputData {
     pub workspace: Option<WorkspaceInfo>,
     #[serde(default)]
     pub agent: AgentInfo,
+    #[serde(default)]
+    pub cost: CostInfo,
+    #[serde(default)]
+    pub output_style: OutputStyle,
 }
 
 #[derive(Debug, Default, Deserialize)]
@@ -108,6 +112,30 @@ pub struct AgentInfo {
     pub name: Option<String>,
 }
 
+/// `cost` sub-object: session billing and stats.
+#[derive(Debug, Default, Deserialize)]
+pub struct CostInfo {
+    /// Total cost in USD this session.
+    #[serde(default)]
+    pub total_cost_usd: Coerce<f64>,
+    /// Lines added this session.
+    #[serde(default)]
+    pub total_lines_added: Coerce<u64>,
+    /// Lines removed this session.
+    #[serde(default)]
+    pub total_lines_removed: Coerce<u64>,
+    /// Wall-clock duration in milliseconds.
+    #[serde(default)]
+    pub total_duration_ms: Coerce<u64>,
+}
+
+/// `output_style` — the active output style name.
+#[derive(Debug, Default, Deserialize)]
+pub struct OutputStyle {
+    #[serde(default)]
+    pub name: Option<String>,
+}
+
 impl InputData {
     /// Parse from a JSON string. On any failure (even invalid JSON), returns
     /// `InputData::default()` so the caller still renders a (possibly empty) line.
@@ -142,6 +170,7 @@ impl<T> Default for Coerce<T> {
 
 impl<T> Coerce<T> {
     /// The contained value, or `T::default()` when absent.
+    #[inline]
     pub fn or_default(self) -> T
     where
         T: Default,
@@ -149,6 +178,7 @@ impl<T> Coerce<T> {
         self.0.unwrap_or_default()
     }
 
+    /// The contained value, or `None` when the field was absent or coerced.
     pub fn get(self) -> Option<T> {
         self.0
     }

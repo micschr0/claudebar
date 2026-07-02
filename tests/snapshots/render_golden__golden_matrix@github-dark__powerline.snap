@@ -1,6 +1,5 @@
 ---
 source: tests/render_golden.rs
-assertion_line: 69
 expression: rendered
 ---
-\e[38;5;75m ~/p/claude-code-statusline\e[0m \e[38;5;243m\e[0m \e[38;5;243m󰍛\e[0m \e[38;5;172m━━━━\e[38;5;239m╌╌\e[0m \e[38;5;172m67%\e[0m \e[38;5;243m󰰩\e[0m \e[38;5;111m42.3k\e[0m \e[38;5;243m\e[0m \e[38;5;243m󰔟\e[0m \e[38;5;71m━━\e[38;5;239m╌╌╌╌\e[0m \e[38;5;71m48%\e[0m \e[38;5;243m↺\e[0m \e[38;5;80m2h46m\e[0m \e[38;5;243m\e[0m \e[38;5;243m◈\e[0m \e[38;5;172mOpus 4.8\e[0m \e[38;5;243m\e[0m \e[38;5;71mhigh\e[0m
+\e[38;5;75m ~/p/claude-code-statusline\e[0m \e[38;5;243m\e[0m \e[38;5;244m◈\e[0m \e[38;5;172mOpus 4.8\e[0m \e[38;5;244m\e[0m \e[38;5;77mhigh\e[0m \e[38;5;243m\e[0m \e[38;5;244m󰍛\e[0m \e[38;5;172m━━━━\e[38;5;241m╌╌\e[0m \e[38;5;172m67%\e[0m \e[38;5;244m󰰩\e[0m \e[38;5;111m42.3k\e[0m \e[38;5;243m\e[0m \e[38;5;244m󰔟\e[0m \e[38;5;77m━━\e[38;5;241m╌╌╌╌\e[0m \e[38;5;77m48%\e[0m \e[38;5;244m↺\e[0m \e[38;5;80m2h46m\e[0m

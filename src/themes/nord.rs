@@ -18,29 +18,37 @@
 //!   separator  nord3  #4c566a → 60  (Polar Night, lifted for contrast)
 //!   dim        nord3-ish grey → 245
 //!   reset      nord8  #88c0d0 → 110 (Frost cyan)
-//!   effort_max nord15 #b48ead → 139 (Aurora purple)
+//!   effort nord15 #b48ead → 139 (Aurora purple)
 //!   model      nord15 #b48ead → 139 (Aurora purple)
 
 use crate::model::{Color, Theme};
 
+#[must_use]
 pub fn theme() -> Theme {
     Theme {
         dir: Color(67),
         git_branch: Color(110),
         ahead: Color(150),
-        behind: Color(131),
+        behind: Color(167),
         modified: Color(222),
-        untracked: Color(240),
+        untracked: Color(244),
         token: Color(108),
         bar_ok: Color(150),
         bar_warn: Color(222),
         bar_crit: Color(131),
-        bar_track: Color(239),
+        bar_track: Color(241),
         separator: Color(60),
         dim: Color(245),
         reset: Color(110),
-        effort_max: Color(139),
+        effort: Color(133), // Magenta-pink — distinct from model (139)
         model: Color(139),
+        project: Color(67),
+        stash: Color(110),
+        lines: Color(245),
+        cost: Color(222), // Aurora yellow — informational, not alarm
+        duration: Color(110),
+        clock: Color(150),
+        burn: Color(167),
     }
 }
 

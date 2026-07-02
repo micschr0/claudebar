@@ -289,19 +289,10 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
     match key.code {
         // ── Panel switching and within-panel navigation ───────────────────────
         KeyCode::Left | KeyCode::Char('h') => {
-            if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
-                // Threshold section: nudge selected field by -1.
-                app.nudge_threshold(threshold_field_at(app.detail_cursor), -1);
-            } else {
-                app.focused_panel = Panel::Left;
-            }
+            app.focused_panel = Panel::Left;
         }
         KeyCode::Right | KeyCode::Char('l') => {
-            if app.focused_panel == Panel::Right && app.menu_cursor == 3 {
-                app.nudge_threshold(threshold_field_at(app.detail_cursor), 1);
-            } else {
-                app.focused_panel = Panel::Right;
-            }
+            app.focused_panel = Panel::Right;
         }
         KeyCode::Up | KeyCode::Char('k') => match app.focused_panel {
             Panel::Left => {
@@ -400,12 +391,23 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
             }
         }
 
-        // ── Thresholds (large nudge, only in Thresholds section, right panel) ─
-        KeyCode::Char('H') if app.focused_panel == Panel::Right && app.menu_cursor == 3 => {
+        // ── Thresholds (nudge and cycle, only in Thresholds section, right panel) ─
+        KeyCode::Char('-') if app.focused_panel == Panel::Right && app.menu_cursor == 3 => {
+            app.nudge_threshold(threshold_field_at(app.detail_cursor), -1);
+        }
+        KeyCode::Char('=') if app.focused_panel == Panel::Right && app.menu_cursor == 3 => {
+            app.nudge_threshold(threshold_field_at(app.detail_cursor), 1);
+        }
+        KeyCode::Char('_') if app.focused_panel == Panel::Right && app.menu_cursor == 3 => {
             app.nudge_threshold(threshold_field_at(app.detail_cursor), -5);
         }
-        KeyCode::Char('L') if app.focused_panel == Panel::Right && app.menu_cursor == 3 => {
+        KeyCode::Char('+') if app.focused_panel == Panel::Right && app.menu_cursor == 3 => {
             app.nudge_threshold(threshold_field_at(app.detail_cursor), 5);
+        }
+        KeyCode::Char(' ') | KeyCode::Enter
+            if app.focused_panel == Panel::Right && app.menu_cursor == 3 =>
+        {
+            app.cycle_threshold_enum(threshold_field_at(app.detail_cursor));
         }
 
         // ── Global ────────────────────────────────────────────────────────────
@@ -441,7 +443,9 @@ fn threshold_field_at(idx: usize) -> ThresholdField {
         0 => ThresholdField::Warn,
         1 => ThresholdField::Crit,
         2 => ThresholdField::WeeklyShowAt,
-        _ => ThresholdField::BarWidth,
+        3 => ThresholdField::BarWidth,
+        4 => ThresholdField::ClockMode,
+        _ => ThresholdField::Layout,
     }
 }
 

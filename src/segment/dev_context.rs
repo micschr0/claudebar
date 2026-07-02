@@ -72,7 +72,7 @@ impl Segment for DevContext {
                 out.raw(" ");
             }
             out.icon(glyphs.agent);
-            out.colored(theme.effort_max, name);
+            out.colored(theme.effort, name);
         }
 
         true

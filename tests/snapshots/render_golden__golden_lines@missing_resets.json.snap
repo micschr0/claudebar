@@ -3,4 +3,4 @@ source: tests/render_golden.rs
 expression: render_fixture(&json)
 input_file: fixtures/missing_resets.json
 ---
-\e[38;5;245m󰍛\e[0m \e[38;5;114m━━\e[38;5;238m╌╌╌╌\e[0m \e[38;5;114m40%\e[0m \e[38;5;245m󰰩\e[0m \e[38;5;117m12.0k\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰔟\e[0m \e[38;5;221m━━━\e[38;5;238m╌╌╌\e[0m \e[38;5;221m55%\e[0m \e[38;5;238m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mOpus 4.8\e[0m
+\e[38;5;245m◈\e[0m \e[38;5;208mOpus 4.8\e[0m \e[38;5;241m\e[0m \e[38;5;245m󰍛\e[0m \e[38;5;114m━━\e[38;5;242m╌╌╌╌\e[0m \e[38;5;114m40%\e[0m \e[38;5;245m󰰩\e[0m \e[38;5;117m12.0k\e[0m \e[38;5;241m\e[0m \e[38;5;245m󰔟\e[0m \e[38;5;221m━━━\e[38;5;242m╌╌╌\e[0m \e[38;5;221m55%\e[0m

@@ -5,6 +5,7 @@
 
 use crate::model::Style;
 
+#[must_use]
 pub fn style() -> Style {
     Style {
         separator: "\u{e0b5}", // rounded powerline right-cap

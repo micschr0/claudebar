@@ -1,10 +1,10 @@
 mod cli;
 
 use clap::Parser;
-use claudebar::model::Config;
+use claudebar::model::{Config, SegmentKind};
 use claudebar::{InputData, render_line, styles, themes};
 use cli::{Cli, Command};
-use std::io::Read;
+use std::io::{IsTerminal, Read};
 use std::path::PathBuf;
 use std::process::ExitCode;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -15,8 +15,12 @@ fn main() -> ExitCode {
         Command::Render => run_render(&cli),
         Command::Config => run_config(&cli),
         Command::Init { force, print } => run_init(&cli, *force, *print),
-        Command::List => run_list(),
-        Command::Migrate => run_migrate(&cli),
+        Command::List { list_segments } => run_list(*list_segments),
+        Command::Sync => run_sync(&cli),
+        Command::Smoke => run_smoke(),
+        Command::Doctor => run_doctor(&cli),
+        Command::Edit => run_edit(&cli),
+        Command::Completions { shell } => run_completions(*shell),
     }
 }
 
@@ -41,18 +45,36 @@ fn resolve_config(cli: &Cli) -> Config {
         None => Config::default(),
     };
     if let Some(t) = &cli.theme {
+        if !themes::NAMES.contains(&t.as_str()) {
+            eprintln!("claudebar: warning: unknown theme '{t}' — using tokyo-night");
+        }
         cfg.theme = t.clone();
     }
     if let Some(s) = &cli.style {
+        if !styles::NAMES.contains(&s.as_str()) {
+            eprintln!("claudebar: warning: unknown style '{s}' — using powerline");
+        }
         cfg.style = s.clone();
+    }
+    if let Some(segs) = &cli.segments {
+        let mut parsed: Vec<SegmentKind> = Vec::with_capacity(segs.len());
+        for s in segs {
+            match SegmentKind::from_kebab(s) {
+                Some(k) => parsed.push(k),
+                None => eprintln!("claudebar: warning: unknown segment '{s}' — ignored"),
+            }
+        }
+        if !parsed.is_empty() {
+            cfg.segments = parsed;
+        }
     }
     cfg
 }
-
 fn run_render(cli: &Cli) -> ExitCode {
     let mut buf = String::new();
-    // Reading stdin can't meaningfully fail the line; ignore errors and parse
-    // whatever we got (InputData::parse is itself infallible).
+    if std::io::stdin().is_terminal() {
+        eprintln!("claudebar: reading from stdin — pipe session JSON or press Ctrl+D");
+    }
     let _ = std::io::stdin().read_to_string(&mut buf);
     let input = InputData::parse(&buf);
     let cfg = resolve_config(cli);
@@ -115,7 +137,15 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
         }
         match cfg.save(&path) {
             Ok(()) => {
-                eprintln!("claudebar: wrote default config to {}", path.display());
+                println!("claudebar: wrote default config to {}", path.display());
+                if !check_nerd_font() {
+                    println!(
+                        "claudebar: tip — install a Nerd Font (https://www.nerdfonts.com) for powerline glyphs."
+                    );
+                    println!(
+                        "         or run `claudebar config` and switch the style to `unicode`."
+                    );
+                }
                 ExitCode::SUCCESS
             }
             Err(e) => {
@@ -125,20 +155,32 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
         }
     }
 }
-
-fn run_list() -> ExitCode {
-    println!("Themes:");
-    for n in themes::NAMES {
-        println!("  {n}");
-    }
-    println!("Styles:");
-    for n in styles::NAMES {
-        println!("  {n}");
+fn run_list(segments: bool) -> ExitCode {
+    if segments {
+        println!("Segments:");
+        for &kind in &SegmentKind::ALL {
+            let kebab = serde_json::to_string(&kind)
+                .unwrap_or_else(|_| String::from("?"))
+                .trim_matches('"')
+                .to_string();
+            let in_default = SegmentKind::DEFAULT.contains(&kind);
+            let default_mark = if in_default { "  [default]" } else { "" };
+            println!("  {kebab}  —  {}{default_mark}", kind.label());
+        }
+    } else {
+        println!("Themes:");
+        for n in themes::NAMES {
+            println!("  {n}");
+        }
+        println!("Styles:");
+        for n in styles::NAMES {
+            println!("  {n}");
+        }
     }
     ExitCode::SUCCESS
 }
 
-fn run_migrate(cli: &Cli) -> ExitCode {
+fn run_sync(cli: &Cli) -> ExitCode {
     use claudebar::model::SegmentKind;
 
     let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
@@ -162,7 +204,7 @@ fn run_migrate(cli: &Cli) -> ExitCode {
     // Check if the config file actually exists (load returns default for missing files).
     if !path.exists() {
         eprintln!(
-            "claudebar: no config file at {} — nothing to migrate.",
+            "claudebar: no config file at {} — nothing to sync.",
             path.display()
         );
         eprintln!("Run `claudebar init` to create one.");
@@ -171,7 +213,7 @@ fn run_migrate(cli: &Cli) -> ExitCode {
 
     // Find segments present in ALL but absent from the user's segments list.
     // Insert each at its canonical position relative to its neighbors in ALL.
-    let mut added: Vec<&str> = Vec::new();
+    let mut added: Vec<&str> = Vec::with_capacity(SegmentKind::ALL.len());
     for (canonical_pos, &kind) in SegmentKind::ALL.iter().enumerate() {
         if cfg.segments.contains(&kind) {
             continue;
@@ -215,4 +257,157 @@ fn run_migrate(cli: &Cli) -> ExitCode {
             ExitCode::FAILURE
         }
     }
+}
+
+fn run_smoke() -> ExitCode {
+    let fixture = include_str!("../fixtures/typical.json");
+    let input = InputData::parse(fixture);
+    let cfg = Config::default();
+    // Use a fixed "now" for deterministic output; HOME is whatever the env provides.
+    let now: i64 = 1_900_000_000;
+    let output = render_line(&input, &cfg, now);
+    println!("{output}");
+    ExitCode::SUCCESS
+}
+
+fn run_completions(shell: clap_complete::Shell) -> ExitCode {
+    let mut cmd = <Cli as clap::CommandFactory>::command();
+    let name = cmd.get_name().to_string();
+    clap_complete::generate(shell, &mut cmd, &name, &mut std::io::stdout());
+    ExitCode::SUCCESS
+}
+
+fn run_doctor(cli: &Cli) -> ExitCode {
+    // 1. Check: binary in PATH?
+    let in_path = match std::env::current_exe() {
+        Ok(exe) => {
+            if let Some(dir) = exe.parent() {
+                std::env::var_os("PATH")
+                    .map(|p| std::env::split_paths(&p).any(|d| d == dir))
+                    .unwrap_or(false)
+            } else {
+                false
+            }
+        }
+        Err(_) => false,
+    };
+    println!("{} Binary in PATH", check_mark(in_path));
+
+    // 2. Nerd Font installed?
+    let has_nerd = check_nerd_font();
+    println!("{} Nerd Font installed", check_mark(has_nerd));
+
+    // 3. git on PATH?
+    let has_git = which_ok("git");
+    println!("{} git on PATH", check_mark(has_git));
+
+    // 4. config.toml parses?
+    let config_path = cli.config.clone().or_else(Config::default_path);
+    let config_ok = match config_path {
+        Some(ref p) if p.exists() => Config::load(p).is_ok(),
+        _ => true, // no config or default path = fine
+    };
+    println!("{} config.toml parses", check_mark(config_ok));
+
+    // Always succeed — this is informational.
+    ExitCode::SUCCESS
+}
+
+fn run_edit(cli: &Cli) -> ExitCode {
+    let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
+        Some(p) => p,
+        None => {
+            eprintln!("claudebar: no config path found — set $HOME or use --config.");
+            return ExitCode::FAILURE;
+        }
+    };
+
+    // Init if missing.
+    if !path.exists() {
+        let cfg = Config::default();
+        if let Err(e) = cfg.save(&path) {
+            eprintln!("claudebar: failed to create config: {e}");
+            return ExitCode::FAILURE;
+        }
+        eprintln!("claudebar: created default config at {}", path.display());
+    }
+
+    let editor = std::env::var("EDITOR")
+        .or_else(|_| std::env::var("VISUAL"))
+        .unwrap_or_else(|_| String::from("vi"));
+
+    let status = std::process::Command::new(&editor).arg(&path).status();
+
+    match status {
+        Ok(s) if s.success() => ExitCode::SUCCESS,
+        Ok(s) => {
+            eprintln!("claudebar: {editor} exited with status {}", s);
+            ExitCode::FAILURE
+        }
+        Err(e) => {
+            eprintln!("claudebar: failed to launch {editor}: {e}");
+            ExitCode::FAILURE
+        }
+    }
+}
+
+fn check_mark(ok: bool) -> &'static str {
+    if ok { "✓" } else { "✗" }
+}
+
+/// Nerd Font check: look for .ttf/.otf files with "Nerd" or "nerd" in their name.
+/// Uses `fc-list` if available; falls back to scanning common font dirs.
+fn check_nerd_font() -> bool {
+    // Try fc-list first — fastest and most accurate.
+    if let Ok(output) = std::process::Command::new("fc-list")
+        .arg(":family")
+        .output()
+        && let Ok(stdout) = String::from_utf8(output.stdout)
+        && stdout.to_lowercase().contains("nerd")
+    {
+        return true;
+    }
+
+    // Fallback: scan common font directories.
+    let dirs: &[&str] = &[
+        "/usr/share/fonts",
+        "/usr/local/share/fonts",
+        "~/.local/share/fonts",
+        "~/.fonts",
+    ];
+
+    let home = std::env::var("HOME").unwrap_or_default();
+
+    for dir in dirs {
+        let path = if let Some(stripped) = dir.strip_prefix("~/") {
+            PathBuf::from(home.clone()).join(stripped)
+        } else {
+            PathBuf::from(dir)
+        };
+        if path.is_dir()
+            && let Ok(entries) = std::fs::read_dir(&path)
+        {
+            for entry in entries.flatten() {
+                let name = entry.file_name();
+                let name = name.to_string_lossy();
+                if (name.ends_with(".ttf") || name.ends_with(".otf"))
+                    && name.to_lowercase().contains("nerd")
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    false
+}
+
+fn which_ok(cmd: &str) -> bool {
+    std::process::Command::new("which")
+        .arg(cmd)
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false)
 }

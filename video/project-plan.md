@@ -15,8 +15,8 @@
 | 1. Storytelling | ✅ done | storyboard.md — 6 scenes, 25s |
 | 2. Capture | ✅ done | reused real strips in public/screenshots/ (no recapture needed) |
 | 3. Design | ✅ done | brand palette inline in scenes; Tokyo Night |
-| 4. Production | 🔄 in progress | scenes/*.html + index.html, lint/inspect/validate |
-| 5. Render | ✅ done | out/final.mp4 — 1.7 MB, H.264, 1920×1080@30, 25.0s. Rendered via chrome-headless-shell beginFrame path (HYPERFRAMES_BROWSER_PATH). |
+| 4. Production | ✅ done | scenes/*.html + index.html, lint/inspect/validate — re-rendered 2026-06-29 |
+| 5. Render | ✅ done | out/final.mp4 — 1.8 MB, H.264, 1920×1080@30, 25.0s. Copied to docs/assets/claudebar-demo.mp4 |
 
 ## Decision Log
 

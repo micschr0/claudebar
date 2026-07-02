@@ -4,6 +4,7 @@
 /// Strip terminal-control bytes (ESC `\x1b`, BEL `\x07`, CR `\r`, LF `\n`) from a
 /// host-provided string. This blocks ANSI/OSC escape injection through fields
 /// like `cwd`, the git branch name, or the model display name.
+#[must_use]
 pub fn strip_control(s: &str) -> String {
     s.chars()
         .filter(|&c| c != '\x1b' && c != '\x07' && c != '\r' && c != '\n')
@@ -15,6 +16,7 @@ pub fn strip_control(s: &str) -> String {
 /// is kept in full. `$HOME` is collapsed to `~` first.
 ///
 /// `/home/me/projects/claude-code-statusline` → `~/p/c/statusline`
+#[must_use]
 pub fn abbreviate_path(cwd: &str, home: Option<&str>) -> String {
     let rel = match home {
         Some(h) if !h.is_empty() && cwd == h => "~".to_string(),
@@ -25,7 +27,10 @@ pub fn abbreviate_path(cwd: &str, home: Option<&str>) -> String {
                     .is_some_and(|rest| rest.starts_with('/')) =>
         {
             // SAFETY of slice bounds: strip_prefix matched, so `h` is a prefix.
-            format!("~{}", &cwd[h.len()..])
+            let mut tilde = String::with_capacity(1 + cwd.len() - h.len());
+            tilde.push('~');
+            tilde.push_str(&cwd[h.len()..]);
+            tilde
         }
         _ => cwd.to_string(),
     };
@@ -61,7 +66,10 @@ pub fn abbreviate_path(cwd: &str, home: Option<&str>) -> String {
 
 /// Format a token total like the bash version: `< 1000` verbatim, `>= 1000`
 /// as `N.Nk`, `>= 1_000_000` as `N.NM`, with round-half-up on the single
-/// decimal and carry (`9.96k` → `10.0k`).
+/// decimal and carry (`9.96k` → `10.0k`). A carry that crosses the `k`
+/// ceiling promotes to `M` (`999_950` → `1.0M`); `M` is the top unit and has
+/// no promotion (`999_950_000` → `1000.0M`).
+#[must_use]
 pub fn fmt_tokens(total: u64) -> String {
     if total >= 1_000_000 {
         fmt_scaled(total, 1_000_000, 'M')
@@ -81,12 +89,24 @@ fn fmt_scaled(total: u64, unit: u64, suffix: char) -> String {
         int += 1;
         dec = 0;
     }
-    format!("{int}.{dec}{suffix}")
+    if int >= 1000 && suffix == 'k' {
+        return fmt_scaled(total, 1_000_000, 'M');
+    }
+    // "NNNN.Nc" ≤ 8 bytes.
+    let mut s = String::with_capacity(8);
+    use std::fmt::Write as _;
+    write!(s, "{int}.{dec}{suffix}").unwrap();
+    s
 }
 
 /// Adaptive "time until reset" relative to `now` (both epoch seconds):
 /// `Nd Nh` / `Nh Nm` / `Nm Ns` / `Ns`. Returns `None` if the target is missing
 /// (`<= 0` here means "no value") or already in the past.
+///
+/// # Panics
+///
+/// The internal `write!` to a `String` buffer is infallible and will never panic.
+#[must_use]
 pub fn fmt_reset(target: i64, now: i64) -> Option<String> {
     if target <= 0 {
         return None;
@@ -99,15 +119,18 @@ pub fn fmt_reset(target: i64, now: i64) -> Option<String> {
     let h = (diff % 86_400) / 3_600;
     let m = (diff % 3_600) / 60;
     let s = diff % 60;
-    Some(if d > 0 {
-        format!("{d}d{h}h")
+    let mut buf = String::with_capacity(8); // "23h59m" ≤ 7 bytes
+    use std::fmt::Write as _;
+    if d > 0 {
+        write!(buf, "{d}d{h}h").unwrap();
     } else if h > 0 {
-        format!("{h}h{m}m")
+        write!(buf, "{h}h{m}m").unwrap();
     } else if m > 0 {
-        format!("{m}m{s}s")
+        write!(buf, "{m}m{s}s").unwrap();
     } else {
-        format!("{s}s")
-    })
+        write!(buf, "{s}s").unwrap();
+    }
+    Some(buf)
 }
 
 #[cfg(test)]
@@ -160,6 +183,15 @@ mod tests {
         assert_eq!(fmt_tokens(9960), "10.0k"); // carry
         assert_eq!(fmt_tokens(1_000_000), "1.0M");
         assert_eq!(fmt_tokens(1_550_000), "1.6M");
+    }
+
+    #[test]
+    fn token_carry_boundary() {
+        assert_eq!(fmt_tokens(999_949), "999.9k"); // below boundary, no promotion
+        assert_eq!(fmt_tokens(999_950), "1.0M"); // carry promotes k -> M
+        assert_eq!(fmt_tokens(999_999), "1.0M"); // carry promotes k -> M
+        assert_eq!(fmt_tokens(9_996), "10.0k"); // in-unit carry still stays k
+        assert_eq!(fmt_tokens(999_950_000), "1000.0M"); // M is the top unit, no further promotion
     }
 
     #[test]

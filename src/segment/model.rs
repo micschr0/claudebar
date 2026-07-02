@@ -58,7 +58,7 @@ impl Segment for Model {
                 "low" | "medium" => ctx.theme.dim,
                 "high" => ctx.theme.bar_ok,
                 "xhigh" => ctx.theme.bar_warn,
-                "max" => ctx.theme.effort_max,
+                "max" => ctx.theme.effort,
                 _ => ctx.theme.dim,
             };
             out.icon(ctx.style.glyphs.effort);
@@ -92,7 +92,7 @@ mod tests {
         };
         let theme = themes::get(&cfg.theme);
         let style = styles::get(&cfg.style);
-        render_with(&input, &cfg, &theme, &style, 0, None)
+        render_with(&input, &cfg, &theme, &style, 0, None, 0)
     }
 
     #[test]

@@ -5,6 +5,7 @@
 
 use crate::model::{GlyphSet, Style};
 
+#[must_use]
 pub fn style() -> Style {
     Style {
         separator: "|",
@@ -25,6 +26,13 @@ pub fn style() -> Style {
             worktree: ">",
             pull_request: "#",
             agent: "&",
+            project: "P",
+            stash: "s",
+            lines: "-",
+            cost: "$",
+            duration: "d",
+            time: "T",
+            burn: "B",
         },
         bar_fill: '#',
         bar_empty: '-',
