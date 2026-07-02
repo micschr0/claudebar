@@ -193,7 +193,13 @@ fn print_status_line_diff(previous: Option<&serde_json::Value>, desired: &serde_
     println!("+ {new_line}");
 }
 
-fn run_setup(cli: &Cli, settings_path: Option<PathBuf>, print: bool, yes: bool, force: bool) -> ExitCode {
+fn run_setup(
+    cli: &Cli,
+    settings_path: Option<PathBuf>,
+    print: bool,
+    yes: bool,
+    force: bool,
+) -> ExitCode {
     let path = match settings_path.or_else(claudebar::setup::default_settings_path) {
         Some(p) => p,
         None => {
