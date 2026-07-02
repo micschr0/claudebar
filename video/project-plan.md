@@ -4,7 +4,7 @@
 **Aspect:** 16:9 1920×1080
 **Audio:** none (silent, on-screen text — loop-friendly README hero)
 **Visual identity strategy:** screenshots (real claudebar strips) + brand palette (Tokyo Night)
-**Duration:** 25s
+**Duration:** 44.1s
 **Created:** 2026-06-24
 
 ## Phase Tracker
@@ -12,11 +12,11 @@
 | Phase | Status | Notes |
 |-------|--------|-------|
 | 0. Discovery | ✅ done | context.md — audience, message, CTA |
-| 1. Storytelling | ✅ done | storyboard.md — 6 scenes, 25s |
-| 2. Capture | ✅ done | reused real strips in public/screenshots/ (no recapture needed) |
+| 1. Storytelling | ✅ done | storyboard.md — updated for 5-scene rework (bd679c2, drop live-states) |
+| 2. Capture | ✅ done | seg-*/strip-* screenshots in public/screenshots/ cover the 8-segment default + opt-ins |
 | 3. Design | ✅ done | brand palette inline in scenes; Tokyo Night |
-| 4. Production | ✅ done | scenes/*.html + index.html, lint/inspect/validate — re-rendered 2026-06-29 |
-| 5. Render | ✅ done | out/final.mp4 — 1.8 MB, H.264, 1920×1080@30, 25.0s. Copied to docs/assets/claudebar-demo.mp4 |
+| 4. Production | ✅ done | scenes/*.html + index.html — lint (0 errors, 5 cosmetic warnings) + validate clean, 2026-07-02 |
+| 5. Render | ✅ done | out/final19.mp4 — 4.3 MB, 44.1s, rendered 2026-07-02. Copied to docs/assets/claudebar-demo.mp4 (previous copy was stale, predated the scene rework) |
 
 ## Decision Log
 
