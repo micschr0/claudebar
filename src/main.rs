@@ -114,11 +114,7 @@ fn run_config(cli: &Cli) -> ExitCode {
 }
 
 fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
-    let mut cfg = Config::default();
-    let no_nerd_font = !check_nerd_font();
-    if no_nerd_font {
-        cfg.style = "unicode".into();
-    }
+    let (cfg, no_nerd_font) = default_config_with_font_check();
     if print {
         match toml::to_string_pretty(&cfg) {
             Ok(s) => {
@@ -149,15 +145,7 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
             Ok(()) => {
                 println!("claudebar: wrote default config to {}", path.display());
                 if no_nerd_font {
-                    println!(
-                        "claudebar: no Nerd Font detected — falling back to style \"unicode\" in config."
-                    );
-                    println!(
-                        "claudebar: install a Nerd Font (https://www.nerdfonts.com) and run `claudebar config` to switch to `powerline`."
-                    );
-                    if cfg!(target_os = "macos") {
-                        println!("claudebar:   macOS: brew install --cask font-hack-nerd-font");
-                    }
+                    print_nerd_font_hint();
                 }
                 ExitCode::SUCCESS
             }
@@ -168,6 +156,31 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
         }
     }
 }
+
+/// Shared by `run_init` and `run_edit` so both bootstrap paths agree on the
+/// default: builds a default `Config`, falling back to style `"unicode"`
+/// when no Nerd Font is detected. Returns the config plus whether the
+/// fallback was applied (`true` when no Nerd Font was found).
+fn default_config_with_font_check() -> (Config, bool) {
+    let mut cfg = Config::default();
+    let no_nerd_font = !check_nerd_font();
+    if no_nerd_font {
+        cfg.style = "unicode".into();
+    }
+    (cfg, no_nerd_font)
+}
+
+/// Print the "no Nerd Font detected" hint block shared by `run_init` and `run_edit`.
+fn print_nerd_font_hint() {
+    println!("claudebar: no Nerd Font detected — falling back to style \"unicode\" in config.");
+    println!(
+        "claudebar: install a Nerd Font (https://www.nerdfonts.com) and run `claudebar config` to switch to `powerline`."
+    );
+    if cfg!(target_os = "macos") {
+        println!("claudebar:   macOS: brew install --cask font-hack-nerd-font");
+    }
+}
+
 /// Print the `statusLine:` diff block shared by the `WillSet` and `Conflict` outcomes.
 fn print_status_line_diff(previous: Option<&serde_json::Value>, desired: &serde_json::Value) {
     let old_line = previous.map_or_else(
@@ -464,12 +477,15 @@ fn run_edit(cli: &Cli) -> ExitCode {
 
     // Init if missing.
     if !path.exists() {
-        let cfg = Config::default();
+        let (cfg, no_nerd_font) = default_config_with_font_check();
         if let Err(e) = cfg.save(&path) {
             eprintln!("claudebar: failed to create config: {e}");
             return ExitCode::FAILURE;
         }
         eprintln!("claudebar: created default config at {}", path.display());
+        if no_nerd_font {
+            print_nerd_font_hint();
+        }
     }
 
     let editor = std::env::var("EDITOR")
@@ -550,4 +566,19 @@ fn which_ok(cmd: &str) -> bool {
         .status()
         .map(|s| s.success())
         .unwrap_or(false)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn default_config_with_font_check_style_matches_flag() {
+        let (cfg, no_nerd_font) = default_config_with_font_check();
+        if no_nerd_font {
+            assert_eq!(cfg.style, "unicode");
+        } else {
+            assert_eq!(cfg.style, Config::default().style);
+        }
+    }
 }
