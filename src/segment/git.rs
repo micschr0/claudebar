@@ -3,9 +3,12 @@
 //! Contract (matches the bash script's git segment):
 //! - Only run when `ctx.input.cwd` is a non-empty **absolute** path (starts with
 //!   `/`). Otherwise emit nothing, return `false`.
-//! - Run exactly one git command:
-//!   `git -C <cwd> -c gc.auto=0 status --branch --porcelain --no-optional-locks` (suppress stderr).
-//!   If it fails or output is empty → return `false`.
+//! - Run TWO git commands, both scoped to `cwd`:
+//!   1. `git -C <cwd> -c gc.auto=0 status --branch --porcelain --no-optional-locks` (suppress stderr).
+//!      If it fails or output is empty → return `false`.
+//!   2. `git -C <cwd> rev-list --walk-reflogs --count refs/stash` (with
+//!      `GIT_OPTIONAL_LOCKS=0`), only once (1) has confirmed a branch — for the
+//!      stash flag. Skipped for non-repos and detached HEAD.
 //! - Parse the `## ` branch line:
 //!   - `## No commits yet on <branch>` → branch = `<branch>`.
 //!   - `## HEAD (no branch)` → no branch (detached) → return `false`.
@@ -16,10 +19,11 @@
 //! - Strip control bytes from the branch name (host-provided) via
 //!   [`crate::sanitize::strip_control`].
 //! - Emit (using the writer + style glyphs): branch icon + branch in
-//!   `theme.git_branch`; then ` ↑N` (theme.ahead) if ahead>0; ` ↓M`
-//!   (theme.behind) if behind>0; ` MN` (theme.modified) if n_mod>0; ` ?N`
-//!   (theme.untracked) if n_new>0. Glyphs come from `style.glyphs`
-//!   (branch/ahead/behind/modified/untracked).
+//!   `theme.git_branch`; then the stash flag (theme.stash / glyphs.stash)
+//!   immediately after the branch name when stash count > 0; then ` ↑N`
+//!   (theme.ahead) if ahead>0; ` ↓M` (theme.behind) if behind>0; ` MN`
+//!   (theme.modified) if n_mod>0; ` ?N` (theme.untracked) if n_new>0. Glyphs
+//!   come from `style.glyphs` (branch/stash/ahead/behind/modified/untracked).
 //! - Return `true` once a branch was emitted.
 
 use crate::render::SegmentWriter;
@@ -99,6 +103,32 @@ fn parse_count(line: &str, key: &str) -> u32 {
         .unwrap_or(0)
 }
 
+/// Parse the stdout of `git rev-list --walk-reflogs --count refs/stash`.
+///
+/// Returns 0 for empty or unparseable input — never panics.
+fn parse_stash_count(out: &str) -> u64 {
+    out.trim().parse().unwrap_or(0)
+}
+
+/// Count the git stashes in `cwd`. Returns 0 on any spawn or exit failure.
+fn stash_count(cwd: &str) -> u64 {
+    match Command::new("git")
+        .args([
+            "-C",
+            cwd,
+            "rev-list",
+            "--walk-reflogs",
+            "--count",
+            "refs/stash",
+        ])
+        .env("GIT_OPTIONAL_LOCKS", "0")
+        .output()
+    {
+        Ok(o) if o.status.success() => parse_stash_count(&String::from_utf8_lossy(&o.stdout)),
+        _ => 0,
+    }
+}
+
 pub struct Git;
 
 impl Segment for Git {
@@ -142,6 +172,10 @@ impl Segment for Git {
 
         out.icon(glyphs.branch);
         out.colored(theme.git_branch, &status.branch);
+        let stashes = stash_count(cwd);
+        if stashes > 0 {
+            out.colored_fmt(theme.stash, format_args!(" {}{}", glyphs.stash, stashes));
+        }
         if status.ahead > 0 {
             out.colored_fmt(
                 theme.ahead,
@@ -235,5 +269,25 @@ mod tests {
     #[test]
     fn empty_output_is_none() {
         assert!(parse_status("").is_none());
+    }
+
+    #[test]
+    fn parses_stash_count() {
+        assert_eq!(parse_stash_count("2\n"), 2);
+    }
+
+    #[test]
+    fn parses_stash_count_with_padding() {
+        assert_eq!(parse_stash_count("  0 \n"), 0);
+    }
+
+    #[test]
+    fn empty_stash_output_is_zero() {
+        assert_eq!(parse_stash_count(""), 0);
+    }
+
+    #[test]
+    fn garbage_stash_output_is_zero() {
+        assert_eq!(parse_stash_count("garbage"), 0);
     }
 }

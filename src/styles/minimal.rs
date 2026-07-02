@@ -6,6 +6,7 @@
 
 use crate::model::Style;
 
+#[must_use]
 pub fn style() -> Style {
     Style {
         separator: "\u{b7}", // · middle dot

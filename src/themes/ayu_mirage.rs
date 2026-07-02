@@ -3,6 +3,7 @@
 
 use crate::model::{Color, Theme};
 
+#[must_use]
 pub fn theme() -> Theme {
     Theme {
         dir: Color(81),
@@ -10,16 +11,23 @@ pub fn theme() -> Theme {
         ahead: Color(113),
         behind: Color(210),
         modified: Color(221),
-        untracked: Color(242),
+        untracked: Color(244),
         token: Color(117),
         bar_ok: Color(113),
         bar_warn: Color(221),
         bar_crit: Color(210),
-        bar_track: Color(234),
+        bar_track: Color(241),
         separator: Color(242),
-        dim: Color(242),
+        dim: Color(244),
         reset: Color(116),
-        effort_max: Color(213),
+        effort: Color(213),
         model: Color(215),
+        project: Color(81),
+        stash: Color(183),
+        lines: Color(244),
+        cost: Color(221), // Warm yellow — informational, not alarm
+        duration: Color(116),
+        clock: Color(113),
+        burn: Color(210),
     }
 }

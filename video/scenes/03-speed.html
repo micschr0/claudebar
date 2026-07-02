@@ -1,0 +1,153 @@
+<template id="scene-03-speed-template">
+  <div data-composition-id="scene-03-speed" data-width="1920" data-height="1080">
+    <div class="stack">
+      <h2 id="title" class="title">One compiled binary. No shell chain.</h2>
+
+      <!-- claudebar: one process, everything in-memory -->
+      <div id="row-cb" class="row">
+        <span id="cb-in" class="io">stdin</span>
+        <span id="cb-arrow" class="pipe">→</span>
+        <div id="cb-block" class="monolith"><span class="label">1 FORK</span><span class="sublabel">(git, when enabled)</span></div>
+        <span id="cb-arrow2" class="pipe">→</span>
+        <span id="cb-out" class="io">stdout</span>
+      </div>
+
+      <!-- typical hand-rolled bash statusline: forked chain -->
+      <div id="row-bash" class="row">
+        <span id="bs-in" class="io dim">stdin</span>
+        <span id="bs-arr0" class="pipe dim">→</span>
+        <div id="b-jq"   class="chip"><span class="blabel">jq</span><span class="bfork">fork</span></div>
+        <span id="bs-arr1" class="pipe dim">→</span>
+        <div id="b-git"  class="chip"><span class="blabel">git</span><span class="bfork">fork</span></div>
+        <span id="bs-arr2" class="pipe dim">→</span>
+        <div id="b-date" class="chip"><span class="blabel">date</span><span class="bfork">fork</span></div>
+        <span id="bs-arr3" class="pipe dim">→</span>
+        <div id="b-wc"   class="chip"><span class="blabel">wc</span><span class="bfork">fork</span></div>
+        <span id="bs-arr4" class="pipe dim">→</span>
+        <div id="b-awk"  class="chip"><span class="blabel">awk</span><span class="bfork">fork</span></div>
+        <span id="bs-arr5" class="pipe dim">→</span>
+        <span id="bs-out" class="io dim">stdout</span>
+      </div>
+      <p id="bash-note" class="bash-note">how most bash statuslines are built</p>
+
+      <p id="tag" class="tag">&lt;20 ms — no shell startup overhead.</p>
+
+    <style>
+      [data-composition-id="scene-03-speed"] {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: #16161e;
+        font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+      }
+      [data-composition-id="scene-03-speed"] .stack {
+        display: flex; flex-direction: column; align-items: center; gap: 60px;
+      }
+      [data-composition-id="scene-03-speed"] .title {
+        margin: 0; font-size: 76px; font-weight: 600; letter-spacing: -2px; color: #c0caf5;
+        text-align: center; white-space: nowrap;
+        visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-03-speed"] .row {
+        display: flex; align-items: center; gap: 14px;
+        visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-03-speed"] .io {
+        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        font-size: 30px; font-weight: 500; color: #9ece6a;
+        padding: 10px 22px; border-radius: 8px;
+        background: rgba(158,206,106,0.08); border: 1px solid rgba(158,206,106,0.2);
+      }
+      [data-composition-id="scene-03-speed"] .io.dim { color: #828bb8; background: rgba(130,139,184,0.06); border-color: rgba(130,139,184,0.12); }
+      [data-composition-id="scene-03-speed"] .pipe {
+        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        font-size: 34px; color: #565f89; visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-03-speed"] .pipe.dim { color: #3b426b; }
+      [data-composition-id="scene-03-speed"] .monolith {
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+        width: 300px; height: 150px; border-radius: 16px;
+        background: #13141f;
+        border-top: 5px solid #7aa2f7;
+        visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-03-speed"] .monolith .label {
+        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        font-size: 28px; font-weight: 700; color: #7aa2f7;
+      }
+      [data-composition-id="scene-03-speed"] .monolith .sublabel {
+        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        font-size: 20px; font-weight: 500; color: #6b7394;
+      }
+      [data-composition-id="scene-03-speed"] .chip {
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+        height: 104px; padding: 0 26px; border-radius: 12px;
+        background: rgba(130,139,184,0.08); border: 1px solid rgba(130,139,184,0.14);
+        visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-03-speed"] #b-jq  { border-left: 4px solid #c0caf5; }
+      [data-composition-id="scene-03-speed"] #b-git { border-left: 4px solid #f7768e; }
+      [data-composition-id="scene-03-speed"] #b-date { border-left: 4px solid #e0af68; }
+      [data-composition-id="scene-03-speed"] #b-wc  { border-left: 4px solid #9ece6a; }
+      [data-composition-id="scene-03-speed"] #b-awk { border-left: 4px solid #bb9af7; }
+      [data-composition-id="scene-03-speed"] .blabel {
+        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        font-size: 26px; font-weight: 600; color: #c0caf5;
+      }
+      [data-composition-id="scene-03-speed"] .bfork {
+        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        font-size: 17px; font-weight: 600; color: #6b7394;
+        text-transform: uppercase; letter-spacing: 1.5px;
+      }
+      [data-composition-id="scene-03-speed"] .bash-note {
+        margin: 10px 0 0; font-size: 23px; font-weight: 400; color: #3b426b;
+        font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+        visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-03-speed"] .tag {
+        margin: 0; font-size: 50px; font-weight: 400; color: #565f89; letter-spacing: -0.5px;
+        visibility: hidden; opacity: 0;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Title
+      tl.fromTo("#title", { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, ease: "expo.out" }, 0.1);
+
+      // claudebar row — one clean pop, data flows through instantly
+      tl.fromTo("#row-cb", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.5);
+      tl.fromTo("#cb-in",  { x: -12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out" }, 0.55);
+      tl.fromTo("#cb-arrow", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.65);
+      tl.fromTo("#cb-block", { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: "back.out(0.8)" }, 0.7);
+      tl.fromTo("#cb-arrow2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.9);
+      tl.fromTo("#cb-out", { x: 12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.3, ease: "power2.out" }, 0.95);
+
+      // bash row — each tool forks in, pipes appear between them
+      tl.fromTo("#row-bash", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.12 }, 1.1);
+      tl.fromTo("#bs-in",   { x: -12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.13);
+      tl.fromTo("#bs-arr0", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.20);
+
+      // Each fork staggers in
+      tl.fromTo("#b-jq",    { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.22);
+      tl.fromTo("#bs-arr1", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.28);
+      tl.fromTo("#b-git",   { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.35);
+      tl.fromTo("#bs-arr2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.42);
+      tl.fromTo("#b-date",  { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.50);
+      tl.fromTo("#bs-arr3", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.59);
+      tl.fromTo("#b-wc",    { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.68);
+      tl.fromTo("#bs-arr4", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.78);
+      tl.fromTo("#b-awk",   { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 1.88);
+      tl.fromTo("#bs-arr5", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.10 }, 1.99);
+      tl.fromTo("#bs-out",  { x: 12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" }, 2.10);
+      tl.fromTo("#bash-note", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power1.out" }, 2.3);
+
+      // Tagline
+      tl.fromTo("#tag", { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 2.5);
+
+      window.__timelines["scene-03-speed"] = tl;
+    </script>
+  </div>
+</template>

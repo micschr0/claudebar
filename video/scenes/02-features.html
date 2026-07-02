@@ -1,0 +1,60 @@
+<template id="scene-02-features-template">
+  <div data-composition-id="scene-02-features" data-width="1920" data-height="1080">
+    <div class="stack">
+      <div class="tui-stack">
+        <img id="tui-segments"   class="tui-layer" src="public/screenshots/config-tui.png" alt="claudebar config: segments panel">
+        <img id="tui-theme"      class="tui-layer" src="public/screenshots/config-tui-theme.png" alt="claudebar config: theme panel">
+        <img id="tui-style"      class="tui-layer" src="public/screenshots/config-tui-style.png" alt="claudebar config: style panel">
+        <img id="tui-thresholds" class="tui-layer" src="public/screenshots/config-tui-thresholds.png" alt="claudebar config: thresholds panel">
+      </div>
+    </div>
+
+    <style>
+      [data-composition-id="scene-02-features"] {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: #16161e;
+        font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+      }
+      [data-composition-id="scene-02-features"] .stack {
+        display: flex; flex-direction: column; align-items: center; gap: 56px;
+      }
+      [data-composition-id="scene-02-features"] .tui-stack {
+        position: relative; width: 1260px; height: 872px;
+        filter: drop-shadow(0 28px 60px rgba(0,0,0,0.55));
+        visibility: hidden; opacity: 0;
+      }
+      [data-composition-id="scene-02-features"] .tui-layer {
+        position: absolute; inset: 0; margin: auto;
+        display: block; height: 100%; width: auto; max-width: 100%;
+        object-fit: contain; border-radius: 12px;
+        visibility: hidden; opacity: 0;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "[data-composition-id='scene-02-features']";
+
+      // TUI card scales/fades in at scene start
+      tl.fromTo(root + " .tui-stack",
+        { y: 24, scale: 0.96, autoAlpha: 0 },
+        { y: 0, scale: 1, autoAlpha: 1, duration: 0.5, ease: "power2.out" }, 0.1);
+      tl.fromTo("#tui-segments", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power1.out" }, 0.1);
+
+      // Cross-dissolve through the 4 panels: segments -> theme -> style -> thresholds
+      tl.fromTo("#tui-theme", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.inOut" }, 1.5);
+      tl.to("#tui-segments", { autoAlpha: 0, duration: 0.5, ease: "power1.inOut" }, 1.5);
+
+      tl.fromTo("#tui-style", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.inOut" }, 2.6);
+      tl.to("#tui-theme", { autoAlpha: 0, duration: 0.5, ease: "power1.inOut" }, 2.6);
+
+      tl.fromTo("#tui-thresholds", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power1.inOut" }, 3.7);
+      tl.to("#tui-style", { autoAlpha: 0, duration: 0.5, ease: "power1.inOut" }, 3.7);
+
+      window.__timelines["scene-02-features"] = tl;
+    </script>
+  </div>
+</template>

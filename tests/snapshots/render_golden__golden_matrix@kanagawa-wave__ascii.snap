@@ -1,6 +1,5 @@
 ---
 source: tests/render_golden.rs
-assertion_line: 69
 expression: rendered
 ---
-\e[38;5;110m ~/p/claude-code-statusline\e[0m \e[38;5;242m|\e[0m \e[38;5;143m####\e[38;5;240m--\e[0m \e[38;5;143m67%\e[0m \e[38;5;110m42.3k\e[0m \e[38;5;242m|\e[0m \e[38;5;101m##\e[38;5;240m----\e[0m \e[38;5;101m48%\e[0m \e[38;5;66m2h46m\e[0m \e[38;5;242m|\e[0m \e[38;5;143mOpus 4.8\e[0m \e[38;5;101mhigh\e[0m
+\e[38;5;110m ~/p/claude-code-statusline\e[0m \e[38;5;242m|\e[0m \e[38;5;143mOpus 4.8\e[0m \e[38;5;107mhigh\e[0m \e[38;5;242m|\e[0m \e[38;5;143m####\e[38;5;241m--\e[0m \e[38;5;143m67%\e[0m \e[38;5;110m42.3k\e[0m \e[38;5;242m|\e[0m \e[38;5;107m##\e[38;5;241m----\e[0m \e[38;5;107m48%\e[0m \e[38;5;66m2h46m\e[0m

@@ -11,12 +11,18 @@ pub struct Color(pub u8);
 
 impl Color {
     /// SGR foreground sequence, e.g. `\x1b[38;5;33m`.
+    #[must_use = "returns ANSI escape string; ignoring it is a bug"]
     pub fn fg(self) -> String {
         format!("\x1b[38;5;{}m", self.0)
     }
 
     /// Append the SGR foreground sequence directly into `buf`, avoiding the
     /// throwaway `String` that [`Color::fg`] allocates on the render hot path.
+    ///
+    /// # Panics
+    ///
+    /// The internal `write!` to a `String` buffer is infallible and will never panic.
+    #[inline]
     pub fn write_fg(self, buf: &mut String) {
         buf.push_str("\x1b[38;5;");
         write!(buf, "{}", self.0).unwrap();
@@ -58,8 +64,22 @@ pub struct Theme {
     pub dim: Color,
     /// Reset/countdown timer value.
     pub reset: Color,
-    /// `max` effort highlight.
-    pub effort_max: Color,
     /// Model display name.
     pub model: Color,
+    /// Project/repo-root name (falls back to `dir` in themes that predate this slot).
+    pub project: Color,
+    /// Stash count (falls back to `git_branch` in themes that predate this slot).
+    pub stash: Color,
+    /// Lines added/removed background.
+    pub lines: Color,
+    /// Cost in USD background.
+    pub cost: Color,
+    /// Session duration background.
+    pub duration: Color,
+    /// Clock background.
+    pub clock: Color,
+    /// Effort level (reasoning effort) background.
+    pub effort: Color,
+    /// Burn-rate / range-to-empty background.
+    pub burn: Color,
 }

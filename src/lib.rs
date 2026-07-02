@@ -5,6 +5,12 @@
 //! [`model`] contract and [`render`] composition, so the live preview can never
 //! diverge from what the hook emits.
 
+#![deny(clippy::correctness)]
+#![warn(clippy::suspicious)]
+#![warn(clippy::style)]
+#![warn(clippy::complexity)]
+#![warn(clippy::perf)]
+
 pub mod model;
 pub mod render;
 pub mod sanitize;

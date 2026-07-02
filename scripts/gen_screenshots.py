@@ -57,7 +57,7 @@ def render_shots(shots, selector, scale=2, wait=900, viewport=None):
     const page = await browser.newPage({{ {vp} }});
     await page.goto(src);
     await page.waitForTimeout({wait});
-    await page.locator("{selector}").screenshot({{ path: out, omitBackground: true }});
+    await page.locator("{selector}").screenshot({{ path: out }});
     await page.close();
     console.log("Saved:", out);
   }}"""
@@ -111,18 +111,41 @@ def esc(s):
     return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;")
 
 def run_sl(ctx_pct, tok_in, tok_out, rl_5h_pct, rl_5h_reset,
-           rl_7d_pct=None, rl_7d_reset=None, model="Claude Sonnet 4.6", effort=None, cwd=None):
+           rl_7d_pct=None, rl_7d_reset=None, model="Claude Sonnet 4.6", effort=None, cwd=None,
+           cost=None, lines_added=None, lines_removed=None, duration_ms=None,
+           segments=None):
+    """Render the status line via ``claudebar render``.
+
+    New keyword arguments for opt-in segments:
+        cost: USD float (enables cost segment)
+        lines_added, lines_removed: u64 (enables lines segment)
+        duration_ms: u64 (enables duration segment)
+        segments: list of kebab-case names → ``--segments …``
+    """
     now = int(time.time())
     rl  = f'"five_hour":{{"used_percentage":{rl_5h_pct},"resets_at":{now+rl_5h_reset}}}'
     if rl_7d_pct is not None:
         rl += f',"seven_day":{{"used_percentage":{rl_7d_pct},"resets_at":{now+rl_7d_reset}}}'
     effort_field = f',"effort":{{"level":"{effort}"}}' if effort else ""
+    cost_parts = []
+    if cost is not None:
+        cost_parts.append(f'"total_cost_usd":{cost}')
+    if lines_added is not None:
+        cost_parts.append(f'"total_lines_added":{lines_added}')
+    if lines_removed is not None:
+        cost_parts.append(f'"total_lines_removed":{lines_removed}')
+    if duration_ms is not None:
+        cost_parts.append(f'"total_duration_ms":{duration_ms}')
+    cost_field = f',"cost":{{{",".join(cost_parts)}}}' if cost_parts else ""
     j = (f'{{"cwd":"{cwd or DEMO_CWD}",'
          f'"context_window":{{"total_input_tokens":{tok_in},'
          f'"total_output_tokens":{tok_out},"used_percentage":{ctx_pct}}},'
-         f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}{effort_field}}}')
+         f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}{effort_field}{cost_field}}}')
     env = {**os.environ, "HOME": DEMO_HOME}
-    return subprocess.run([BINARY, "render"], input=j, capture_output=True,
+    cmd = [BINARY, "render"]
+    if segments:
+        cmd.extend(["--segments", ",".join(segments)])
+    return subprocess.run(cmd, input=j, capture_output=True,
                           text=True, env=env).stdout.rstrip()
 
 # ── HTML helpers ───────────────────────────────────────────────────────────────
@@ -134,7 +157,7 @@ CSS = """
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  background: #0d0d14; padding: 28px;
+  background: #101018; padding: 28px;
   font-family: 'HackNF', monospace;
   display: flex; justify-content: center;
 }
@@ -253,19 +276,21 @@ PNG_SHOTS = [
     ("skynet",
      dict(ctx_pct=67.0, tok_in=35000, tok_out=7300, rl_5h_pct=48.0, rl_5h_reset=8000,
           model="Skynet 4.2.0", cwd="/var/skynet/defense-net/missile-command/launch",
-          effort="max"),
+          effort="max", cost=4.20, lines_added=847, lines_removed=0, duration_ms=8_400_000),
      CONTENT_SKYNET),
     ("normal",
      dict(ctx_pct=67.0, tok_in=55000, tok_out=9200, rl_5h_pct=45.0, rl_5h_reset=8400,
-          effort="high"),
+          effort="high", cost=2.15, lines_added=140, lines_removed=32, duration_ms=1_800_000),
      CONTENT_AUTH),
     ("critical",
      dict(ctx_pct=88.0, tok_in=140000, tok_out=26000, rl_5h_pct=80.0, rl_5h_reset=2700,
-          rl_7d_pct=58.0, rl_7d_reset=259200, effort="max", cwd="/tmp/demo-busy"),
+          rl_7d_pct=58.0, rl_7d_reset=259200, effort="max", cwd="/tmp/demo-busy",
+          cost=8.40, lines_added=610, lines_removed=145, duration_ms=10_800_000),
      CONTENT_RENDER),
     ("overlimit",
      dict(ctx_pct=101.0, tok_in=160000, tok_out=8000, rl_5h_pct=93.0, rl_5h_reset=900,
-          effort="max", cwd="/tmp/demo-release"),
+          effort="max", cwd="/tmp/demo-release",
+          cost=14.75, lines_added=920, lines_removed=310, duration_ms=16_200_000),
      CONTENT_RENDER),
 ]
 
@@ -299,7 +324,7 @@ STRIP_CSS = """
   src:url('__FONT_URL__') format('truetype');
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:transparent; }
+body { background: #101018; }
 /* Transparent padded frame so the strip's drop shadow has room to render and
    isn't clipped by the element-screenshot bounding box. */
 .stripwrap { display:inline-block; padding:22px 26px; background:transparent; }
@@ -329,13 +354,22 @@ _PNG_STRIPS = [(n, a) for n, a, _ in PNG_SHOTS if n != "skynet"]
 _EXTRA_STRIPS = [
     ("green", dict(ctx_pct=18.0, tok_in=9000, tok_out=2000,
                    rl_5h_pct=12.0, rl_5h_reset=14400, effort="medium",
-                   cwd="/tmp/demo-clean")),
+                   cwd="/tmp/demo-clean",
+                   cost=0.35, lines_added=40, lines_removed=5, duration_ms=600_000)),
     ("nogit", dict(ctx_pct=48.0, tok_in=40000, tok_out=8000,
                    rl_5h_pct=30.0, rl_5h_reset=9000,
-                   model="Claude Opus 4.8", effort="high", cwd="/tmp")),
+                   model="Claude Opus 4.8", effort="high", cwd="/tmp",
+                   cost=1.05, lines_added=85, lines_removed=20, duration_ms=3_000_000)),
     ("noeffort", dict(ctx_pct=55.0, tok_in=50000, tok_out=9000,
                       rl_5h_pct=40.0, rl_5h_reset=7200,
-                      model="Claude Haiku 4.5", cwd="/tmp/demo-behind")),
+                      model="Claude Haiku 4.5", cwd="/tmp/demo-behind",
+                      cost=0.90, lines_added=60, lines_removed=15, duration_ms=2_400_000)),
+    ("features", dict(ctx_pct=42.0, tok_in=35000, tok_out=6000,
+                      rl_5h_pct=25.0, rl_5h_reset=12000,
+                      model="Claude Sonnet 4.6", effort="high",
+                      cost=1.23, lines_added=321, lines_removed=87, duration_ms=2820000,
+                      segments=["directory","git","context","rate-limits","model",
+                                "cost","lines","duration","clock"])),
 ]
 
 STRIP_SHOTS = _PNG_STRIPS + _EXTRA_STRIPS

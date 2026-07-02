@@ -2,8 +2,8 @@
 //!
 //! Contract (matches the bash script's "session tokens + context bar"):
 //! ```text
-//! total = context_window.total_input_tokens + total_output_tokens
-//!   (each via Coerce::or_default). If total == 0 -> emit nothing, return false.
+//!   (each via Coerce::or_default). Always renders — even at zero tokens,
+//!   so new users meet the segment in its most benign form.
 //! Format the count with crate::sanitize::fmt_tokens.
 //! If used_percentage present and in range 0..=999 (round to nearest int first):
 //!   pick the bar color by threshold:
@@ -28,19 +28,20 @@ impl Segment for Context {
     fn render(&self, ctx: &RenderCtx, out: &mut SegmentWriter) -> bool {
         let cw = &ctx.input.context_window;
         let total = cw.total_input_tokens.or_default() + cw.total_output_tokens.or_default();
-        if total == 0 {
-            return false;
-        }
         let count = fmt_tokens(total);
 
         // The bar + percent only render when a usable percentage is present.
         if let Some(raw) = cw.used_percentage.get() {
-            let pct = raw.round() as i64;
-            if (0..=999).contains(&pct) {
-                let pct = pct as u32;
-                let color = if pct > 100 || pct >= ctx.th.crit as u32 {
+            let pct_float = raw.round();
+            // Clamp before casting — f64::round() can produce negative zero or
+            // values outside the displayable range.
+            if (0.0..=999.0).contains(&pct_float) {
+                let pct = pct_float as u32; // safe: 0.0..=999.0 fits in u32
+                let warn = u32::from(ctx.th.warn);
+                let crit = u32::from(ctx.th.crit);
+                let color = if pct > 100 || pct >= crit {
                     ctx.theme.bar_crit
-                } else if pct >= ctx.th.warn as u32 {
+                } else if pct >= warn {
                     ctx.theme.bar_warn
                 } else {
                     ctx.theme.bar_ok
@@ -85,13 +86,22 @@ mod tests {
         };
         let theme = themes::get(&cfg.theme);
         let style = styles::get(&cfg.style);
-        render_with(&input, &cfg, &theme, &style, 0, None)
+        render_with(&input, &cfg, &theme, &style, 0, None, 0)
     }
 
     #[test]
-    fn zero_tokens_renders_nothing() {
-        assert_eq!(render_ctx(None, None, Some(67.0)), "");
-        assert_eq!(render_ctx(Some(0), Some(0), Some(67.0)), "");
+    fn zero_tokens_renders_count() {
+        // Context now renders at zero tokens so new users meet it immediately.
+        let out = render_ctx(Some(0), Some(0), Some(67.0));
+        assert!(out.contains("0"), "zero count missing: {out:?}");
+    }
+
+    #[test]
+    fn zero_tokens_without_percentage_renders_count_only() {
+        // No percentage → bar branch skipped, just the count.
+        let out = render_ctx(Some(0), Some(0), None);
+        assert!(out.contains("0"), "zero count missing: {out:?}");
+        assert!(!out.contains('%'), "unexpected percent bar: {out:?}");
     }
 
     #[test]

@@ -21,13 +21,15 @@ pub(crate) enum Dir {
     Down,
 }
 
-/// A threshold field that can be nudged with h/l/H/L.
+/// A threshold field in the TUI configurator.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum ThresholdField {
     Warn,
     Crit,
     WeeklyShowAt,
     BarWidth,
+    ClockMode,
+    Layout,
 }
 
 /// Identifies which of the two top-row panels is active.
@@ -82,9 +84,8 @@ pub(crate) struct App {
     /// Last drawn area of the right panel — set by draw(), read by mouse handler.
     pub right_panel_area: std::cell::Cell<ratatui::layout::Rect>,
     /// Swatch cache built in themes::NAMES order.
-    /// Slot order: [separator, dir, git_branch, bar_ok, bar_crit].
-    /// Reordering themes::NAMES or changing Theme struct fields requires updating here.
-    pub swatch_cache: Vec<[u8; 5]>,
+    /// Slot order: [separator, dir, git_branch, bar_ok, bar_crit, model].
+    pub swatch_cache: Vec<[u8; 6]>,
     pub samples: Vec<Sample>,
     pub sample_idx: usize,
     /// Transient status message with a severity level for color-coding.
@@ -106,9 +107,9 @@ impl App {
         let saved_config = config.clone();
 
         // Swatch cache built in themes::NAMES order — draw_list() indexes by themes::NAMES position.
-        // Slot order: [separator, dir, git_branch, bar_ok, bar_crit].
+        // Slot order: [separator, dir, git_branch, bar_ok, bar_crit, model].
         // Reordering themes::NAMES or changing Theme struct fields requires updating here.
-        let swatch_cache: Vec<[u8; 5]> = crate::themes::NAMES
+        let swatch_cache: Vec<[u8; 6]> = crate::themes::NAMES
             .iter()
             .map(|name| {
                 let t = crate::themes::get(name);
@@ -118,6 +119,7 @@ impl App {
                     t.git_branch.0,
                     t.bar_ok.0,
                     t.bar_crit.0,
+                    t.model.0,
                 ]
             })
             .collect();
@@ -303,6 +305,31 @@ impl App {
                 let val = (t.bar_width as i16 + delta).clamp(2, 20) as u8;
                 t.bar_width = val;
             }
+            ThresholdField::ClockMode | ThresholdField::Layout => {
+                // Nudging has no effect on enum-cycled fields; use cycle_threshold_enum.
+            }
+        }
+    }
+
+    /// Cycle a threshold enum-typed field through its options (clock_mode, layout).
+    pub(crate) fn cycle_threshold_enum(&mut self, field: ThresholdField) {
+        match field {
+            ThresholdField::ClockMode => {
+                self.config.thresholds.clock_mode = match self.config.thresholds.clock_mode.as_str()
+                {
+                    "auto" => "12h".into(),
+                    "12h" => "24h".into(),
+                    "24h" => "off".into(),
+                    _ => "auto".into(),
+                };
+            }
+            ThresholdField::Layout => {
+                self.config.thresholds.layout = match self.config.thresholds.layout.as_str() {
+                    "fixed" => "auto".into(),
+                    _ => "fixed".into(),
+                };
+            }
+            _ => {}
         }
     }
 
@@ -336,13 +363,54 @@ impl App {
             }
         }
     }
+
+    pub(crate) fn context_help(&self) -> Option<&'static str> {
+        if self.focused_panel != Panel::Right {
+            return None;
+        }
+        match self.menu_cursor {
+            0 => {
+                let mut order: Vec<SegmentKind> = self.config.segments.clone();
+                for &kind in &SegmentKind::ALL {
+                    if !self.config.segments.contains(&kind) {
+                        order.push(kind);
+                    }
+                }
+                order
+                    .get(self.detail_cursor)
+                    .map(|&kind| segment_help(kind))
+            }
+            3 => {
+                const ORDER: [ThresholdField; 6] = [
+                    ThresholdField::Warn,
+                    ThresholdField::Crit,
+                    ThresholdField::WeeklyShowAt,
+                    ThresholdField::BarWidth,
+                    ThresholdField::ClockMode,
+                    ThresholdField::Layout,
+                ];
+                ORDER
+                    .get(self.detail_cursor)
+                    .map(|&field| threshold_help(field))
+            }
+            _ => None,
+        }
+    }
 }
 
 /// Build list_rows, selectable_indices, and section_starts from config.
 /// Called in App::new(), toggle_cursor(), reset(), and move_segment().
 pub(crate) fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 4]) {
-    let mut list_rows: Vec<RowItem> = Vec::new();
-    let mut selectable_indices: Vec<usize> = Vec::new();
+    let mut list_rows: Vec<RowItem> = Vec::with_capacity(
+        4 + SegmentKind::ALL.len()
+            + 1
+            + crate::themes::NAMES.len()
+            + crate::styles::NAMES.len()
+            + 4,
+    );
+    let mut selectable_indices: Vec<usize> = Vec::with_capacity(
+        SegmentKind::ALL.len() + crate::themes::NAMES.len() + crate::styles::NAMES.len() + 4,
+    );
 
     // --- Section 0: Segments ---
     list_rows.push(RowItem::SectionHeader(0));
@@ -433,8 +501,41 @@ pub(crate) fn detail_len(app: &App) -> usize {
         0 => crate::model::SegmentKind::ALL.len(),
         1 => crate::themes::NAMES.len(),
         2 => crate::styles::NAMES.len(),
-        3 => 4, // ThresholdField variants: Warn, Crit, WeeklyShowAt, BarWidth
+        3 => 6, // ThresholdField variants: Warn, Crit, WeeklyShowAt, BarWidth, ClockMode, Layout
         _ => 0,
+    }
+}
+
+/// Human-readable description for each segment, shown in the status line
+/// when the segment is selected in the right panel.
+pub(crate) fn segment_help(kind: SegmentKind) -> &'static str {
+    match kind {
+        SegmentKind::Project => "(deprecated — directory covers project identity)",
+        SegmentKind::Directory => "Directory — current working directory",
+        SegmentKind::Git => "Git — current branch and working-tree status",
+        SegmentKind::Model => "Model — active Claude model and reasoning effort",
+        SegmentKind::Context => "Context — token usage vs. context window budget",
+        SegmentKind::RateLimits => "Rate Limits — 5-hour and 7-day API rate-limit usage",
+        SegmentKind::DevContext => "Dev Context — current development context name",
+        SegmentKind::Effort => "(deprecated — rendered inline by Model)",
+        SegmentKind::Cost => "Cost — session cost in USD",
+        SegmentKind::Lines => "Lines — lines added and removed this session",
+        SegmentKind::Duration => "Duration — session wall-clock duration",
+        SegmentKind::Burn => "Burn — projected time until rate limit is exhausted",
+        SegmentKind::Clock => "Clock — current time (12h/24h, configurable seconds)",
+    }
+}
+
+fn threshold_help(field: ThresholdField) -> &'static str {
+    match field {
+        ThresholdField::Warn => "warn — bar turns yellow above this context usage %",
+        ThresholdField::Crit => "crit — bar turns red above this context usage %",
+        ThresholdField::WeeklyShowAt => {
+            "weekly_show_at — weekly window shown once usage reaches this %"
+        }
+        ThresholdField::BarWidth => "bar_width — width of progress bars in cells",
+        ThresholdField::ClockMode => "clock_mode — 12h, 24h, or off",
+        ThresholdField::Layout => "layout — fixed (single line) or auto (responsive wrap)",
     }
 }
 

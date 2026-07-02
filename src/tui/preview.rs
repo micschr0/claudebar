@@ -26,6 +26,7 @@ pub fn render(cfg: &Config, sample: &Sample) -> Text<'static> {
         &style,
         FIXED_NOW,
         Some(PREVIEW_HOME),
+        0, // TUI preview is deterministic; always UTC
     );
     ansi.into_text()
         .unwrap_or_else(|_| Text::raw(ansi.replace('\u{1b}', "")))

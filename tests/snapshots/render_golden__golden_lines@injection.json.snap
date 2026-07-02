@@ -3,4 +3,4 @@ source: tests/render_golden.rs
 expression: render_fixture(&json)
 input_file: fixtures/injection.json
 ---
-\e[38;5;33m ~//proj\e[0m \e[38;5;238m\e[0m \e[38;5;245m󰍛\e[0m \e[38;5;114m━\e[38;5;238m╌╌╌╌╌\e[0m \e[38;5;114m10%\e[0m \e[38;5;245m󰰩\e[0m \e[38;5;117m1.2k\e[0m \e[38;5;238m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mEvil[5mModel\e[0m
+\e[38;5;39m ~//proj\e[0m \e[38;5;241m\e[0m \e[38;5;245m◈\e[0m \e[38;5;208mEvil[5mModel\e[0m \e[38;5;241m\e[0m \e[38;5;245m󰍛\e[0m \e[38;5;114m━\e[38;5;242m╌╌╌╌╌\e[0m \e[38;5;114m10%\e[0m \e[38;5;245m󰰩\e[0m \e[38;5;117m1.2k\e[0m
