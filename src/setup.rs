@@ -198,8 +198,14 @@ mod tests {
     fn classify_matching_key_already_configured_regardless_of_force() {
         let desired = desired_status_line();
         let settings = serde_json::json!({ "statusLine": desired.clone() });
-        assert_eq!(classify(&settings, &desired, false), Outcome::AlreadyConfigured);
-        assert_eq!(classify(&settings, &desired, true), Outcome::AlreadyConfigured);
+        assert_eq!(
+            classify(&settings, &desired, false),
+            Outcome::AlreadyConfigured
+        );
+        assert_eq!(
+            classify(&settings, &desired, true),
+            Outcome::AlreadyConfigured
+        );
     }
 
     #[test]
