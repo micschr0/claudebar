@@ -38,6 +38,8 @@ pub enum Command {
     /// Launch the interactive TUI configurator.
     Config,
     /// Write a default config file (or print it).
+    ///
+    /// See also: `sync` to add new segments to an existing config, `setup` to wire up Claude Code's settings.json.
     Init {
         /// Overwrite an existing config file.
         #[arg(long)]
@@ -53,12 +55,16 @@ pub enum Command {
         list_segments: bool,
     },
     /// Sync the config file: add any new segments introduced in newer claudebar versions.
+    ///
+    /// See also: `init` to create a fresh default config, `edit` to modify it directly.
     Sync,
     /// Render a built-in fixture to verify the install works.
     Smoke,
     /// Run diagnostics: font, git, config, PATH.
     Doctor,
     /// Open the config file in $EDITOR (falls back to vi).
+    ///
+    /// See also: `config` for the interactive TUI editor, `init` to (re)create the default file.
     Edit,
     /// Generate shell completions.
     Completions {
@@ -67,6 +73,8 @@ pub enum Command {
         shell: clap_complete::Shell,
     },
     /// Wire `claudebar render` into Claude Code's settings.json `statusLine` key.
+    ///
+    /// See also: `init` to create claudebar's own config.toml (this command instead wires Claude Code's settings.json).
     Setup {
         /// Path to settings.json (defaults to $SETTINGS env var, then ~/.claude/settings.json).
         #[arg(long, value_name = "FILE")]

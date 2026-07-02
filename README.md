@@ -129,6 +129,7 @@ Missing config file falls back to defaults.
 | `claudebar doctor` | Diagnose Nerd Font, git, and config issues |
 | `claudebar edit` | Open the config in `$EDITOR` (falls back to `vi`) |
 | `claudebar completions <SHELL>` | Generate completions for bash, zsh, or fish |
+| `claudebar setup [--settings-path] [--print] [--yes] [--force]` | Wire `claudebar render` into Claude Code's settings.json `statusLine` key |
 
 Global flags `--theme`, `--style`, `--segments`, `--config` override the config file for one invocation.
 
