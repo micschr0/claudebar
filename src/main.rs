@@ -437,6 +437,8 @@ fn run_smoke() -> ExitCode {
     let now: i64 = 1_900_000_000;
     let output = render_line(&input, &cfg, now);
     println!("{output}");
+    println!();
+    println!("Looks right? Run `claudebar doctor` to check your environment.");
     ExitCode::SUCCESS
 }
 
@@ -478,6 +480,25 @@ fn run_doctor(cli: &Cli) -> ExitCode {
         _ => true, // no config or default path = fine
     };
     println!("{} config.toml parses", check_mark(config_ok));
+
+    // 5. statusLine configured in Claude Code's settings.json?
+    let status_line_ok = claudebar::setup::default_settings_path()
+        .and_then(|p| claudebar::setup::load_settings(&p).ok())
+        .and_then(|settings| {
+            settings
+                .get("statusLine")
+                .and_then(|sl| sl.get("command"))
+                .and_then(|c| c.as_str())
+                .map(|s| s.contains("claudebar"))
+        })
+        .unwrap_or(false);
+    println!(
+        "{} statusLine configured (run `claudebar setup` if not)",
+        check_mark(status_line_ok)
+    );
+
+    println!();
+    println!("Rendering look off? Run `claudebar smoke` to test with fixture data.");
 
     // Always succeed — this is informational.
     ExitCode::SUCCESS
