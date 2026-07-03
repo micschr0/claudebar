@@ -29,7 +29,6 @@ bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 # the bash script (no compiled claudebar binary to invoke `setup` with).
 # The happy path (prebuilt binary) needs curl + jq. Nothing else is required.
 bold "Checking dependencies..."
-echo "  Tip: set a Nerd Font as your terminal font for the glyphs — https://www.nerdfonts.com"
 echo ""
 install_hint() {
   case "$1" in
