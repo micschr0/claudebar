@@ -228,6 +228,11 @@
       /* ── Hold to end ── */
       /* (21.8s – 28.0s) */
 
+      /* ── Idle micro-pulse: directory, lines, burn (otherwise static) ── */
+      tl.fromTo("#p0", { scale: 1.0 }, { scale: 1.015, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 17 }, 3.0);
+      tl.fromTo("#p4", { scale: 1.0 }, { scale: 1.015, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 15 }, 6.0);
+      tl.fromTo("#o1", { scale: 1.0 }, { scale: 1.015, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 11 }, 12.0);
+
       window.__timelines["scene-01-strip"] = tl;
     </script>
   </div>
