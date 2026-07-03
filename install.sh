@@ -149,10 +149,14 @@ sha256_of() {
 
 # verify_checksum <file> <archive_name> <sums_file> — verify <file> against
 # the sha256.sum entry for <archive_name>. Returns 1 on mismatch (fatal).
+# Matches both sha256sum output formats: text mode ("hash  name") and
+# binary mode ("hash *name") — cargo-dist emits the latter.
 verify_checksum() {
   local file="$1" archive_name="$2" sums_file="$3"
   local expected actual
-  expected=$(grep "  ${archive_name}$" "$sums_file" | awk '{print $1}')
+  expected=$(awk -v name="$archive_name" \
+    '{ f = $2; sub(/^\*/, "", f); if (f == name) { print $1; exit } }' \
+    "$sums_file")
   if [ -z "$expected" ]; then
     red "No checksum entry for ${archive_name} in sha256.sum"
     return 1
