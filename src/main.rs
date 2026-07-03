@@ -26,7 +26,15 @@ fn main() -> ExitCode {
             print,
             yes,
             force,
-        } => run_setup(&cli, settings_path.clone(), *print, *yes, *force),
+            binary_path,
+        } => run_setup(
+            &cli,
+            settings_path.clone(),
+            *print,
+            *yes,
+            *force,
+            binary_path.clone(),
+        ),
     }
 }
 
@@ -199,6 +207,7 @@ fn run_setup(
     print: bool,
     yes: bool,
     force: bool,
+    binary_path: Option<PathBuf>,
 ) -> ExitCode {
     let path = match settings_path.or_else(claudebar::setup::default_settings_path) {
         Some(p) => p,
@@ -244,7 +253,8 @@ fn run_setup(
         }
     };
 
-    let desired = claudebar::setup::desired_status_line();
+    let desired =
+        claudebar::setup::desired_status_line(binary_path.as_deref().and_then(|p| p.to_str()));
 
     match claudebar::setup::classify(&settings, &desired, force) {
         claudebar::setup::Outcome::AlreadyConfigured => {

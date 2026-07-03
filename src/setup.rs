@@ -49,12 +49,20 @@ pub fn default_settings_path() -> Option<PathBuf> {
         })
 }
 
-/// The desired `statusLine` value: `{"type":"command","command":"claudebar render"}`.
+/// The desired `statusLine` value. With `binary_path: None`, returns the
+/// unchanged default `{"type":"command","command":"claudebar render"}`. With
+/// `binary_path: Some(path)`, builds `{"type":"command","command":"{path} render"}`
+/// instead, so callers (e.g. `install.sh`) can point `statusLine` at an
+/// absolute install location rather than assuming `claudebar` is on `$PATH`.
 #[must_use]
-pub fn desired_status_line() -> Value {
+pub fn desired_status_line(binary_path: Option<&str>) -> Value {
+    let command = match binary_path {
+        Some(path) => format!("{path} render"),
+        None => STATUSLINE_COMMAND.to_string(),
+    };
     serde_json::json!({
         "type": "command",
-        "command": STATUSLINE_COMMAND,
+        "command": command,
     })
 }
 
@@ -181,9 +189,17 @@ mod tests {
     }
 
     #[test]
+    fn desired_status_line_with_binary_path_override() {
+        assert_eq!(
+            desired_status_line(Some("some/path")),
+            serde_json::json!({"type":"command","command":"some/path render"})
+        );
+    }
+
+    #[test]
     fn classify_missing_key_will_set_regardless_of_force() {
         let settings = serde_json::json!({});
-        let desired = desired_status_line();
+        let desired = desired_status_line(None);
         assert_eq!(
             classify(&settings, &desired, false),
             Outcome::WillSet { previous: None }
@@ -196,7 +212,7 @@ mod tests {
 
     #[test]
     fn classify_matching_key_already_configured_regardless_of_force() {
-        let desired = desired_status_line();
+        let desired = desired_status_line(None);
         let settings = serde_json::json!({ "statusLine": desired.clone() });
         assert_eq!(
             classify(&settings, &desired, false),
@@ -210,7 +226,7 @@ mod tests {
 
     #[test]
     fn classify_conflicting_key_without_force_is_conflict() {
-        let desired = desired_status_line();
+        let desired = desired_status_line(None);
         let existing = serde_json::json!({ "type": "command", "command": "other" });
         let settings = serde_json::json!({ "statusLine": existing.clone() });
         assert_eq!(
@@ -221,7 +237,7 @@ mod tests {
 
     #[test]
     fn classify_conflicting_key_with_force_will_set() {
-        let desired = desired_status_line();
+        let desired = desired_status_line(None);
         let existing = serde_json::json!({ "type": "command", "command": "other" });
         let settings = serde_json::json!({ "statusLine": existing.clone() });
         assert_eq!(
@@ -268,7 +284,7 @@ mod tests {
     fn save_then_load_roundtrips() {
         let path = unique_temp_path();
         let mut value = serde_json::json!({ "otherKey": true });
-        apply(&mut value, desired_status_line());
+        apply(&mut value, desired_status_line(None));
         save_settings(&path, &value).unwrap();
         let loaded = load_settings(&path).unwrap();
         assert_eq!(loaded, value);
@@ -278,9 +294,9 @@ mod tests {
     #[test]
     fn apply_preserves_unrelated_keys() {
         let mut settings = serde_json::json!({ "otherKey": true });
-        apply(&mut settings, desired_status_line());
+        apply(&mut settings, desired_status_line(None));
         assert_eq!(settings["otherKey"], serde_json::json!(true));
-        assert_eq!(settings["statusLine"], desired_status_line());
+        assert_eq!(settings["statusLine"], desired_status_line(None));
     }
 
     #[test]

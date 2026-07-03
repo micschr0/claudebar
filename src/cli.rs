@@ -88,5 +88,8 @@ pub enum Command {
         /// Overwrite an existing, different statusLine value.
         #[arg(long)]
         force: bool,
+        /// Override the binary path used to build the statusLine command (defaults to "claudebar").
+        #[arg(long, value_name = "PATH")]
+        binary_path: Option<PathBuf>,
     },
 }
