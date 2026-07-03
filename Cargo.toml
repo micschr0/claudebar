@@ -70,7 +70,7 @@ checksum = "sha256"
 # Embed dependency info for cargo audit bin scanning
 auditable = true
 tap = "micschr0/homebrew-tap"
-publish-jobs = ["homebrew"]
+publish-jobs = ["./homebrew-app-token"]
 # Pin .tar.gz (not dist's .tar.xz default) to preserve the existing release-URL
 # contract and keep the install.sh diff minimal.
 unix-archive = ".tar.gz"
