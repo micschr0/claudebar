@@ -21,45 +21,15 @@ jobs:
       - name: Run shellcheck
         run: shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
 
-  smoke:
-    name: Smoke test
+  bats:
+    name: Bats
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Install jq
-        run: sudo apt-get install -y jq
-      - name: Syntax check
-        run: bash -n statusline-command.sh
-      - name: Smoke — empty input
-        run: echo '{}' | bash statusline-command.sh; [ $? -eq 0 ]
-      - name: Smoke — typical input
-        run: |
-          output=$(echo '{"cwd":"/tmp","context_window":{"total_input_tokens":35000,"total_output_tokens":7300,"used_percentage":67.0},"model":{"display_name":"Claude Sonnet 4.6"}}' | bash statusline-command.sh)
-          [ -n "$output" ]
-      - name: Smoke — over-limit context (used_percentage > 100)
-        run: |
-          output=$(echo '{"cwd":"/tmp","context_window":{"total_input_tokens":200000,"total_output_tokens":50000,"used_percentage":110},"model":{"display_name":"Claude Sonnet 4.6"}}' | bash statusline-command.sh)
-          [ -n "$output" ]
-      - name: Smoke — 5h rate limit segment
-        run: |
-          output=$(echo '{"cwd":"/tmp","rate_limits":{"five_hour":{"used_percentage":72.0,"resets_at":9999999999}},"model":{"display_name":"Claude Sonnet 4.6"}}' | bash statusline-command.sh)
-          [ -n "$output" ]
-      - name: Smoke — weekly rate limit segment (>= 50%)
-        run: |
-          output=$(echo '{"cwd":"/tmp","rate_limits":{"five_hour":{"used_percentage":40.0,"resets_at":0},"seven_day":{"used_percentage":55.0,"resets_at":9999999999}},"model":{"display_name":"Claude Sonnet 4.6"}}' | bash statusline-command.sh)
-          [ -n "$output" ]
-      - name: Smoke — effort level segment
-        run: |
-          output=$(echo '{"cwd":"/tmp","model":{"display_name":"Claude Sonnet 4.6"},"effort":{"level":"max"}}' | bash statusline-command.sh)
-          [ -n "$output" ]
-      - name: Smoke — ANSI injection attempt in cwd
-        run: |
-          output=$(echo '{"cwd":"/tmp/\u001b[31minjected\u001b[0m","model":{"display_name":"Claude Sonnet 4.6"}}' | bash statusline-command.sh)
-          [ -n "$output" ]
-      - name: Smoke — no-git-repo path
-        run: |
-          output=$(echo '{"cwd":"/tmp","model":{"display_name":"Claude Sonnet 4.6"}}' | bash statusline-command.sh)
-          [ -n "$output" ]
+      - name: Install bats + jq
+        run: sudo apt-get install -y bats jq
+      - name: Run bats
+        run: bats tests/*.bats
 
   semgrep:
     name: Semgrep
