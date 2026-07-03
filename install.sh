@@ -87,7 +87,13 @@ check_nerd_font() {
 }
 # detect_target — print the Rust target triple for the current OS/arch, or
 # empty string if no prebuilt binary is available for this platform.
+# CLAUDEBAR_TARGET overrides detection (used by verify-install.yml to exercise
+# the aarch64 asset from an x86_64 runner without needing emulation).
 detect_target() {
+  if [ -n "${CLAUDEBAR_TARGET:-}" ]; then
+    printf '%s' "$CLAUDEBAR_TARGET"
+    return
+  fi
   local os arch
   os=$(uname -s)
   arch=$(uname -m)
@@ -180,7 +186,7 @@ download_prebuilt() {
   # them — the naming scheme is owned by the release workflow (cargo-dist),
   # not by this script, and has changed before (tag embedded in the archive
   # name, sums file renamed from sha256.sum to SHA256SUMS.txt).
-  url=$(find_asset_url "$release" "^claudebar-.*-${target}\\.tar\\.gz$")
+  url=$(find_asset_url "$release" "^claudebar-${target}\\.tar\\.gz$")
   sums_url=$(find_asset_url "$release" '^(SHA256SUMS\.txt|sha256\.sum)$')
   if [ -z "$url" ]; then
     red "No release asset found for target ${target} in ${tag}"
