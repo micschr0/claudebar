@@ -99,10 +99,18 @@
       [data-composition-id="scene-01-strip"] .seg {
         display: flex; flex-direction: column; align-items: center;
         background: #13141f;
-        border-top: 4px solid;
         border-radius: 14px;
         padding: 14px 16px;
         visibility: hidden; opacity: 0;
+        position: relative;
+        overflow: hidden;
+      }
+      [data-composition-id="scene-01-strip"] .seg::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        border-radius: 14px 14px 0 0;
       }
       [data-composition-id="scene-01-strip"] .seg img { height: 96px; width: auto; display: block; border-radius: 8px; }
       [data-composition-id="scene-01-strip"] .cap {
@@ -138,25 +146,25 @@
       }
 
       /* ── Real per-segment theme colours (tokyo-night, xterm-256 → hex) ── */
-      [data-composition-id="scene-01-strip"] .seg-directory    { border-top-color: #00afff; }
+      [data-composition-id="scene-01-strip"] .seg-directory::before    { background-color: #00afff; }
       [data-composition-id="scene-01-strip"] .seg-directory .cap  { color: #00afff; }
-      [data-composition-id="scene-01-strip"] .seg-git           { border-top-color: #af87ff; }
+      [data-composition-id="scene-01-strip"] .seg-git::before           { background-color: #af87ff; }
       [data-composition-id="scene-01-strip"] .seg-git .cap        { color: #af87ff; }
-      [data-composition-id="scene-01-strip"] .seg-model         { border-top-color: #ff8700; }
+      [data-composition-id="scene-01-strip"] .seg-model::before         { background-color: #ff8700; }
       [data-composition-id="scene-01-strip"] .seg-model .cap      { color: #ff8700; }
-      [data-composition-id="scene-01-strip"] .seg-context       { border-top-color: #87d7ff; }
+      [data-composition-id="scene-01-strip"] .seg-context::before       { background-color: #87d7ff; }
       [data-composition-id="scene-01-strip"] .seg-context .cap    { color: #87d7ff; }
-      [data-composition-id="scene-01-strip"] .seg-lines         { border-top-color: #808080; }
+      [data-composition-id="scene-01-strip"] .seg-lines::before         { background-color: #808080; }
       [data-composition-id="scene-01-strip"] .seg-lines .cap      { color: #808080; }
-      [data-composition-id="scene-01-strip"] .seg-rate-limits   { border-top-color: #5fafaf; }
+      [data-composition-id="scene-01-strip"] .seg-rate-limits::before   { background-color: #5fafaf; }
       [data-composition-id="scene-01-strip"] .seg-rate-limits .cap { color: #5fafaf; }
-      [data-composition-id="scene-01-strip"] .seg-cost          { border-top-color: #ffd75f; }
+      [data-composition-id="scene-01-strip"] .seg-cost::before          { background-color: #ffd75f; }
       [data-composition-id="scene-01-strip"] .seg-cost .cap       { color: #ffd75f; }
-      [data-composition-id="scene-01-strip"] .seg-duration      { border-top-color: #5f87af; }
+      [data-composition-id="scene-01-strip"] .seg-duration::before      { background-color: #5f87af; }
       [data-composition-id="scene-01-strip"] .seg-duration .cap   { color: #5f87af; }
-      [data-composition-id="scene-01-strip"] .seg-burn          { border-top-color: #ff5f5f; }
+      [data-composition-id="scene-01-strip"] .seg-burn::before          { background-color: #ff5f5f; }
       [data-composition-id="scene-01-strip"] .seg-burn .cap       { color: #ff5f5f; }
-      [data-composition-id="scene-01-strip"] .seg-clock         { border-top-color: #5faf00; }
+      [data-composition-id="scene-01-strip"] .seg-clock::before         { background-color: #5faf00; }
       [data-composition-id="scene-01-strip"] .seg-clock .cap      { color: #5faf00; }
     </style>
 
