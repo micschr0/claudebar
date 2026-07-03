@@ -290,9 +290,6 @@ jobs:
       GITHUB_EMAIL: "admin+bot@axo.dev"
     if: ${{ !fromJson(needs.plan.outputs.val).announcement_is_prerelease || fromJson(needs.plan.outputs.val).publish_prereleases }}
     steps:
-      # Short-lived, repo-scoped token via GitHub App install, instead of a long-lived PAT.
-      # NOTE: `dist generate` regenerates this file from [workspace.metadata.dist] and will
-      # drop this step + the token override below — reapply manually after regenerating.
       - uses: actions/create-github-app-token@v2
         id: app-token
         with:
