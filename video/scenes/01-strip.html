@@ -8,11 +8,17 @@
           <span class="cap">directory</span>
         </span>
         <span id="p1" class="seg seg-git">
-          <img src="public/screenshots/seg-git.png" alt="git segment: branch, ahead/behind, modified count">
+          <span class="img-stack git-stack">
+            <img id="git-a" class="layer" src="public/screenshots/seg-git-a.png" alt="git segment, ahead only">
+            <img id="git-b" class="layer" src="public/screenshots/seg-git-b.png" alt="git segment, diverged">
+          </span>
           <span class="cap">git</span>
         </span>
         <span id="p2" class="seg seg-model">
-          <img src="public/screenshots/seg-model.png" alt="model segment: model name and effort level">
+          <span class="img-stack mdl-stack">
+            <img id="mdl-a" class="layer" src="public/screenshots/seg-model-a.png" alt="model segment, low effort">
+            <img id="mdl-b" class="layer" src="public/screenshots/seg-model-b.png" alt="model segment, high effort">
+          </span>
           <span class="cap">model</span>
         </span>
         <span id="p3" class="seg seg-context">
@@ -39,7 +45,10 @@
           <span class="cap">rate&#8209;limits</span>
         </span>
         <span id="p6" class="seg seg-cost">
-          <img src="public/screenshots/seg-cost.png" alt="cost segment: session USD cost">
+          <span class="img-stack cost-stack">
+            <img id="cost-a" class="layer" src="public/screenshots/seg-cost-a.png" alt="cost segment, $0.42">
+            <img id="cost-b" class="layer" src="public/screenshots/seg-cost-b.png" alt="cost segment, $3.18">
+          </span>
           <span class="cap">cost</span>
         </span>
         <span id="p7" class="seg seg-duration">
@@ -124,6 +133,9 @@
       [data-composition-id="scene-01-strip"] .ctx-stack, [data-composition-id="scene-01-strip"] .rl-stack { width: 332px; }
       [data-composition-id="scene-01-strip"] .dur-stack { width: 185px; }
       [data-composition-id="scene-01-strip"] .clk-stack { width: 258px; }
+      [data-composition-id="scene-01-strip"] .git-stack { width: 287px; }
+      [data-composition-id="scene-01-strip"] .mdl-stack { width: 470px; }
+      [data-composition-id="scene-01-strip"] .cost-stack { width: 203px; }
       [data-composition-id="scene-01-strip"] .layer {
         position: absolute; inset: 0; width: 100%; height: 100%;
         display: block; border-radius: 8px;
@@ -182,12 +194,15 @@
         { autoAlpha: 0, y: 18 },
         { autoAlpha: 1, y: 0, duration: 1.0, ease: "power2.out", stagger: 0.6 }, 0.8);
       tl.fromTo("#ctx-green", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 0.8);
+      tl.fromTo("#git-a", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 0.8);
+      tl.fromTo("#mdl-a", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 0.8);
 
       /* ── Row B: lines · rate-limits · cost · duration ── */
       tl.fromTo("#p4, #p5, #p6, #p7",
         { autoAlpha: 0, y: 18 },
         { autoAlpha: 1, y: 0, duration: 1.0, ease: "power2.out", stagger: 0.6 }, 4.0);
       tl.fromTo("#rl-normal", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 4.6);
+      tl.fromTo("#cost-a", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 4.6);
       tl.fromTo("#dur-a", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 5.8);
 
       /* ── Silent beat: let the 8 default pills be read ── */
@@ -224,6 +239,17 @@
       tl.to("#dur-a", { autoAlpha: 0, duration: 1.0, ease: "power1.inOut" }, 20.8);
       tl.fromTo("#clk-b", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.0, ease: "power1.inOut" }, 20.8);
       tl.to("#clk-a", { autoAlpha: 0, duration: 1.0, ease: "power1.inOut" }, 20.8);
+
+      /* ── End-hold: git/cost/model state-pair crossfades, staggered so none
+         collides with the context/rate-limits/duration+clock beats above ── */
+      tl.fromTo("#git-b", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.2, ease: "power1.inOut" }, 22.2);
+      tl.to("#git-a", { autoAlpha: 0, duration: 1.2, ease: "power1.inOut" }, 22.2);
+
+      tl.fromTo("#cost-b", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.2, ease: "power1.inOut" }, 23.8);
+      tl.to("#cost-a", { autoAlpha: 0, duration: 1.2, ease: "power1.inOut" }, 23.8);
+
+      tl.fromTo("#mdl-b", { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.2, ease: "power1.inOut" }, 25.4);
+      tl.to("#mdl-a", { autoAlpha: 0, duration: 1.2, ease: "power1.inOut" }, 25.4);
 
       /* ── Hold to end ── */
       /* (21.8s – 28.0s) */
