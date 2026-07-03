@@ -1,17 +1,9 @@
 # Changelog
 
-**Version 1.0.0**
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## AI READING INSTRUCTION
-
-**[SPEC]** Read the `[SPEC]` and `[BUG]` tagged blocks for authoritative facts.
-**[NOTE]** Read `[NOTE]` tagged blocks only if additional context is needed.
-**[?]** Blocks tagged `[?]` are unverified — treat with lower confidence.
 
 ## [Unreleased]
 
@@ -86,9 +78,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial development history: dev-context segment, `migrate` subcommand, 10 additional themes, CI badge, `--no-default-features` CI coverage, and the three-tier `install.sh` fallback rewrite.
 
-[Unreleased]: https://github.com/micschr0/claude-code-statusline/compare/2026.7.3...HEAD
-[2026.7.3]: https://github.com/micschr0/claude-code-statusline/compare/2026.7.2...2026.7.3
-[2026.7.2]: https://github.com/micschr0/claude-code-statusline/compare/2026.6.24...2026.7.2
-[2026.6.24]: https://github.com/micschr0/claude-code-statusline/compare/v0.2.0...2026.6.24
-[v0.2.0]: https://github.com/micschr0/claude-code-statusline/compare/2026.6.20...v0.2.0
-[2026.6.20]: https://github.com/micschr0/claude-code-statusline/releases/tag/2026.6.20
+[Unreleased]: https://github.com/micschr0/claudebar/compare/2026.7.3...HEAD
+[2026.7.3]: https://github.com/micschr0/claudebar/compare/2026.7.2...2026.7.3
+[2026.7.2]: https://github.com/micschr0/claudebar/compare/2026.6.24...2026.7.2
+[2026.6.24]: https://github.com/micschr0/claudebar/compare/v0.2.0...2026.6.24
+[v0.2.0]: https://github.com/micschr0/claudebar/compare/2026.6.20...v0.2.0
+[2026.6.20]: https://github.com/micschr0/claudebar/releases/tag/2026.6.20
