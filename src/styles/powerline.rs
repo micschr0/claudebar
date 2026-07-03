@@ -3,7 +3,7 @@
 //!
 //! Separator U+E0B1, branch U+E0A0, context U+F035B, token U+F0C29,
 //! clock U+F051F, weekly U+F00ED, reset U+21BA, model U+25C8, effort U+F0E7,
-//! ahead U+2191, behind U+2193, project U+2394, agent U+2699, duration U+F1129.
+//! ahead U+2191, behind U+2193, project U+2394, agent U+2699, duration U+F2F2.
 //! Requires a Nerd Font / powerline-patched font.
 
 use crate::model::{GlyphSet, Style};
@@ -33,7 +33,7 @@ pub fn style() -> Style {
             stash: "\u{2691}",        // U+2691 ⚑
             lines: "\u{2013}",        // U+2013 – en dash (lines removed marker)
             cost: "$",                // plain dollar
-            duration: "\u{f1129}", // nf-md-timer_outline (avoids color-emoji rendering of U+23F1)
+            duration: "\u{f2f2}", // nf-fa-stopwatch
             time: "\u{f051f}",     // nf-fa-clock — same Nerd Font clock as rate-limits window
             burn: "\u{2197}",      // U+2197 ↗
         },
