@@ -1,10 +1,20 @@
 # Contributing a theme
 
+**Version 1.0.0**
+
+**[SPEC]**
 claudebar ships **16 built-in themes**. Adding one is a single small Rust file plus
 three one-line registrations. No runtime config, no parsing — themes are compiled in.
 
+## AI READING INSTRUCTION
+
+**[SPEC]** Read the `[SPEC]` and `[BUG]` tagged blocks for authoritative facts.
+**[NOTE]** Read `[NOTE]` tagged blocks only if additional context is needed.
+**[?]** Blocks tagged `[?]` are unverified — treat with lower confidence.
+
 ## 1. Create the theme file
 
+**[SPEC]**
 Themes live in [`src/themes/`](src/themes/). Copy an existing one as a template —
 [`src/themes/catppuccin.rs`](src/themes/catppuccin.rs) is a clear, well-commented template.
 
@@ -39,6 +49,7 @@ palette's hex — see the comments in `catppuccin.rs` for the hex→index mappin
 
 ## 2. Register it (3 lines in `src/themes/mod.rs`)
 
+**[SPEC]**
 ```rust
 pub mod my_theme;                       // 1. declare the module
 // ...
@@ -60,6 +71,7 @@ The `get()` match is intentionally **complete** — every name in `NAMES` must h
 
 ## 3. Preview every style at once
 
+**[SPEC]**
 Build and render your theme across all 6 styles:
 
 ```bash
@@ -79,6 +91,7 @@ bash scripts/gen-gallery.sh   # → docs/index.html
 
 ## 4. Open a PR
 
+**[SPEC]**
 - Confirm `cargo test`, `cargo clippy --all-targets -- -D warnings`, and `cargo fmt --check` pass.
 - Include a screenshot of at least the `powerline` and `rounded` styles.
 - Ensure the theme is readable across all six bar states (calm → over-limit).

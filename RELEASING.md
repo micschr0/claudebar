@@ -1,11 +1,22 @@
 # Releasing claudebar
 
+**Version 1.0.0**
+
+**[SPEC]**
 [`cargo-dist`](https://opensource.axo.dev/cargo-dist/) (the `dist` CLI) generates claudebar's release pipeline. Pushing a CalVer tag builds the four target archives, a checksum file, and a shell installer, then publishes them as a GitHub Release.
 
+**[NOTE]**
 This document is the source of truth for **how to cut a release**. Read it before tagging — the version model inverted in Phase 07 and a mismatched tag fails the release.
 
-## Version model: Cargo.toml is the source of truth
+## AI READING INSTRUCTION
 
+**[SPEC]** Read the `[SPEC]` and `[BUG]` tagged blocks for authoritative facts.
+**[NOTE]** Read `[NOTE]` tagged blocks only if additional context is needed.
+**[?]** Blocks tagged `[?]` are unverified — treat with lower confidence.
+
+## 1. Version model: Cargo.toml is the source of truth
+
+**[SPEC]**
 `Cargo.toml` `[package] version` is the **single source of truth** for the release version.
 
 - `dist` reads the version from the manifest and **requires the pushed git tag to equal it**. A tag that disagrees with `Cargo.toml` errors the release.
@@ -15,6 +26,7 @@ Practical consequence: bump the manifest first, commit it, then tag the exact sa
 
 ### CalVer format — no leading zeros
 
+**[SPEC]**
 claudebar uses digit-first CalVer: `YYYY.M.PATCH` (e.g. `2026.6.24`).
 
 - **Valid:** `2026.6.25`
@@ -22,8 +34,9 @@ claudebar uses digit-first CalVer: `YYYY.M.PATCH` (e.g. `2026.6.24`).
 
 The release trigger glob in `.github/workflows/release.yml` is `'**[0-9]+.[0-9]+.[0-9]+*'`, which matches the digit-first tag with no `v` prefix.
 
-## Release ritual
+## 2. Release ritual
 
+**[SPEC]**
 1. **Bump the version** in `Cargo.toml`:
 
    ```toml
@@ -54,8 +67,9 @@ The release trigger glob in `.github/workflows/release.yml` is `'**[0-9]+.[0-9]+
 
    Pushing the tag triggers `release.yml`, which builds the four archives and publishes the GitHub Release.
 
-## Local pre-flight checks
+## 3. Local pre-flight checks
 
+**[SPEC]**
 Run these before tagging to catch problems without burning a tag:
 
 - **`dist plan`** — offline dry-run. Prints the planned artifacts: the four `claudebar-<target>.tar.gz` archives, the per-archive `.sha256` files, the unified `sha256.sum`, and `claudebar-installer.sh`. Use `dist plan --output-format=json` to inspect the build matrix and confirm that the announced version matches `Cargo.toml`.
@@ -70,10 +84,12 @@ Run these before tagging to catch problems without burning a tag:
   dist generate --check
   ```
 
+**[NOTE]**
 These static checks have a hard ceiling: they confirm the *plan* and the *workflow*, but a real release may still fail to build, upload, or install. Use the smoke-tag below to close that gap.
 
-## Smoke-tag verification (the end-to-end check)
+## 4. Smoke-tag verification (the end-to-end check)
 
+**[SPEC]**
 `dist plan` and `dist generate --check` only validate the plan and the workflow — not the published release. To verify the full pipeline end-to-end — real archives, real checksums, a correct `--version` output, and a verified `install.sh` check against `sha256.sum` — push a throwaway smoke tag, then tear it down.
 1. **Bump to a throwaway version** (e.g. `2026.6.99`) and tag + push it:
 
