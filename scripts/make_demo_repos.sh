@@ -10,6 +10,8 @@
 #   demo-busy       feature/render-cache ↑3 ↓1  M4 ?2   (diverged)
 #   demo-release    release/2.0          ↑5  M2
 #   demo-behind     fix/auth-token       ↓2  ?3          (behind only)
+#   demo-git-a      main                 ↑2  M1          (ahead only)
+#   demo-git-b      main                 ↑1 ↓2  M1       (diverged, same branch as demo-git-a)
 #
 # Run before gen_screenshots.py:  bash scripts/make_demo_repos.sh
 set -euo pipefail
@@ -88,4 +90,12 @@ ahead demo-release 5;            modify demo-release 2
 init demo-behind fix/auth-token; seed demo-behind; upstream demo-behind
 behind demo-behind 2;            untrack demo-behind 3
 
-echo "Demo repos ready under $ROOT: demo-{clean,app,busy,release,behind}"
+# demo-git-a — ahead only, for the git state-pair crop
+init demo-git-a main;            seed demo-git-a; upstream demo-git-a
+ahead demo-git-a 2;              modify demo-git-a 1
+
+# demo-git-b — diverged (same branch as demo-git-a, near-identical crop width)
+init demo-git-b main;            seed demo-git-b; upstream demo-git-b
+behind demo-git-b 2;             ahead demo-git-b 1; modify demo-git-b 1
+
+echo "Demo repos ready under $ROOT: demo-{clean,app,busy,release,behind,git-a,git-b}"

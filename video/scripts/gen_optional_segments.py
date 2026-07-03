@@ -219,12 +219,47 @@ def main():
             f.write(strip_html(raw))
         html_files.append((tmp, str(OUT_DIR / f"seg-duration-{suffix}.png")))
 
+    # git: ahead-only -> diverged, same branch (demo-git-a / demo-git-b) so crop widths match.
+    for suffix, cwd in (("a", "/tmp/demo-git-a"), ("b", "/tmp/demo-git-b")):
+        raw = render_claudebar({"cwd": cwd}, "git")
+        print(f"  git-{suffix}: {re.sub(chr(27)+r'[^m]*m', '', raw)}")
+        tmp = f"/tmp/opt_git_{suffix}.html"
+        with open(tmp, "w") as f:
+            f.write(strip_html(raw))
+        html_files.append((tmp, str(OUT_DIR / f"seg-git-{suffix}.png")))
+
+    # cost: rising session USD.
+    for suffix, usd in (("a", 0.42), ("b", 3.18)):
+        raw = render_claudebar({"cwd": "/tmp/demo-app", "cost": {"total_cost_usd": usd}}, "cost")
+        print(f"  cost-{suffix}: {re.sub(chr(27)+r'[^m]*m', '', raw)}")
+        tmp = f"/tmp/opt_cost_{suffix}.html"
+        with open(tmp, "w") as f:
+            f.write(strip_html(raw))
+        html_files.append((tmp, str(OUT_DIR / f"seg-cost-{suffix}.png")))
+
+    # model: same model name, effort low -> high.
+    for suffix, level in (("a", "low"), ("b", "high")):
+        payload = {
+            "cwd": "/tmp/demo-app",
+            "model": {"display_name": "Claude Sonnet 4.6"},
+            "effort": {"level": level},
+        }
+        raw = render_claudebar(payload, "model")
+        print(f"  model-{suffix}: {re.sub(chr(27)+r'[^m]*m', '', raw)}")
+        tmp = f"/tmp/opt_model_{suffix}.html"
+        with open(tmp, "w") as f:
+            f.write(strip_html(raw))
+        html_files.append((tmp, str(OUT_DIR / f"seg-model-{suffix}.png")))
+
     print("\n  Rendering screenshots...")
     render_shots(html_files, ".strip")
 
     print("\n  Cropping to content bbox...")
+    from PIL import Image
     for _, out_path in html_files:
         bbox_crop(out_path)
+        with Image.open(out_path) as im:
+            print(f"  {Path(out_path).name}: {im.size[0]}x{im.size[1]}")
 
 
 if __name__ == "__main__":
