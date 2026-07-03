@@ -24,8 +24,9 @@ bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 
 # ── Preflight ──────────────────────────────────────────────────────────────────
 # git is a soft runtime dependency (the git segment). curl and jq are needed for
-# the prebuilt binary download path (fetch_latest_tag, download_prebuilt) and are
-# also required for the bash fallback and settings.json merge respectively.
+# the prebuilt binary download path (fetch_latest_tag, download_prebuilt); jq is
+# separately needed for the settings.json merge, but only when falling back to
+# the bash script (no compiled claudebar binary to invoke `setup` with).
 # The happy path (prebuilt binary) needs curl + jq. Nothing else is required.
 bold "Checking dependencies..."
 echo "  Tip: set a Nerd Font as your terminal font for the glyphs — https://www.nerdfonts.com"
@@ -56,7 +57,7 @@ fi
 if command -v jq >/dev/null 2>&1; then
   printf '  %-6s %s\n' "jq" "$(command -v jq)"
 else
-  red "  jq     not found — prebuilt binary download and settings merge will fail"
+  red "  jq     not found — prebuilt binary download will fail"
   install_hint jq
 fi
 echo ""
@@ -258,35 +259,41 @@ if [ -z "$COMMAND_VALUE" ]; then
   COMMAND_VALUE="bash ~/.claude/statusline-command.sh"
 fi
 
-# ── Patch settings.json ────────────────────────────────────────────────────────
-# Merging into an existing config requires jq (hand-rolling a JSON merge is
-# unsafe). A fresh install writes the file directly — no jq needed.
-if [ -f "$SETTINGS" ]; then
-  if ! command -v jq >/dev/null 2>&1; then
-    red "$SETTINGS already exists but jq is not installed."
-    echo "Install jq, or add this manually to $SETTINGS:"
-    printf '  "statusLine": {"type":"command","command":"%s"}\n' "$COMMAND_VALUE"
-    exit 1
-  fi
-  backup="${SETTINGS}.backup.$(date +%s)"
-  cp "$SETTINGS" "$backup"
-  printf 'Backed up settings.json to %s\n' "$backup"
-  status_line=$(jq -nc --arg c "$COMMAND_VALUE" '{type:"command",command:$c}')
-  tmp_cfg=$(mktemp)
-  if ! jq --argjson v "$status_line" '.statusLine = $v' "$SETTINGS" > "$tmp_cfg"; then
-    red "$SETTINGS is not valid JSON — fix it manually before re-running."
-    rm -f "$tmp_cfg"
-    exit 1
-  fi
-  mv "$tmp_cfg" "$SETTINGS"
+# ── Configure statusLine ─────────────────────────────────────────────────────────
+# Tier 1/2 installed a real claudebar binary at $BIN_DEST — reuse its own
+# setup subcommand (single source of truth for the merge/backup/diff logic).
+# Tier 3 (bash-script-only fallback) never installs a compiled binary, so it
+# keeps the pre-existing jq-based merge.
+if [ -x "$BIN_DEST" ]; then
+  "$BIN_DEST" setup --yes --binary-path "$BIN_DEST"
 else
-  cat > "$SETTINGS" <<EOF
+  if [ -f "$SETTINGS" ]; then
+    if ! command -v jq >/dev/null 2>&1; then
+      red "$SETTINGS already exists but jq is not installed."
+      echo "Install jq, or add this manually to $SETTINGS:"
+      printf '  "statusLine": {"type":"command","command":"%s"}\n' "$COMMAND_VALUE"
+      exit 1
+    fi
+    backup="${SETTINGS}.backup.$(date +%s)"
+    cp "$SETTINGS" "$backup"
+    printf 'Backed up settings.json to %s\n' "$backup"
+    status_line=$(jq -nc --arg c "$COMMAND_VALUE" '{type:"command",command:$c}')
+    tmp_cfg=$(mktemp)
+    if ! jq --argjson v "$status_line" '.statusLine = $v' "$SETTINGS" > "$tmp_cfg"; then
+      red "$SETTINGS is not valid JSON — fix it manually before re-running."
+      rm -f "$tmp_cfg"
+      exit 1
+    fi
+    mv "$tmp_cfg" "$SETTINGS"
+  else
+    cat > "$SETTINGS" <<EOF
 {
   "statusLine": { "type": "command", "command": "$COMMAND_VALUE" }
 }
 EOF
+  fi
+  green "settings.json updated"
 fi
-green "settings.json updated"
 
 # ── Done ───────────────────────────────────────────────────────────────────────
 echo ""
