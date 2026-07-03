@@ -1,3 +1,7 @@
+# claudebar
+
+**Version 1.0.0**
+
 <div align="center">
 
 <img src="assets/logo.svg" width="320" alt="claudebar">
@@ -13,15 +17,23 @@ Statusline renderer for Claude Code.
 
 </div>
 
-## How it works
+## AI READING INSTRUCTION
 
+**[SPEC]** Read the `[SPEC]` and `[BUG]` tagged blocks for authoritative facts.
+**[NOTE]** Read `[NOTE]` tagged blocks only if additional context is needed.
+**[?]** Blocks tagged `[?]` are unverified — treat with lower confidence.
+
+## 1. How it works
+
+**[SPEC]**
 - Reads session JSON from Claude Code's status line hook (stdin), writes a themed ANSI line (stdout)
 - Single native Rust binary — no runtime, no daemon, no subprocess forks (the bash fallback forks `jq`/`git`/`date`/`wc`/`awk` per render)
 - TUI configurator + zero-toolchain bash fallback included
-- Segments with no data omit themselves — see [Troubleshooting](#troubleshooting)
+- Segments with no data omit themselves — see [Troubleshooting](#9-troubleshooting)
 
-## Install
+## 2. Install
 
+**[SPEC]**
 **Prerequisites:**
 - [Nerd Font](https://www.nerdfonts.com/) for powerline glyphs (or use the `ascii` / `plain` / `unicode` style) — macOS: `brew install --cask font-hack-nerd-font`
 - `git` on `PATH` (optional)
@@ -45,12 +57,13 @@ claudebar doctor    # checks fonts, git, config
 
 - Homebrew installs to `$(brew --prefix)/bin` — already on `PATH`
 - Installer script places the binary at `~/.claude/claudebar`
-- Cargo install: see [Build from source](#build-from-source)
+- Cargo install: see [Build from source](#7-build-from-source)
 
-## Segments
+## 3. Segments
 
 ### Enabled by default
 
+**[SPEC]**
 | Segment | Shows |
 |---------|-------|
 | Directory | Working directory, abbreviated with `~` for `$HOME` |
@@ -64,6 +77,7 @@ claudebar doctor    # checks fonts, git, config
 
 ### Disabled by default
 
+**[SPEC]**
 Toggle via `claudebar config` or `~/.config/claudebar/config.toml`:
 
 | Segment | Key | Shows |
@@ -72,8 +86,9 @@ Toggle via `claudebar config` or `~/.config/claudebar/config.toml`:
 | Burn | `burn` | Projected time until a rate-limit window empties, across 5 urgency levels |
 | Clock | `clock` | Current time, 12h/24h auto-detected with timezone |
 
-## Screenshots
+## 4. Screenshots
 
+**[SPEC]**
 <img src="screenshots/strip-critical.png" width="880" alt="Critical state — context near capacity, 5h window above warn threshold">
 
 Context near capacity, with the 5-hour window past its warn threshold.
@@ -86,8 +101,9 @@ Both windows past threshold, with the burn projection showing time-to-empty.
 
 Outside a git repo, the git segment is omitted.
 
-## Configure
+## 5. Configure
 
+**[SPEC]**
 ```bash
 claudebar config
 ```
@@ -116,8 +132,9 @@ layout         = "fixed"  # "fixed" = single line, "auto" = responsive wrap
 
 Missing config file falls back to defaults.
 
-## CLI
+## 6. CLI
 
+**[SPEC]**
 | Command | Does |
 |---------|------|
 | `claudebar` / `claudebar render` | Read session JSON from stdin, write ANSI line to stdout |
@@ -133,16 +150,18 @@ Missing config file falls back to defaults.
 
 Global flags `--theme`, `--style`, `--segments`, `--config` override the config file for one invocation.
 
-## Build from source
+## 7. Build from source
 
+**[SPEC]**
 ```bash
 cargo build --release                        # binary at target/release/claudebar
 cargo install --path .                        # install to ~/.cargo/bin
 cargo build --release --no-default-features   # render-only, no TUI (smaller)
 ```
 
-## Project structure
+## 8. Project structure
 
+**[SPEC]**
 ```
 src/
   model/      Input JSON, config, palette, style types
@@ -156,22 +175,32 @@ scripts/      Screenshot and benchmark tooling
 tests/        Unit + insta snapshot tests
 ```
 
-## Troubleshooting
+## 9. Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
-| Statusline is blank | Check `~/.claude/settings.json` has `"statusLine": {"type": "command", …}`, then restart Claude Code. |
-| Glyphs show as boxes (□) | Install a [Nerd Font](https://www.nerdfonts.com/) or use the `ascii` / `plain` / `unicode` style. macOS Terminal.app can't render Nerd Font PUA glyphs — use iTerm2, Kitty, WezTerm, Ghostty, or Alacritty. |
-| Git segment missing | Appears only inside a git repo and needs `git` on `PATH`. |
-| Rate-limit windows missing | Pro/Max plans only; weekly window shows once weekly usage reaches `weekly_show_at`. |
-| `command not found: claudebar` | Installer script uses `~/.claude/claudebar`; `cargo install` uses `~/.cargo/bin`. Homebrew already puts it on `PATH`. Use the full path in `settings.json` or add the directory to `PATH`. |
+**[BUG] Statusline is blank**
+Check `~/.claude/settings.json` has `"statusLine": {"type": "command", …}`, then restart Claude Code.
 
+**[BUG] Glyphs show as boxes (□)**
+Install a [Nerd Font](https://www.nerdfonts.com/) or use the `ascii` / `plain` / `unicode` style. macOS Terminal.app can't render Nerd Font PUA glyphs — use iTerm2, Kitty, WezTerm, Ghostty, or Alacritty.
+
+**[BUG] Git segment missing**
+Appears only inside a git repo and needs `git` on `PATH`.
+
+**[BUG] Rate-limit windows missing**
+Pro/Max plans only; weekly window shows once weekly usage reaches `weekly_show_at`.
+
+**[BUG] `command not found: claudebar`**
+Installer script uses `~/.claude/claudebar`; `cargo install` uses `~/.cargo/bin`. Homebrew already puts it on `PATH`. Use the full path in `settings.json` or add the directory to `PATH`.
+
+**[SPEC]**
 `claudebar doctor` runs an automated setup check.
 
-## Contributing
+## 10. Contributing
 
+**[SPEC]**
 Issues and pull requests welcome. See [CONTRIBUTING-themes.md](CONTRIBUTING-themes.md) for adding a theme.
 
-## License
+## 11. License
 
+**[SPEC]**
 [MIT](LICENSE)
