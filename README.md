@@ -12,7 +12,7 @@
 
 **[Documentation & live demo](https://micschr0.github.io/claudebar/)**
 
-[Install](#install) • [Segments](#segments) • [Configure](#configure) • [CLI](#cli-reference) • [Build from source](#build-from-source)
+[Screenshots](#screenshots) • [Install](#install) • [Configure](#configure) • [CLI](#cli-reference) • [Segments](#segments) • [Build from source](#build-from-source)
 
 <a href="https://micschr0.github.io/claudebar/">
 <img src="screenshots/skynet.png" width="820" alt="claudebar statusline showing all default segments">
@@ -27,42 +27,6 @@ claudebar reads the session JSON that Claude Code's status line hook sends over 
 - **Single binary** — no daemon, no subprocess forks. (A zero-toolchain bash fallback is included for environments without a Rust build, but it forks `jq`/`git`/`date` per render.)
 - **TUI configurator** — toggle segments, preview themes and styles live, and tune thresholds without hand-editing TOML.
 - **Segments hide themselves** — no git repo, no rate-limit data, no active effort level: the segment just doesn't render. See [Troubleshooting](#troubleshooting).
-
-## Status & metrics
-
-| Metric | Count |
-|---|---|
-| Segments | 11 (8 default + 3 optional) |
-| Themes | 16 |
-| Styles | 7 |
-| Test cases | 232 passing |
-| Snapshot tests | 46 |
-| Edge-case fixtures | 14 |
-
-## Segments
-
-### Enabled by default
-
-| Segment | Shows |
-|---|---|
-| Directory | Working directory, abbreviated with `~` for `$HOME` |
-| Git | Branch, ahead/behind, modified + untracked files, stash count |
-| Model | Active Claude model with inline reasoning effort |
-| Context | Context-window gauge with token counts |
-| Lines | Lines added / removed this session (`+321 −87`) |
-| Rate Limits | 5-hour + 7-day countdowns with color-coded bars |
-| Cost | Session cost in USD |
-| Duration | Session wall-clock time |
-
-### Available, disabled by default
-
-Toggle these via `claudebar config` or directly in `config.toml`:
-
-| Segment | Key | Shows |
-|---|---|---|
-| Dev Context | `dev-context` | Active development context (worktree, PR, agent) |
-| Burn | `burn` | Projected time until a rate-limit window empties, across 5 urgency levels |
-| Clock | `clock` | Current time, 12h/24h auto-detected with timezone |
 
 ## Screenshots
 
@@ -148,27 +112,37 @@ A missing config file falls back to sensible defaults — `claudebar list` print
 
 Global flags — `--theme`, `--style`, `--segments`, `--config` — override the config file for a single invocation.
 
+## Segments
+
+### Enabled by default
+
+| Segment | Shows |
+|---|---|
+| Directory | Working directory, abbreviated with `~` for `$HOME` |
+| Git | Branch, ahead/behind, modified + untracked files, stash count |
+| Model | Active Claude model with inline reasoning effort |
+| Context | Context-window gauge with token counts |
+| Lines | Lines added / removed this session (`+321 −87`) |
+| Rate Limits | 5-hour + 7-day countdowns with color-coded bars |
+| Cost | Session cost in USD |
+| Duration | Session wall-clock time |
+
+### Available, disabled by default
+
+Toggle these via `claudebar config` or directly in `config.toml`:
+
+| Segment | Key | Shows |
+|---|---|---|
+| Dev Context | `dev-context` | Active development context (worktree, PR, agent) |
+| Burn | `burn` | Projected time until a rate-limit window empties, across 5 urgency levels |
+| Clock | `clock` | Current time, 12h/24h auto-detected with timezone |
+
 ## Build from source
 
 ```bash
 cargo build --release                        # binary at target/release/claudebar
 cargo install --path .                       # install to ~/.cargo/bin
 cargo build --release --no-default-features  # render-only build, no TUI (smaller)
-```
-
-## Project structure
-
-```
-src/
-  model/      Input JSON, config, palette, style types
-  render/     Segment composition → ANSI string
-  segment/    One module per statusline segment
-  styles/     Built-in glyph styles (powerline, ascii, …)
-  themes/     Built-in color themes
-  tui/        ratatui configurator (feature = "tui")
-fixtures/     JSON edge-case inputs for testing
-scripts/      Screenshot and benchmark tooling
-tests/        Unit + insta snapshot tests
 ```
 
 ## Troubleshooting
@@ -205,6 +179,32 @@ Open an issue on [GitHub Issues](https://github.com/micschr0/claudebar/issues). 
 ## Contributing
 
 Issues and pull requests are welcome. See [CONTRIBUTING-themes.md](CONTRIBUTING-themes.md) for adding a new theme.
+
+## Project structure
+
+```
+src/
+  model/      Input JSON, config, palette, style types
+  render/     Segment composition → ANSI string
+  segment/    One module per statusline segment
+  styles/     Built-in glyph styles (powerline, ascii, …)
+  themes/     Built-in color themes
+  tui/        ratatui configurator (feature = "tui")
+fixtures/     JSON edge-case inputs for testing
+scripts/      Screenshot and benchmark tooling
+tests/        Unit + insta snapshot tests
+```
+
+## Status & metrics
+
+| Metric | Count |
+|---|---|
+| Segments | 11 (8 default + 3 optional) |
+| Themes | 16 |
+| Styles | 7 |
+| Test cases | 232 passing |
+| Snapshot tests | 46 |
+| Edge-case fixtures | 14 |
 
 ## Changelog
 
