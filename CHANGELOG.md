@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Swap duration glyph to stopwatch in the powerline style
 - Remove duplicate Nerd Font tip in `install.sh`
+- Join the rate-limits segment's 5h and weekly windows with a dim-colored gap glyph instead of a bare space, so they read as one grouped gauge; consolidate the bar-to-percent gap into a single `SegmentWriter::bar_pct()` method
 
 ### Tests
 - Add bats test suite for `statusline-command.sh` and `install.sh`; CI now runs it in place of the smoke job
+- Cross the `weekly_show_at` threshold in `fixtures/weekly_at_50.json` and the `claudebar config` preview cycle so the weekly-window gap glyph is actually exercised by the golden-snapshot suite and the live TUI preview
 
 ## [2026.7.3] - 2026-07-03
 
