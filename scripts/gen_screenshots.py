@@ -284,7 +284,7 @@ PNG_SHOTS = [
      CONTENT_AUTH),
     ("critical",
      dict(ctx_pct=88.0, tok_in=140000, tok_out=26000, rl_5h_pct=80.0, rl_5h_reset=2700,
-          rl_7d_pct=58.0, rl_7d_reset=259200, effort="max", cwd="/tmp/demo-busy",
+          rl_7d_pct=80.0, rl_7d_reset=259200, effort="max", cwd="/tmp/demo-busy",
           cost=8.40, lines_added=610, lines_removed=145, duration_ms=10_800_000),
      CONTENT_RENDER),
     ("overlimit",
