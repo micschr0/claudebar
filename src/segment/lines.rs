@@ -1,6 +1,9 @@
 //! Lines segment — added/removed this session.
 //!
 //! Renders `+321 −87`. Hides when both counts are zero or absent.
+//! Uses a single color slot (`lines`) — the `+`/`−` signs provide visual
+//! distinction without borrowing `modified` (semantically for modified files)
+//! or requiring a new theme slot.
 
 use crate::render::SegmentWriter;
 use crate::segment::{RenderCtx, Segment};
@@ -17,13 +20,9 @@ impl Segment for Lines {
         }
 
         out.colored_with(ctx.theme.lines, |w| {
-            w.raw(" ");
-            w.raw("+");
+            w.raw(" +");
             w.raw_fmt(format_args!("{}", added));
-            w.raw(" ");
-            w.colored_with(ctx.theme.modified, |w2| {
-                w2.icon(ctx.style.glyphs.lines);
-            });
+            w.raw(" \u{2212}");
             w.raw_fmt(format_args!("{}", removed));
             w.raw(" ");
         });
