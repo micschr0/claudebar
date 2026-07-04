@@ -6,6 +6,7 @@ Usage:
   python3 scripts/gen_screenshots.py --png     # full terminal PNGs only
   python3 scripts/gen_screenshots.py --strips  # compact strips only
   python3 scripts/gen_screenshots.py --svg     # animated SVG only (no Docker needed)
+  python3 scripts/gen_screenshots.py --pills   # segment-pill gallery only
 
 Prerequisites for PNG:
   - Docker socket at /run/user/1002/docker.sock
@@ -118,9 +119,10 @@ def esc(s):
     return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;")
 
 def run_sl(ctx_pct, tok_in, tok_out, rl_5h_pct, rl_5h_reset,
-           rl_7d_pct=None, rl_7d_reset=None, model="Claude Sonnet 4.6", effort=None, cwd=None,
+           rl_7d_pct=None, rl_7d_reset=None, model="Sonnet 5", effort=None, cwd=None,
            cost=None, lines_added=None, lines_removed=None, duration_ms=None,
-           segments=None):
+           segments=None, worktree=None, pr_number=None, pr_review_state=None,
+           agent_name=None, extra_env=None):
     """Render the status line via ``claudebar render``.
 
     New keyword arguments for opt-in segments:
@@ -128,6 +130,10 @@ def run_sl(ctx_pct, tok_in, tok_out, rl_5h_pct, rl_5h_reset,
         lines_added, lines_removed: u64 (enables lines segment)
         duration_ms: u64 (enables duration segment)
         segments: list of kebab-case names → ``--segments …``
+        worktree, pr_number, pr_review_state, agent_name: feed the dev-context
+            segment (worktree.name, pr.number/review_state, agent.name)
+        extra_env: extra environment vars (e.g. CLAUDEBAR_BURN_FILE for the
+            burn segment's sample cache)
     """
     now = int(time.time())
     rl  = f'"five_hour":{{"used_percentage":{rl_5h_pct},"resets_at":{now+rl_5h_reset}}}'
@@ -144,11 +150,22 @@ def run_sl(ctx_pct, tok_in, tok_out, rl_5h_pct, rl_5h_reset,
     if duration_ms is not None:
         cost_parts.append(f'"total_duration_ms":{duration_ms}')
     cost_field = f',"cost":{{{",".join(cost_parts)}}}' if cost_parts else ""
+    worktree_field = f',"worktree":{{"name":"{worktree}"}}' if worktree else ""
+    pr_parts = []
+    if pr_number is not None:
+        pr_parts.append(f'"number":{pr_number}')
+    if pr_review_state is not None:
+        pr_parts.append(f'"review_state":"{pr_review_state}"')
+    pr_field = f',"pr":{{{",".join(pr_parts)}}}' if pr_parts else ""
+    agent_field = f',"agent":{{"name":"{agent_name}"}}' if agent_name else ""
     j = (f'{{"cwd":"{cwd or DEMO_CWD}",'
          f'"context_window":{{"total_input_tokens":{tok_in},'
          f'"total_output_tokens":{tok_out},"used_percentage":{ctx_pct}}},'
-         f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}{effort_field}{cost_field}}}')
+         f'"rate_limits":{{{rl}}},"model":{{"display_name":"{model}"}}'
+         f'{effort_field}{cost_field}{worktree_field}{pr_field}{agent_field}}}')
     env = {**os.environ, "HOME": DEMO_HOME}
+    if extra_env:
+        env.update(extra_env)
     cmd = [BINARY, "render"]
     if segments:
         cmd.extend(["--segments", ",".join(segments)])
@@ -290,9 +307,9 @@ PNG_SHOTS = [
           effort="high", cost=2.15, lines_added=140, lines_removed=32, duration_ms=1_800_000),
      CONTENT_AUTH),
     ("critical",
-     dict(ctx_pct=88.0, tok_in=140000, tok_out=26000, rl_5h_pct=80.0, rl_5h_reset=2700,
-          rl_7d_pct=80.0, rl_7d_reset=259200, effort="max", cwd="/tmp/demo-busy",
-          cost=8.40, lines_added=610, lines_removed=145, duration_ms=10_800_000),
+     dict(ctx_pct=88.0, tok_in=23500, tok_out=4200, rl_5h_pct=52.0, rl_5h_reset=2700,
+          rl_7d_pct=62.0, rl_7d_reset=259200, effort="medium", cwd="/var/skynet/defense-net/missile-command/skynet",
+          cost=4.20, lines_added=610, lines_removed=145, duration_ms=2_520_000),
      CONTENT_RENDER),
     ("overlimit",
      dict(ctx_pct=101.0, tok_in=160000, tok_out=8000, rl_5h_pct=93.0, rl_5h_reset=900,
@@ -373,7 +390,7 @@ _EXTRA_STRIPS = [
                       cost=0.90, lines_added=60, lines_removed=15, duration_ms=2_400_000)),
     ("features", dict(ctx_pct=42.0, tok_in=35000, tok_out=6000,
                       rl_5h_pct=25.0, rl_5h_reset=12000,
-                      model="Claude Sonnet 4.6", effort="high",
+                      model="Sonnet 5", effort="high",
                       cost=1.23, lines_added=321, lines_removed=87, duration_ms=2820000,
                       segments=["directory","git","context","rate-limits","model",
                                 "cost","lines","duration","clock"])),
@@ -381,12 +398,6 @@ _EXTRA_STRIPS = [
 
 STRIP_SHOTS = _PNG_STRIPS + _EXTRA_STRIPS
 
-# The 3 README-referenced strips that get animated as looping pendulum-zoom
-# APNGs instead of static PNGs. Everything else in STRIP_SHOTS stays static.
-ANIMATED_STRIP_NAMES = {"critical", "overlimit", "nogit"}
-ANIM_N_FRAMES  = 24    # unique forward frames, scale 1.0 -> ANIM_PEAK_SCALE
-ANIM_PEAK_SCALE = 1.06  # subtle 6% zoom
-ANIM_FPS       = 6
 
 def strip_html(sl_raw):
     spans = "".join(f'<span style="color:{c}">{esc(t)}</span>'
@@ -395,103 +406,288 @@ def strip_html(sl_raw):
             f'<style>{STRIP_CSS}</style></head>'
             f'<body><div class="stripwrap"><div class="strip">{spans}</div></div></body></html>').replace("__FONT_URL__", FONT_URL)
 
-def strip_frame_html(sl_raw):
-    """Like strip_html(), but wraps the card in a `.frame` clipping container
-    so a later `transform:scale()` on `.stripwrap` can be clipped for the
-    Ken Burns zoom effect (see render_animated_strips)."""
-    spans = "".join(f'<span style="color:{c}">{esc(t)}</span>'
-                    for c, t in parse_ansi(sl_raw))
-    css = STRIP_CSS + ".frame{display:inline-block;overflow:hidden;}"
-    return (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
-            f'<style>{css}</style></head>'
-            f'<body><div class="frame"><div class="stripwrap" style="transform-origin:0% 50%">'
-            f'<div class="strip">{spans}</div></div></div></body></html>').replace("__FONT_URL__", FONT_URL)
-
-def render_animated_strips(items, n_frames, peak_scale):
-    """Render `n_frames` Ken-Burns-zoom frames for each (name, html_path,
-    frame_dir) in `items`, writing frame_dir/frame_NNN.png per frame. Uses a
-    cosine ease-in-out scale curve from 1.0 to peak_scale. Returns the
-    `_run_playwright_js` success boolean."""
-    scales = [1.0 + (peak_scale - 1.0) * (1 - math.cos(math.pi * i / (n_frames - 1))) / 2
-              for i in range(n_frames)]
-    scales_js = "[" + ",".join(f"{s:.6f}" for s in scales) + "]"
-    parts = []
-    for name, html_path, frame_dir in items:
-        parts.append(f"""
-  {{
-    const page = await browser.newPage({{ deviceScaleFactor:2 }});
-    await page.goto("file://{html_path}");
-    await page.waitForTimeout(800);
-    const scales = {scales_js};
-    for (let i = 0; i < scales.length; i++) {{
-      const s = scales[i];
-      await page.evaluate(s => {{ document.querySelector('.stripwrap').style.transform = 'scale(' + s + ')'; }}, s);
-      await page.waitForTimeout(60);
-      await page.locator('.frame').screenshot({{ path: '{frame_dir}/frame_' + String(i).padStart(3,'0') + '.png' }});
-    }}
-    await page.close();
-    console.log("Rendered frames:", "{name}", scales.length);
-  }}""")
-    loop = "\n".join(parts)
-    ok = _run_playwright_js(loop)
-    for name, _html_path, _frame_dir in items:
-        print(f"  {name}: {n_frames} frames rendered" if ok else f"  {name}: frame render failed")
-    return ok
-
-def build_pendulum_apng(name, frame_dir, n_frames, fps):
-    """Assemble frame_dir/frame_NNN.png into a looping pendulum-zoom APNG at
-    screenshots/strip-{name}.png. The frame order pings forward (0..n_frames-1)
-    then pongs back through the reversed middle frames (n_frames-2 .. 1),
-    without duplicating either endpoint — so the loop's wrap-around step is
-    the same size as any other inter-frame step (no hard cut)."""
-    order = list(range(n_frames)) + list(range(n_frames - 2, 0, -1))
-    seq_dir = f"{frame_dir}/seq"
-    os.makedirs(seq_dir, exist_ok=True)
-    for k, src_idx in enumerate(order):
-        shutil.copy(f"{frame_dir}/frame_{src_idx:03d}.png", f"{seq_dir}/frame_{k:03d}.png")
-    out_path = f"{SHOTS}/strip-{name}.png"
-    try:
-        result = subprocess.run([
-            "ffmpeg", "-y", "-framerate", str(fps), "-i", f"{seq_dir}/frame_%03d.png",
-            "-plays", "0", "-f", "apng", "-pix_fmt", "rgb24", out_path,
-        ], capture_output=True, text=True)
-    except FileNotFoundError:
-        print(f"  ffmpeg not found — skipping APNG assembly for {name}")
-        return False
-    if result.returncode != 0:
-        print(f"  ffmpeg failed for {name}: {result.stderr.strip()}")
-        return False
-    duration = len(order) / fps
-    print(f"  {out_path}: {len(order)} frames, {duration:.1f}s loop")
-    return True
 
 def generate_strips():
     print("── Statusline strips ────────────────────────────")
     html_files = []
-    anim_items = []
     for name, sl_args in STRIP_SHOTS:
         raw = run_sl(**sl_args)
         plain = re.sub(r'\x1b\[[^m]*m', '', raw)
         print(f"  {name}: {plain}")
-        if name in ANIMATED_STRIP_NAMES:
-            frame_html = f"/tmp/strip_{name}_frame.html"
-            with open(frame_html, "w") as f: f.write(strip_frame_html(raw))
-            frame_dir = f"/tmp/claudebar_anim_{name}"
-            os.makedirs(frame_dir, exist_ok=True)
-            anim_items.append((name, frame_html, frame_dir))
-            continue
         tmp = f"/tmp/strip_{name}.html"
         with open(tmp, "w") as f: f.write(strip_html(raw))
         html_files.append((tmp, f"{SHOTS}/strip-{name}.png"))
 
-    print("\n  Rendering...")
+    print("\n  Rendering static strips...")
     render_shots(html_files, ".stripwrap", scale=2, wait=800)
 
-    if anim_items:
-        render_animated_strips(anim_items, ANIM_N_FRAMES, ANIM_PEAK_SCALE)
-        for name, _html_path, frame_dir in anim_items:
-            build_pendulum_apng(name, frame_dir, ANIM_N_FRAMES, ANIM_FPS)
+    # Feature chips
+    print("\n── Feature chips ───────────────────────────────")
+    render_feature_chips()
 
+    # Color-state thumbnails
+    print("\n── Color-state thumbnails ──────────────────────")
+    render_color_thumbnails()
+
+    # Segment pills — per-segment rendered cards
+    print("\n── Segment pills ──────────────────────────────")
+    render_segment_pills()
+
+
+# ── Feature chips ───────────────────────────────────────────────────────────────
+
+# Icon glyphs for each segment in SegmentKind::ALL order (from powerline.rs).
+# Directory has no icon — just the label.
+_CHIP_SEGMENTS = [
+    # (kebab_name, label, icon_glyph)
+    ("directory",  "Directory",   ""),
+    ("git",        "Git",         "\ue0a0"),   # branch
+    ("model",      "Model",       "\u25c8"),   # ◆
+    ("context",    "Context",     "\U000f035b"),  # nf-md-chart-bell-curve-cumulative
+    ("rate-limits","Rate Limits", "\U000f051f"),  # nf-fa-clock-o
+    ("dev-context","Dev Context", "\U0000f126"),  # nf-fa-code-fork
+    ("cost",       "Cost",        "$"),
+    ("lines",      "Lines",       "\u2212"),   # − (matches the segment minus sign)
+    ("duration",   "Duration",    "\U0000f2f2"),   # nf-fa-stopwatch
+    ("burn",       "Burn",        "\u2197"),   # ↗
+    ("clock",      "Clock",       "\U000f051f"),  # nf-fa-clock-o
+]
+
+CHIP_CSS = """
+@font-face {
+  font-family:'HackNF';
+  src:url('__FONT_URL__') format('truetype');
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: transparent; }
+.chip-grid {
+  display:flex; flex-wrap:wrap; gap:10px;
+  padding:12px;
+}
+.chip {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 12px;
+  background:#1a1b2e; border:1px solid #2a2b3d;
+  border-radius:6px;
+  font-family:'HackNF',monospace; font-size:13px; line-height:1.4;
+  color:#a9b1d6;
+}
+.chip .icon { font-size:14px; color:#7aa2f7; }
+.chip .label { white-space:nowrap; }
+"""
+
+def render_feature_chips():
+    rows = []
+    for kebab, label, icon in _CHIP_SEGMENTS:
+        icon_html = f'<span class="icon">{icon}</span>' if icon else ""
+        rows.append(f'<div class="chip">{icon_html}<span class="label">{label}</span></div>')
+    grid = "\n".join(rows)
+    html = (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
+            f'<style>{CHIP_CSS}</style></head>'
+            f'<body><div class="chip-grid">{grid}</div></body></html>').replace("__FONT_URL__", FONT_URL)
+    tmp = "/tmp/chips.html"
+    with open(tmp, "w") as f: f.write(html)
+
+    loop = f"""
+  const page = await browser.newPage({{ deviceScaleFactor:2 }});
+  await page.goto("file://{tmp}");
+  await page.waitForTimeout(600);
+  await page.locator('.chip-grid').screenshot({{ path: '{SHOTS}/chips.png', omitBackground:true }});
+  await page.close();
+  console.log("Feature chips rendered");
+"""
+    ok = _run_playwright_js(loop)
+    print(f"  chips.png {'rendered' if ok else 'render failed'}")
+
+
+# ── Color-state thumbnails ──────────────────────────────────────────────────────
+
+
+THUMB_CSS = """
+@font-face {
+  font-family:'HackNF';
+  src:url('__FONT_URL__') format('truetype');
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: transparent; }
+.thumb {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:4px 0;
+}
+.label {
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:10px; line-height:1;
+  padding:2px 6px; border-radius:3px;
+  white-space:nowrap;
+}
+"""
+
+_THUMB_STATES = [
+    ("normal",    "Normal",    "#9ece6a", dict(ctx_pct=18.0, tok_in=9000, tok_out=2000,
+                    rl_5h_pct=12.0, rl_5h_reset=14400, effort="medium",
+                    cost=0.35, lines_added=40, lines_removed=5, duration_ms=600_000)),
+    ("critical",  "Critical",  "#e0af68", None),
+    ("overlimit", "Over limit","#f7768e", None),
+]
+
+def render_color_thumbnails():
+    for name, label, color, sl_args in _THUMB_STATES:
+        if sl_args is None:
+            # Use the already-defined STRIP_SHOTS entry
+            sl_args = next(a for n, a in STRIP_SHOTS if n == name)
+        raw = run_sl(**sl_args)
+        spans = "".join(f'<span style="color:{c}">{esc(t)}</span>'
+                        for c, t in parse_ansi(raw))
+        html = (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
+                f'<style>{THUMB_CSS}</style></head>'
+                f'<body><div class="thumb">'
+                f'<span style="font-family:\'HackNF\',monospace;font-size:12px;white-space:pre;color:#a9b1d6">{spans}</span>'
+                f'<span class="label" style="color:{color};border:1px solid {color}">{label}</span>'
+                f'</div></body></html>').replace("__FONT_URL__", FONT_URL)
+        tmp = f"/tmp/thumb_{name}.html"
+        with open(tmp, "w") as f: f.write(html)
+
+        loop = f"""
+  const page = await browser.newPage({{ deviceScaleFactor:2 }});
+  await page.goto("file://{tmp}");
+  await page.waitForTimeout(500);
+  await page.locator('.thumb').screenshot({{ path: '{SHOTS}/thumb-{name}.png', omitBackground:true }});
+  await page.close();
+  console.log("Thumbnail {name} rendered");
+"""
+        ok = _run_playwright_js(loop)
+        print(f"  thumb-{name}.png {'rendered' if ok else 'render failed'}")
+
+
+# ── Segment pills ────────────────────────────────────────────────────────────────
+
+_SEGMENT_PILLS_CSS = """
+@font-face { font-family:'HackNF'; src:url('__FONT_URL__') format('truetype'); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: #0d1117; display: flex; justify-content: center; }
+.page {
+  width: 820px;
+  display: flex; flex-direction: column; gap: 16px;
+  background: #0d1117; padding: 24px;
+}
+.row {
+  display: flex; gap: 16px;
+}
+.pill {
+  background: #161b22; border: 1px solid #30363d;
+  border-radius: 6px; padding: 8px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  flex: 1 1 auto;
+}
+.seg {
+  font-family: 'HackNF', monospace; font-size: 13px; line-height: 1.4;
+  white-space: pre;
+}
+.label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10px; color: #8b949e; font-weight: 500;
+  letter-spacing: 0.4px;
+}
+"""
+
+# Demo sample cache for the burn segment: without seeded samples it renders
+# its "warming" state (a meaningless dim `↗ …`). Seeded via _seed_burn_cache().
+_BURN_DEMO_TSV = "/tmp/claudebar-burn-demo.tsv"
+
+# All 11 segments (SegmentKind::ALL), each tagged with its row in the
+# "justified flow" layout — width-homogeneous rows (2/2/2/5) so every row's
+# pills flex to fill the container edge-to-edge. git needs a real repo — the
+# skynet critical-state cwd isn't one, so it's pinned to demo-busy (diverged
+# branch: ahead+behind+modified+untracked). dev-context needs worktree/pr/agent
+# fields the other pills don't; burn needs a seeded sample cache to project a
+# concrete ETA.
+_PILLS = [
+    ("directory",   "Directory", {}, 1),
+    ("git",         "Git Branch", {"cwd": "/tmp/demo-busy"}, 1),
+    ("model",       "Model & Effort", {}, 2),
+    ("context",     "Context Window", {}, 2),
+    ("dev-context", "Dev Context", {
+        "worktree": "feature/render-cache",
+        "pr_number": 342,
+        "pr_review_state": "changes_requested",
+        "agent_name": "reviewer",
+    }, 3),
+    ("rate-limits", "Rate Limits", {}, 3),
+    ("lines",       "Lines Changed", {}, 4),
+    ("cost",        "Cost", {}, 4),
+    ("burn",        "Burn Rate", {"extra_env": {"CLAUDEBAR_BURN_FILE": _BURN_DEMO_TSV}}, 4),
+    ("duration",    "Session Duration", {}, 4),
+    ("clock",       "Clock", {}, 4),
+]
+
+
+def _seed_burn_cache(pct_now, rl_reset, target_eta):
+    """Write linear burn samples (last 10 min, one per minute) so the burn
+    segment's regression yields slope = (100-pct_now)/target_eta pct/sec —
+    i.e. an ETA of ~target_eta seconds. Pick target_eta > 1.2 × rl_reset so
+    the projection renders green (window resets with room to spare)."""
+    now = int(time.time())
+    slope = (100.0 - pct_now) / target_eta
+    with open(_BURN_DEMO_TSV, "w") as f:
+        for t in range(now - 600, now + 1, 60):
+            f.write(f"{t}\t{pct_now - slope * (now - t):.3f}\t{now + rl_reset}\n")
+
+
+def _render_pills(entries, base_args):
+    """Render each (kebab_name, label, arg_overrides) entry to a pill div,
+    merging per-entry overrides onto the shared base args."""
+    pills = []
+    for seg_name, label, overrides in entries:
+        raw = run_sl(**{**base_args, **overrides}, segments=[seg_name])
+        if not raw:
+            print(f"  WARNING: {seg_name} pill rendered empty")
+            continue
+        spans = "".join(f'<span style="color:{c}">{esc(t)}</span>'
+                        for c, t in parse_ansi(raw))
+        pills.append(f'<div class="pill">'
+                     f'<div class="seg">{spans}</div>'
+                     f'<div class="label">{label}</div>'
+                     f'</div>')
+    return pills
+
+
+def render_segment_pills():
+    """Render each of the 11 segments individually as a small pill-shaped
+    card, laid out in 4 width-homogeneous rows (2/2/2/5) that each flex to
+    fill the container edge-to-edge — no default/optional grouping or
+    divider. Uses critical-state data for varied bar fills and git state."""
+    critical_args = next(a for n, a in STRIP_SHOTS if n == "critical")
+    # ETA 7000s (~1h56m) > 1.2 × the 2700s reset → green, concrete projection.
+    _seed_burn_cache(critical_args["rl_5h_pct"], critical_args["rl_5h_reset"],
+                     target_eta=7000)
+
+    rows = {}
+    for seg_name, label, overrides, row in _PILLS:
+        rows.setdefault(row, []).append((seg_name, label, overrides))
+
+    row_html = "\n".join(
+        f'<div class="row">{"".join(_render_pills(rows[row], critical_args))}</div>'
+        for row in sorted(rows)
+    )
+
+    html = (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
+            f'<style>{_SEGMENT_PILLS_CSS}</style></head>'
+            f'<body><div class="page">{row_html}</div></body></html>'
+            ).replace("__FONT_URL__", FONT_URL)
+    tmp = "/tmp/pills.html"
+    with open(tmp, "w") as f:
+        f.write(html)
+
+    loop = f"""
+  const page = await browser.newPage({{ deviceScaleFactor:2 }});
+  await page.goto("file://{tmp}");
+  await page.waitForTimeout(800);
+  await page.locator('.page').screenshot({{ path: '{SHOTS}/segment-pills.png' }});
+  await page.close();
+  console.log("Segment pills rendered");
+"""
+    ok = _run_playwright_js(loop)
+    print(f"  segment-pills.png {'rendered' if ok else 'render failed'}")
 # ── Animated SVG ───────────────────────────────────────────────────────────────
 
 SVG_W, SVG_LH = 820, 21
@@ -655,3 +851,5 @@ if MODE in ("all", "--strips"):
     generate_strips()
 if MODE in ("all", "--svg"):
     generate_svg()
+if MODE == "--pills":
+    render_segment_pills()
