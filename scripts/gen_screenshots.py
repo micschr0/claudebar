@@ -468,16 +468,29 @@ def build_pendulum_apng(name, frame_dir, n_frames, fps):
 def generate_strips():
     print("── Statusline strips ────────────────────────────")
     html_files = []
+    anim_items = []
     for name, sl_args in STRIP_SHOTS:
         raw = run_sl(**sl_args)
         plain = re.sub(r'\x1b\[[^m]*m', '', raw)
         print(f"  {name}: {plain}")
+        if name in ANIMATED_STRIP_NAMES:
+            frame_html = f"/tmp/strip_{name}_frame.html"
+            with open(frame_html, "w") as f: f.write(strip_frame_html(raw))
+            frame_dir = f"/tmp/claudebar_anim_{name}"
+            os.makedirs(frame_dir, exist_ok=True)
+            anim_items.append((name, frame_html, frame_dir))
+            continue
         tmp = f"/tmp/strip_{name}.html"
         with open(tmp, "w") as f: f.write(strip_html(raw))
         html_files.append((tmp, f"{SHOTS}/strip-{name}.png"))
 
     print("\n  Rendering...")
     render_shots(html_files, ".stripwrap", scale=2, wait=800)
+
+    if anim_items:
+        render_animated_strips(anim_items, ANIM_N_FRAMES, ANIM_PEAK_SCALE)
+        for name, _html_path, frame_dir in anim_items:
+            build_pendulum_apng(name, frame_dir, ANIM_N_FRAMES, ANIM_FPS)
 
 # ── Animated SVG ───────────────────────────────────────────────────────────────
 
