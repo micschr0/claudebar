@@ -146,6 +146,18 @@ impl<'a> SegmentWriter<'a> {
         self.colored_fmt(color, format_args!("{pct}%"));
     }
 
+    /// Join two related "windows" inside one segment (e.g. rate-limits'
+    /// 5h/weekly gauges) with a dim-colored glyph — the intra-segment
+    /// counterpart to the composer's inter-segment separator
+    /// (see `render::mod`), deliberately using `theme.dim` (lighter) instead
+    /// of `theme.separator` so the pair reads as one grouped unit rather than
+    /// a segment boundary.
+    pub fn window_gap(&mut self) {
+        self.raw(" ");
+        self.colored(self.theme.dim, self.style.window_gap);
+        self.raw(" ");
+    }
+
     /// The accumulated segment body.
     #[must_use]
     #[inline]

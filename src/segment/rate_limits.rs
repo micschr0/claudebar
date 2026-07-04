@@ -1,8 +1,9 @@
 //! Rate-limits segment — 5-hour + weekly windows in one segment.
 //!
 //! Contract (matches the bash script's "rate limits" block). Two windows; this
-//! one segment renders both, separated by a single space (the segment is a unit;
-//! the composer separator only appears around the whole segment).
+//! one segment renders both, joined via `SegmentWriter::window_gap()` — a
+//! dim-colored glyph, lighter than the composer's inter-segment separator,
+//! signaling the pair belongs to one segment rather than marking a boundary.
 //! ```text
 //! 5-hour window (rate_limits.five_hour): shown whenever the window is present
 //!   (a percentage OR a future resets_at).
@@ -18,7 +19,8 @@
 //!   used_percentage >= th.weekly_show_at (and <= 999). Color: pct >= th.crit
 //!   -> bar_crit, else bar_warn. Emit weekly icon (style.glyphs.weekly, dim) +
 //!   bar + " " + "<pct>%" colored, then its own reset countdown like the 5h
-//!   window. If shown after the 5h window, separate them with a single space.
+//!   window. If shown after the 5h window, join them via
+//!   `SegmentWriter::window_gap()`.
 //!
 //! Emit nothing / return false when neither window has anything to show.
 //! ```
@@ -79,7 +81,7 @@ impl Segment for RateLimits {
                     ctx.theme.bar_warn
                 };
                 if emitted {
-                    out.raw(" ");
+                    out.window_gap();
                 }
                 write_window(ctx, out, ctx.style.glyphs.weekly, p, color);
                 write_reset(ctx, out, reset);
@@ -237,6 +239,22 @@ mod tests {
         );
         assert!(out.contains("60%"), "5h pct missing: {out:?}");
         assert!(out.contains("76%"), "weekly pct missing: {out:?}");
+    }
+
+    #[test]
+    fn weekly_gap_uses_dim_color_not_bare_space() {
+        let out = render_rl(
+            r#"{"rate_limits":{"five_hour":{"used_percentage":60.0,"resets_at":1900000000},
+                "seven_day":{"used_percentage":76.0,"resets_at":1905000000}}}"#,
+        );
+        let gap = styles::get("powerline").window_gap;
+        let dim = themes::get("tokyo-night").dim.fg();
+        assert!(out.contains(gap), "window_gap glyph missing: {out:?}");
+        let marker = format!("{dim}{gap}");
+        assert!(
+            out.contains(&marker),
+            "window_gap glyph not painted in dim color: {out:?}"
+        );
     }
 
     #[test]
