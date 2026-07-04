@@ -4,27 +4,13 @@
 
 **A powerline statusline for Claude Code: segments, themes, and a live TUI configurator in a single native binary.**
 
-[![CI](https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/rust.yml?style=flat-square&label=CI)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml) [![Security](https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/security.yml?style=flat-square&label=Security)](https://github.com/micschr0/claudebar/actions/workflows/security.yml) [![Release](https://img.shields.io/github/v/release/micschr0/claudebar?style=flat-square&label=release)](https://github.com/micschr0/claudebar/releases/latest) [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE) [![Rust 2024](https://img.shields.io/badge/rust-2024-%23CE422B?style=flat-square)](Cargo.toml) [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos-lightgrey?style=flat-square)](CLAUDE.md)
+[![CI](https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/rust.yml?style=flat-square&label=CI)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml) [![Release](https://img.shields.io/github/v/release/micschr0/claudebar?style=flat-square&label=release)](https://github.com/micschr0/claudebar/releases/latest) [![Security](https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/security.yml?style=flat-square&label=Security)](https://github.com/micschr0/claudebar/actions/workflows/security.yml) [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos-lightgrey?style=flat-square)](CLAUDE.md) [![Rust 2024](https://img.shields.io/badge/rust-2024-%23CE422B?style=flat-square)](Cargo.toml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
 **[Documentation & live demo](https://micschr0.github.io/claudebar/)**
 
 </div>
 
 <img src="screenshots/normal.png" alt="claudebar statusline pinned at the bottom of a Claude Code session">
-
-## States (< 50% / 50–80% / > 80%)
-
-<img src="screenshots/strip-normal.png" width="860" alt="Normal: calm baseline">
-
-<img src="screenshots/strip-critical.png" width="860" alt="Critical: a rate limit is approaching">
-
-<img src="screenshots/strip-overlimit.png" width="860" alt="Over limit: past the threshold">
-
-## Segments
-
-Eight on by default. dev-context, burn, and clock sit off by default — flip them on when you need them.
-
-<img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock">
 
 ## Install
 
@@ -45,6 +31,20 @@ Restart Claude Code and the statusline is live. If anything looks off, `claudeba
 
 > [!NOTE]
 > Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/); the `ascii` style needs none.
+
+## States (< 50% / 50–80% / > 80%)
+
+<img src="screenshots/strip-normal.png" width="860" alt="Normal: calm baseline">
+
+<img src="screenshots/strip-critical.png" width="860" alt="Critical: a rate limit is approaching">
+
+<img src="screenshots/strip-overlimit.png" width="860" alt="Over limit: past the threshold">
+
+## Segments
+
+Eight on by default. dev-context, burn, and clock sit off by default — flip them on when you need them.
+
+<img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock">
 
 ## Configure
 
