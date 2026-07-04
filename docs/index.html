@@ -89,6 +89,29 @@
     </div>
   </section>
 
+  <section class="features" id="segments">
+    <div class="wrap">
+      <h2>Segments</h2>
+      <p class="lead">Eight on by default. Three more available — flip them on when you need them.</p>
+      <div class="feature-grid">
+        <div class="feature"><h3>Directory</h3><p>Working directory, abbreviated with <code>~</code> for <code>$HOME</code></p></div>
+        <div class="feature"><h3>Git</h3><p>Branch, ahead/behind, modified + untracked files, stash count</p></div>
+        <div class="feature"><h3>Model</h3><p>Active Claude model with inline reasoning effort</p></div>
+        <div class="feature"><h3>Context</h3><p>Context-window gauge with token counts</p></div>
+        <div class="feature"><h3>Lines</h3><p>Lines added / removed this session (<code>+321 −87</code>)</p></div>
+        <div class="feature"><h3>Rate Limits</h3><p>5-hour + 7-day countdowns with color-coded bars</p></div>
+        <div class="feature"><h3>Cost</h3><p>Session cost in USD</p></div>
+        <div class="feature"><h3>Duration</h3><p>Session wall-clock time</p></div>
+      </div>
+      <p class="lead" style="margin-top:36px;margin-bottom:22px">Available, disabled by default:</p>
+      <div class="feature-grid">
+        <div class="feature"><h3>Dev Context</h3><p>Active development context — worktree, PR, agent</p></div>
+        <div class="feature"><h3>Burn</h3><p>Projected time until a rate-limit window empties, across 5 urgency levels</p></div>
+        <div class="feature"><h3>Clock</h3><p>Current time, 12h/24h auto-detected with timezone</p></div>
+      </div>
+    </div>
+  </section>
+
   <section class="gallery" id="gallery">
     <div class="wrap">
       <div class="gallery-head">
@@ -498,6 +521,7 @@
         <a href="https://github.com/micschr0/claudebar/blob/main/CONTRIBUTING-themes.md">Contribute a theme</a>
       </div>
       <p class="foot-note">claudebar — a fast, themeable statusline for Claude Code.</p>
+      <p class="foot-note">Built with <a href="https://ratatui.rs/">ratatui</a>, <a href="https://github.com/crossterm-rs/crossterm">crossterm</a>, <a href="https://github.com/clap-rs/clap">clap</a>, <a href="https://serde.rs/">serde</a>, <a href="https://insta.rs/">insta</a>, and <a href="https://www.nerdfonts.com/">Nerd Fonts</a>.</p>
     </div>
   </footer>
 
