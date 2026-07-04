@@ -5,68 +5,64 @@
 **A powerline-style status line for Claude Code — segments, themes, and a live TUI configurator, in a single native binary.**
 
 [![CI](https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/rust.yml?style=flat-square&label=CI)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml)
+[![Security](https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/security.yml?style=flat-square&label=Security)](https://github.com/micschr0/claudebar/actions/workflows/security.yml)
+[![Release](https://img.shields.io/github/v/release/micschr0/claudebar?style=flat-square&label=release)](https://github.com/micschr0/claudebar/releases/latest)
 [![Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-DA7857?style=flat-square&logo=anthropic)](https://claude.ai/code)
 [![Claude Skills](https://img.shields.io/badge/Uses-Claude%20Skills-DA7857?style=flat-square&logo=anthropic)](.agents/skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Rust](https://img.shields.io/badge/rust-2024-orange?style=flat-square)](Cargo.toml)
+[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos-lightgrey?style=flat-square)](CLAUDE.md)
 
 **[Documentation & live demo](https://micschr0.github.io/claudebar/)**
 
 [Screenshots](#screenshots) • [Install](#install) • [Configure](#configure) • [CLI](#cli-reference) • [Segments](#segments) • [Build from source](#build-from-source)
 
 <a href="https://micschr0.github.io/claudebar/">
-<img src="screenshots/skynet.png" width="820" alt="claudebar statusline showing all default segments">
+<img src="screenshots/segment-pills.png" width="820" alt="claudebar segments rendered as individual pill cards">
 </a>
 
 </div>
 
 ## What it does
 
-claudebar reads the session JSON that Claude Code's status line hook sends over stdin, and writes back one themed ANSI line: current directory, git state, active model, context usage, session cost, and rate-limit windows — all in a single native binary, no runtime and no background process.
-
-- **Single binary** — no daemon, no subprocess forks. (A zero-toolchain bash fallback is included for environments without a Rust build, but it forks `jq`/`git`/`date` per render.)
-- **TUI configurator** — toggle segments, preview themes and styles live, and tune thresholds without hand-editing TOML.
-- **Segments hide themselves** — no git repo, no rate-limit data, no active effort level: the segment just doesn't render. See [Troubleshooting](#troubleshooting).
+claudebar renders the Claude Code status line: current directory, git state, active model, context usage, session cost, and rate-limit windows. It reads the session JSON that Claude Code's status line hook sends over stdin and writes back one themed ANSI line — a single ~1.6 MB native binary that renders in ~30 ms, no daemon, no background process. A zero-toolchain bash fallback is included for environments without a Rust build.
 
 ## Screenshots
 
-<img src="screenshots/strip-critical.png" width="880" alt="Critical state — context near capacity, 5h window above warn threshold">
+### All segments at a glance
 
-Context near capacity, with the 5-hour window past its warn threshold.
+<img src="screenshots/chips.png" width="860" alt="All 11 claudebar segment feature chips">
 
-<img src="screenshots/strip-overlimit.png" width="880" alt="Over limit — both bars red, burn projection active">
+### Color-coded states
 
-Both windows past threshold, with the burn projection showing time-to-empty.
-
-<img src="screenshots/strip-nogit.png" width="880" alt="Outside a git repo — git segment hidden">
-
-Outside a git repo, the git segment is omitted entirely rather than shown empty.
+| <img src="screenshots/thumb-normal.png" width="260" alt="Normal — green statusline"> | <img src="screenshots/thumb-critical.png" width="260" alt="Critical — yellow statusline"> | <img src="screenshots/thumb-overlimit.png" width="260" alt="Over limit — red statusline"> |
+|:--:|:--:|:--:|
+| Normal | Critical | Over limit |
 
 ## Install
 
-**Prerequisites**
-- A [Nerd Font](https://www.nerdfonts.com/) for powerline glyphs (or pick the `ascii` / `plain` / `unicode` style instead) — macOS: `brew install --cask font-hack-nerd-font`
-- `git` on `PATH` (optional, only needed for the git segment)
+Supported platforms: macOS and Linux (x86_64 / aarch64).
 
 ```bash
 brew install micschr0/tap/claudebar
+claudebar setup     # wires claudebar into Claude Code's settings.json
 ```
 
-Or without Homebrew:
+Or without Homebrew — the script downloads the release binary (checksum-verified), installs it to `~/.claude/claudebar`, and runs `setup` for you, backing up `settings.json` first:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
-Restart Claude Code, then verify the install:
+> [!NOTE]
+> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/) — macOS: `brew install --cask font-hack-nerd-font` — or pick the `ascii` / `plain` / `unicode` style instead. `git` on `PATH` is optional, only needed for the git segment.
+
+Restart Claude Code, then verify:
 
 ```bash
 claudebar smoke     # renders a test fixture
 claudebar doctor    # checks fonts, git, config
 ```
-
-> [!NOTE]
-> Homebrew installs to `$(brew --prefix)/bin`, already on `PATH`. The install script places the binary at `~/.claude/claudebar` instead — see [Troubleshooting](#troubleshooting) if `claudebar` isn't found afterward.
 
 ## Configure
 
@@ -74,11 +70,11 @@ claudebar doctor    # checks fonts, git, config
 claudebar config
 ```
 
-Opens a full-screen TUI: toggle and reorder segments, live-preview all 16 themes and 7 styles against your own session data, and nudge thresholds with instant feedback. Press `?` for the key reference, `s` to save, `q` to quit.
+Launches a full-screen TUI against your own session data. Press `?` for the key reference, `s` to save, `q` to quit.
 
 <img src="screenshots/config-tui.png" width="860" alt="claudebar TUI configurator with live preview">
 
-Prefer to edit by hand? The TUI writes plain TOML at `~/.config/claudebar/config.toml`:
+The TUI writes plain TOML at `~/.config/claudebar/config.toml` — hand-edit it directly if you'd rather skip the UI:
 
 ```toml
 theme = "tokyo-night"
@@ -93,7 +89,7 @@ bar_width      = 6        # progress-bar width in cells
 layout         = "fixed"  # "fixed" = single line, "auto" = responsive wrap
 ```
 
-A missing config file falls back to sensible defaults — `claudebar list` prints every built-in theme and style name.
+A missing config file falls back to sensible defaults. 16 themes and 7 styles are built in — `claudebar list` prints every name, and the [theme gallery](https://micschr0.github.io/claudebar/#gallery) shows every combination rendered.
 
 ## CLI reference
 
@@ -165,16 +161,21 @@ Available on Pro/Max plans only; the weekly window appears once weekly usage rea
 **`command not found: claudebar`**
 The install script places the binary at `~/.claude/claudebar`; `cargo install` uses `~/.cargo/bin`. Homebrew already puts it on `PATH`. Either add the right directory to `PATH`, or point `settings.json` at the full binary path.
 
+## Uninstall
+
+```bash
+brew uninstall claudebar    # or: rm ~/.claude/claudebar  /  rm ~/.cargo/bin/claudebar
+```
+
+Then remove the `statusLine` entry from `~/.claude/settings.json` and, optionally, the config at `~/.config/claudebar/`.
+
 ## Reporting issues
 
 Open an issue on [GitHub Issues](https://github.com/micschr0/claudebar/issues). Include:
 
-- A clear description of the problem
-- Steps to reproduce
-- Expected vs. actual behavior
-- Your terminal emulator and OS
-- Your claudebar version (`claudebar --version`)
-- When relevant, the output of `claudebar doctor` or the config in question
+- Steps to reproduce, expected vs. actual behavior
+- Terminal emulator, OS, and claudebar version (`claudebar --version`)
+- The output of `claudebar doctor` when relevant
 
 ## Contributing
 
@@ -195,17 +196,6 @@ scripts/      Screenshot and benchmark tooling
 tests/        Unit + insta snapshot tests
 ```
 
-## Status & metrics
-
-| Metric | Count |
-|---|---|
-| Segments | 11 (8 default + 3 optional) |
-| Themes | 16 |
-| Styles | 7 |
-| Test cases | 232 passing |
-| Snapshot tests | 46 |
-| Edge-case fixtures | 14 |
-
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for release notes.
@@ -220,9 +210,7 @@ claudebar builds on:
 - [serde](https://serde.rs/) — JSON/TOML serialization
 - [insta](https://insta.rs/) — snapshot testing
 - [Nerd Fonts](https://www.nerdfonts.com/) — powerline glyphs
-- [shields.io](https://shields.io/) — badges
 - [Claude Code](https://claude.ai/code) (Anthropic) — pair-programming this project
-- [GitHub Pages](https://pages.github.com/) — hosting the live demo
 
 ## License
 
