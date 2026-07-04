@@ -223,6 +223,42 @@ download_prebuilt() {
   return 0
 }
 
+# link_onto_path — make `claudebar` runnable from any shell. The binary lives at
+# $BIN_DEST (~/.claude/claudebar), which is not on PATH, so `claudebar
+# config|doctor|edit|list` would be "command not found". The statusLine uses the
+# absolute $BIN_DEST path and is unaffected either way. Skips entirely if
+# `claudebar` already resolves (e.g. a Homebrew install) so we never shadow it.
+link_onto_path() {
+  if command -v claudebar >/dev/null 2>&1; then
+    return 0
+  fi
+
+  # Prefer a directory already on PATH and writable — then the command works
+  # immediately, no shell-rc edit needed.
+  local dir target=""
+  for dir in "/usr/local/bin" "$HOME/.local/bin" "$HOME/bin"; do
+    case ":$PATH:" in *":$dir:"*) ;; *) continue ;; esac
+    if [ -d "$dir" ] && [ -w "$dir" ]; then
+      target="$dir"
+      break
+    fi
+  done
+
+  if [ -n "$target" ]; then
+    ln -sf "$BIN_DEST" "$target/claudebar"
+    green "Linked claudebar onto PATH: ${target}/claudebar"
+    return 0
+  fi
+
+  # Nothing writable on PATH — link into ~/.local/bin and say how to reach it.
+  target="$HOME/.local/bin"
+  mkdir -p "$target"
+  ln -sf "$BIN_DEST" "$target/claudebar"
+  green "Linked claudebar → ${target}/claudebar"
+  red "  ${target} is not on your PATH — the 'claudebar' command won't resolve yet."
+  echo "  Add it:  echo 'export PATH=\"${target}:\$PATH\"' >> ~/.zshrc   # or ~/.bashrc, then restart your shell"
+}
+
 # ── Install ────────────────────────────────────────────────────────────────────
 COMMAND_VALUE=""
 
@@ -275,6 +311,7 @@ fi
 # keeps the pre-existing jq-based merge.
 if [ -x "$BIN_DEST" ]; then
   "$BIN_DEST" setup --yes --binary-path "$BIN_DEST"
+  link_onto_path
 else
   if [ -f "$SETTINGS" ]; then
     if ! command -v jq >/dev/null 2>&1; then
@@ -320,4 +357,4 @@ else
     echo "Tip: run 'claudebar config' and choose the 'ascii' style for glyph-free rendering."
 fi
 echo ""
-echo "Troubleshooting: https://github.com/micschr0/claudebar#troubleshooting"
+echo "Troubleshooting: run 'claudebar doctor', or visit https://micschr0.github.io/claudebar/"
