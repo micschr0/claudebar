@@ -60,6 +60,11 @@ pub struct Style {
     /// Separator glyph placed between adjacent non-empty segments (painted in
     /// the theme's `separator` color, with a space on each side).
     pub separator: &'static str,
+    /// Gap glyph marking the join between two related "windows" inside one
+    /// segment (e.g. rate-limits' 5h/weekly gauges), painted in the theme's
+    /// `dim` color — deliberately lighter than `separator`, signaling "these
+    /// belong together" rather than a segment boundary.
+    pub window_gap: &'static str,
     /// When false, icons are suppressed entirely (minimal / pure-text styles).
     pub icons: bool,
     /// The glyph set this style draws from.

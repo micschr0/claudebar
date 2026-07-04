@@ -10,6 +10,7 @@ use crate::model::{GlyphSet, Style};
 pub fn style() -> Style {
     Style {
         separator: "❯", // U+276F HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT
+        window_gap: "·", // U+00B7 MIDDLE DOT
         icons: true,
         glyphs: GlyphSet {
             branch: "⎇",   // U+2387 ALTERNATIVE KEY SYMBOL
@@ -47,12 +48,14 @@ mod tests {
         let s = super::style();
         assert!(s.icons);
         assert_eq!(s.separator, "❯");
+        assert_eq!(s.window_gap, "·");
         assert_eq!(s.glyphs.branch, "⎇");
         assert_eq!(s.bar_fill, '█');
         assert_eq!(s.bar_empty, '░');
         // Verify no PUA codepoints (U+E000–U+F8FF or U+F0000+)
         let all = [
             s.separator,
+            s.window_gap,
             s.glyphs.branch,
             s.glyphs.ahead,
             s.glyphs.behind,

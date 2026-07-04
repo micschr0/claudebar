@@ -10,6 +10,7 @@ use crate::model::Style;
 pub fn style() -> Style {
     Style {
         separator: "\u{b7}", // · middle dot
+        window_gap: ":",
         icons: false,
         glyphs: super::powerline::style().glyphs,
         bar_fill: '\u{2501}',  // ━ heavy horizontal
@@ -24,6 +25,7 @@ mod tests {
         let s = super::style();
         assert!(!s.icons);
         assert_eq!(s.separator, "\u{b7}");
+        assert_eq!(s.window_gap, ":");
         assert_eq!(s.bar_fill, '\u{2501}');
         assert_eq!(s.bar_empty, '\u{254c}');
     }

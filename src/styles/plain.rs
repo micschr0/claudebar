@@ -8,6 +8,7 @@ use crate::model::{GlyphSet, Style};
 pub fn style() -> Style {
     Style {
         separator: "|",
+        window_gap: ":",
         icons: false,
         glyphs: GlyphSet {
             branch: "",
@@ -45,10 +46,12 @@ mod tests {
         let s = super::style();
         assert!(!s.icons);
         assert_eq!(s.separator, "|");
+        assert_eq!(s.window_gap, ":");
         assert_eq!(s.bar_fill, '#');
         assert_eq!(s.bar_empty, '-');
         // Verify no PUA codepoints anywhere in the glyph set
         let all = [
+            s.window_gap,
             s.glyphs.branch,
             s.glyphs.ahead,
             s.glyphs.behind,

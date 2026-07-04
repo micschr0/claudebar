@@ -11,6 +11,7 @@ use crate::model::Style;
 pub fn style() -> Style {
     Style {
         separator: "",
+        window_gap: "\u{b7}", // · middle dot; lean's separator is empty so no collision
         icons: true,
         glyphs: super::powerline::style().glyphs,
         bar_fill: '\u{2501}',  // ━ heavy horizontal
@@ -25,6 +26,7 @@ mod tests {
         let s = super::style();
         assert!(s.icons);
         assert_eq!(s.separator, "");
+        assert_eq!(s.window_gap, "\u{b7}");
         assert_eq!(s.bar_fill, '\u{2501}');
         assert_eq!(s.bar_empty, '\u{254c}');
     }

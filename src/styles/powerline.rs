@@ -12,6 +12,7 @@ use crate::model::{GlyphSet, Style};
 pub fn style() -> Style {
     Style {
         separator: "\u{e0b1}",
+        window_gap: "\u{b7}", // · middle dot — lighter than the powerline arrow separator
         icons: true,
         glyphs: GlyphSet {
             branch: "\u{e0a0}",
