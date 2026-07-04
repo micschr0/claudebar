@@ -9,7 +9,7 @@ use crate::model::Style;
 pub fn style() -> Style {
     Style {
         separator: "\u{e0b5}", // rounded powerline right-cap
-        window_gap: "\u{b7}", // · middle dot — distinct from the e0b5 cap separator
+        window_gap: "\u{b7}",  // · middle dot — distinct from the e0b5 cap separator
         icons: true,
         glyphs: super::powerline::style().glyphs,
         bar_fill: '\u{2501}',  // ━ heavy horizontal

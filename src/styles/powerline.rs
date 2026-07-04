@@ -34,9 +34,9 @@ pub fn style() -> Style {
             stash: "\u{2691}",        // U+2691 ⚑
             lines: "\u{2013}",        // U+2013 – en dash (lines removed marker)
             cost: "$",                // plain dollar
-            duration: "\u{f2f2}", // nf-fa-stopwatch
-            time: "\u{f051f}",     // nf-fa-clock — same Nerd Font clock as rate-limits window
-            burn: "\u{2197}",      // U+2197 ↗
+            duration: "\u{f2f2}",     // nf-fa-stopwatch
+            time: "\u{f051f}",        // nf-fa-clock — same Nerd Font clock as rate-limits window
+            burn: "\u{2197}",         // U+2197 ↗
         },
         bar_fill: '\u{2501}',  // ━ heavy horizontal
         bar_empty: '\u{254c}', // ╌ light double dash

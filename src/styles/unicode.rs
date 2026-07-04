@@ -9,7 +9,7 @@ use crate::model::{GlyphSet, Style};
 #[must_use]
 pub fn style() -> Style {
     Style {
-        separator: "❯", // U+276F HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT
+        separator: "❯",  // U+276F HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT
         window_gap: "·", // U+00B7 MIDDLE DOT
         icons: true,
         glyphs: GlyphSet {
