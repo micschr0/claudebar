@@ -33,5 +33,25 @@ pub fn all() -> Vec<Sample> {
             name: "dev context",
             input: InputData::parse(include_str!("../../fixtures/dev_context.json")),
         },
+        Sample {
+            name: "weekly window",
+            input: InputData::parse(include_str!("../../fixtures/weekly_at_50.json")),
+        },
     ]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn six_samples_including_weekly_window() {
+        let samples = all();
+        assert_eq!(samples.len(), 6);
+        let weekly = samples
+            .iter()
+            .find(|s| s.name == "weekly window")
+            .expect("weekly window sample must exist");
+        assert!(weekly.input.rate_limits.seven_day.is_some());
+    }
 }
