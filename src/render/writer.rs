@@ -136,6 +136,16 @@ impl<'a> SegmentWriter<'a> {
         );
     }
 
+    /// Append a progress bar followed by its percentage — the bar-to-percent
+    /// gap convention (`bar()` + `" "` + `"<pct>%"` in `color`) owned in one
+    /// place so it can't drift between call sites, mirroring how `icon()`
+    /// owns its own trailing-space convention.
+    pub fn bar_pct(&mut self, pct: u32, width: u8, color: Color) {
+        self.bar(pct, width, color);
+        self.raw(" ");
+        self.colored_fmt(color, format_args!("{pct}%"));
+    }
+
     /// The accumulated segment body.
     #[must_use]
     #[inline]

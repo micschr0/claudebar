@@ -47,9 +47,7 @@ impl Segment for Context {
                     ctx.theme.bar_ok
                 };
                 out.icon(ctx.style.glyphs.context);
-                out.bar(pct, ctx.th.bar_width, color);
-                out.raw(" ");
-                out.colored_fmt(color, format_args!("{pct}%"));
+                out.bar_pct(pct, ctx.th.bar_width, color);
                 out.raw(" ");
             }
         }

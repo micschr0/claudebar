@@ -177,9 +177,7 @@ fn render_five_hour(
 /// method already appends a trailing space, so the bar follows it directly.
 fn write_window(ctx: &RenderCtx, out: &mut SegmentWriter, glyph: &str, pct: u32, color: Color) {
     out.icon(glyph);
-    out.bar(pct, ctx.th.bar_width, color);
-    out.raw(" ");
-    out.colored_fmt(color, format_args!("{pct}%"));
+    out.bar_pct(pct, ctx.th.bar_width, color);
 }
 
 #[cfg(test)]
