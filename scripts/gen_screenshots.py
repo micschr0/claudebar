@@ -17,7 +17,7 @@ Prerequisites for PNG:
     /tmp/demo-{clean,app,busy,release,behind} in distinct git states so the
     screenshots show varied git segments instead of an identical one.
 """
-import subprocess, re, time, os, sys, base64
+import subprocess, re, time, os, sys, base64, math, shutil
 
 REPO     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Screenshots render the real Rust binary's output (what users actually install),
@@ -45,22 +45,10 @@ FONT_URL     = f"file://{NF_FONT_DIR}/HackNerdFontMono-Regular.ttf"
 
 MODE = sys.argv[1] if len(sys.argv) > 1 else "all"
 
-def render_shots(shots, selector, scale=2, wait=900, viewport=None):
-    """Render the `selector` element of each HTML file to a transparent PNG.
-    `shots` is a list of (src_html_path, out_png_path). Uses host Chrome when
-    CLAUDEBAR_CHROME is set, otherwise the Playwright Docker image."""
-    vp = (f"deviceScaleFactor:{scale}, viewport:{{width:{viewport[0]},height:{viewport[1]}}}"
-          if viewport else f"deviceScaleFactor:{scale}")
-    shots_js = ",\n    ".join(f'{{ src:"file://{s}", out:"{o}" }}' for s, o in shots)
-    loop = f"""
-  for (const {{ src, out }} of [{shots_js}]) {{
-    const page = await browser.newPage({{ {vp} }});
-    await page.goto(src);
-    await page.waitForTimeout({wait});
-    await page.locator("{selector}").screenshot({{ path: out }});
-    await page.close();
-    console.log("Saved:", out);
-  }}"""
+def _run_playwright_js(loop):
+    """Launch host Chrome (CLAUDEBAR_CHROME) or the Playwright Docker image and
+    run `loop` (a JS for-await body operating on an in-scope `browser`).
+    Returns True on success, False otherwise."""
     if HOST_CHROME:
         core = os.path.join(PW_MODULES, "playwright-core")
         js = (f'const {{ chromium }} = require("{core}");\n(async () => {{\n'
@@ -80,6 +68,25 @@ def render_shots(shots, selector, scale=2, wait=900, viewport=None):
             "-v", f"{PW_MODULES}:/node_modules", "-v", f"{NF_FONT_DIR}:/fonts",
             "--ipc=host", PLAYWRIGHT, "node", "/tmp/claudebar_render.js",
         ], env={**os.environ, "DOCKER_HOST": DOCKER_SOCK}).returncode == 0
+    return ok
+
+def render_shots(shots, selector, scale=2, wait=900, viewport=None):
+    """Render the `selector` element of each HTML file to a transparent PNG.
+    `shots` is a list of (src_html_path, out_png_path). Uses host Chrome when
+    CLAUDEBAR_CHROME is set, otherwise the Playwright Docker image."""
+    vp = (f"deviceScaleFactor:{scale}, viewport:{{width:{viewport[0]},height:{viewport[1]}}}"
+          if viewport else f"deviceScaleFactor:{scale}")
+    shots_js = ",\n    ".join(f'{{ src:"file://{s}", out:"{o}" }}' for s, o in shots)
+    loop = f"""
+  for (const {{ src, out }} of [{shots_js}]) {{
+    const page = await browser.newPage({{ {vp} }});
+    await page.goto(src);
+    await page.waitForTimeout({wait});
+    await page.locator("{selector}").screenshot({{ path: out }});
+    await page.close();
+    console.log("Saved:", out);
+  }}"""
+    ok = _run_playwright_js(loop)
     print("  Done." if ok else "  Render failed.")
 
 # ── ANSI parser ────────────────────────────────────────────────────────────────
@@ -374,12 +381,89 @@ _EXTRA_STRIPS = [
 
 STRIP_SHOTS = _PNG_STRIPS + _EXTRA_STRIPS
 
+# The 3 README-referenced strips that get animated as looping pendulum-zoom
+# APNGs instead of static PNGs. Everything else in STRIP_SHOTS stays static.
+ANIMATED_STRIP_NAMES = {"critical", "overlimit", "nogit"}
+ANIM_N_FRAMES  = 24    # unique forward frames, scale 1.0 -> ANIM_PEAK_SCALE
+ANIM_PEAK_SCALE = 1.06  # subtle 6% zoom
+ANIM_FPS       = 6
+
 def strip_html(sl_raw):
     spans = "".join(f'<span style="color:{c}">{esc(t)}</span>'
                     for c, t in parse_ansi(sl_raw))
     return (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
             f'<style>{STRIP_CSS}</style></head>'
             f'<body><div class="stripwrap"><div class="strip">{spans}</div></div></body></html>').replace("__FONT_URL__", FONT_URL)
+
+def strip_frame_html(sl_raw):
+    """Like strip_html(), but wraps the card in a `.frame` clipping container
+    so a later `transform:scale()` on `.stripwrap` can be clipped for the
+    Ken Burns zoom effect (see render_animated_strips)."""
+    spans = "".join(f'<span style="color:{c}">{esc(t)}</span>'
+                    for c, t in parse_ansi(sl_raw))
+    css = STRIP_CSS + ".frame{display:inline-block;overflow:hidden;}"
+    return (f'<!DOCTYPE html><html><head><meta charset="utf-8">'
+            f'<style>{css}</style></head>'
+            f'<body><div class="frame"><div class="stripwrap" style="transform-origin:0% 50%">'
+            f'<div class="strip">{spans}</div></div></div></body></html>').replace("__FONT_URL__", FONT_URL)
+
+def render_animated_strips(items, n_frames, peak_scale):
+    """Render `n_frames` Ken-Burns-zoom frames for each (name, html_path,
+    frame_dir) in `items`, writing frame_dir/frame_NNN.png per frame. Uses a
+    cosine ease-in-out scale curve from 1.0 to peak_scale. Returns the
+    `_run_playwright_js` success boolean."""
+    scales = [1.0 + (peak_scale - 1.0) * (1 - math.cos(math.pi * i / (n_frames - 1))) / 2
+              for i in range(n_frames)]
+    scales_js = "[" + ",".join(f"{s:.6f}" for s in scales) + "]"
+    parts = []
+    for name, html_path, frame_dir in items:
+        parts.append(f"""
+  {{
+    const page = await browser.newPage({{ deviceScaleFactor:2 }});
+    await page.goto("file://{html_path}");
+    await page.waitForTimeout(800);
+    const scales = {scales_js};
+    for (let i = 0; i < scales.length; i++) {{
+      const s = scales[i];
+      await page.evaluate(s => {{ document.querySelector('.stripwrap').style.transform = 'scale(' + s + ')'; }}, s);
+      await page.waitForTimeout(60);
+      await page.locator('.frame').screenshot({{ path: '{frame_dir}/frame_' + String(i).padStart(3,'0') + '.png' }});
+    }}
+    await page.close();
+    console.log("Rendered frames:", "{name}", scales.length);
+  }}""")
+    loop = "\n".join(parts)
+    ok = _run_playwright_js(loop)
+    for name, _html_path, _frame_dir in items:
+        print(f"  {name}: {n_frames} frames rendered" if ok else f"  {name}: frame render failed")
+    return ok
+
+def build_pendulum_apng(name, frame_dir, n_frames, fps):
+    """Assemble frame_dir/frame_NNN.png into a looping pendulum-zoom APNG at
+    screenshots/strip-{name}.png. The frame order pings forward (0..n_frames-1)
+    then pongs back through the reversed middle frames (n_frames-2 .. 1),
+    without duplicating either endpoint — so the loop's wrap-around step is
+    the same size as any other inter-frame step (no hard cut)."""
+    order = list(range(n_frames)) + list(range(n_frames - 2, 0, -1))
+    seq_dir = f"{frame_dir}/seq"
+    os.makedirs(seq_dir, exist_ok=True)
+    for k, src_idx in enumerate(order):
+        shutil.copy(f"{frame_dir}/frame_{src_idx:03d}.png", f"{seq_dir}/frame_{k:03d}.png")
+    out_path = f"{SHOTS}/strip-{name}.png"
+    try:
+        result = subprocess.run([
+            "ffmpeg", "-y", "-framerate", str(fps), "-i", f"{seq_dir}/frame_%03d.png",
+            "-plays", "0", "-f", "apng", "-pix_fmt", "rgb24", out_path,
+        ], capture_output=True, text=True)
+    except FileNotFoundError:
+        print(f"  ffmpeg not found — skipping APNG assembly for {name}")
+        return False
+    if result.returncode != 0:
+        print(f"  ffmpeg failed for {name}: {result.stderr.strip()}")
+        return False
+    duration = len(order) / fps
+    print(f"  {out_path}: {len(order)} frames, {duration:.1f}s loop")
+    return True
 
 def generate_strips():
     print("── Statusline strips ────────────────────────────")
