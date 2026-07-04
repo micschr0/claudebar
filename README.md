@@ -28,14 +28,23 @@ Eight on by default. dev-context, burn, and clock sit off by default — flip th
 
 ## Install
 
-macOS and Linux, x86_64 / aarch64.
+macOS and Linux, x86_64 / aarch64. One command — the installer downloads the binary and wires it into Claude Code's `settings.json`:
 
-| Script | Homebrew |
-|---|---|
-| `curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh \| bash` | `brew install micschr0/tap/claudebar`<br>`claudebar setup` |
+```bash
+curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+```
+
+Or via Homebrew, then let `setup` do the wiring:
+
+```bash
+brew install micschr0/tap/claudebar
+claudebar setup
+```
+
+Restart Claude Code and the statusline is live. If anything looks off, `claudebar doctor` checks fonts, git, config, and PATH.
 
 > [!NOTE]
-> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/); the `ascii` style needs none. `claudebar doctor` checks fonts, git, config, and PATH.
+> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/); the `ascii` style needs none.
 
 ## Configure
 
