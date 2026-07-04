@@ -15,9 +15,9 @@ ESC=$'\e'; R="${ESC}[0m"
 BOLD="${ESC}[1m"; DIM="${ESC}[38;5;245m"
 GREEN="${ESC}[38;5;114m"; AMBER="${ESC}[38;5;221m"; RED="${ESC}[38;5;203m"
 
-ok()   { printf "${GREEN}✓${R}"; }
-warn() { printf "${AMBER}!${R}"; }
-fail() { printf "${RED}✗${R}"; }
+ok()   { printf '%s' "${GREEN}✓${R}"; }
+warn() { printf '%s' "${AMBER}!${R}"; }
+fail() { printf '%s' "${RED}✗${R}"; }
 
 # ── Timing helper ─────────────────────────────────────────────────────────────
 # Returns elapsed milliseconds; works on bash 3.2+ (macOS) and bash 5+ (Linux).
