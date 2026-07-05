@@ -63,7 +63,9 @@ jobs:
       - name: Check release profile (auditable)
         run: cargo auditable build --release --locked
       - name: Install dist (pinned to Cargo.toml cargo-dist-version)
-        run: cargo install cargo-dist@0.32.0 --locked
+        uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2
+        with:
+          tool: cargo-dist@0.32.0
 
       - name: dist workflow drift check
         run: dist generate --check
