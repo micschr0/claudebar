@@ -107,8 +107,6 @@ pub struct Thresholds {
     pub name_max: u16,
     /// Clock display mode: `12h`, `24h`, or `off`.
     pub clock_mode: String,
-    /// Show seconds in the clock.
-    pub clock_seconds: bool,
     /// When enabled, the Model segment appends an inline effort bar (Effort
     /// is NOT a standalone segment by default — flip this to false to hide it).
     pub model_show_effort: bool,
@@ -130,6 +128,11 @@ pub struct Thresholds {
     pub wrap_margin: u8,
     /// Enable cross-session rate-limit sync (opt-in).
     pub limit_sync: bool,
+    /// Deprecated: formerly controlled clock seconds display. Retained only so
+    /// configs from before the removal parse successfully. Ignored at runtime.
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub clock_seconds: Option<bool>,
 }
 impl Default for Thresholds {
     fn default() -> Self {
@@ -142,7 +145,6 @@ impl Default for Thresholds {
             name_max: 0,
             clock_mode: "auto".into(),
             burn_lookback: 600,
-            clock_seconds: true,
             model_show_effort: true,
             float: false,
             float_segments: "model context cost".into(),
@@ -152,6 +154,7 @@ impl Default for Thresholds {
             max_lines: 3,
             wrap_margin: 4,
             limit_sync: false,
+            clock_seconds: None,
         }
     }
 }
