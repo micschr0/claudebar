@@ -130,6 +130,38 @@ verify_checksum() {
   green "SHA256 verified"
 }
 
+# Build-provenance check via GitHub artifact attestations. Defense-in-depth on
+# top of the mandatory SHA256 gate — informative, never fatal. gh needs auth
+# even for public repos, so unauthenticated gh counts as skipped, not failed.
+# --signer-workflow scopes trust to release.yml specifically; --repo alone only
+# proves the attestation belongs to this repo, not that release.yml signed it.
+verify_attestation() {
+  local file="$1" out
+  if ! command -v gh >/dev/null 2>&1; then
+    bold "Provenance check skipped (gh CLI not installed)"
+    return 0
+  fi
+  if ! gh attestation --help >/dev/null 2>&1; then
+    bold "Provenance check skipped (gh CLI too old — 'gh attestation' unavailable)"
+    return 0
+  fi
+  if ! gh auth status >/dev/null 2>&1; then
+    bold "Provenance check skipped (gh CLI not authenticated)"
+    return 0
+  fi
+  bold "Verifying build provenance (gh attestation verify)..."
+  if out=$(gh attestation verify "$file" \
+    --repo micschr0/claudebar \
+    --signer-workflow micschr0/claudebar/.github/workflows/release.yml \
+    2>&1); then
+    green "Build provenance verified — artifact was built by this repo's release workflow"
+  else
+    red "Provenance verification failed, continuing (SHA256 already verified):"
+    printf '%s\n' "$out" >&2
+  fi
+  return 0
+}
+
 archive_has_unsafe_paths() {
   tar -tf "$1" | grep -qE '(^|/)\.\.(/|$)|^/'
 }
@@ -186,6 +218,7 @@ install_prebuilt() {
   fi
   curl_https "$sums_url" -o "${workdir}/sha256.sum"
   verify_checksum "${workdir}/${archive}" "$archive" "${workdir}/sha256.sum" || exit 1
+  verify_attestation "${workdir}/${archive}"
 
   extract_archive "${workdir}/${archive}" "$workdir" || exit 1
   install_binary "${workdir}/claudebar"

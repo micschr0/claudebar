@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add bats test suite for `statusline-command.sh` and `install.sh`; replace the smoke job in CI
 - Exercise the weekly-window gap glyph in the golden-snapshot suite and live TUI preview by crossing the `weekly_show_at` threshold
 
+### Security
+- Attest release artifacts with GitHub build provenance (`actions/attest-build-provenance`); `install.sh` verifies it non-fatally via `gh attestation verify` after the SHA256 gate (#27, closes #19)
+- Add `SECURITY.md` (supported versions, private vulnerability reporting) and document `gh attestation verify` in the README
+
 ## [2026.7.3] - 2026-07-03
 
 ### Added

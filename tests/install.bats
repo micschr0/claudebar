@@ -129,6 +129,70 @@ setup() {
   [[ "$output" == *"No checksum entry"* ]]
 }
 
+# ── verify_attestation ──────────────────────────────────────────────────────────
+# Always non-fatal by design (status 0 on every branch) — assert that explicitly
+# alongside each outcome's message, since a regressed `return 1` would still let
+# the SHA256 gate mask the break in install_prebuilt().
+
+@test "verify_attestation skips when gh is not installed" {
+  command() { if [ "$1" = -v ] && [ "$2" = gh ]; then return 1; fi; builtin command "$@"; }
+  run verify_attestation file.tar.gz
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"gh CLI not installed"* ]]
+}
+
+@test "verify_attestation skips when gh predates the attestation subcommand" {
+  gh() { [ "$*" = "attestation --help" ] && return 1; return 1; }
+  export -f gh
+  run verify_attestation file.tar.gz
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"gh CLI too old"* ]]
+}
+
+@test "verify_attestation skips when gh is not authenticated" {
+  gh() {
+    case "$*" in
+      "attestation --help") return 0 ;;
+      "auth status") return 1 ;;
+    esac
+    return 1
+  }
+  export -f gh
+  run verify_attestation file.tar.gz
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"not authenticated"* ]]
+}
+
+@test "verify_attestation reports success when gh verifies" {
+  gh() {
+    case "$*" in
+      "attestation --help") return 0 ;;
+      "auth status") return 0 ;;
+      "attestation verify "*"--signer-workflow micschr0/claudebar/.github/workflows/release.yml") return 0 ;;
+    esac
+    return 1
+  }
+  export -f gh
+  run verify_attestation file.tar.gz
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Build provenance verified"* ]]
+}
+
+@test "verify_attestation reports failure without aborting the install" {
+  gh() {
+    case "$*" in
+      "attestation --help") return 0 ;;
+      "auth status") return 0 ;;
+      "attestation verify "*) return 1 ;;
+    esac
+    return 1
+  }
+  export -f gh
+  run verify_attestation file.tar.gz
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Provenance verification failed"* ]]
+}
+
 # ── archive safety ─────────────────────────────────────────────────────────────
 
 @test "archive_has_unsafe_paths passes a clean archive" {
