@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- Attest release artifacts with GitHub build provenance (`actions/attest-build-provenance`); `install.sh` verifies it non-fatally via `gh attestation verify` after the SHA256 gate (#27, closes #19)
+- Add `SECURITY.md` (supported versions, private vulnerability reporting) and document `gh attestation verify` in the README
+
 ### Fixed
 - Swap duration glyph to stopwatch in the powerline style
 - Remove duplicate Nerd Font tip in `install.sh`
