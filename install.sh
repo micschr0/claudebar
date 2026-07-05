@@ -136,7 +136,7 @@ verify_checksum() {
 # --signer-workflow scopes trust to release.yml specifically; --repo alone only
 # proves the attestation belongs to this repo, not that release.yml signed it.
 verify_attestation() {
-  local file="$1"
+  local file="$1" out
   if ! command -v gh >/dev/null 2>&1; then
     bold "Provenance check skipped (gh CLI not installed)"
     return 0
@@ -150,13 +150,14 @@ verify_attestation() {
     return 0
   fi
   bold "Verifying build provenance (gh attestation verify)..."
-  if gh attestation verify "$file" \
+  if out=$(gh attestation verify "$file" \
     --repo micschr0/claudebar \
     --signer-workflow micschr0/claudebar/.github/workflows/release.yml \
-    >/dev/null 2>&1; then
+    2>&1); then
     green "Build provenance verified — artifact was built by this repo's release workflow"
   else
-    red "Provenance verification failed — no matching attestation found, continuing (SHA256 already verified)"
+    red "Provenance verification failed, continuing (SHA256 already verified):"
+    printf '%s\n' "$out" >&2
   fi
   return 0
 }
