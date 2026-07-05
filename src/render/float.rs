@@ -286,8 +286,8 @@ mod tests {
 
     #[test]
     fn uses_custom_separator() {
-        // model = "m" (icons off → bare name); cost = " 2.50 " (leading/trailing
-        // space around the formatted value). Joined by "::".
+        // model = "m" (icons off → bare name); cost = "2.50" (no extra
+        // padding — spacing is the separator's job). Joined by "::".
         let input = InputData {
             model: ModelData {
                 display_name: Some("m".into()),
@@ -301,7 +301,7 @@ mod tests {
         let mut cfg = float_cfg("model cost");
         cfg.thresholds.float_sep = "::".into();
         let line = render_float(&input, &cfg, 0, None);
-        assert_eq!(line, "m:: 2.50 ");
+        assert_eq!(line, "m::2.50");
     }
 
     #[test]

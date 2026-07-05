@@ -147,9 +147,7 @@ impl Segment for Clock {
 
         out.colored_with(ctx.theme.clock, |w| {
             w.icon(ctx.style.glyphs.time);
-            w.raw(" ");
             w.raw(&time_str);
-            w.raw(" ");
         });
         true
     }
