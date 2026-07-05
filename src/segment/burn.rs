@@ -118,8 +118,9 @@ fn estimate(
 
         let remaining_pct = (100.0 - pct).max(0.0);
         let eta_secs = remaining_pct / slope;
-        let eta = fmt_eta(eta_secs as i64);
-        let color = urgency_color(eta_secs, Some(rst), now, theme);
+        let time_to_reset = (rst - now).max(0) as f64;
+        let eta = fmt_eta(eta_secs.min(time_to_reset) as i64);
+        let color = urgency_color(eta_secs, time_to_reset, theme);
 
         return BurnEstimate {
             state: BurnState::Active,
@@ -175,11 +176,7 @@ fn linear_slope(samples: &[(i64, f64)]) -> f64 {
 
 /// Color the ETA by urgency: red if you'd empty before reset, yellow if close,
 /// green if the window resets with room to spare.
-fn urgency_color(eta_secs: f64, resets_at: Option<i64>, now: i64, theme: &Theme) -> Color {
-    let Some(rst) = resets_at else {
-        return theme.bar_warn; // yellow — unknown reset
-    };
-    let time_to_reset = (rst - now) as f64;
+fn urgency_color(eta_secs: f64, time_to_reset: f64, theme: &Theme) -> Color {
     if time_to_reset <= 0.0 {
         return theme.burn; // red — already past reset
     }
@@ -409,21 +406,21 @@ mod tests {
     fn urgency_red_when_eta_before_reset() {
         // ETA = 100s, reset in 200s → red (would run dry first)
         let theme = test_theme();
-        let c = urgency_color(100.0, Some(200), 0, &theme);
+        let c = urgency_color(100.0, 200.0, &theme);
         assert_eq!(c, theme.burn);
     }
     #[test]
     fn urgency_green_when_eta_after_reset() {
         // ETA = 300s, reset in 200s → green (resets with room to spare)
         let theme = test_theme();
-        let c = urgency_color(300.0, Some(200), 0, &theme);
+        let c = urgency_color(300.0, 200.0, &theme);
         assert_eq!(c, theme.bar_ok);
     }
     #[test]
     fn urgency_yellow_when_close() {
         // ETA = 230s, reset in 200s → yellow (within 20% margin: 200*1.2=240)
         let theme = test_theme();
-        let c = urgency_color(230.0, Some(200), 0, &theme);
+        let c = urgency_color(230.0, 200.0, &theme);
         assert_eq!(c, theme.bar_warn);
     }
 
