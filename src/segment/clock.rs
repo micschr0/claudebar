@@ -1,15 +1,15 @@
-//! Clock segment — current time, 12h or 24h, with system timezone via
-//! `date +%z` and locale-based 12h/24h preference.
+//! Clock segment — current time, 12h or 24h, with system timezone and
+//! locale-based 12h/24h preference.
 //!
-//! Renders `◷ 02:45 pm` (12h) or `◷ 14:45:00` (24h). Controlled by
-//! `thresholds.clock_mode` (`"auto"`, `"12h"`, `"24h"`, `"off"`) and
-//! `thresholds.clock_seconds`. No JSON dependency — uses `ctx.now` plus
-//! `ctx.tz_offset_seconds`.
+//! Renders `◷ 02:45 pm` (12h) or `◷ 14:45` (24h). Controlled by
+//! `thresholds.clock_mode` (`"auto"`, `"12h"`, `"24h"`, `"off"`). No JSON
+//! dependency — uses `ctx.now` plus `ctx.tz_offset_seconds`.
 //!
 //! # Detection
 //!
-//! - **Timezone offset**: `date +%z` subprocess, cached in [`LazyLock`].
-//!   Falls back to 0 (UTC). Uses `time` crate for time formatting only.
+//! - **Timezone offset**: `time::UtcOffset::current_local_offset`, cached in
+//!   [`LazyLock`]. Reads the system's local timezone directly (no subprocess).
+//!   Falls back to 0 (UTC) if unavailable.
 //! - **12h/24h preference**: inspected from `LC_TIME` → `LC_ALL` → `LANG`
 //!   environment variables, checked against a static country-code table.
 
@@ -20,9 +20,8 @@ use std::sync::LazyLock;
 use time::macros::format_description;
 use time::{OffsetDateTime, UtcOffset};
 
-/// Renders the current wall-clock time, with optional seconds and 12h/24h
-/// auto-detection from the system locale. Controlled by
-/// [`Thresholds::clock_mode`] and [`Thresholds::clock_seconds`].
+/// Renders the current wall-clock time, with 12h/24h auto-detection from
+/// the system locale. Controlled by [`Thresholds::clock_mode`].
 pub struct Clock;
 
 // ---------------------------------------------------------------------------
@@ -95,49 +94,15 @@ fn effective_clock_mode(th: &Thresholds) -> &str {
 }
 
 // ---------------------------------------------------------------------------
-// Timezone offset detection (date +%z subprocess)
+// Timezone offset detection (system local offset, no subprocess)
 // ---------------------------------------------------------------------------
 
-fn parse_offset(s: &str) -> Option<i32> {
-    let s = s.trim();
-    if s.is_empty() {
-        return None;
-    }
-    let (sign, rest) = match s.chars().next() {
-        Some('+') => (1, &s[1..]),
-        Some('-') => (-1, &s[1..]),
-        _ => return None,
-    };
-    let rest = rest.replace(':', "");
-    match rest.len() {
-        4 => {
-            let hh: i32 = rest[..2].parse().ok()?;
-            let mm: i32 = rest[2..].parse().ok()?;
-            if hh > 23 || mm > 59 {
-                return None;
-            }
-            Some(sign * (hh * 3600 + mm * 60))
-        }
-        2 => {
-            let hh: i32 = rest.parse().ok()?;
-            if hh > 23 {
-                return None;
-            }
-            Some(sign * hh * 3600)
-        }
-        _ => None,
-    }
-}
-
-/// Detect the local timezone offset in seconds east of UTC via `date +%z`.
+/// Detect the local timezone offset in seconds east of UTC from the system.
 /// Cached in [`LazyLock`] for the process lifetime.
 pub(crate) fn detect_tz_offset() -> i32 {
     static OFFSET: LazyLock<i32> = LazyLock::new(|| {
-        std::process::Command::new("date")
-            .args(["+%z"])
-            .output()
-            .ok()
-            .and_then(|o| parse_offset(&String::from_utf8_lossy(&o.stdout)))
+        UtcOffset::current_local_offset()
+            .map(|o| o.whole_seconds())
             .unwrap_or(0)
     });
     *OFFSET
@@ -147,12 +112,8 @@ pub(crate) fn detect_tz_offset() -> i32 {
 // Time formatting (via `time` crate — pure computation, no syscalls)
 // ---------------------------------------------------------------------------
 
-const FMT_24H_S: &[time::format_description::BorrowedFormatItem<'_>] =
-    format_description!("[hour repr:24]:[minute]:[second]");
 const FMT_24H: &[time::format_description::BorrowedFormatItem<'_>] =
     format_description!("[hour repr:24]:[minute]");
-const FMT_12H_S: &[time::format_description::BorrowedFormatItem<'_>] =
-    format_description!("[hour repr:12]:[minute]:[second] [period case:lower]");
 const FMT_12H: &[time::format_description::BorrowedFormatItem<'_>] =
     format_description!("[hour repr:12]:[minute] [period case:lower]");
 
@@ -176,19 +137,8 @@ impl Segment for Clock {
             Err(_) => return false,
         };
 
-        let fmt: &[time::format_description::BorrowedFormatItem<'_>] = if mode == "24h" {
-            if ctx.th.clock_seconds {
-                FMT_24H_S
-            } else {
-                FMT_24H
-            }
-        } else {
-            if ctx.th.clock_seconds {
-                FMT_12H_S
-            } else {
-                FMT_12H
-            }
-        };
+        let fmt: &[time::format_description::BorrowedFormatItem<'_>] =
+            if mode == "24h" { FMT_24H } else { FMT_12H };
 
         let time_str = match dt.format(fmt) {
             Ok(s) => s,
@@ -323,67 +273,6 @@ mod tests {
     }
 
     // ------------------------------------------------------------------
-    // parse_offset
-    // ------------------------------------------------------------------
-
-    #[test]
-    fn offset_positive() {
-        assert_eq!(parse_offset("+0200"), Some(7200));
-    }
-    #[test]
-    fn offset_negative() {
-        assert_eq!(parse_offset("-0500"), Some(-18000));
-    }
-    #[test]
-    fn offset_utc() {
-        assert_eq!(parse_offset("+0000"), Some(0));
-    }
-    #[test]
-    fn offset_half_hour() {
-        assert_eq!(parse_offset("+0530"), Some(19800));
-    }
-    #[test]
-    fn offset_quarter_hour() {
-        assert_eq!(parse_offset("+0545"), Some(20700));
-    }
-    #[test]
-    fn offset_negative_quarter() {
-        assert_eq!(parse_offset("-0945"), Some(-35100));
-    }
-    #[test]
-    fn offset_colon_variant() {
-        assert_eq!(parse_offset("+02:00"), Some(7200));
-    }
-    #[test]
-    fn offset_hours_only() {
-        assert_eq!(parse_offset("+02"), Some(7200));
-    }
-    #[test]
-    fn offset_trailing_newline() {
-        assert_eq!(parse_offset("+0200\n"), Some(7200));
-    }
-    #[test]
-    fn offset_garbage() {
-        assert_eq!(parse_offset("garbage"), None);
-    }
-    #[test]
-    fn offset_empty() {
-        assert_eq!(parse_offset(""), None);
-    }
-    #[test]
-    fn offset_no_sign() {
-        assert_eq!(parse_offset("0200"), None);
-    }
-    #[test]
-    fn offset_hours_too_large() {
-        assert_eq!(parse_offset("+2500"), None);
-    }
-    #[test]
-    fn offset_minutes_too_large() {
-        assert_eq!(parse_offset("+0260"), None);
-    }
-
-    // ------------------------------------------------------------------
     // Segment render
     // ------------------------------------------------------------------
 
@@ -404,14 +293,13 @@ mod tests {
         out
     }
 
-    fn render_clock(epoch: i64, offset_seconds: i32, mode: &str, seconds: bool) -> String {
+    fn render_clock(epoch: i64, offset_seconds: i32, mode: &str) -> String {
         let input = crate::model::InputData::default();
         let config = crate::model::Config::default();
         let theme = themes::get(&config.theme);
         let style = styles::get(&config.style);
         let th = Thresholds {
             clock_mode: mode.into(),
-            clock_seconds: seconds,
             ..Default::default()
         };
         let ctx = RenderCtx {
@@ -433,35 +321,31 @@ mod tests {
 
     #[test]
     fn clock_utc_midnight_24h() {
-        assert!(render_clock(0, 0, "24h", false).contains("00:00"));
-    }
-    #[test]
-    fn clock_utc_midnight_24h_seconds() {
-        assert!(render_clock(0, 0, "24h", true).contains("00:00:00"));
+        assert!(render_clock(0, 0, "24h").contains("00:00"));
     }
     #[test]
     fn clock_with_positive_offset() {
-        assert!(render_clock(36000, 7200, "24h", true).contains("12:00:00"));
+        assert!(render_clock(36000, 7200, "24h").contains("12:00"));
     }
     #[test]
     fn clock_with_negative_offset() {
-        assert!(render_clock(3600, -18000, "24h", true).contains("20:00:00"));
+        assert!(render_clock(3600, -18000, "24h").contains("20:00"));
     }
     #[test]
     fn clock_12h_mode() {
-        assert!(render_clock(50400, 0, "12h", true).contains("02:00:00 pm"));
+        assert!(render_clock(50400, 0, "12h").contains("02:00 pm"));
     }
     #[test]
     fn clock_12h_midnight() {
-        assert!(render_clock(0, 0, "12h", false).contains("12:00 am"));
+        assert!(render_clock(0, 0, "12h").contains("12:00 am"));
     }
     #[test]
     fn clock_12h_noon() {
-        assert!(render_clock(43200, 0, "12h", true).contains("12:00:00 pm"));
+        assert!(render_clock(43200, 0, "12h").contains("12:00 pm"));
     }
     #[test]
     fn clock_24h_mode() {
-        assert!(render_clock(86399, 0, "24h", true).contains("23:59:59"));
+        assert!(render_clock(86399, 0, "24h").contains("23:59"));
     }
     #[test]
     fn clock_negative_epoch_returns_false() {
@@ -484,8 +368,8 @@ mod tests {
     }
     #[test]
     fn clock_negative_offset_wraps_local_time() {
-        // UTC 01:00:00 - 2h00m01s offset = local 22:59:59 previous day.
-        assert!(render_clock(3600, -7201, "24h", true).contains("22:59:59"));
+        // UTC 01:00:00 - 2h00m01s offset = local 22:59 previous day.
+        assert!(render_clock(3600, -7201, "24h").contains("22:59"));
     }
     #[test]
     fn clock_off_mode_returns_false() {
@@ -508,11 +392,5 @@ mod tests {
         };
         let mut w = SegmentWriter::new(&theme, &style);
         assert!(!Clock.render(&ctx, &mut w));
-    }
-    #[test]
-    fn clock_no_seconds() {
-        let out = render_clock(50400, 0, "12h", false);
-        assert!(out.contains("02:00 pm"), "got: {out:?}");
-        assert!(!out.contains(":00:00"), "should not have seconds: {out:?}");
     }
 }
