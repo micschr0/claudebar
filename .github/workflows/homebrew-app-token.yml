@@ -6,6 +6,11 @@ on:
       plan:
         required: true
         type: string
+    secrets:
+      HOMEBREW_TAP_APP_ID:
+        required: true
+      HOMEBREW_TAP_PRIVATE_KEY:
+        required: true
 
 jobs:
   publish-homebrew-formula:
