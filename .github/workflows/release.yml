@@ -282,6 +282,10 @@ jobs:
           rm -f artifacts/*-dist-manifest.json
       - name: Generate artifact attestations
         if: ${{ needs.plan.outputs.dry_run != 'true' }}
+        # Defense-in-depth, not a hard gate — a transient attestation-service
+        # outage must never block shipping a release (matches install.sh's
+        # non-fatal verify_attestation() framing).
+        continue-on-error: true
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
           subject-path: "artifacts/claudebar-*.tar.gz"

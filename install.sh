@@ -133,10 +133,16 @@ verify_checksum() {
 # Build-provenance check via GitHub artifact attestations. Defense-in-depth on
 # top of the mandatory SHA256 gate — informative, never fatal. gh needs auth
 # even for public repos, so unauthenticated gh counts as skipped, not failed.
+# --signer-workflow scopes trust to release.yml specifically; --repo alone only
+# proves the attestation belongs to this repo, not that release.yml signed it.
 verify_attestation() {
   local file="$1"
   if ! command -v gh >/dev/null 2>&1; then
     bold "Provenance check skipped (gh CLI not installed)"
+    return 0
+  fi
+  if ! gh attestation --help >/dev/null 2>&1; then
+    bold "Provenance check skipped (gh CLI too old — 'gh attestation' unavailable)"
     return 0
   fi
   if ! gh auth status >/dev/null 2>&1; then
@@ -144,10 +150,13 @@ verify_attestation() {
     return 0
   fi
   bold "Verifying build provenance (gh attestation verify)..."
-  if gh attestation verify "$file" --repo micschr0/claudebar >/dev/null 2>&1; then
+  if gh attestation verify "$file" \
+    --repo micschr0/claudebar \
+    --signer-workflow micschr0/claudebar/.github/workflows/release.yml \
+    >/dev/null 2>&1; then
     green "Build provenance verified — artifact was built by this repo's release workflow"
   else
-    red "Provenance verification failed or no attestation found — continuing (SHA256 already verified)"
+    red "Provenance verification failed — no matching attestation found, continuing (SHA256 already verified)"
   fi
   return 0
 }

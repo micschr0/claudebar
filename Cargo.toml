@@ -79,10 +79,15 @@ ci = ["github"]
 # which diverges from what cargo-dist generates. Accept this drift.
 allow-dirty = ["ci"]
 hosting = ["github"]
-# GitHub Artifact Attestations (issue #19). cargo-dist 0.32.0 supports these keys
-# natively; declared so a future deliberate `dist generate ci` regen stays
-# structurally consistent. The attest step's SHA pin in release.yml is still
-# maintained by hand, like every other `uses:` line (see allow-dirty above).
+# GitHub Artifact Attestations (issue #19). cargo-dist 0.32.0 accepts these keys,
+# but a `dist generate --mode=ci` regen would emit its own step
+# (`actions/attest@v4`, unpinned, no dry-run gate) — not the hand-written,
+# SHA-pinned, dry-run-gated step in release.yml below. That's fine in practice:
+# `allow-dirty = ["ci"]` above already tells dist to leave release.yml alone, so
+# `dist generate --check` (the CI drift gate in rust.yml) passes cleanly and a
+# routine regen can't silently overwrite this step. Only a manual, deliberate
+# `dist generate --mode=ci` run would replace it — re-apply this hand-written
+# step afterward if that ever happens.
 github-attestations = true
 # Globed against "artifacts/{filter}" in the host phase — binaries only, not
 # installer scripts, checksums, or manifests.

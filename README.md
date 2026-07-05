@@ -42,10 +42,12 @@ Restart Claude Code and the statusline is live. If anything looks off, `claudeba
 
 ## Verify a release
 
-Every `claudebar-*.tar.gz` release asset carries a [GitHub artifact attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) proving it was built by this repository's release workflow:
+Every `claudebar-*.tar.gz` release asset carries a [GitHub artifact attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations). Verify it was signed by this repository's release workflow specifically (not just any workflow in the repo):
 
 ```bash
-gh attestation verify claudebar-<target>.tar.gz --repo micschr0/claudebar
+gh attestation verify claudebar-<target>.tar.gz \
+  --repo micschr0/claudebar \
+  --signer-workflow micschr0/claudebar/.github/workflows/release.yml
 ```
 
 `<target>` is your platform triple, e.g. `x86_64-unknown-linux-musl` or `aarch64-apple-darwin`. `install.sh` runs this check automatically when `gh` is installed and authenticated; when it isn't, the install continues — the SHA256 checksum remains the mandatory integrity gate.

@@ -5,10 +5,10 @@
 claudebar uses [CalVer](https://calver.org/) (`YYYY.M.D`) with no maintained
 LTS branches. Only the latest published release receives security fixes.
 
-| Version         | Supported          |
-| ---------------- | ------------------ |
-| Latest (2026.7.3) | :white_check_mark: |
-| Older releases    | :x:                |
+| Version                | Supported          |
+| ---------------------- | ------------------ |
+| Latest published release | :white_check_mark: |
+| Older releases         | :x:                |
 
 ## Reporting a Vulnerability
 
