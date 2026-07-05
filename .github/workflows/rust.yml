@@ -3,8 +3,14 @@ name: rust
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - docs/**
+      - '**.md'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - docs/**
+      - '**.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,17 +24,18 @@ jobs:
     name: fmt, clippy, test, build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable
         with:
           components: rustfmt, clippy
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
 
-      - name: Install cargo-auditable
-        run: cargo install cargo-auditable --locked
+      - uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2
+        with:
+          tool: cargo-auditable
 
       - name: Format
         run: cargo fmt --all --check
@@ -60,3 +67,30 @@ jobs:
 
       - name: dist workflow drift check
         run: dist generate --check
+
+  build-matrix:
+    name: build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: macos-15-intel
+            target: x86_64-apple-darwin
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          key: ${{ matrix.target }}
+      - name: Check release profile
+        run: cargo check --release --locked --target ${{ matrix.target }}

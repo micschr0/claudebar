@@ -2,7 +2,7 @@ name: Renovate
 
 on:
   schedule:
-    - cron: "0 8 * * 1"
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -25,7 +25,7 @@ jobs:
           egress-policy: audit
 
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
-      - uses: renovatebot/github-action@v46.1.16
+      - uses: renovatebot/github-action@6d859fc95779be83a0335ca704879b47e5d79641 # v46.1.16
         with:
           configurationFile: renovate.json
         env:

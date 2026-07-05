@@ -24,10 +24,13 @@ tasks:
       INSTA_UPDATE: always
 
   lint:
-    desc: Clippy + shellcheck
+    desc: Clippy + shellcheck + actionlint + gitleaks + zizmor
     cmds:
       - cargo clippy -- -D warnings
       - shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
+      - actionlint .github/workflows/*.yml
+      - zizmor .github/workflows/*.yml
+      - gitleaks detect -v
 
   syntax:
     desc: Syntax-check the bash script (no deps needed)

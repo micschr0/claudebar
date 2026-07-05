@@ -13,6 +13,8 @@ on:
         description: "Release tag to verify (defaults to latest)"
         required: false
 
+permissions: {}
+
 jobs:
   verify-linux:
     strategy:
@@ -21,7 +23,7 @@ jobs:
         target: [x86_64-unknown-linux-musl, aarch64-unknown-linux-musl]
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
 
@@ -56,10 +58,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13, macos-15]
+        os: [macos-15-intel, macos-15]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
 

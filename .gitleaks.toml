@@ -1,0 +1,13 @@
+# https://github.com/gitleaks/gitleaks
+title = "claudebar gitleaks config"
+
+# Allow-list: known false positives (e.g. hex strings in test fixtures,
+# snapshot files, lockfiles).
+[allowlist]
+  description = "global allow list"
+  paths = [
+    '''Cargo\.lock''',
+    '''fixtures/.*\.json''',
+    '''tests/snapshots/.*\.snap''',
+    '''screenshots/.*\.png''',
+  ]

@@ -75,6 +75,9 @@ publish-jobs = ["./homebrew-app-token"]
 # contract and keep the install.sh diff minimal.
 unix-archive = ".tar.gz"
 ci = ["github"]
+# We pin actions to commit SHAs in release.yml for zizmor compliance,
+# which diverges from what cargo-dist generates. Accept this drift.
+allow-dirty = ["ci"]
 hosting = ["github"]
 
 # Pin only the ARM macOS build to macos-14. The Intel macOS build uses dist's default
