@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2026.7.5] - 2026-07-05
 
 ### Fixed
 - Swap duration glyph to stopwatch in the powerline style
@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Attest release artifacts with GitHub build provenance (`actions/attest-build-provenance`); `install.sh` verifies it non-fatally via `gh attestation verify` after the SHA256 gate (#27, closes #19)
 - Add `SECURITY.md` (supported versions, private vulnerability reporting) and document `gh attestation verify` in the README
+
+### CI
+- Switch GitHub Pages from workflow-based to branch-based deployment (main + /docs)
 
 ## [2026.7.3] - 2026-07-03
 
