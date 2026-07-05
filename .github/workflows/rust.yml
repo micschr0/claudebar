@@ -27,8 +27,9 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - name: Install cargo-auditable
-        run: cargo install cargo-auditable --locked
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-auditable
 
       - name: Format
         run: cargo fmt --all --check

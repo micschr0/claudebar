@@ -39,4 +39,4 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Scan
-        run: semgrep scan --config p/trailofbits --error statusline-command.sh
+        run: semgrep scan --config p/trailofbits --error *.sh scripts/*.sh
