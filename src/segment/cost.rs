@@ -18,9 +18,7 @@ impl Segment for Cost {
 
         out.colored_with(ctx.theme.cost, |w| {
             w.icon(ctx.style.glyphs.cost);
-            w.raw(" ");
             w.raw_fmt(format_args!("{:.*}", decimals, cost));
-            w.raw(" ");
         });
         true
     }

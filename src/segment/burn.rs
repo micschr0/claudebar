@@ -238,13 +238,13 @@ fn render_burn(ctx: &RenderCtx, out: &mut SegmentWriter, burn: &BurnEstimate) {
         BurnState::Warming => {
             out.colored_with(burn.color, |w| {
                 w.icon(glyph);
-                w.raw(" … ");
+                w.raw("…");
             });
         }
         BurnState::Idle => {
             out.colored_with(burn.color, |w| {
                 w.icon(glyph);
-                w.raw(" ✓ ");
+                w.raw("✓");
             });
         }
         BurnState::Active => {
@@ -252,18 +252,14 @@ fn render_burn(ctx: &RenderCtx, out: &mut SegmentWriter, burn: &BurnEstimate) {
                 // 7d stateless: just show the label.
                 out.colored_with(burn.color, |w| {
                     w.icon(glyph);
-                    w.raw(" ");
                     w.raw(burn.label);
-                    w.raw(" ");
                 });
             } else {
                 out.colored_with(burn.color, |w| {
                     w.icon(glyph);
-                    w.raw(" ");
                     w.raw(burn.label);
                     w.raw(" ⇢ ");
                     w.raw(&burn.eta);
-                    w.raw(" ");
                 });
             }
         }
