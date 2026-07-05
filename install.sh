@@ -3,10 +3,7 @@
 # Usage: curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 set -euo pipefail
 
-REPO="https://raw.githubusercontent.com/micschr0/claudebar/main"
-SCRIPT_DEST="$HOME/.claude/statusline-command.sh"
 BIN_DEST="$HOME/.claude/claudebar"
-SETTINGS="${SETTINGS:-$HOME/.claude/settings.json}"
 
 # Directory this script lives in, when run from a checkout (empty under `curl | bash`).
 SRC_DIR=""
@@ -22,12 +19,13 @@ red()   { printf '\033[31m%s\033[0m\n' "$*"; }
 green() { printf '\033[32m%s\033[0m\n' "$*"; }
 bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 
+# curl_https — curl wrapper pinned to HTTPS + TLS 1.2+ so a redirect or
+# MITM can't downgrade the connection to plaintext or an older TLS version.
+curl_https() { curl --proto '=https' --tlsv1.2 -fsSL "$@"; }
+
 # ── Preflight ──────────────────────────────────────────────────────────────────
 # git is a soft runtime dependency (the git segment). curl and jq are needed for
-# the prebuilt binary download path (fetch_latest_tag, download_prebuilt); jq is
-# separately needed for the settings.json merge, but only when falling back to
-# the bash script (no compiled claudebar binary to invoke `setup` with).
-# The happy path (prebuilt binary) needs curl + jq. Nothing else is required.
+# the prebuilt binary download path (fetch_latest_tag, download_prebuilt).
 bold "Checking dependencies..."
 echo ""
 install_hint() {
@@ -115,7 +113,7 @@ detect_target() {
 LATEST_RELEASE_JSON=""
 fetch_latest_release() {
   if [ -z "$LATEST_RELEASE_JSON" ]; then
-    LATEST_RELEASE_JSON=$(curl -fsSL "https://api.github.com/repos/micschr0/claudebar/releases/latest")
+    LATEST_RELEASE_JSON=$(curl_https "https://api.github.com/repos/micschr0/claudebar/releases/latest")
   fi
   printf '%s' "$LATEST_RELEASE_JSON"
 }
@@ -135,6 +133,20 @@ find_asset_url() {
   local json="$1" regex="$2"
   printf '%s' "$json" | jq -r --arg re "$regex" \
     '[.assets[] | select(.name | test($re))][0].browser_download_url // empty'
+}
+
+# require_github_host <url> — abort if <url> does not point at github.com.
+# The GitHub API response is otherwise trusted blindly for download URLs; this
+# guards against a compromised/spoofed API response redirecting the install
+# to an arbitrary host.
+require_github_host() {
+  case "$1" in
+    https://github.com/*) ;;
+    *)
+      red "Refusing to download from untrusted host: $1"
+      exit 1
+      ;;
+  esac
 }
 
 # sha256_of <file> — print the SHA256 hex digest of <file>.
@@ -174,7 +186,7 @@ verify_checksum() {
 
 # download_prebuilt <target> — download the prebuilt binary for <target>,
 # verify its SHA256 checksum, extract it, and install to BIN_DEST.
-# Returns 0 on success, 1 on any recoverable failure (triggers Tier 2).
+# Returns 0 on success, 1 on any recoverable failure (falls through to Tier 2).
 # Checksum mismatch is fatal and does NOT trigger a fallback.
 download_prebuilt() {
   local target="$1"
@@ -202,21 +214,31 @@ download_prebuilt() {
     bold "Falling back to cargo build..."
     return 1
   fi
+  require_github_host "$url"
+  require_github_host "$sums_url"
   archive="${url##*/}"
 
   bold "Downloading ${archive}..."
-  if ! curl -fsSL "$url" -o "${TMPDIR_WORK}/${archive}"; then
+  if ! curl_https "$url" -o "${TMPDIR_WORK}/${archive}"; then
     red "Download failed — binary may not exist for this release yet"
     bold "Falling back to cargo build..."
     return 1
   fi
 
-  curl -fsSL "$sums_url" -o "${TMPDIR_WORK}/sha256.sum"
+  curl_https "$sums_url" -o "${TMPDIR_WORK}/sha256.sum"
   if ! verify_checksum "${TMPDIR_WORK}/${archive}" "$archive" "${TMPDIR_WORK}/sha256.sum"; then
     exit 1
   fi
 
-  tar -xf "${TMPDIR_WORK}/${archive}" -C "${TMPDIR_WORK}/"
+  # Defense-in-depth: reject archives containing path-traversal or absolute
+  # entries before extracting, even though the checksum above already ties
+  # the archive to the signed release.
+  if tar -tf "${TMPDIR_WORK}/${archive}" | grep -qE '(^|/)\.\.(/|$)|^/'; then
+    red "Archive ${archive} contains unsafe paths (.. or absolute) — aborting"
+    exit 1
+  fi
+
+  tar --no-same-owner -xf "${TMPDIR_WORK}/${archive}" -C "${TMPDIR_WORK}/"
   mv "${TMPDIR_WORK}/claudebar" "$BIN_DEST"
   chmod +x "$BIN_DEST"
   green "claudebar ${tag} installed to ${BIN_DEST}"
@@ -281,65 +303,24 @@ if [ -z "$COMMAND_VALUE" ]; then
       COMMAND_VALUE="${BIN_DEST} render"
       green "claudebar built and installed to ${BIN_DEST}"
     else
-      red "cargo build failed — falling back to statusline-command.sh"
+      red "cargo build failed."
     fi
   elif [ -z "$SRC_DIR" ]; then
-    bold "No local checkout detected — cargo install requires source; falling back to statusline-command.sh"
+    bold "No local checkout detected — cargo build requires source."
   else
-    bold "cargo not found — falling back to statusline-command.sh"
+    bold "cargo not found."
   fi
 fi
 
-# Tier 3: Bash script fallback
 if [ -z "$COMMAND_VALUE" ]; then
-  bold "Installing statusline-command.sh (bash fallback — requires jq + git at runtime)"
-  curl -fsSL "$REPO/statusline-command.sh" -o "${TMPDIR_WORK}/statusline-command.sh"
-  if [ ! -s "${TMPDIR_WORK}/statusline-command.sh" ]; then
-    red "Download failed — file is empty"
-    exit 1
-  fi
-  mv "${TMPDIR_WORK}/statusline-command.sh" "$SCRIPT_DEST"
-  chmod +x "$SCRIPT_DEST"
-  green "statusline-command.sh installed to ${SCRIPT_DEST}"
-  COMMAND_VALUE="bash ~/.claude/statusline-command.sh"
+  red "No installation method succeeded (no prebuilt binary for this platform and no local cargo build available)."
+  echo "Install Rust (https://rustup.rs) and re-run from a checkout, or wait for a prebuilt release for your platform."
+  exit 1
 fi
 
 # ── Configure statusLine ─────────────────────────────────────────────────────────
-# Tier 1/2 installed a real claudebar binary at $BIN_DEST — reuse its own
-# setup subcommand (single source of truth for the merge/backup/diff logic).
-# Tier 3 (bash-script-only fallback) never installs a compiled binary, so it
-# keeps the pre-existing jq-based merge.
-if [ -x "$BIN_DEST" ]; then
-  "$BIN_DEST" setup --yes --binary-path "$BIN_DEST"
-  link_onto_path
-else
-  if [ -f "$SETTINGS" ]; then
-    if ! command -v jq >/dev/null 2>&1; then
-      red "$SETTINGS already exists but jq is not installed."
-      echo "Install jq, or add this manually to $SETTINGS:"
-      printf '  "statusLine": {"type":"command","command":"%s"}\n' "$COMMAND_VALUE"
-      exit 1
-    fi
-    backup="${SETTINGS}.backup.$(date +%s)"
-    cp "$SETTINGS" "$backup"
-    printf 'Backed up settings.json to %s\n' "$backup"
-    status_line=$(jq -nc --arg c "$COMMAND_VALUE" '{type:"command",command:$c}')
-    tmp_cfg=$(mktemp)
-    if ! jq --argjson v "$status_line" '.statusLine = $v' "$SETTINGS" > "$tmp_cfg"; then
-      red "$SETTINGS is not valid JSON — fix it manually before re-running."
-      rm -f "$tmp_cfg"
-      exit 1
-    fi
-    mv "$tmp_cfg" "$SETTINGS"
-  else
-    cat > "$SETTINGS" <<EOF
-{
-  "statusLine": { "type": "command", "command": "$COMMAND_VALUE" }
-}
-EOF
-  fi
-  green "settings.json updated"
-fi
+"$BIN_DEST" setup --yes --binary-path "$BIN_DEST"
+link_onto_path
 
 # ── Done ───────────────────────────────────────────────────────────────────────
 echo ""
