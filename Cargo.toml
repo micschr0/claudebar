@@ -27,7 +27,7 @@ toml = "1"
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 thiserror = "2"
-time = { version = "0.3", default-features = false, features = ["std", "formatting", "macros"] }
+time = { version = "0.3", default-features = false, features = ["std", "formatting", "macros", "local-offset"] }
 
 # TUI-only (feature-gated, never linked on the render hot path)
 ratatui = { version = "0.30", optional = true }

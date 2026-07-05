@@ -20,6 +20,14 @@ macOS and Linux, x86_64 / aarch64. One command — the installer downloads the b
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
+Prefer to review the script before running it? Download, inspect, then execute:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh -o install.sh
+less install.sh   # or your editor of choice
+bash install.sh
+```
+
 Or via Homebrew, then let `setup` do the wiring:
 
 ```bash
