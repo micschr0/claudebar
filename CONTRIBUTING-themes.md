@@ -4,7 +4,7 @@
 
 **[SPEC]**
 claudebar ships **16 built-in themes**. Adding one is a single small Rust file plus
-three one-line registrations. No runtime config, no parsing — themes are compiled in.
+three one-line registrations. No runtime config, no parsing — claudebar compiles themes into the binary.
 
 ## AI READING INSTRUCTION
 
@@ -15,8 +15,7 @@ three one-line registrations. No runtime config, no parsing — themes are compi
 ## 1. Create the theme file
 
 **[SPEC]**
-Themes live in [`src/themes/`](src/themes/). Copy an existing one as a template —
-[`src/themes/catppuccin.rs`](src/themes/catppuccin.rs) is a clear, well-commented template.
+Themes live in [`src/themes/`](src/themes/). Copy [`src/themes/catppuccin.rs`](src/themes/catppuccin.rs) as a template.
 
 ```rust
 // src/themes/my_theme.rs
@@ -44,8 +43,7 @@ pub fn theme() -> Theme {
 }
 ```
 
-`Color(N)` is an **xterm-256 palette index** (0–255). Pick the index nearest to your
-palette's hex — see the comments in `catppuccin.rs` for the hex→index mapping pattern.
+`Color(N)` is an **xterm-256 palette index** (0–255). Pick the index nearest to your hex color. See `catppuccin.rs` for the hex-to-index mapping.
 
 ## 2. Register it (3 lines in `src/themes/mod.rs`)
 
@@ -82,8 +80,7 @@ for s in powerline plain rounded minimal unicode ascii; do
 done
 ```
 
-Or regenerate the full promo gallery (your theme appears automatically — it reads
-`claudebar list`):
+Regenerate the full promo gallery — it reads `claudebar list`, so your theme appears automatically:
 
 ```bash
 bash scripts/gen-gallery.sh   # → docs/index.html

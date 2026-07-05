@@ -50,7 +50,7 @@ Restart Claude Code and the statusline is live. If anything looks off, `claudeba
 
 ## Segments
 
-Eight on by default. dev-context, burn, and clock sit off by default — flip them on when you need them.
+Eight segments on by default. dev-context, burn, and clock are off — enable them as needed.
 
 <img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock">
 
@@ -60,7 +60,7 @@ Eight on by default. dev-context, burn, and clock sit off by default — flip th
 claudebar config
 ```
 
-Full-screen TUI on your own session data: live preview, theme and style pickers, threshold sliders. `?` for keys, `s` saves, `q` quits.
+Full-screen TUI: live preview, theme and style pickers, threshold sliders. `?` for keys, `s` saves, `q` quits.
 
 <img src="screenshots/config-tui.png" width="860" alt="claudebar TUI configurator with live preview, theme picker, and thresholds">
 

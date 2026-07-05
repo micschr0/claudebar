@@ -10,18 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Swap duration glyph to stopwatch in the powerline style
 - Remove duplicate Nerd Font tip in `install.sh`
-- Join the rate-limits segment's 5h and weekly windows with a dim-colored gap glyph instead of a bare space, so they read as one grouped gauge; consolidate the bar-to-percent gap into a single `SegmentWriter::bar_pct()` method
+- Join the rate-limits segment's 5h and weekly windows with a dim-colored gap glyph; consolidate the bar-to-percent gap into `SegmentWriter::bar_pct()`
 
 ### Tests
-- Add bats test suite for `statusline-command.sh` and `install.sh`; CI now runs it in place of the smoke job
-- Cross the `weekly_show_at` threshold in `fixtures/weekly_at_50.json` and the `claudebar config` preview cycle so the weekly-window gap glyph is actually exercised by the golden-snapshot suite and the live TUI preview
+- Add bats test suite for `statusline-command.sh` and `install.sh`; replace the smoke job in CI
+- Exercise the weekly-window gap glyph in the golden-snapshot suite and live TUI preview by crossing the `weekly_show_at` threshold
 
 ## [2026.7.3] - 2026-07-03
 
 ### Added
-- `claudebar setup` wires `statusLine` into `settings.json`, with a `--binary-path` override
-- `claudebar doctor` checks `statusLine` wiring and cross-references `setup`
-- `setup` prints a live preview on success
+- Add `claudebar setup` to wire `statusLine` into `settings.json` with a `--binary-path` override
+- Add `claudebar doctor` to check `statusLine` wiring and cross-reference `setup`
+- Print a live preview after `setup` succeeds
 
 ### Fixed
 - Share Nerd Font bootstrap logic between `init` and `edit`
@@ -30,16 +30,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Expand to 14 segments, TUI overhaul, promo assets, README rewrite (#18)
-- Homebrew tap installer via `cargo-dist`
-- `cargo-auditable` for dist builds
-- `init` falls back to the unicode style when no Nerd Font is available
-- Promo page served via GitHub Pages from `docs/`
-- `dist generate --check` guard in the release workflow
+- Add Homebrew tap installer via `cargo-dist`
+- Build dist binaries with `cargo-auditable`
+- Fall back to the unicode style in `init` when no Nerd Font is available
+- Serve the promo page via GitHub Pages from `docs/`
+- Add `dist generate --check` guard to the release workflow
 
 ### Changed
 - Replace `release.yml` with a `cargo-dist`-generated workflow
 - Apply Strunk's *Elements of Style* to all prose
-- Features heading reworded to "Your session, in one line."
+- Reword the features heading to "Your session, in one line."
 
 ### Fixed
 - Move Homebrew publish to a custom dist job
@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Docs
 - Add a Homebrew cask hint for the Nerd Font on macOS
 - Add `RELEASING.md` — inverted version model and smoke-tag ritual
-- Re-render the demo video, sync to GitHub Pages
+- Re-render the demo video and sync it to GitHub Pages
 
 ## [2026.6.24] / [v0.2.0] - 2026-06-24
 

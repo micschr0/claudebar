@@ -3,7 +3,7 @@
 **Version 1.0.0**
 
 **[SPEC]**
-[`cargo-dist`](https://opensource.axo.dev/cargo-dist/) (the `dist` CLI) generates claudebar's release pipeline. Pushing a CalVer tag builds the four target archives, a checksum file, and a shell installer, then publishes them as a GitHub Release.
+[`cargo-dist`](https://opensource.axo.dev/cargo-dist/) (the `dist` release tool) generates claudebar's release pipeline. Pushing a CalVer tag builds the four target archives, a checksum file, and a shell installer, then publishes them as a GitHub Release.
 
 **[NOTE]**
 This document is the source of truth for **how to cut a release**. Read it before tagging — the version model inverted in Phase 07 and a mismatched tag fails the release.
@@ -20,9 +20,9 @@ This document is the source of truth for **how to cut a release**. Read it befor
 `Cargo.toml` `[package] version` is the **single source of truth** for the release version.
 
 - `dist` reads the version from the manifest and **requires the pushed git tag to equal it**. A tag that disagrees with `Cargo.toml` errors the release.
-- We removed the old `cargo set-version` CI step (which derived the version from the tag). Do **not** reintroduce it. Bump `Cargo.toml` manually and deliberately **before** you tag.
+- We removed the old `cargo set-version` CI step (which derived the version from the tag). Keep it removed. Bump `Cargo.toml` **before** you tag.
 
-Practical consequence: bump the manifest first, commit it, then tag the exact same version string.
+Practical consequence: bump the manifest first and commit it. Then tag the exact same version string.
 
 ### CalVer format — no leading zeros
 
@@ -30,7 +30,7 @@ Practical consequence: bump the manifest first, commit it, then tag the exact sa
 claudebar uses digit-first CalVer: `YYYY.M.PATCH` (e.g. `2026.6.24`).
 
 - **Valid:** `2026.6.25`
-- **Invalid:** `2026.06.25` — leading zeros are **not** valid semver. They break both Cargo (manifest parse) and `dist` (tag/version match). The tag has no `v` prefix.
+- **Invalid:** `2026.06.25` — leading zeros are **invalid** semver. They break both Cargo (manifest parse) and `dist` (tag/version match). The tag has no `v` prefix.
 
 The release trigger glob in `.github/workflows/release.yml` is `'**[0-9]+.[0-9]+.[0-9]+*'`, which matches the digit-first tag with no `v` prefix.
 
@@ -85,12 +85,11 @@ Run these before tagging to catch problems without burning a tag:
   ```
 
 **[NOTE]**
-These static checks have a hard ceiling: they confirm the *plan* and the *workflow*, but a real release may still fail to build, upload, or install. Use the smoke-tag below to close that gap.
-
+These static checks have a hard ceiling: they confirm the *plan* and the *workflow*, but only a real build, upload, and install can guarantee a working release. Use the smoke-tag below to close that gap.
 ## 4. Smoke-tag verification (the end-to-end check)
 
 **[SPEC]**
-`dist plan` and `dist generate --check` only validate the plan and the workflow — not the published release. To verify the full pipeline end-to-end — real archives, real checksums, a correct `--version` output, and a verified `install.sh` check against `sha256.sum` — push a throwaway smoke tag, then tear it down.
+Push a throwaway smoke tag to verify the full pipeline end-to-end: real archives, real checksums, a correct `--version` output, and a verified `install.sh` check against `sha256.sum`. Then tear it down.
 1. **Bump to a throwaway version** (e.g. `2026.6.99`) and tag + push it:
 
    ```bash
