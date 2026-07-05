@@ -283,7 +283,9 @@ jobs:
     uses: ./.github/workflows/homebrew-app-token.yml
     with:
       plan: ${{ needs.plan.outputs.val }}
-    secrets: inherit
+    secrets:
+      HOMEBREW_TAP_APP_ID: ${{ secrets.HOMEBREW_TAP_APP_ID }}
+      HOMEBREW_TAP_PRIVATE_KEY: ${{ secrets.HOMEBREW_TAP_PRIVATE_KEY }}
     # publish jobs get escalated permissions
     permissions:
       "id-token": "write"
