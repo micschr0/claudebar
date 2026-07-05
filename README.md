@@ -40,6 +40,16 @@ Restart Claude Code and the statusline is live. If anything looks off, `claudeba
 > [!NOTE]
 > Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/); the `ascii` style needs none.
 
+## Verify a release
+
+Every `claudebar-*.tar.gz` release asset carries a [GitHub artifact attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) proving it was built by this repository's release workflow:
+
+```bash
+gh attestation verify claudebar-<target>.tar.gz --repo micschr0/claudebar
+```
+
+`<target>` is your platform triple, e.g. `x86_64-unknown-linux-musl` or `aarch64-apple-darwin`. `install.sh` runs this check automatically when `gh` is installed and authenticated; when it isn't, the install continues — the SHA256 checksum remains the mandatory integrity gate.
+
 ## States (< 50% / 50–80% / > 80%)
 
 <img src="screenshots/strip-normal.png" width="860" alt="Normal: calm baseline">
