@@ -79,6 +79,17 @@ ci = ["github"]
 # which diverges from what cargo-dist generates. Accept this drift.
 allow-dirty = ["ci"]
 hosting = ["github"]
+# GitHub Artifact Attestations (issue #19). cargo-dist 0.32.0 supports these keys
+# natively; declared so a future deliberate `dist generate ci` regen stays
+# structurally consistent. The attest step's SHA pin in release.yml is still
+# maintained by hand, like every other `uses:` line (see allow-dirty above).
+github-attestations = true
+# Globed against "artifacts/{filter}" in the host phase — binaries only, not
+# installer scripts, checksums, or manifests.
+github-attestations-filters = ["claudebar-*.tar.gz"]
+# Attest once against the final collected release assets. The default
+# (build-local-artifacts) would attest per-target before aggregation.
+github-attestations-phase = "host"
 
 # Pin only the ARM macOS build to macos-14. The Intel macOS build uses dist's default
 # runner image (its old fixed pin was dropped — GitHub is retiring that hosted runner).
