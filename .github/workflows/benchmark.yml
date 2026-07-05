@@ -37,3 +37,4 @@ jobs:
         with:
           name: benchmark-report
           path: benchmark-report.txt
+          retention-days: 30

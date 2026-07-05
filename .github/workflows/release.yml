@@ -42,6 +42,12 @@ on:
   push:
     tags:
       - '**[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Build and upload artifacts without creating a release'
+        type: boolean
+        default: false
 
 jobs:
   # Run 'dist plan' (or host) to determine what tasks we need to do
@@ -52,6 +58,7 @@ jobs:
       tag: ${{ !github.event.pull_request && github.ref_name || '' }}
       tag-flag: ${{ !github.event.pull_request && format('--tag={0}', github.ref_name) || '' }}
       publishing: ${{ !github.event.pull_request }}
+      dry_run: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -216,7 +223,7 @@ jobs:
       - build-local-artifacts
       - build-global-artifacts
     # Only run if we're "publishing", and only if plan, local and global didn't fail (skipped is fine)
-    if: ${{ always() && needs.plan.result == 'success' && needs.plan.outputs.publishing == 'true' && (needs.build-global-artifacts.result == 'skipped' || needs.build-global-artifacts.result == 'success') && (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') }}
+    if: ${{ always() && needs.plan.result == 'success' && (needs.plan.outputs.publishing == 'true' || needs.plan.outputs.dry_run == 'true') && (needs.build-global-artifacts.result == 'skipped' || needs.build-global-artifacts.result == 'success') && (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: "ubuntu-22.04"
@@ -242,8 +249,16 @@ jobs:
       - id: host
         shell: bash
         run: |
-          dist host ${{ needs.plan.outputs.tag-flag }} --steps=upload --steps=release --output-format=json > dist-manifest.json
-          echo "artifacts uploaded and released successfully"
+          STEPS="--steps=upload"
+          if [ "${{ needs.plan.outputs.dry_run }}" != "true" ]; then
+            STEPS="$STEPS --steps=release"
+          fi
+          dist host ${{ needs.plan.outputs.tag-flag }} $STEPS --output-format=json > dist-manifest.json
+          if [ "${{ needs.plan.outputs.dry_run }}" = "true" ]; then
+            echo "artifacts uploaded (dry run — no release created)"
+          else
+            echo "artifacts uploaded and released successfully"
+          fi
           cat dist-manifest.json
           echo "manifest=$(jq -c "." dist-manifest.json)" >> "$GITHUB_OUTPUT"
       - name: "Upload dist-manifest.json"
@@ -264,6 +279,7 @@ jobs:
           # Remove the granular manifests
           rm -f artifacts/*-dist-manifest.json
       - name: Create GitHub Release
+        if: ${{ needs.plan.outputs.dry_run != 'true' }}
         env:
           PRERELEASE_FLAG: "${{ fromJson(steps.host.outputs.manifest).announcement_is_prerelease && '--prerelease' || '' }}"
           ANNOUNCEMENT_TITLE: "${{ fromJson(steps.host.outputs.manifest).announcement_title }}"
@@ -279,7 +295,7 @@ jobs:
     needs:
       - plan
       - host
-    if: ${{ !fromJson(needs.plan.outputs.val).announcement_is_prerelease || fromJson(needs.plan.outputs.val).publish_prereleases }}
+    if: ${{ (!fromJson(needs.plan.outputs.val).announcement_is_prerelease || fromJson(needs.plan.outputs.val).publish_prereleases) && needs.plan.outputs.dry_run != 'true' }}
     uses: ./.github/workflows/homebrew-app-token.yml
     with:
       plan: ${{ needs.plan.outputs.val }}
