@@ -28,4 +28,7 @@ few days — there is no formal SLA.
 
 Release artifacts carry GitHub artifact attestations; see
 [Verify a release](README.md#verify-a-release) to confirm a download's
-provenance.
+provenance. Provenance verification is available via `install.sh` or the manual
+`gh attestation verify` command — it does **not** apply to Homebrew installs,
+which are limited to the formula's SHA256 checksum (`HOMEBREW_VERIFY_ATTESTATIONS`
+only covers `homebrew/core` bottles, not third-party taps).
