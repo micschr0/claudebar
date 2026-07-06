@@ -27,7 +27,8 @@ brew install micschr0/tap/claudebar && claudebar setup
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh -o install.sh
-less install.sh && bash install.sh
+claude -p "Audit this script for anything unsafe, then summarize what it does" < install.sh
+bash install.sh
 ```
 </details>
 
