@@ -14,7 +14,6 @@
 
 ## Install
 
-**Script**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
