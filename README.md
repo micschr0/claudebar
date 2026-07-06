@@ -16,6 +16,7 @@
 
 > [!NOTE]
 > Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/), or switch to the `ascii` style.
+> On macOS: `brew install --cask font-hack-nerd-font` (the font used in the screenshots).
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
