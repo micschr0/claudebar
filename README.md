@@ -40,7 +40,9 @@ Restart Claude Code and the statusline is live. If anything looks off, `claudeba
 > [!NOTE]
 > Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/); the `ascii` style needs none.
 
-## States (< 50% / 50–80% / > 80%)
+## What it looks like
+
+Colors shift as usage crosses **50%** and **80%**:
 
 <img src="screenshots/strip-normal.png" width="860" alt="Normal: calm baseline">
 
@@ -48,9 +50,7 @@ Restart Claude Code and the statusline is live. If anything looks off, `claudeba
 
 <img src="screenshots/strip-overlimit.png" width="860" alt="Over limit: past the threshold">
 
-## Segments
-
-Eight segments on by default. dev-context, burn, and clock are off — enable them as needed.
+All segments — three off by default (dev-context, burn, clock):
 
 <img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock">
 
