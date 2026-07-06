@@ -14,6 +14,9 @@
 
 ## Install
 
+> [!NOTE]
+> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/), or switch to the `ascii` style.
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
@@ -31,9 +34,6 @@ claude -p "Audit this script for anything unsafe, then summarize what it does" <
 bash install.sh
 ```
 </details>
-
-> [!NOTE]
-> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/), or switch to the `ascii` style.
 
 ## What it looks like
 
