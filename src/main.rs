@@ -315,6 +315,7 @@ fn run_setup(
                 Ok(()) => {
                     println!("claudebar: statusLine configured -> {}", path.display());
                     print_setup_preview(cli);
+                    println!("Restart Claude Code — claudebar appears on the next turn.");
                     ExitCode::SUCCESS
                 }
                 Err(e) => {

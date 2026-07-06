@@ -24,8 +24,6 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 brew install micschr0/tap/claudebar && claudebar setup
 ```
 
-Restart Claude Code.
-
 <details><summary>Review the script first</summary>
 
 ```bash
