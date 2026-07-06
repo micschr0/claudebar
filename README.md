@@ -14,8 +14,6 @@
 
 ## Install
 
-`macOS` · `Linux` · `x86_64` · `aarch64`
-
 **Script**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
@@ -37,7 +35,7 @@ less install.sh && bash install.sh
 </details>
 
 > [!NOTE]
-> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/). The `ascii` style needs none.
+> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/), or switch to the `ascii` style.
 
 ## What it looks like
 
