@@ -14,31 +14,30 @@
 
 ## Install
 
-macOS and Linux, x86_64 / aarch64. One command — the installer downloads the binary and wires it into Claude Code's `settings.json`:
+`macOS` · `Linux` · `x86_64` · `aarch64`
 
+**Script**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
-Prefer to review the script before running it? Download, inspect, then execute:
+**Homebrew**
+```bash
+brew install micschr0/tap/claudebar && claudebar setup
+```
+
+Restart Claude Code.
+
+<details><summary>Review the script first</summary>
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh -o install.sh
-less install.sh   # or your editor of choice
-bash install.sh
+less install.sh && bash install.sh
 ```
-
-Or via Homebrew, then let `setup` do the wiring:
-
-```bash
-brew install micschr0/tap/claudebar
-claudebar setup
-```
-
-Restart Claude Code and the statusline is live. If anything looks off, `claudebar doctor` checks fonts, git, config, and PATH.
+</details>
 
 > [!NOTE]
-> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/); the `ascii` style needs none.
+> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/). The `ascii` style needs none.
 
 ## What it looks like
 
