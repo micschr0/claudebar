@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update `time` to 0.3.53 and `clap_complete` to 4.6.7 (#29, #30)
 
+### Docs
+- Move the release-verification guide out of the README into `SECURITY.md`; note that Homebrew installs are not covered by attestation verification
+
 ## [2026.7.5] - 2026-07-05
 
 ### Fixed
