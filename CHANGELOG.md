@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Update `time` to 0.3.53 and `clap_complete` to 4.6.7 (#29, #30)
+
 ## [2026.7.5] - 2026-07-05
 
 ### Fixed
@@ -22,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### CI
 - Switch GitHub Pages from workflow-based to branch-based deployment (main + /docs)
+- Harden all workflows: pin every action to a commit SHA, pass zizmor, and scope job permissions
+- Install `cargo-dist` as a prebuilt binary and unify all `checkout` actions to v7 (#28, closes #26)
 
 ## [2026.7.3] - 2026-07-03
 
@@ -87,7 +94,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial development history: dev-context segment, `migrate` subcommand, 10 additional themes, CI badge, `--no-default-features` CI coverage, and the three-tier `install.sh` fallback rewrite.
 
-[Unreleased]: https://github.com/micschr0/claudebar/compare/2026.7.3...HEAD
+[Unreleased]: https://github.com/micschr0/claudebar/compare/2026.7.5...HEAD
+[2026.7.5]: https://github.com/micschr0/claudebar/compare/2026.7.3...2026.7.5
 [2026.7.3]: https://github.com/micschr0/claudebar/compare/2026.7.2...2026.7.3
 [2026.7.2]: https://github.com/micschr0/claudebar/compare/2026.6.24...2026.7.2
 [2026.6.24]: https://github.com/micschr0/claudebar/compare/v0.2.0...2026.6.24
