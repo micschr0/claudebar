@@ -176,7 +176,14 @@ extract_archive() {
 }
 
 install_binary() {
-  local src="$1"
+  local workdir="$1" src
+  # cargo-dist archives nest the binary in a target-named subdirectory
+  # (e.g. claudebar-x86_64-unknown-linux-musl/claudebar), not at the root.
+  src=$(find "$workdir" -maxdepth 2 -type f -name claudebar | head -n1)
+  if [ -z "$src" ]; then
+    red "Extracted archive did not contain a claudebar binary"
+    return 1
+  fi
   mv "$src" "$BIN_DEST"
   chmod +x "$BIN_DEST"
 }
@@ -221,7 +228,7 @@ install_prebuilt() {
   verify_attestation "${workdir}/${archive}"
 
   extract_archive "${workdir}/${archive}" "$workdir" || exit 1
-  install_binary "${workdir}/claudebar"
+  install_binary "$workdir" || exit 1
   green "claudebar ${tag} installed to ${BIN_DEST}"
 }
 
@@ -305,8 +312,10 @@ report_nerd_font() {
   fi
 }
 
+workdir=""
+
 main() {
-  local workdir src_dir target installed=1
+  local src_dir target installed=1
 
   check_dependencies
   mkdir -p "$HOME/.claude"
@@ -336,7 +345,7 @@ main() {
     exit 1
   fi
 
-  "$BIN_DEST" setup --yes --binary-path "$BIN_DEST"
+  "$BIN_DEST" setup --yes --force --binary-path "$BIN_DEST"
   link_onto_path
 
   echo ""
@@ -348,6 +357,6 @@ main() {
   echo "Troubleshooting: run 'claudebar doctor', or visit https://micschr0.github.io/claudebar/"
 }
 
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+if [[ "${BASH_SOURCE[0]:-$0}" == "$0" ]]; then
   main "$@"
 fi

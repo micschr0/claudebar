@@ -42,6 +42,14 @@ jobs:
             exit 1
           fi
 
+          # Piped stdin execution (no BASH_SOURCE) — matches the documented
+          # `curl | bash` usage and catches unbound-variable bugs that only
+          # surface without a source file.
+          cat install.sh | bash
+
+          rm -rf "$HOME/.claude"
+          mkdir -p "$HOME"
+
           bash install.sh
 
           test -x "$HOME/.claude/claudebar"
@@ -77,6 +85,14 @@ jobs:
             echo "cargo still on PATH: $(command -v cargo) — PATH stripping failed" >&2
             exit 1
           fi
+
+          # Piped stdin execution (no BASH_SOURCE) — matches the documented
+          # `curl | bash` usage and catches unbound-variable bugs that only
+          # surface without a source file.
+          cat install.sh | bash
+
+          rm -rf "$HOME/.claude"
+          mkdir -p "$HOME"
 
           bash install.sh
 
