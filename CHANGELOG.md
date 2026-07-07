@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2026.7.7] - 2026-07-07
+## [2026.7.7]
 
 ### Added
 - `claudebar setup` prints a restart reminder after wiring up `settings.json`, matching the installer
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced long-lived Renovate PAT with a 1-hour GitHub App installation token
 - Added `persist-credentials: false` to all `actions/checkout` steps
 
-## [2026.7.5] - 2026-07-05
+## [2026.7.5]
 
 ### Fixed
 - Swap duration glyph to stopwatch in the powerline style
@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Harden all workflows: pin every action to a commit SHA, pass zizmor, and scope job permissions
 - Install `cargo-dist` as a prebuilt binary and unify all `checkout` actions to v7 (#28, closes #26)
 
-## [2026.7.3] - 2026-07-03
+## [2026.7.3]
 
 ### Added
 - Add `claudebar setup` to wire `statusLine` into `settings.json` with a `--binary-path` override
@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Share Nerd Font bootstrap logic between `init` and `edit`
 
-## [2026.7.2] - 2026-07-03
+## [2026.7.2]
 
 ### Added
 - Expand to 14 segments, TUI overhaul, promo assets, README rewrite (#18)
@@ -88,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `RELEASING.md` — inverted version model and smoke-tag ritual
 - Re-render the demo video and sync it to GitHub Pages
 
-## [2026.6.24] / [v0.2.0] - 2026-06-24
+## [2026.6.24] / [v0.2.0]
 
 ### Added
 - Public-ready claudebar: TUI, installer, docs, demos, and branding (initial public release)
@@ -110,7 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add a self-hosted Renovate workflow for dependency updates
 - Run shellcheck directly, drop the abandoned ludeeus action
 
-## [2026.6.20] - 2026-06-21
+## [2026.6.20]
 
 Initial development history: dev-context segment, `migrate` subcommand, 10 additional themes, CI badge, `--no-default-features` CI coverage, and the three-tier `install.sh` fallback rewrite.
 
