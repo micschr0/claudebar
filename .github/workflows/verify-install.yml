@@ -37,7 +37,7 @@ jobs:
 
           # Strip cargo/rustc from PATH so a broken prebuilt download (Tier 1)
           # can't be silently masked by falling through to `cargo build` (Tier 2).
-          export PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '\.cargo/bin' | paste -s -d :)
+          export PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '\.cargo/bin' | tr '\n' ':' | sed 's/:$//')
           if command -v cargo >/dev/null 2>&1; then
             echo "cargo still on PATH: $(command -v cargo) — PATH stripping failed" >&2
             exit 1
@@ -81,7 +81,7 @@ jobs:
 
           # Strip cargo/rustc from PATH so a broken prebuilt download (Tier 1)
           # can't be silently masked by falling through to `cargo build` (Tier 2).
-          export PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '\.cargo/bin' | paste -s -d :)
+          export PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '\.cargo/bin' | tr '\n' ':' | sed 's/:$//')
           if command -v cargo >/dev/null 2>&1; then
             echo "cargo still on PATH: $(command -v cargo) — PATH stripping failed" >&2
             exit 1
