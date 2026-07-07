@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026.7.7] - 2026-07-07
+
+### Fixed
+- `install.sh`: add `--force` to `setup` call so an existing `statusLine` in `settings.json` doesn't abort the install script before `link_onto_path` and the success message
+- `install.sh`: resolve cargo-dist archive nesting so the inner-directory layout extracts correctly
+- `install.sh`: guard `main()` against unbound `BASH_SOURCE` when piped through `curl | bash`
+- `verify-install.yml`: exercise piped-stdin execution alongside sourced execution to catch regressions
+- Add a GitHub App token to `release.yml` so the release publish cascades to the Homebrew workflow
+- Replace the Renovate PAT with a short-lived GitHub App token; scope its permissions and add `persist-credentials: false` to checkout steps
+- `zizmor`: add artipacked ignore for the auto-generated `release.yml`
+
+### Security
+- Replaced long-lived Renovate PAT with a 1-hour GitHub App installation token
+- Added `persist-credentials: false` to all `actions/checkout` steps
+
 ## [Unreleased]
 
 ### Added
@@ -101,10 +116,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial development history: dev-context segment, `migrate` subcommand, 10 additional themes, CI badge, `--no-default-features` CI coverage, and the three-tier `install.sh` fallback rewrite.
 
-[Unreleased]: https://github.com/micschr0/claudebar/compare/2026.7.5...HEAD
+[Unreleased]: https://github.com/micschr0/claudebar/compare/2026.7.7...HEAD
+[2026.7.7]: https://github.com/micschr0/claudebar/compare/2026.7.5...2026.7.7
 [2026.7.5]: https://github.com/micschr0/claudebar/compare/2026.7.3...2026.7.5
 [2026.7.3]: https://github.com/micschr0/claudebar/compare/2026.7.2...2026.7.3
 [2026.7.2]: https://github.com/micschr0/claudebar/compare/2026.6.24...2026.7.2
 [2026.6.24]: https://github.com/micschr0/claudebar/compare/v0.2.0...2026.6.24
-[v0.2.0]: https://github.com/micschr0/claudebar/compare/2026.6.20...v0.2.0
-[2026.6.20]: https://github.com/micschr0/claudebar/releases/tag/2026.6.20
