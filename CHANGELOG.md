@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `claudebar setup` prints a restart reminder after wiring up `settings.json`, matching the installer
+- `install.sh` supports a beta channel (`CLAUDEBAR_CHANNEL=beta`) that installs the latest prerelease for testing before a stable release
 
 ### Fixed
 - `install.sh`: add `--force` to `setup` call so an existing `statusLine` in `settings.json` doesn't abort the install script before `link_onto_path` and the success message
