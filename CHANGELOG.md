@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2026.7.7] - 2026-07-07
 
+### Added
+- `claudebar setup` prints a restart reminder after wiring up `settings.json`, matching the installer
+
 ### Fixed
 - `install.sh`: add `--force` to `setup` call so an existing `statusLine` in `settings.json` doesn't abort the install script before `link_onto_path` and the success message
 - `install.sh`: resolve cargo-dist archive nesting so the inner-directory layout extracts correctly
@@ -16,21 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace the Renovate PAT with a short-lived GitHub App token; scope its permissions and add `persist-credentials: false` to checkout steps
 - `zizmor`: add artipacked ignore for the auto-generated `release.yml`
 
-### Security
-- Replaced long-lived Renovate PAT with a 1-hour GitHub App installation token
-- Added `persist-credentials: false` to all `actions/checkout` steps
-
-## [Unreleased]
-
-### Added
-- `claudebar setup` prints a restart reminder after wiring up `settings.json`, matching the installer
-
 ### Changed
-- Update `time` to 0.3.53 and `clap_complete` to 4.6.7 (#29, #30)
+- Update `time` to 0.3.53 and `clap_complete` to 4.6.7
 
 ### Docs
 - Move the release-verification guide out of the README into `SECURITY.md`; note that Homebrew installs are not covered by attestation verification
 - Streamline the README install section; add provenance and downloads badges
+
+### Security
+- Replaced long-lived Renovate PAT with a 1-hour GitHub App installation token
+- Added `persist-credentials: false` to all `actions/checkout` steps
 
 ## [2026.7.5] - 2026-07-05
 
