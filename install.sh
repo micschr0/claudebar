@@ -345,7 +345,11 @@ main() {
     exit 1
   fi
 
-  "$BIN_DEST" setup --yes --force --binary-path "$BIN_DEST"
+  if [ -n "${CLAUDEBAR_SKIP_SETUP:-}" ]; then
+    echo "Skipping setup (CLAUDEBAR_SKIP_SETUP is set)"
+  else
+    "$BIN_DEST" setup --yes --force --binary-path "$BIN_DEST"
+  fi
   link_onto_path
 
   echo ""

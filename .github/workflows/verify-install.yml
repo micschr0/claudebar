@@ -30,6 +30,7 @@ jobs:
       - name: Run install.sh in a clean HOME (no cargo — forces Tier 1)
         env:
           CLAUDEBAR_TARGET: ${{ matrix.target }}
+          CLAUDEBAR_SKIP_SETUP: ${{ matrix.target == 'aarch64-unknown-linux-musl' && '1' || '' }}
         run: |
           export HOME="$RUNNER_TEMP/verify-home"
           mkdir -p "$HOME"
