@@ -12,8 +12,12 @@ on:
       HOMEBREW_TAP_PRIVATE_KEY:
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   publish-homebrew-formula:
+    name: Publish homebrew formula
     runs-on: "ubuntu-22.04"
     env:
       PLAN: ${{ inputs.plan }}

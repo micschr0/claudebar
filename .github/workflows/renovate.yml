@@ -25,6 +25,7 @@ permissions: {}
 
 jobs:
   renovate:
+    name: Renovate
     runs-on: ubuntu-latest
     permissions:
       contents: read
