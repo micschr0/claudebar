@@ -32,6 +32,9 @@ benchmark-report.txt
 .claude/
 
 # ── GSD baseline (auto-generated) ──
+
+# CodeGraph index (local-only)
+.codegraph/
 .gsd
 .gsd-id
 .mcp.json
