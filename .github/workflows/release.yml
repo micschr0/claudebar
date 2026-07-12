@@ -85,8 +85,10 @@ jobs:
       # (PRs run on the *source* but secrets are usually on the *target* -- that's *good*
       # but also really annoying to build CI around when it needs secrets to work right.)
       - id: plan
+        env:
+          DIST_CMD: ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }}
         run: |
-          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --output-format=json > plan-dist-manifest.json
+          dist $DIST_CMD --output-format=json > plan-dist-manifest.json
           echo "dist ran successfully"
           cat plan-dist-manifest.json
           echo "manifest=$(jq -c "." plan-dist-manifest.json)" >> "$GITHUB_OUTPUT"
@@ -148,9 +150,12 @@ jobs:
         run: |
           ${{ matrix.packages_install }}
       - name: Build artifacts
+        env:
+          TAG_FLAG: ${{ needs.plan.outputs.tag-flag }}
+          DIST_ARGS: ${{ matrix.dist_args }}
         run: |
           # Actually do builds and make zips and whatnot
-          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --output-format=json ${{ matrix.dist_args }} > dist-manifest.json
+          dist build $TAG_FLAG --print=linkage --output-format=json $DIST_ARGS > dist-manifest.json
           echo "dist ran successfully"
       - id: cargo-dist
         name: Post-build
@@ -202,8 +207,10 @@ jobs:
           merge-multiple: true
       - id: cargo-dist
         shell: bash
+        env:
+          TAG_FLAG: ${{ needs.plan.outputs.tag-flag }}
         run: |
-          dist build ${{ needs.plan.outputs.tag-flag }} --output-format=json "--artifacts=global" > dist-manifest.json
+          dist build $TAG_FLAG --output-format=json "--artifacts=global" > dist-manifest.json
           echo "dist ran successfully"
 
           # Parse out what we just built and upload it to scratch storage
@@ -256,13 +263,16 @@ jobs:
           merge-multiple: true
       - id: host
         shell: bash
+        env:
+          DRY_RUN: ${{ needs.plan.outputs.dry_run }}
+          TAG_FLAG: ${{ needs.plan.outputs.tag-flag }}
         run: |
           STEPS="--steps=upload"
-          if [ "${{ needs.plan.outputs.dry_run }}" != "true" ]; then
+          if [ "$DRY_RUN" != "true" ]; then
             STEPS="$STEPS --steps=release"
           fi
-          dist host ${{ needs.plan.outputs.tag-flag }} $STEPS --output-format=json > dist-manifest.json
-          if [ "${{ needs.plan.outputs.dry_run }}" = "true" ]; then
+          dist host $TAG_FLAG $STEPS --output-format=json > dist-manifest.json
+          if [ "$DRY_RUN" = "true" ]; then
             echo "artifacts uploaded (dry run — no release created)"
           else
             echo "artifacts uploaded and released successfully"
@@ -319,11 +329,12 @@ jobs:
           ANNOUNCEMENT_TITLE: "${{ fromJson(steps.host.outputs.manifest).announcement_title }}"
           ANNOUNCEMENT_BODY: "${{ fromJson(steps.host.outputs.manifest).announcement_github_body }}"
           RELEASE_COMMIT: "${{ github.sha }}"
+          RELEASE_TAG: ${{ needs.plan.outputs.tag }}
         run: |
           # Write and read notes from a file to avoid quoting breaking things
           echo "$ANNOUNCEMENT_BODY" > $RUNNER_TEMP/notes.txt
 
-          gh release create "${{ needs.plan.outputs.tag }}" --target "$RELEASE_COMMIT" $PRERELEASE_FLAG --title "$ANNOUNCEMENT_TITLE" --notes-file "$RUNNER_TEMP/notes.txt" artifacts/*
+          gh release create "$RELEASE_TAG" --target "$RELEASE_COMMIT" $PRERELEASE_FLAG --title "$ANNOUNCEMENT_TITLE" --notes-file "$RUNNER_TEMP/notes.txt" artifacts/*
 
   custom-homebrew-app-token:
     needs:
