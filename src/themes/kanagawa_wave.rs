@@ -31,3 +31,13 @@ pub fn theme() -> Theme {
         burn: Color(167),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn loads_default() {
+        let _ = theme();
+    }
+}

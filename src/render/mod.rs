@@ -198,3 +198,107 @@ fn separator(line: &mut String, theme: &Theme, style: &Style) {
     line.push_str(RESET);
     line.push(' ');
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::model::{Config, InputData};
+    use crate::{styles, themes};
+    use std::sync::Mutex;
+
+    /// Far future epoch so reset countdowns are positive and stable.
+    const FIXED_NOW: i64 = 1_899_990_000;
+
+    /// Global lock for env-mock tests. Cargo runs tests in parallel by default,
+    /// and `terminal_width()` (and `render_auto` which calls it) reads `$COLUMNS`
+    /// from the process environment. This guard ensures only one env-mock test
+    /// runs at a time.
+    static ENV_MOCK: Mutex<()> = Mutex::new(());
+
+    #[test]
+    fn test_separator_width() {
+        // Powerline: non-empty separator ⇒ 2 + glyph visible width.
+        let powerline = styles::get("powerline");
+        assert_eq!(
+            super::separator_width(&powerline),
+            3,
+            "powerline: 2 + 1 col glyph"
+        );
+
+        // Lean: empty separator ⇒ 1 (just the inter-segment space).
+        let lean = styles::get("lean");
+        assert_eq!(
+            super::separator_width(&lean),
+            1,
+            "lean: empty separator ⇒ 1"
+        );
+
+        // Plain: "|" pipe ⇒ 2 + 1.
+        let plain = styles::get("plain");
+        assert_eq!(super::separator_width(&plain), 3, "plain: pipe | ⇒ 3");
+    }
+
+    #[test]
+    fn terminal_width() {
+        let _guard = ENV_MOCK.lock().unwrap();
+
+        let prev = std::env::var("COLUMNS").ok();
+        // SAFETY: single-threaded through ENV_MOCK, no other env reads in flight.
+        unsafe { std::env::set_var("COLUMNS", "150") };
+        let w = super::terminal_width();
+        assert_eq!(w, 150, "COLUMNS=150 should be read by terminal_width()");
+
+        // Restore.
+        // SAFETY: ENV_MOCK still held.
+        match prev {
+            Some(v) => unsafe { std::env::set_var("COLUMNS", v) },
+            None => unsafe { std::env::remove_var("COLUMNS") },
+        }
+    }
+
+    #[test]
+    fn render_auto_picks_separator_for_terminal_width() {
+        let _guard = ENV_MOCK.lock().unwrap();
+
+        let prev = std::env::var("COLUMNS").ok();
+        // SAFETY: single-threaded through ENV_MOCK, no other env reads in flight.
+        unsafe { std::env::set_var("COLUMNS", "40") };
+
+        let input = InputData::parse(
+            r#"{"cwd":"/home/me/projects/claude-code","model":{"display_name":"claude-opus-4-5"},"cost":{"total_cost_usd":0.50,"total_lines_added":10}}"#,
+        );
+        let mut cfg = Config::default();
+        cfg.thresholds.layout = "auto".into();
+        cfg.thresholds.wrap_margin = 0;
+        cfg.thresholds.max_lines = 3;
+        let theme = themes::get("tokyo-night");
+        let style = styles::get("powerline");
+        let line = render_with(&input, &cfg, &theme, &style, FIXED_NOW, Some("/home/me"), 0);
+
+        assert!(
+            line.contains('\n'),
+            "auto layout with COLUMNS=40 should produce wrapped output: {line:?}"
+        );
+
+        // Restore.
+        // SAFETY: ENV_MOCK still held.
+        match prev {
+            Some(v) => unsafe { std::env::set_var("COLUMNS", v) },
+            None => unsafe { std::env::remove_var("COLUMNS") },
+        }
+    }
+    #[test]
+    fn render_with_empty_home_does_not_panic() {
+        let input = InputData::default();
+        let cfg = Config::default();
+        let theme = themes::get("tokyo-night");
+        let style = styles::get("powerline");
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _ = render_with(&input, &cfg, &theme, &style, FIXED_NOW, None, 0);
+        }));
+        assert!(
+            result.is_ok(),
+            "render_with should not panic when home is None"
+        );
+    }
+}

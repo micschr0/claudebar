@@ -55,4 +55,9 @@ mod tests {
         assert_eq!(s.glyphs.token, "#");
         assert_eq!(s.glyphs.model, "@");
     }
+
+    #[test]
+    fn loads_default() {
+        let _ = super::style();
+    }
 }

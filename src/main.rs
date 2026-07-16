@@ -171,7 +171,7 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
 /// fallback was applied (`true` when no Nerd Font was found).
 fn default_config_with_font_check() -> (Config, bool) {
     let mut cfg = Config::default();
-    let no_nerd_font = !check_nerd_font();
+    let no_nerd_font = !claudebar::setup::check_nerd_font();
     if no_nerd_font {
         cfg.style = "unicode".into();
     }
@@ -483,7 +483,7 @@ fn run_doctor(cli: &Cli) -> ExitCode {
     println!("{} Binary in PATH", check_mark(in_path));
 
     // 2. Nerd Font installed?
-    let has_nerd = check_nerd_font();
+    let has_nerd = claudebar::setup::check_nerd_font();
     println!("{} Nerd Font installed", check_mark(has_nerd));
 
     // 3. git on PATH?
@@ -543,9 +543,11 @@ fn run_edit(cli: &Cli) -> ExitCode {
         }
     }
 
-    let editor = std::env::var("EDITOR")
-        .or_else(|_| std::env::var("VISUAL"))
-        .unwrap_or_else(|_| String::from("vi"));
+    let editor = claudebar::setup::resolve_editor_from(
+        std::env::var("EDITOR").ok(),
+        std::env::var("VISUAL").ok(),
+    )
+    .unwrap_or_else(|| String::from("vi"));
 
     let status = std::process::Command::new(&editor).arg(&path).status();
 
@@ -564,53 +566,6 @@ fn run_edit(cli: &Cli) -> ExitCode {
 
 fn check_mark(ok: bool) -> &'static str {
     if ok { "✓" } else { "✗" }
-}
-
-/// Nerd Font check: look for .ttf/.otf files with "Nerd" or "nerd" in their name.
-/// Uses `fc-list` if available; falls back to scanning common font dirs.
-fn check_nerd_font() -> bool {
-    // Try fc-list first — fastest and most accurate.
-    if let Ok(output) = std::process::Command::new("fc-list")
-        .arg(":family")
-        .output()
-        && let Ok(stdout) = String::from_utf8(output.stdout)
-        && stdout.to_lowercase().contains("nerd")
-    {
-        return true;
-    }
-
-    // Fallback: scan common font directories.
-    let dirs: &[&str] = &[
-        "/usr/share/fonts",
-        "/usr/local/share/fonts",
-        "~/.local/share/fonts",
-        "~/.fonts",
-    ];
-
-    let home = std::env::var("HOME").unwrap_or_default();
-
-    for dir in dirs {
-        let path = if let Some(stripped) = dir.strip_prefix("~/") {
-            PathBuf::from(home.clone()).join(stripped)
-        } else {
-            PathBuf::from(dir)
-        };
-        if path.is_dir()
-            && let Ok(entries) = std::fs::read_dir(&path)
-        {
-            for entry in entries.flatten() {
-                let name = entry.file_name();
-                let name = name.to_string_lossy();
-                if (name.ends_with(".ttf") || name.ends_with(".otf"))
-                    && name.to_lowercase().contains("nerd")
-                {
-                    return true;
-                }
-            }
-        }
-    }
-
-    false
 }
 
 fn which_ok(cmd: &str) -> bool {

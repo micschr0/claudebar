@@ -42,3 +42,13 @@ pub fn style() -> Style {
         bar_empty: '\u{254c}', // ╌ light double dash
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn loads_default() {
+        let _ = style();
+    }
+}

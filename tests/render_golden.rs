@@ -116,3 +116,55 @@ fn injection_no_control_byte_leak() {
         );
     }
 }
+
+#[test]
+fn render_fixed_emits_full_pipeline() {
+    // Exercise the full default segment pipeline: directory, git, model,
+    // context, lines, rate-limits, cost, duration — with a far-future
+    // resets_at so countdowns are positive and stable.
+    let json = r#"{
+        "cwd": "/home/me/projects/claude-code",
+        "model": { "display_name": "claude-opus-4-5" },
+        "context_window": {
+            "total_input_tokens": 35000,
+            "total_output_tokens": 7300,
+            "used_percentage": 67.0
+        },
+        "rate_limits": {
+            "five_hour": { "used_percentage": 48.0, "resets_at": 1900000000 }
+        },
+        "cost": { "total_cost_usd": 0.50, "total_lines_added": 10 },
+        "effort": { "level": "high" }
+    }"#;
+    insta::assert_snapshot!(render_fixture(json));
+}
+/// Maximum-coverage fixture: all segments populated with highest reasonable
+/// values (model="claude-opus-4-5", cost=$9.99, lines +50/-10, context heavy,
+/// rate-limits at 80%, effort max, approved review, sub-agent active).
+#[test]
+fn golden_ultra_effort() {
+    let json = r#"{
+        "cwd": "/home/me/projects/claude-code",
+        "model": { "display_name": "claude-opus-4-5" },
+        "context_window": {
+            "total_input_tokens": 120000,
+            "total_output_tokens": 30000,
+            "used_percentage": 95.0
+        },
+        "rate_limits": {
+            "five_hour": { "used_percentage": 80.0, "resets_at": 1900000000 },
+            "seven_day": { "used_percentage": 55.0, "resets_at": 1900100000 }
+        },
+        "cost": {
+            "total_cost_usd": 9.99,
+            "total_lines_added": 50,
+            "total_lines_removed": 10,
+            "total_duration_ms": 3600000
+        },
+        "effort": { "level": "max" },
+        "pr": { "number": 42, "review_state": "approved" },
+        "agent": { "name": "experimenter" },
+        "worktree": { "name": "feat-ultra" }
+    }"#;
+    insta::assert_snapshot!(render_fixture(json));
+}

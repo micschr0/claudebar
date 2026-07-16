@@ -87,4 +87,9 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn loads_default() {
+        let _ = super::style();
+    }
 }

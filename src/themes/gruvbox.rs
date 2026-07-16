@@ -60,4 +60,9 @@ mod tests {
         assert_eq!(t.dir.0, 109); // blue
         assert_eq!(t.model.0, 208); // orange
     }
+
+    #[test]
+    fn loads_default() {
+        let _ = theme();
+    }
 }

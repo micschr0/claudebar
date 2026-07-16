@@ -6,8 +6,9 @@ description = "Powerline-style statusline for Claude Code, with a TUI configurat
 license = "MIT"
 repository = "https://github.com/micschr0/claudebar"
 homepage = "https://micschr0.github.io/claudebar"
+documentation = "https://micschr0.github.io/claudebar"
 readme = "README.md"
-keywords = ["statusline", "claude-code", "powerline", "tui"]
+keywords = ["statusline", "claude-code", "powerline", "tui", "cli"]
 categories = ["command-line-utilities"]
 
 [[bin]]

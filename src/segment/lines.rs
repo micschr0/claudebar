@@ -29,3 +29,58 @@ impl Segment for Lines {
         true
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::model::{Config, InputData, SegmentKind};
+    use crate::render::render_with;
+    use crate::{styles, themes};
+
+    fn render_lines(added: u64, removed: u64) -> String {
+        let input = InputData {
+            cost: crate::model::input::CostInfo {
+                total_lines_added: crate::model::input::Coerce(Some(added)),
+                total_lines_removed: crate::model::input::Coerce(Some(removed)),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        let cfg = Config {
+            segments: vec![SegmentKind::Lines],
+            ..Default::default()
+        };
+        let theme = themes::get(&cfg.theme);
+        let style = styles::get(&cfg.style);
+        render_with(&input, &cfg, &theme, &style, 0, None, 0)
+    }
+
+    #[test]
+    fn lines_added_only() {
+        let out = render_lines(10, 0);
+        assert!(out.contains("+10"), "+10 missing: {out:?}");
+        assert!(out.contains("\u{2212}0"), "−0 missing: {out:?}");
+    }
+
+    #[test]
+    fn lines_removed_only() {
+        let out = render_lines(0, 5);
+        assert!(out.contains("+0"), "+0 missing: {out:?}");
+        assert!(out.contains("\u{2212}5"), "−5 missing: {out:?}");
+    }
+
+    #[test]
+    fn lines_both_zero() {
+        let out = render_lines(0, 0);
+        assert!(
+            out.is_empty(),
+            "expected empty output for zero lines: {out:?}"
+        );
+    }
+
+    #[test]
+    fn lines_just_added() {
+        let out = render_lines(1, 0);
+        assert!(out.contains("+1"), "+1 missing: {out:?}");
+        assert!(out.contains("\u{2212}0"), "−0 missing: {out:?}");
+    }
+}

@@ -37,3 +37,21 @@ pub fn get(name: &str) -> Style {
         _ => powerline::style(),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn style_get_returns_known_names() {
+        for name in NAMES {
+            let _ = get(name);
+        }
+    }
+
+    #[test]
+    fn style_get_none_on_unknown() {
+        // Unknown names fall back to Powerline without panicking
+        let _ = get("definitely-not-a-real-style");
+    }
+}

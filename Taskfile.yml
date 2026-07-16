@@ -23,6 +23,18 @@ tasks:
     env:
       INSTA_UPDATE: always
 
+  coverage:
+    desc: Run tests with coverage and show summary
+    cmd: cargo llvm-cov --locked --all-features
+
+  coverage-html:
+    desc: Generate HTML coverage report (target/llvm-cov/html/index.html)
+    cmd: cargo llvm-cov --locked --all-features --html --output-dir target/llvm-cov
+
+  coverage-lcov:
+    desc: Generate lcov.info (for Codecov/Coveralls upload)
+    cmd: cargo llvm-cov --locked --all-features --lcov --output-path lcov.info
+
   lint:
     desc: Clippy + shellcheck + actionlint + gitleaks + zizmor
     cmds:

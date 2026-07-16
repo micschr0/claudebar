@@ -83,4 +83,9 @@ mod tests {
     fn dir_differs_from_tokyo_night() {
         assert_ne!(theme().dir, super::super::tokyo_night::theme().dir);
     }
+
+    #[test]
+    fn loads_default() {
+        let _ = theme();
+    }
 }

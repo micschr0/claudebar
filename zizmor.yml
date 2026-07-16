@@ -38,11 +38,11 @@ rules:
   # the action does not actually resolve a branch ref.
   stale-action-refs:
     ignore:
-      - .github/workflows/rust.yml
+      - rust.yml
 
   # dtolnay/rust-toolchain installs rustup components (rustfmt, clippy)
   # that taiki-e/install-action does not provide. The two actions serve
   # different purposes and are not redundant.
   superfluous-actions:
     ignore:
-      - .github/workflows/rust.yml
+      - rust.yml

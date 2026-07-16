@@ -29,4 +29,9 @@ mod tests {
         assert_eq!(s.bar_fill, '\u{2501}');
         assert_eq!(s.bar_empty, '\u{254c}');
     }
+
+    #[test]
+    fn loads_default() {
+        let _ = super::style();
+    }
 }

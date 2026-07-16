@@ -196,4 +196,17 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn theme_get_returns_known_names() {
+        for name in NAMES {
+            let _ = get(name);
+        }
+    }
+
+    #[test]
+    fn theme_get_none_on_unknown() {
+        // Unknown names fall back to Tokyo Night without panicking
+        let _ = get("definitely-not-a-real-theme");
+    }
 }

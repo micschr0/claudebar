@@ -63,4 +63,9 @@ mod tests {
         assert_ne!(t.bar_warn, t.bar_crit);
         assert_ne!(t.bar_ok, t.bar_crit);
     }
+
+    #[test]
+    fn loads_default() {
+        let _ = theme();
+    }
 }
