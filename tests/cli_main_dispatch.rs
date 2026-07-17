@@ -80,8 +80,7 @@ fn main_render_exit_zero_without_input() {
     let exit_code = output.status.code();
     assert!(
         exit_code.is_some(),
-        "render should terminate without panic, got: {:?}",
-        exit_code
+        "render should terminate without panic, got: {exit_code:?}",
     );
 
     let stderr = String::from_utf8_lossy(&output.stderr);
@@ -392,8 +391,7 @@ fn main_config_exits_gracefully() {
     let exit_code = output.status.code();
     assert!(
         exit_code.is_some(),
-        "config should terminate without panic, got: {:?}",
-        exit_code
+        "config should terminate without panic, got: {exit_code:?}",
     );
 
     let stderr = String::from_utf8_lossy(&output.stderr);
