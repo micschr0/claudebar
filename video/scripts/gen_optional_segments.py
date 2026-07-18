@@ -105,7 +105,7 @@ SHOTS = [
     ("dev-context", "dev-context", {
         "worktree": {"name": "feature-render-cache"},
         "pr": {"number": 482, "review_state": "ok"},
-        "agent": {"name": "gsd-executor"},
+        "agent": {"name": "claude-code"},
     }, None),
     ("clock", "clock", {}, None),
 ]
