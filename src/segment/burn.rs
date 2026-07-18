@@ -479,7 +479,7 @@ mod tests {
     fn estimate_falls_back_to_7d() {
         // No 5h data → 7d stateless.
         let theme = test_theme();
-        let est = estimate(0, &[], None, Some((80.0, 600000)), &theme);
+        let est = estimate(0, &[], None, Some((80.0, 600_000)), &theme);
         assert_eq!(est.state, BurnState::Active);
         assert_eq!(est.label, "7d");
     }
@@ -551,7 +551,7 @@ mod tests {
     fn estimate_7d_warming_when_pct_zero() {
         // 7d window with 0% pct → Warming, label "7d".
         let theme = test_theme();
-        let est = estimate(0, &[], None, Some((0.0, 600000)), &theme);
+        let est = estimate(0, &[], None, Some((0.0, 600_000)), &theme);
         assert_eq!(est.state, BurnState::Warming);
         assert_eq!(est.label, "7d");
     }

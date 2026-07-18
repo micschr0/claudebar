@@ -204,7 +204,7 @@ impl FromJsonNumber for u64 {
         // 2^64. `u64::MAX as f64` rounds up to exactly 2^64, so `<=` would admit
         // the whole rounding gap (u64::MAX, 2^64]; the literal is f64-exact and
         // strict-less-than rejects it.
-        if v.is_finite() && (0.0..18446744073709551616.0).contains(&v) {
+        if v.is_finite() && (0.0..18_446_744_073_709_551_616.0).contains(&v) {
             Some(v as u64)
         } else {
             None
@@ -229,7 +229,7 @@ impl FromJsonNumber for i64 {
         // 2^63. `i64::MAX as f64` rounds up to exactly 2^63, so `<=` would admit
         // the rounding gap (i64::MAX, 2^63]; the literal is f64-exact and
         // strict-less-than rejects it. `i64::MIN as f64` is exact, so `>=` is fine.
-        if v.is_finite() && (i64::MIN as f64..9223372036854775808.0).contains(&v) {
+        if v.is_finite() && (i64::MIN as f64..9_223_372_036_854_775_808.0).contains(&v) {
             Some(v as i64)
         } else {
             None
@@ -240,7 +240,7 @@ impl FromJsonNumber for i64 {
         s.parse::<i64>().ok().or_else(|| {
             let v = s.parse::<f64>().ok()?;
             // Reject at/above 2^63 (strict): see `from_f64` rationale.
-            if !v.is_finite() || v < i64::MIN as f64 || v >= 9223372036854775808.0 {
+            if !v.is_finite() || v < i64::MIN as f64 || v >= 9_223_372_036_854_775_808.0 {
                 return None;
             }
             Some(v as i64)
@@ -415,7 +415,7 @@ mod tests {
         // magnitude is 2048), which is < u64::MAX and must still be accepted: the
         // strict `< 2^64` bound rejects only the rounded-up 2^64 value itself, not
         // valid in-range floats just beneath it.
-        let largest = 18446744073709549568.0_f64; // 2^64 - 2048
+        let largest = 18_446_744_073_709_549_568.0_f64; // 2^64 - 2048
         let c: Coerce<u64> = serde_json::from_str("18446744073709549568.0").unwrap();
         assert_eq!(c.get(), Some(largest as u64));
     }
