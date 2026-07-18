@@ -1,5 +1,5 @@
 //! Drawing: three-zone split-pane layout — left menu panel, right detail panel, bottom preview.
-//! No state mutation happens here (Cell<Rect> excepted).
+//! No state mutation happens here (`Cell<Rect>` excepted).
 
 use crate::tui::app::{App, Panel, StatusKind, ThresholdField};
 use crate::tui::preview;

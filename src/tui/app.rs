@@ -71,7 +71,7 @@ pub(crate) struct App {
     pub list_rows: Vec<RowItem>,
     /// Top display-row index currently scrolled to.
     pub scroll_offset: usize,
-    /// section_starts[i] = flat_cursor index of first row in section i.
+    /// i-th element of `section_starts` holds the flat_cursor index of the first row in section i.
     pub section_starts: [usize; 4],
     /// Which panel (Left/Right) currently has keyboard focus.
     pub focused_panel: Panel,
