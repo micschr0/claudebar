@@ -48,6 +48,7 @@ pub trait Segment {
 
 impl SegmentKind {
     /// Resolve a [`SegmentKind`] to its (zero-sized) [`Segment`] implementation.
+    #[must_use]
     pub fn as_segment(self) -> &'static dyn Segment {
         match self {
             SegmentKind::Clock => &clock::Clock,

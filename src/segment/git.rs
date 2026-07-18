@@ -392,7 +392,7 @@ mod tests {
             .arg(&dir)
             .output()
             .unwrap();
-        assert!(output.status.success(), "git init failed: {:?}", output);
+        assert!(output.status.success(), "git init failed: {output:?}");
 
         let _ = std::process::Command::new(git)
             .args([
@@ -420,7 +420,7 @@ mod tests {
             .args(["-C", &dir.to_string_lossy(), "add", "."])
             .output()
             .unwrap();
-        assert!(output.status.success(), "git add failed: {:?}", output);
+        assert!(output.status.success(), "git add failed: {output:?}");
 
         let output = std::process::Command::new(git)
             .args(["-C", &dir.to_string_lossy(), "commit", "-m", "initial"])

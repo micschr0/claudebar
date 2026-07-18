@@ -98,7 +98,7 @@ mod tests {
                 ANSI[idx as usize]
             }
             16..=231 => {
-                let n = (idx - 16) as u32;
+                let n = u32::from(idx - 16);
                 let r = n / 36;
                 let g = (n % 36) / 6;
                 let b = n % 6;
@@ -107,7 +107,7 @@ mod tests {
             }
             _ => {
                 // 232..=255 grey ramp
-                let v = (idx - 232) as u32 * 10 + 8;
+                let v = u32::from(idx - 232) * 10 + 8;
                 let v = v as u8;
                 [v, v, v]
             }
@@ -117,7 +117,7 @@ mod tests {
     /// WCAG 2.1 relative luminance of an sRGB colour triplet.
     fn relative_luminance(rgb: [u8; 3]) -> f64 {
         fn linear(c: u8) -> f64 {
-            let v = c as f64 / 255.0;
+            let v = f64::from(c) / 255.0;
             if v <= 0.04045 {
                 v / 12.92
             } else {

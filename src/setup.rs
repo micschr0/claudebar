@@ -200,7 +200,7 @@ pub fn apply(settings: &mut Value, desired: Value) {
 pub fn backup_path(path: &Path, now: i64) -> PathBuf {
     let mut name = path
         .file_name()
-        .map(|n| n.to_os_string())
+        .map(std::ffi::OsStr::to_os_string)
         .unwrap_or_default();
     name.push(format!(".bak-{now}"));
     path.with_file_name(name)

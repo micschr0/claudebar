@@ -71,7 +71,7 @@ pub(crate) struct App {
     pub list_rows: Vec<RowItem>,
     /// Top display-row index currently scrolled to.
     pub scroll_offset: usize,
-    /// section_starts[i] = flat_cursor index of first row in section i.
+    /// i-th element of `section_starts` holds the flat_cursor index of the first row in section i.
     pub section_starts: [usize; 4],
     /// Which panel (Left/Right) currently has keyboard focus.
     pub focused_panel: Panel,
@@ -302,7 +302,7 @@ impl App {
                 t.weekly_show_at = val.clamp(1, 99);
             }
             ThresholdField::BarWidth => {
-                let val = (t.bar_width as i16 + delta).clamp(2, 20) as u8;
+                let val = (i16::from(t.bar_width) + delta).clamp(2, 20) as u8;
                 t.bar_width = val;
             }
             ThresholdField::ClockMode | ThresholdField::Layout => {

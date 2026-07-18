@@ -53,6 +53,11 @@ impl Drop for TerminalGuard {
 }
 
 /// Run the interactive configurator, persisting to `config_path` on save.
+///
+/// # Errors
+///
+/// Returns `Err` if the terminal cannot be entered (raw mode, alternate screen,
+/// or mouse capture setup fails) or if the event loop reports a terminal error.
 pub fn run(config_path: Option<PathBuf>) -> Result<(), String> {
     let config = crate::model::Config::load_or_default(config_path.as_deref());
     let save_path = config_path.or_else(crate::model::Config::default_path);

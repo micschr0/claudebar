@@ -175,7 +175,7 @@ fn render_five_hour(
     true
 }
 
-/// Emit one window body: icon + bar + " " + "<pct>%" in `color`. The `icon`
+/// Emit one window body: icon + bar + " " + `<pct>%` in `color`. The `icon`
 /// method already appends a trailing space, so the bar follows it directly.
 fn write_window(ctx: &RenderCtx, out: &mut SegmentWriter, glyph: &str, pct: u32, color: Color) {
     out.icon(glyph);

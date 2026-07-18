@@ -102,7 +102,7 @@ fn effective_clock_mode(th: &Thresholds) -> &str {
 pub(crate) fn detect_tz_offset() -> i32 {
     static OFFSET: LazyLock<i32> = LazyLock::new(|| {
         UtcOffset::current_local_offset()
-            .map(|o| o.whole_seconds())
+            .map(time::UtcOffset::whole_seconds)
             .unwrap_or(0)
     });
     *OFFSET

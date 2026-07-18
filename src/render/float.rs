@@ -7,7 +7,7 @@
 //! a configurable separator. It is best-effort: any I/O error is silently
 //! swallowed so a float failure can never break the status render.
 //!
-//! Rendering reuses the exact same [`Segment`] implementations as the colored
+//! Rendering reuses the exact same [`crate::segment::Segment`] implementations as the colored
 //! path (no second code path): each selected segment is rendered with the ASCII
 //! style — `icons: false`, ASCII-only glyphs — and then stripped of ANSI color,
 //! so the result is stable regardless of the user's configured theme/style.
