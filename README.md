@@ -36,6 +36,17 @@ bash install.sh
 ```
 </details>
 
+<details><summary>Try a beta before it's stable</summary>
+
+Prereleases (tagged e.g. `2026.7.6-beta.1`) are built and published like any other release, just marked as a prerelease — `install.sh` normally only ever installs the latest stable one. To try the newest prerelease instead:
+
+```bash
+CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+```
+
+Switch back to stable any time by reinstalling without the env var. Homebrew always tracks stable.
+</details>
+
 ## What it looks like
 
 Colors shift as usage crosses **50%** and **80%**:
