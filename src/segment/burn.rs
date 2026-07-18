@@ -22,6 +22,7 @@
 //! The cache file lives at `$XDG_CACHE_HOME/claudebar/burn-5h.tsv` (fallback
 //! `~/.cache/claudebar/burn-5h.tsv`). It is trimmed to ~1500 rows on write.
 
+#![allow(clippy::cast_precision_loss)]
 use crate::model::{Color, Theme};
 use crate::render::SegmentWriter;
 use crate::segment::{RenderCtx, Segment};

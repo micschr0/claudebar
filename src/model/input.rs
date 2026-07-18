@@ -5,7 +5,15 @@
 //! degrades *that one field* to `None` instead of aborting the whole parse.
 //! Combined with `#[serde(default)]` everywhere and a top-level
 //! `unwrap_or_default()`, the render path always produces a line.
-
+// `Coerce<T>` performs deliberate, range-checked f64→integer conversions:
+// values outside the target's representable range are rejected in the `if`
+// guard, not by the cast itself. The sign/truncation/precision lints would
+// flag the otherwise-correct casts as risky without the contextual range.
+#![allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss,
+    clippy::cast_precision_loss
+)]
 use serde::Deserialize;
 use serde::de::{self, Deserializer, Visitor};
 use std::fmt;
@@ -139,11 +147,13 @@ pub struct OutputStyle {
 impl InputData {
     /// Parse from a JSON string. On any failure (even invalid JSON), returns
     /// `InputData::default()` so the caller still renders a (possibly empty) line.
+    #[must_use]
     pub fn parse(s: &str) -> Self {
         serde_json::from_str(s).unwrap_or_default()
     }
 
     /// Worktree name: tries `worktree.name` first, then `workspace.git_worktree`.
+    #[must_use]
     pub fn worktree_name(&self) -> Option<&str> {
         self.worktree
             .as_ref()

@@ -554,7 +554,7 @@ fn run_edit(cli: &Cli) -> ExitCode {
     match status {
         Ok(s) if s.success() => ExitCode::SUCCESS,
         Ok(s) => {
-            eprintln!("claudebar: {editor} exited with status {}", s);
+            eprintln!("claudebar: {editor} exited with status {s}");
             ExitCode::FAILURE
         }
         Err(e) => {
