@@ -302,7 +302,7 @@ impl App {
                 t.weekly_show_at = val.clamp(1, 99);
             }
             ThresholdField::BarWidth => {
-                let val = (t.bar_width as i16 + delta).clamp(2, 20) as u8;
+                let val = (i16::from(t.bar_width) + delta).clamp(2, 20) as u8;
                 t.bar_width = val;
             }
             ThresholdField::ClockMode | ThresholdField::Layout => {

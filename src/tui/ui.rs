@@ -548,8 +548,8 @@ fn render_threshold_row(
     } else {
         // Numeric nudge fields — show value and range.
         let (lo, hi) = match field {
-            ThresholdField::Warn => (1i32, (t.crit as i32) - 1),
-            ThresholdField::Crit => ((t.warn as i32) + 1, 99i32),
+            ThresholdField::Warn => (1i32, i32::from(t.crit) - 1),
+            ThresholdField::Crit => (i32::from(t.warn) + 1, 99i32),
             ThresholdField::WeeklyShowAt => (1i32, 99i32),
             ThresholdField::BarWidth => (2i32, 20i32),
             _ => (0i32, 0i32),

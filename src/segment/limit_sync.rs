@@ -271,7 +271,7 @@ mod tests {
         assert_eq!(latest(&dir, "5h"), Some((30.0, now + 2 * 3600)));
         // After GC exactly one entry remains; a second read is stable.
         let remaining = fs::read_dir(window_dir(&dir, "5h"))
-            .map(|rd| rd.count())
+            .map(std::fs::ReadDir::count)
             .unwrap_or(0);
         assert_eq!(remaining, 1, "GC should leave exactly one entry");
         assert_eq!(latest(&dir, "5h"), Some((30.0, now + 2 * 3600)));
@@ -289,7 +289,7 @@ mod tests {
         record(&dir, "7d", now, 55.0, reset, SEVEN_DAY_MAX_AHEAD_SECS);
         assert_eq!(latest(&dir, "7d"), Some((55.0, reset)));
         let remaining = fs::read_dir(window_dir(&dir, "7d"))
-            .map(|rd| rd.count())
+            .map(std::fs::ReadDir::count)
             .unwrap_or(0);
         assert_eq!(remaining, 1, "identical records should collapse to one");
         let _ = fs::remove_dir_all(&dir);
