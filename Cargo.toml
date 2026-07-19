@@ -1,6 +1,6 @@
 [package]
 name = "claudebar"
-version = "2026.7.9-beta.1"
+version = "2026.7.9-beta.2"
 edition = "2024"
 description = "Powerline-style statusline for Claude Code, with a TUI configurator, themes and styles"
 license = "MIT"
