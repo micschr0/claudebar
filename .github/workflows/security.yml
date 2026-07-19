@@ -92,4 +92,4 @@ jobs:
           persona: pedantic
           advanced-security: false
           annotations: true
-          config-path: zizmor.yml
+          config: zizmor.yml
