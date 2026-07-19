@@ -47,24 +47,3 @@ rules:
     ignore:
       - rust.yml
 
-# ---------- homebrew-app-token.yml (reusable workflow_call) ----------
-#
-# homebrew-app-token.yml is called by release.yml's custom-homebrew-app-token
-# job. Adding any `permissions:` block here (workflow-level or job-level)
-# causes the *caller* workflow to fail with startup_failure — the caller's
-# `permissions: {}` strips GITHUB_TOKEN before it reaches the reusable
-# workflow. Empirically verified across 3 remediation attempts.
-#
-# Actual security risk is nil:
-#   - GITHUB_TOKEN is *never used* in this workflow
-#   - All git operations use a short-lived, single-repo-scoped App token
-#     (actions/create-github-app-token → micschr0/homebrew-tap, contents:write)
-#   - Caller enforces `permissions: {}` at workflow level + per-job overrides
-#   - This workflow only fires on tag push (release pipeline)
-#
-# The two warnings (homebrew-app-token.yml:1 and :16) flag that no
-# permissions block exists, but the contract between caller and callee
-# has been manually reviewed and is secure.
-overly-broad-permissions:
-  ignore:
-    - homebrew-app-token.yml

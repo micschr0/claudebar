@@ -1,3 +1,8 @@
+# zizmor: ignore[overly-broad-permissions]
+# GITHUB_TOKEN is unused in this reusable workflow — all git operations use a
+# short-lived, single-repo scoped App token. Adding any `permissions:` block
+# here causes the caller (release.yml with `permissions: {}`) to fail with
+# startup_failure. See zizmor.yml for the full rationale.
 name: Publish homebrew formula (GitHub App token)
 
 on:
