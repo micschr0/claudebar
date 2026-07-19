@@ -1,13 +1,14 @@
 [package]
 name = "claudebar"
-version = "2026.7.7"
+version = "2026.7.9-beta.3"
 edition = "2024"
 description = "Powerline-style statusline for Claude Code, with a TUI configurator, themes and styles"
 license = "MIT"
 repository = "https://github.com/micschr0/claudebar"
 homepage = "https://micschr0.github.io/claudebar"
+documentation = "https://micschr0.github.io/claudebar"
 readme = "README.md"
-keywords = ["statusline", "claude-code", "powerline", "tui"]
+keywords = ["statusline", "claude-code", "powerline", "tui", "cli"]
 categories = ["command-line-utilities"]
 
 [[bin]]
