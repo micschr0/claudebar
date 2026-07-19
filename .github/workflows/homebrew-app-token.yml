@@ -1,10 +1,6 @@
-# GITHUB_TOKEN is unused in this reusable workflow — all git operations use a
-# short-lived, single-repo scoped App token. Adding any `permissions:` block
-# here causes the caller (release.yml with `permissions: {}`) to fail with
-# startup_failure. See zizmor.yml for the full rationale.
 name: Publish homebrew formula (GitHub App token)
 
-on: # zizmor: ignore[overly-broad-permissions] — GITHUB_TOKEN unused, App token scoped
+on:
   workflow_call:
     inputs:
       plan:
@@ -17,8 +13,7 @@ on: # zizmor: ignore[overly-broad-permissions] — GITHUB_TOKEN unused, App toke
         required: true
 
 jobs:
-  publish-homebrew-formula: # zizmor: ignore[overly-broad-permissions] — App-token scoped, GITHUB_TOKEN unused
-    name: Publish homebrew formula
+  publish-homebrew-formula:
     runs-on: "ubuntu-22.04"
     env:
       PLAN: ${{ inputs.plan }}
