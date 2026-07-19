@@ -1,5 +1,8 @@
 name: Publish homebrew formula (GitHub App token)
 
+permissions:
+  contents: read  # Only needs git operations on homebrew-tap
+
 on:
   workflow_call:
     inputs:
@@ -14,7 +17,6 @@ on:
 
 jobs:
   publish-homebrew-formula:
-    name: Publish homebrew formula
     runs-on: "ubuntu-22.04"
     env:
       PLAN: ${{ inputs.plan }}
