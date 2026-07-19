@@ -54,6 +54,6 @@ rules:
 # to fail with startup_failure. All git operations use a short-lived,
 # single-repo-scoped App token — GITHUB_TOKEN is never used.
 # See the inline comments in homebrew-app-token.yml for the full rationale.
-overly-broad-permissions:
+broad-permissions:
   ignore:
     - homebrew-app-token.yml
