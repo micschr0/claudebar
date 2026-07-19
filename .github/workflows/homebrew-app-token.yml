@@ -1,4 +1,4 @@
-# zizmor: ignore[overly-broad-permissions]
+# zizmor: ignore — GITHUB_TOKEN unused, App-token scoped, caller enforces permissions: {}
 # GITHUB_TOKEN is unused in this reusable workflow — all git operations use a
 # short-lived, single-repo scoped App token. Adding any `permissions:` block
 # here causes the caller (release.yml with `permissions: {}`) to fail with
@@ -18,7 +18,7 @@ on:
         required: true
 
 jobs:
-  publish-homebrew-formula:
+  publish-homebrew-formula: # zizmor: ignore — same rationale as workflow-level
     name: Publish homebrew formula
     runs-on: "ubuntu-22.04"
     env:
