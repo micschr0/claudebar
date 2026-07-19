@@ -482,9 +482,15 @@ pub fn get(name: &str) -> Theme {
 mod tests {
     use super::*;
     #[test]
-    fn all_known_names_resolve() { for n in NAMES { let _ = get(n); } }
+    fn all_known_names_resolve() {
+        for n in NAMES {
+            let _ = get(n);
+        }
+    }
     #[test]
-    fn unknown_falls_back_to_tokyo_night() { assert_eq!(get("nope"), TOKYO_NIGHT); }
+    fn unknown_falls_back_to_tokyo_night() {
+        assert_eq!(get("nope"), TOKYO_NIGHT);
+    }
     #[test]
     fn bar_thresholds_distinct() {
         for n in NAMES {
