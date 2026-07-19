@@ -55,6 +55,3 @@ rules:
 # single-repo-scoped App token — GITHUB_TOKEN is never used.
 # Inline ignores in homebrew-app-token.yml suppress the remaining
 # zizmor findings. See that file for details.
-overly-broad:
-  ignore:
-    - homebrew-app-token.yml
