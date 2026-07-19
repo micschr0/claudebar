@@ -2,7 +2,7 @@
 # short-lived, single-repo scoped App token. Adding any `permissions:` block
 # here causes the caller (release.yml with `permissions: {}`) to fail with
 # startup_failure. See zizmor.yml for the full rationale.
-name: Publish homebrew formula (GitHub App token) # zizmor: ignore
+name: Publish homebrew formula (GitHub App token) # zizmor: ignore[overly-broad-permissions]
 
 on:
   workflow_call:
@@ -17,7 +17,7 @@ on:
         required: true
 
 jobs:
-  publish-homebrew-formula: # zizmor: ignore — same rationale as workflow-level
+  publish-homebrew-formula: # zizmor: ignore[overly-broad-permissions] — App-token scoped, GITHUB_TOKEN unused
     name: Publish homebrew formula
     runs-on: "ubuntu-22.04"
     env:
