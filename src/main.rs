@@ -247,10 +247,6 @@ fn run_setup(
             eprintln!("claudebar: {msg}");
             return ExitCode::FAILURE;
         }
-        Err(e) => {
-            eprintln!("claudebar: {e}");
-            return ExitCode::FAILURE;
-        }
     };
 
     let desired =

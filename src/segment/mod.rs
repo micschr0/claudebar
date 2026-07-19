@@ -52,14 +52,12 @@ impl SegmentKind {
     pub fn as_segment(self) -> &'static dyn Segment {
         match self {
             SegmentKind::Clock => &clock::Clock,
-            SegmentKind::Project => &NOOP,
             SegmentKind::Directory => &directory::Directory,
             SegmentKind::Git => &git::Git,
             SegmentKind::Context => &context::Context,
             SegmentKind::RateLimits => &rate_limits::RateLimits,
             SegmentKind::DevContext => &dev_context::DevContext,
             SegmentKind::Model => &model::Model,
-            SegmentKind::Effort => &NOOP,
             SegmentKind::Cost => &cost::Cost,
             SegmentKind::Lines => &lines::Lines,
             SegmentKind::Duration => &duration::Duration,
@@ -67,12 +65,3 @@ impl SegmentKind {
         }
     }
 }
-
-/// No-op segment for deprecated variants (Project, Effort).
-struct Noop;
-impl Segment for Noop {
-    fn render(&self, _ctx: &RenderCtx, _out: &mut SegmentWriter) -> bool {
-        false
-    }
-}
-const NOOP: Noop = Noop;

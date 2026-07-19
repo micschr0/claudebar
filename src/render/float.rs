@@ -42,7 +42,7 @@ fn render_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>) -
     let theme = themes::get(&cfg.theme);
     // The ASCII style is icons-off with ASCII-only glyphs — the cleanest base for
     // a plain-text readout. Colors are stripped afterwards in any case.
-    let style = styles::ascii::style();
+    let style = styles::get("ascii");
     let ctx = RenderCtx {
         input,
         theme: &theme,
@@ -81,7 +81,7 @@ fn parse_segment(name: &str) -> Option<SegmentKind> {
 /// skips the parameter bytes (0x30–0x3F) and intermediate bytes (0x20–0x2F) up
 /// to and including the final byte (0x40–0x7E). A lone ESC not followed by `[`
 /// drops only itself and its single follower (the writer never emits these).
-fn strip_ansi(s: &str) -> String {
+pub fn strip_ansi(s: &str) -> String {
     let mut out = String::with_capacity(s.len());
     let mut chars = s.chars();
     while let Some(c) = chars.next() {

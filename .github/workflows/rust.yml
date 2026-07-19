@@ -62,9 +62,6 @@ jobs:
         env:
           INSTA_UPDATE: no
 
-      - name: Check release profile
-        run: cargo check --release --locked
-
 
       - name: Check release profile (auditable)
         run: cargo auditable build --release --locked

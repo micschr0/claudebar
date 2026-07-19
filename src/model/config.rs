@@ -15,7 +15,6 @@ use std::path::{Path, PathBuf};
 /// *which* are enabled (presence) and their *order* (render order).
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "kebab-case")]
-#[non_exhaustive]
 pub enum SegmentKind {
     Directory,
     Git,
@@ -23,12 +22,10 @@ pub enum SegmentKind {
     RateLimits,
     DevContext,
     Model,
-    Effort,
     Clock,
     Cost,
     Lines,
     Duration,
-    Project,
     Burn,
 }
 
@@ -69,13 +66,11 @@ impl SegmentKind {
             SegmentKind::RateLimits => "Rate Limits",
             SegmentKind::DevContext => "Dev Context",
             SegmentKind::Model => "Model",
-            SegmentKind::Effort => "Effort",
             SegmentKind::Clock => "Clock",
             SegmentKind::Cost => "Cost",
             SegmentKind::Lines => "Lines",
             SegmentKind::Duration => "Duration",
             SegmentKind::Burn => "Burn",
-            SegmentKind::Project => "Project",
         }
     }
 
@@ -91,7 +86,7 @@ impl SegmentKind {
     }
 }
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(default, deny_unknown_fields)]
+#[serde(default)]
 pub struct Thresholds {
     /// Bar turns warn-colored at or above this percent.
     pub warn: u16,
@@ -160,7 +155,7 @@ impl Default for Thresholds {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(default, deny_unknown_fields)]
+#[serde(default)]
 pub struct Config {
     pub theme: String,
     pub style: String,
@@ -238,7 +233,6 @@ impl Config {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[non_exhaustive]
 pub enum ConfigError {
     #[error("config i/o error: {0}")]
     Io(String),
