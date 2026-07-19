@@ -84,7 +84,6 @@ pub fn check_nerd_font() -> bool {
 }
 /// Errors surfaced when reading, parsing, or writing settings.json.
 #[derive(Debug, thiserror::Error)]
-#[non_exhaustive]
 pub enum SetupError {
     #[error("settings i/o error: {0}")]
     Io(String),

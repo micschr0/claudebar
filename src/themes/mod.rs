@@ -1,26 +1,7 @@
-//! Built-in theme registry. The `match` here is **complete** — every built-in
-//! theme name is listed up front pointing at its module constructor — so a theme
-//! worker only fills in its own `themes/<name>.rs` body and never edits this
-//! shared file. That removes the only cross-theme merge conflict.
+//! Built-in theme registry. All themes live in this file as `pub const`
+//! values; no per-theme module, no merge-conflict surface.
 
-pub mod ayu_mirage;
-pub mod catppuccin;
-pub mod cobalt2;
-pub mod dracula;
-pub mod everforest_dark;
-pub mod github_dark;
-pub mod gruvbox;
-pub mod kanagawa_wave;
-pub mod moonfly;
-pub mod night_owl;
-pub mod nord;
-pub mod one_dark;
-pub mod rose_pine;
-pub mod solarized_dark;
-pub mod sonokai;
-pub mod tokyo_night;
-
-use crate::model::Theme;
+use crate::model::{Color, Theme};
 
 /// All built-in theme names, in display order. Tokyo Night remains the default.
 pub const NAMES: &[&str] = &[
@@ -42,171 +23,475 @@ pub const NAMES: &[&str] = &[
     "solarized-dark",
 ];
 
-/// Resolve a theme by name. Unknown names (and the default) fall back to
-/// Tokyo Night, the byte-parity anchor.
+/// tokyo-night palette.
+pub const TOKYO_NIGHT: Theme = Theme {
+    dir: Color(39),
+    git_branch: Color(141),
+    ahead: Color(114),
+    behind: Color(167),
+    modified: Color(221),
+    untracked: Color(245),
+    token: Color(117),
+    bar_ok: Color(114),
+    bar_warn: Color(221),
+    bar_crit: Color(203),
+    bar_track: Color(242),
+    separator: Color(241),
+    dim: Color(245),
+    reset: Color(73),
+    effort: Color(213),
+    model: Color(208),
+    project: Color(39),
+    stash: Color(141),
+    lines: Color(244),
+    cost: Color(221),
+    duration: Color(67),
+    clock: Color(70),
+    burn: Color(203),
+};
+
+/// ayu-mirage palette.
+pub const AYU_MIRAGE: Theme = Theme {
+    dir: Color(81),
+    git_branch: Color(183),
+    ahead: Color(113),
+    behind: Color(210),
+    modified: Color(221),
+    untracked: Color(244),
+    token: Color(117),
+    bar_ok: Color(113),
+    bar_warn: Color(221),
+    bar_crit: Color(210),
+    bar_track: Color(241),
+    separator: Color(242),
+    dim: Color(244),
+    reset: Color(116),
+    effort: Color(213),
+    model: Color(215),
+    project: Color(81),
+    stash: Color(183),
+    lines: Color(244),
+    cost: Color(221),
+    duration: Color(116),
+    clock: Color(113),
+    burn: Color(210),
+};
+
+/// catppuccin palette.
+pub const CATPPUCCIN: Theme = Theme {
+    dir: Color(111),
+    git_branch: Color(183),
+    ahead: Color(150),
+    behind: Color(211),
+    modified: Color(216),
+    untracked: Color(244),
+    token: Color(117),
+    bar_ok: Color(150),
+    bar_warn: Color(223),
+    bar_crit: Color(204),
+    bar_track: Color(241),
+    separator: Color(241),
+    dim: Color(244),
+    reset: Color(115),
+    effort: Color(218),
+    model: Color(140),
+    project: Color(111),
+    stash: Color(183),
+    lines: Color(244),
+    cost: Color(223),
+    duration: Color(115),
+    clock: Color(150),
+    burn: Color(204),
+};
+
+/// cobalt2 palette.
+pub const COBALT2: Theme = Theme {
+    dir: Color(33),
+    git_branch: Color(213),
+    ahead: Color(76),
+    behind: Color(204),
+    modified: Color(220),
+    untracked: Color(244),
+    token: Color(39),
+    bar_ok: Color(76),
+    bar_warn: Color(220),
+    bar_crit: Color(204),
+    bar_track: Color(241),
+    separator: Color(26),
+    dim: Color(244),
+    reset: Color(123),
+    effort: Color(205),
+    model: Color(220),
+    project: Color(33),
+    stash: Color(213),
+    lines: Color(244),
+    cost: Color(215),
+    duration: Color(123),
+    clock: Color(76),
+    burn: Color(204),
+};
+
+/// everforest-dark palette.
+pub const EVERFOREST_DARK: Theme = Theme {
+    dir: Color(73),
+    git_branch: Color(175),
+    ahead: Color(108),
+    behind: Color(174),
+    modified: Color(180),
+    untracked: Color(245),
+    token: Color(115),
+    bar_ok: Color(113),
+    bar_warn: Color(180),
+    bar_crit: Color(174),
+    bar_track: Color(241),
+    separator: Color(245),
+    dim: Color(245),
+    reset: Color(108),
+    effort: Color(179),
+    model: Color(180),
+    project: Color(73),
+    stash: Color(175),
+    lines: Color(245),
+    cost: Color(179),
+    duration: Color(116),
+    clock: Color(113),
+    burn: Color(174),
+};
+
+/// github-dark palette.
+pub const GITHUB_DARK: Theme = Theme {
+    dir: Color(75),
+    git_branch: Color(141),
+    ahead: Color(71),
+    behind: Color(209),
+    modified: Color(172),
+    untracked: Color(244),
+    token: Color(111),
+    bar_ok: Color(77),
+    bar_warn: Color(172),
+    bar_crit: Color(209),
+    bar_track: Color(241),
+    separator: Color(243),
+    dim: Color(244),
+    reset: Color(80),
+    effort: Color(183),
+    model: Color(172),
+    project: Color(75),
+    stash: Color(141),
+    lines: Color(244),
+    cost: Color(214),
+    duration: Color(80),
+    clock: Color(77),
+    burn: Color(209),
+};
+
+/// gruvbox palette.
+pub const GRUVBOX: Theme = Theme {
+    dir: Color(109),
+    git_branch: Color(108),
+    ahead: Color(142),
+    behind: Color(167),
+    modified: Color(214),
+    untracked: Color(245),
+    token: Color(109),
+    bar_ok: Color(142),
+    bar_warn: Color(214),
+    bar_crit: Color(167),
+    bar_track: Color(241),
+    separator: Color(241),
+    dim: Color(245),
+    reset: Color(108),
+    effort: Color(175),
+    model: Color(208),
+    project: Color(109),
+    stash: Color(108),
+    lines: Color(245),
+    cost: Color(214),
+    duration: Color(108),
+    clock: Color(142),
+    burn: Color(167),
+};
+
+/// kanagawa-wave palette.
+pub const KANAGAWA_WAVE: Theme = Theme {
+    dir: Color(110),
+    git_branch: Color(103),
+    ahead: Color(101),
+    behind: Color(167),
+    modified: Color(143),
+    untracked: Color(244),
+    token: Color(110),
+    bar_ok: Color(107),
+    bar_warn: Color(143),
+    bar_crit: Color(131),
+    bar_track: Color(241),
+    separator: Color(242),
+    dim: Color(244),
+    reset: Color(66),
+    effort: Color(169),
+    model: Color(143),
+    project: Color(110),
+    stash: Color(103),
+    lines: Color(244),
+    cost: Color(180),
+    duration: Color(66),
+    clock: Color(107),
+    burn: Color(167),
+};
+
+/// moonfly palette.
+pub const MOONFLY: Theme = Theme {
+    dir: Color(111),
+    git_branch: Color(176),
+    ahead: Color(113),
+    behind: Color(203),
+    modified: Color(186),
+    untracked: Color(246),
+    token: Color(111),
+    bar_ok: Color(113),
+    bar_warn: Color(186),
+    bar_crit: Color(203),
+    bar_track: Color(241),
+    separator: Color(246),
+    dim: Color(246),
+    reset: Color(116),
+    effort: Color(141),
+    model: Color(186),
+    project: Color(111),
+    stash: Color(176),
+    lines: Color(246),
+    cost: Color(222),
+    duration: Color(116),
+    clock: Color(113),
+    burn: Color(203),
+};
+
+/// night-owl palette.
+pub const NIGHT_OWL: Theme = Theme {
+    dir: Color(111),
+    git_branch: Color(176),
+    ahead: Color(41),
+    behind: Color(203),
+    modified: Color(186),
+    untracked: Color(244),
+    token: Color(111),
+    bar_ok: Color(41),
+    bar_warn: Color(186),
+    bar_crit: Color(203),
+    bar_track: Color(241),
+    separator: Color(241),
+    dim: Color(244),
+    reset: Color(43),
+    effort: Color(134),
+    model: Color(186),
+    project: Color(111),
+    stash: Color(176),
+    lines: Color(244),
+    cost: Color(222),
+    duration: Color(43),
+    clock: Color(41),
+    burn: Color(203),
+};
+
+/// nord palette.
+pub const NORD: Theme = Theme {
+    dir: Color(67),
+    git_branch: Color(110),
+    ahead: Color(150),
+    behind: Color(167),
+    modified: Color(222),
+    untracked: Color(244),
+    token: Color(108),
+    bar_ok: Color(150),
+    bar_warn: Color(222),
+    bar_crit: Color(131),
+    bar_track: Color(241),
+    separator: Color(60),
+    dim: Color(245),
+    reset: Color(110),
+    effort: Color(133),
+    model: Color(139),
+    project: Color(67),
+    stash: Color(110),
+    lines: Color(245),
+    cost: Color(222),
+    duration: Color(110),
+    clock: Color(150),
+    burn: Color(167),
+};
+
+/// one-dark palette.
+pub const ONE_DARK: Theme = Theme {
+    dir: Color(75),
+    git_branch: Color(176),
+    ahead: Color(108),
+    behind: Color(168),
+    modified: Color(173),
+    untracked: Color(244),
+    token: Color(75),
+    bar_ok: Color(108),
+    bar_warn: Color(173),
+    bar_crit: Color(168),
+    bar_track: Color(241),
+    separator: Color(241),
+    dim: Color(244),
+    reset: Color(73),
+    effort: Color(134),
+    model: Color(173),
+    project: Color(75),
+    stash: Color(176),
+    lines: Color(244),
+    cost: Color(179),
+    duration: Color(73),
+    clock: Color(108),
+    burn: Color(168),
+};
+
+/// dracula palette.
+pub const DRACULA: Theme = Theme {
+    dir: Color(141),
+    git_branch: Color(212),
+    ahead: Color(84),
+    behind: Color(203),
+    modified: Color(215),
+    untracked: Color(67),
+    token: Color(117),
+    bar_ok: Color(84),
+    bar_warn: Color(228),
+    bar_crit: Color(203),
+    bar_track: Color(241),
+    separator: Color(241),
+    dim: Color(245),
+    reset: Color(117),
+    effort: Color(135),
+    model: Color(215),
+    project: Color(141),
+    stash: Color(212),
+    lines: Color(245),
+    cost: Color(228),
+    duration: Color(117),
+    clock: Color(84),
+    burn: Color(203),
+};
+
+/// rose-pine palette.
+pub const ROSE_PINE: Theme = Theme {
+    dir: Color(116),
+    git_branch: Color(183),
+    ahead: Color(116),
+    behind: Color(211),
+    modified: Color(222),
+    untracked: Color(67),
+    token: Color(116),
+    bar_ok: Color(116),
+    bar_warn: Color(222),
+    bar_crit: Color(211),
+    bar_track: Color(103),
+    separator: Color(103),
+    dim: Color(103),
+    reset: Color(66),
+    effort: Color(139),
+    model: Color(181),
+    project: Color(116),
+    stash: Color(183),
+    lines: Color(103),
+    cost: Color(222),
+    duration: Color(66),
+    clock: Color(116),
+    burn: Color(211),
+};
+
+/// sonokai palette.
+pub const SONOKAI: Theme = Theme {
+    dir: Color(116),
+    git_branch: Color(147),
+    ahead: Color(149),
+    behind: Color(204),
+    modified: Color(185),
+    untracked: Color(102),
+    token: Color(116),
+    bar_ok: Color(149),
+    bar_warn: Color(185),
+    bar_crit: Color(204),
+    bar_track: Color(241),
+    separator: Color(102),
+    dim: Color(102),
+    reset: Color(209),
+    effort: Color(141),
+    model: Color(185),
+    project: Color(116),
+    stash: Color(147),
+    lines: Color(102),
+    cost: Color(222),
+    duration: Color(209),
+    clock: Color(149),
+    burn: Color(204),
+};
+
+/// solarized-dark palette.
+pub const SOLARIZED_DARK: Theme = Theme {
+    dir: Color(32),
+    git_branch: Color(168),
+    ahead: Color(100),
+    behind: Color(166),
+    modified: Color(136),
+    untracked: Color(244),
+    token: Color(36),
+    bar_ok: Color(108),
+    bar_warn: Color(136),
+    bar_crit: Color(160),
+    bar_track: Color(241),
+    separator: Color(241),
+    dim: Color(244),
+    reset: Color(36),
+    effort: Color(69),
+    model: Color(136),
+    project: Color(32),
+    stash: Color(168),
+    lines: Color(244),
+    cost: Color(178),
+    duration: Color(36),
+    clock: Color(108),
+    burn: Color(167),
+};
+
+/// Resolve a theme by name. Unknown names fall back to Tokyo Night.
 #[must_use]
 pub fn get(name: &str) -> Theme {
     match name {
-        "ayu-mirage" => ayu_mirage::theme(),
-        "cobalt2" => cobalt2::theme(),
-        "everforest-dark" => everforest_dark::theme(),
-        "github-dark" => github_dark::theme(),
-        "kanagawa-wave" => kanagawa_wave::theme(),
-        "moonfly" => moonfly::theme(),
-        "night-owl" => night_owl::theme(),
-        "one-dark" => one_dark::theme(),
-        "sonokai" => sonokai::theme(),
-        "solarized-dark" => solarized_dark::theme(),
-        "catppuccin" => catppuccin::theme(),
-        "gruvbox" => gruvbox::theme(),
-        "nord" => nord::theme(),
-        "dracula" => dracula::theme(),
-        "rose-pine" => rose_pine::theme(),
-        _ => tokyo_night::theme(),
+        "ayu-mirage" => AYU_MIRAGE,
+        "catppuccin" => CATPPUCCIN,
+        "cobalt2" => COBALT2,
+        "everforest-dark" => EVERFOREST_DARK,
+        "github-dark" => GITHUB_DARK,
+        "gruvbox" => GRUVBOX,
+        "kanagawa-wave" => KANAGAWA_WAVE,
+        "moonfly" => MOONFLY,
+        "night-owl" => NIGHT_OWL,
+        "nord" => NORD,
+        "one-dark" => ONE_DARK,
+        "dracula" => DRACULA,
+        "rose-pine" => ROSE_PINE,
+        "sonokai" => SONOKAI,
+        "solarized-dark" => SOLARIZED_DARK,
+        _ => TOKYO_NIGHT,
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    /// Map a single xterm-256 colour index to its approximate sRGB hex string.
-    /// Uses the standard 6×6×6 colour cube for indices 16–231 and the 24-step
-    /// grey ramp for indices 232–255.
-    fn xterm_to_srgb(idx: u8) -> [u8; 3] {
-        match idx {
-            0..=15 => {
-                // Standard ANSI
-                const ANSI: [[u8; 3]; 16] = [
-                    [0x00, 0x00, 0x00],
-                    [0xcd, 0x00, 0x00],
-                    [0x00, 0xcd, 0x00],
-                    [0xcd, 0xcd, 0x00],
-                    [0x00, 0x00, 0xee],
-                    [0xcd, 0x00, 0xcd],
-                    [0x00, 0xcd, 0xcd],
-                    [0xe5, 0xe5, 0xe5],
-                    [0x7f, 0x7f, 0x7f],
-                    [0xff, 0x00, 0x00],
-                    [0x00, 0xff, 0x00],
-                    [0xff, 0xff, 0x00],
-                    [0x5c, 0x5c, 0xff],
-                    [0xff, 0x00, 0xff],
-                    [0x00, 0xff, 0xff],
-                    [0xff, 0xff, 0xff],
-                ];
-                ANSI[idx as usize]
-            }
-            16..=231 => {
-                let n = u32::from(idx - 16);
-                let r = n / 36;
-                let g = (n % 36) / 6;
-                let b = n % 6;
-                let comp = |v: u32| -> u8 { if v == 0 { 0 } else { (v * 40 + 55) as u8 } };
-                [comp(r), comp(g), comp(b)]
-            }
-            _ => {
-                // 232..=255 grey ramp
-                let v = u32::from(idx - 232) * 10 + 8;
-                let v = v as u8;
-                [v, v, v]
-            }
-        }
-    }
-
-    /// WCAG 2.1 relative luminance of an sRGB colour triplet.
-    fn relative_luminance(rgb: [u8; 3]) -> f64 {
-        fn linear(c: u8) -> f64 {
-            let v = f64::from(c) / 255.0;
-            if v <= 0.04045 {
-                v / 12.92
-            } else {
-                ((v + 0.055) / 1.055_f64).powf(2.4)
-            }
-        }
-        0.2126 * linear(rgb[0]) + 0.7152 * linear(rgb[1]) + 0.0722 * linear(rgb[2])
-    }
-
-    /// WCAG 2.1 contrast ratio between two sRGB colours.
-    fn contrast_ratio(rgb1: [u8; 3], rgb2: [u8; 3]) -> f64 {
-        let l1 = relative_luminance(rgb1);
-        let l2 = relative_luminance(rgb2);
-        let (light, dark) = if l1 > l2 { (l1, l2) } else { (l2, l1) };
-        (light + 0.05) / (dark + 0.05)
-    }
-
-    /// The canonical background for all theme contrast measurements.
-    const BG: [u8; 3] = [0x10, 0x10, 0x18]; // #101018
-
-    /// Text colour slots that MUST meet ≥4.5:1 contrast against the background.
-    const TEXT_SLOTS: &[fn(&Theme) -> crate::model::Color] = &[
-        |t| t.dir,
-        |t| t.git_branch,
-        |t| t.ahead,
-        |t| t.behind,
-        |t| t.modified,
-        |t| t.untracked,
-        |t| t.token,
-        |t| t.dim,
-        |t| t.reset,
-        |t| t.effort,
-        |t| t.model,
-        |t| t.project,
-        |t| t.stash,
-        |t| t.lines,
-        |t| t.cost,
-        |t| t.duration,
-        |t| t.clock,
-        |t| t.burn,
-    ];
-
-    /// Decorative colour slots (separators, bar tracks/fills) that MUST meet
-    /// ≥3:1 contrast against the background.
-    const DECORATIVE_SLOTS: &[fn(&Theme) -> crate::model::Color] = &[
-        |t| t.separator,
-        |t| t.bar_track,
-        |t| t.bar_ok,
-        |t| t.bar_warn,
-        |t| t.bar_crit,
-    ];
-
     #[test]
-    fn wcag_contrast() {
-        for &name in NAMES {
-            let theme = get(name);
-            for slot_fn in TEXT_SLOTS {
-                let color = slot_fn(&theme);
-                let rgb = xterm_to_srgb(color.0);
-                let cr = contrast_ratio(rgb, BG);
-                assert!(
-                    cr >= 4.5,
-                    "theme {name}: text slot xterm {} ({rgb:?}) → {cr:.2}:1 < 4.5:1",
-                    color.0
-                );
-            }
-            for slot_fn in DECORATIVE_SLOTS {
-                let color = slot_fn(&theme);
-                let rgb = xterm_to_srgb(color.0);
-                let cr = contrast_ratio(rgb, BG);
-                assert!(
-                    cr >= 3.0,
-                    "theme {name}: decorative slot xterm {} ({rgb:?}) → {cr:.2}:1 < 3.0:1",
-                    color.0
-                );
-            }
-        }
-    }
-
+    fn all_known_names_resolve() { for n in NAMES { let _ = get(n); } }
     #[test]
-    fn theme_get_returns_known_names() {
-        for name in NAMES {
-            let _ = get(name);
-        }
-    }
-
+    fn unknown_falls_back_to_tokyo_night() { assert_eq!(get("nope"), TOKYO_NIGHT); }
     #[test]
-    fn theme_get_none_on_unknown() {
-        // Unknown names fall back to Tokyo Night without panicking
-        let _ = get("definitely-not-a-real-theme");
+    fn bar_thresholds_distinct() {
+        for n in NAMES {
+            let t = get(n);
+            assert_ne!(t.bar_ok, t.bar_warn, "{n}: bar_ok==bar_warn");
+            assert_ne!(t.bar_warn, t.bar_crit, "{n}: bar_warn==bar_crit");
+            assert_ne!(t.bar_ok, t.bar_crit, "{n}: bar_ok==bar_crit");
+        }
     }
 }

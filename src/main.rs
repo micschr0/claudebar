@@ -2,7 +2,7 @@ mod cli;
 
 use clap::Parser;
 use claudebar::model::{Config, SegmentKind};
-use claudebar::{InputData, render_line, styles, themes};
+use claudebar::{render_line, styles, themes, InputData};
 use cli::{Cli, Command};
 use std::io::{IsTerminal, Read, Write};
 use std::path::PathBuf;
@@ -245,10 +245,6 @@ fn run_setup(
         }
         Err(claudebar::setup::SetupError::Io(msg)) => {
             eprintln!("claudebar: {msg}");
-            return ExitCode::FAILURE;
-        }
-        Err(e) => {
-            eprintln!("claudebar: {e}");
             return ExitCode::FAILURE;
         }
     };
@@ -565,7 +561,11 @@ fn run_edit(cli: &Cli) -> ExitCode {
 }
 
 fn check_mark(ok: bool) -> &'static str {
-    if ok { "✓" } else { "✗" }
+    if ok {
+        "✓"
+    } else {
+        "✗"
+    }
 }
 
 fn which_ok(cmd: &str) -> bool {

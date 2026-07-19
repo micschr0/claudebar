@@ -7,6 +7,8 @@ pub mod bar;
 pub mod float;
 pub mod width;
 pub mod writer;
+
+pub use float::strip_ansi;
 pub use writer::SegmentWriter;
 
 use crate::model::{Config, InputData, RESET, Style, Theme};

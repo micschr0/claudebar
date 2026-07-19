@@ -510,18 +510,16 @@ pub(crate) fn detail_len(app: &App) -> usize {
 /// when the segment is selected in the right panel.
 pub(crate) fn segment_help(kind: SegmentKind) -> &'static str {
     match kind {
-        SegmentKind::Project => "(deprecated — directory covers project identity)",
         SegmentKind::Directory => "Directory — current working directory",
         SegmentKind::Git => "Git — current branch and working-tree status",
         SegmentKind::Model => "Model — active Claude model and reasoning effort",
         SegmentKind::Context => "Context — token usage vs. context window budget",
         SegmentKind::RateLimits => "Rate Limits — 5-hour and 7-day API rate-limit usage",
         SegmentKind::DevContext => "Dev Context — current development context name",
-        SegmentKind::Effort => "(deprecated — rendered inline by Model)",
         SegmentKind::Cost => "Cost — session cost in USD",
         SegmentKind::Lines => "Lines — lines added and removed this session",
         SegmentKind::Duration => "Duration — session wall-clock duration",
-        SegmentKind::Burn => "Burn — projected time until rate limit is exhausted",
+        SegmentKind::Burn => "Burn — cumulative session cost",
         SegmentKind::Clock => "Clock — current time (12h/24h, configurable seconds)",
     }
 }
