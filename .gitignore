@@ -7,15 +7,12 @@ CLAUDE.md
 # OS / editor cruft
 .DS_Store
 
-# HTML screenshot sources are generated to /tmp/ at runtime — never in repo
-
 # Backup files created by the install skill
 *.backup
 
 # Python cache from gen_screenshots.py
 __pycache__/
 *.pyc
-
 
 # Generated video output
 video/out/
@@ -31,24 +28,9 @@ benchmark-report.txt
 # Agent worktrees
 .claude/
 
-# ── GSD baseline (auto-generated) ──
-.gsd
-.gsd-id
+# CodeGraph index (local-only)
+.codegraph/
 .mcp.json
-.bg-shell/
-Thumbs.db
-nul
-nul.*
-con
-con.*
-prn
-prn.*
-aux
-aux.*
-com[1-9]
-com[1-9].*
-lpt[1-9]
-lpt[1-9].*
 *.swp
 *.swo
 *~
@@ -64,13 +46,11 @@ dist/
 build/
 .venv/
 venv/
-target/
 vendor/
 *.log
 coverage/
 .cache/
 tmp/
-.planning/
 .agents/
 
 # Local skills tooling (not part of the project)

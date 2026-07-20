@@ -29,11 +29,6 @@ impl<'a> SegmentWriter<'a> {
     }
 
     #[must_use]
-    pub fn theme(&self) -> &Theme {
-        self.theme
-    }
-
-    #[must_use]
     pub fn style(&self) -> &Style {
         self.style
     }
@@ -124,7 +119,7 @@ impl<'a> SegmentWriter<'a> {
 
     /// Append a progress bar, using the style's bar characters, the theme's
     /// track color, and the given fill color.
-    pub fn bar(&mut self, pct: u32, width: u8, fill: Color) {
+    fn bar(&mut self, pct: u32, width: u8, fill: Color) {
         write_bar(
             &mut self.buf,
             pct,
@@ -163,5 +158,41 @@ impl<'a> SegmentWriter<'a> {
     #[inline]
     pub fn as_str(&self) -> &str {
         &self.buf
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{styles, themes};
+
+    #[test]
+    fn colored_with_restores_active_stack_on_pop() {
+        let theme = themes::get("tokyo-night");
+        let style = styles::get("powerline");
+        let mut w = super::SegmentWriter::new(&theme, &style);
+
+        // Single-level: active was None → after RESET, no color re-emission.
+        let dir_fg = theme.dir.fg();
+        w.colored_with(theme.dir, |w| w.raw("single"));
+        let expected_single = format!("{dir_fg}single\x1b[0m");
+        assert_eq!(
+            w.as_str(),
+            expected_single,
+            "single colored_with: active restored from None"
+        );
+
+        // Now test nested: inner restores outer's color before its own RESET,
+        // then outer ends with RESET. Buffer ends with "dir_color\x1b[0m".
+        let model_fg = theme.model.fg();
+        let mut w2 = super::SegmentWriter::new(&theme, &style);
+        w2.colored_with(theme.dir, |w| {
+            w.colored_with(theme.model, |w| w.raw("nested"));
+        });
+        let expected_nested = format!("{dir_fg}{model_fg}nested\x1b[0m{dir_fg}\x1b[0m");
+        assert_eq!(
+            w2.as_str(),
+            expected_nested,
+            "nested colored_with: inner restores outer, outer emits RESET"
+        );
     }
 }

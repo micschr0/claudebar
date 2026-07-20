@@ -78,3 +78,106 @@ impl Segment for DevContext {
         true
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::model::input::{Coerce, Pr};
+    use crate::model::{Config, InputData, SegmentKind};
+    use crate::render::render_with;
+    use crate::{styles, themes};
+
+    fn render_dev_ctx(review_state: Option<&str>) -> String {
+        let input = InputData {
+            pr: Pr {
+                number: Coerce(Some(42)),
+                review_state: review_state.map(String::from),
+            },
+            ..Default::default()
+        };
+        let cfg = Config {
+            segments: vec![SegmentKind::DevContext],
+            ..Default::default()
+        };
+        let theme = themes::get(&cfg.theme);
+        let style = styles::get(&cfg.style);
+        render_with(&input, &cfg, &theme, &style, 0, None, 0)
+    }
+
+    /// PR #42 with review_state "changes_requested" → renders ✗ indicator.
+    #[test]
+    fn dev_context_requested_changes() {
+        let out = render_dev_ctx(Some("changes_requested"));
+        assert!(out.contains("#42"), "#42 missing: {out:?}");
+        assert!(out.contains('\u{2717}'), "✗ missing: {out:?}");
+    }
+
+    /// PR #42 with review_state "commented" → renders ◦ indicator.
+    #[test]
+    fn dev_context_commented() {
+        let out = render_dev_ctx(Some("commented"));
+        assert!(out.contains("#42"), "#42 missing: {out:?}");
+        assert!(out.contains('\u{25e6}'), "◦ missing: {out:?}");
+    }
+
+    /// PR #42 with review_state "pending" (draft) → renders · indicator.
+    #[test]
+    fn dev_context_draft() {
+        let out = render_dev_ctx(Some("pending"));
+        assert!(out.contains("#42"), "#42 missing: {out:?}");
+        assert!(out.contains('\u{b7}'), "· missing: {out:?}");
+    }
+
+    /// PR #42 with no review_state → no review indicator emitted.
+    #[test]
+    fn dev_context_nil_review() {
+        let out = render_dev_ctx(None);
+        assert!(out.contains("#42"), "#42 missing: {out:?}");
+        // No ✓, ✗, ◦, or · — just the PR number with no state indicator.
+        assert!(
+            !out.contains('\u{2713}')
+                && !out.contains('\u{2717}')
+                && !out.contains('\u{25e6}')
+                && !out.contains('\u{b7}'),
+            "unexpected review indicator in nil review: {out:?}"
+        );
+    }
+    /// PR #42 with review_state "approved" → renders ✓ indicator.
+    #[test]
+    fn dev_context_approved() {
+        let out = render_dev_ctx(Some("approved"));
+        assert!(out.contains("#42"), "#42 missing: {out:?}");
+        assert!(out.contains('\u{2713}'), "✓ missing: {out:?}");
+    }
+
+    /// PR #42 with review_state "unknown" → no review indicator emitted.
+    #[test]
+    fn dev_context_unknown_review() {
+        let out = render_dev_ctx(Some("unknown"));
+        assert!(out.contains("#42"), "#42 missing: {out:?}");
+        // No ✓, ✗, ◦, or · for unknown states.
+        assert!(
+            !out.contains('\u{2713}')
+                && !out.contains('\u{2717}')
+                && !out.contains('\u{25e6}')
+                && !out.contains('\u{b7}'),
+            "unexpected review indicator in unknown review: {out:?}"
+        );
+    }
+
+    /// No worktree, PR, or agent data → skipped (returns false).
+    #[test]
+    fn dev_context_skipped_when_all_absent() {
+        let input = InputData {
+            worktree: None,
+            ..Default::default()
+        };
+        let cfg = Config {
+            segments: vec![SegmentKind::DevContext],
+            ..Default::default()
+        };
+        let theme = themes::get(&cfg.theme);
+        let style = styles::get(&cfg.style);
+        let out = render_with(&input, &cfg, &theme, &style, 0, None, 0);
+        assert_eq!(out, "");
+    }
+}

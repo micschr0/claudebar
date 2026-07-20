@@ -71,7 +71,7 @@ pub(crate) struct App {
     pub list_rows: Vec<RowItem>,
     /// Top display-row index currently scrolled to.
     pub scroll_offset: usize,
-    /// section_starts[i] = flat_cursor index of first row in section i.
+    /// i-th element of `section_starts` holds the flat_cursor index of the first row in section i.
     pub section_starts: [usize; 4],
     /// Which panel (Left/Right) currently has keyboard focus.
     pub focused_panel: Panel,
@@ -302,7 +302,7 @@ impl App {
                 t.weekly_show_at = val.clamp(1, 99);
             }
             ThresholdField::BarWidth => {
-                let val = (t.bar_width as i16 + delta).clamp(2, 20) as u8;
+                let val = (i16::from(t.bar_width) + delta).clamp(2, 20) as u8;
                 t.bar_width = val;
             }
             ThresholdField::ClockMode | ThresholdField::Layout => {
@@ -510,18 +510,16 @@ pub(crate) fn detail_len(app: &App) -> usize {
 /// when the segment is selected in the right panel.
 pub(crate) fn segment_help(kind: SegmentKind) -> &'static str {
     match kind {
-        SegmentKind::Project => "(deprecated — directory covers project identity)",
         SegmentKind::Directory => "Directory — current working directory",
         SegmentKind::Git => "Git — current branch and working-tree status",
         SegmentKind::Model => "Model — active Claude model and reasoning effort",
         SegmentKind::Context => "Context — token usage vs. context window budget",
         SegmentKind::RateLimits => "Rate Limits — 5-hour and 7-day API rate-limit usage",
         SegmentKind::DevContext => "Dev Context — current development context name",
-        SegmentKind::Effort => "(deprecated — rendered inline by Model)",
         SegmentKind::Cost => "Cost — session cost in USD",
         SegmentKind::Lines => "Lines — lines added and removed this session",
         SegmentKind::Duration => "Duration — session wall-clock duration",
-        SegmentKind::Burn => "Burn — projected time until rate limit is exhausted",
+        SegmentKind::Burn => "Burn — cumulative session cost",
         SegmentKind::Clock => "Clock — current time (12h/24h, configurable seconds)",
     }
 }

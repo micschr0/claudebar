@@ -7,7 +7,7 @@
 //! a configurable separator. It is best-effort: any I/O error is silently
 //! swallowed so a float failure can never break the status render.
 //!
-//! Rendering reuses the exact same [`Segment`] implementations as the colored
+//! Rendering reuses the exact same [`crate::segment::Segment`] implementations as the colored
 //! path (no second code path): each selected segment is rendered with the ASCII
 //! style — `icons: false`, ASCII-only glyphs — and then stripped of ANSI color,
 //! so the result is stable regardless of the user's configured theme/style.
@@ -42,7 +42,7 @@ fn render_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>) -
     let theme = themes::get(&cfg.theme);
     // The ASCII style is icons-off with ASCII-only glyphs — the cleanest base for
     // a plain-text readout. Colors are stripped afterwards in any case.
-    let style = styles::ascii::style();
+    let style = styles::get("ascii");
     let ctx = RenderCtx {
         input,
         theme: &theme,
@@ -81,7 +81,7 @@ fn parse_segment(name: &str) -> Option<SegmentKind> {
 /// skips the parameter bytes (0x30–0x3F) and intermediate bytes (0x20–0x2F) up
 /// to and including the final byte (0x40–0x7E). A lone ESC not followed by `[`
 /// drops only itself and its single follower (the writer never emits these).
-fn strip_ansi(s: &str) -> String {
+pub fn strip_ansi(s: &str) -> String {
     let mut out = String::with_capacity(s.len());
     let mut chars = s.chars();
     while let Some(c) = chars.next() {

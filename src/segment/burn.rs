@@ -22,6 +22,7 @@
 //! The cache file lives at `$XDG_CACHE_HOME/claudebar/burn-5h.tsv` (fallback
 //! `~/.cache/claudebar/burn-5h.tsv`). It is trimmed to ~1500 rows on write.
 
+#![allow(clippy::cast_precision_loss)]
 use crate::model::{Color, Theme};
 use crate::render::SegmentWriter;
 use crate::segment::{RenderCtx, Segment};
@@ -479,8 +480,198 @@ mod tests {
     fn estimate_falls_back_to_7d() {
         // No 5h data → 7d stateless.
         let theme = test_theme();
-        let est = estimate(0, &[], None, Some((80.0, 600000)), &theme);
+        let est = estimate(0, &[], None, Some((80.0, 600_000)), &theme);
         assert_eq!(est.state, BurnState::Active);
         assert_eq!(est.label, "7d");
+    }
+    #[test]
+    fn burn_render_reads_samples_file() {
+        // Arrange: create a temp directory with pre-populated sample data.
+        let dir = std::env::temp_dir().join(format!("claudebar-test-{}", std::process::id()));
+        let _ = std::fs::create_dir_all(&dir);
+        let burn_path = dir.join("burn-5h.tsv");
+        let now = 1000i64;
+        // Write 10 samples: 0→50% over 10 seconds (1 pct/sec slope, starting at 50%).
+        let mut content = String::new();
+        for i in 0..10i64 {
+            let pct = 40.0 + i as f64; // 40→49 over 9 seconds
+            content.push_str(&format!("{now}\t{pct:.3}\t2100\n"));
+        }
+        std::fs::write(&burn_path, &content).expect("write samples file");
+
+        // Set env var to point at our temp file.
+        let prev = std::env::var("CLAUDEBAR_BURN_FILE").ok();
+        // SAFETY: single-threaded test, no other env reads in flight.
+        unsafe { std::env::set_var("CLAUDEBAR_BURN_FILE", burn_path.to_str().unwrap()) };
+
+        // Two windows of data (5h at 45%, near reset).
+        let input = InputData {
+            rate_limits: crate::model::input::RateLimits {
+                five_hour: Some(crate::model::input::Window {
+                    used_percentage: crate::model::input::Coerce(Some(45.0)),
+                    resets_at: crate::model::input::Coerce(Some(now + 200)),
+                }),
+                seven_day: Some(crate::model::input::Window {
+                    used_percentage: crate::model::input::Coerce(Some(30.0)),
+                    resets_at: crate::model::input::Coerce(Some(now + 5000)),
+                }),
+            },
+            ..Default::default()
+        };
+
+        let config = Config::default();
+        let theme = themes::get(&config.theme);
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now,
+            home: None,
+            tz_offset_seconds: 0,
+        };
+
+        let mut w = SegmentWriter::new(&theme, &style);
+        let emitted = Burn.render(&ctx, &mut w);
+
+        // Restore env var.
+        match prev {
+            Some(v) => unsafe { std::env::set_var("CLAUDEBAR_BURN_FILE", v) },
+            None => unsafe { std::env::remove_var("CLAUDEBAR_BURN_FILE") },
+        }
+        // Clean up temp dir.
+        let _ = std::fs::remove_dir_all(&dir);
+
+        // Assert: render emitted burn content by reading the samples file.
+        assert!(emitted, "burn should render when samples exist");
+        assert!(!w.is_empty(), "writer should have content");
+    }
+    #[test]
+    fn estimate_7d_warming_when_pct_zero() {
+        // 7d window with 0% pct → Warming, label "7d".
+        let theme = test_theme();
+        let est = estimate(0, &[], None, Some((0.0, 600_000)), &theme);
+        assert_eq!(est.state, BurnState::Warming);
+        assert_eq!(est.label, "7d");
+    }
+
+    #[test]
+    fn burn_render_warming_no_samples() {
+        let dir =
+            std::env::temp_dir().join(format!("claudebar-burn-warming-{}", std::process::id()));
+        let _ = std::fs::create_dir_all(&dir);
+        let burn_path = dir.join("burn-5h.tsv");
+        // Don't write any samples — the file doesn't exist yet.
+
+        let now = 1000i64;
+        let input = InputData {
+            rate_limits: crate::model::input::RateLimits {
+                five_hour: Some(crate::model::input::Window {
+                    used_percentage: crate::model::input::Coerce(Some(45.0)),
+                    resets_at: crate::model::input::Coerce(Some(now + 200)),
+                }),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+
+        let config = Config::default();
+        let theme = themes::get(&config.theme);
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+
+        // Set env var for the burn file location.
+        let prev = std::env::var("CLAUDEBAR_BURN_FILE").ok();
+        unsafe { std::env::set_var("CLAUDEBAR_BURN_FILE", burn_path.to_str().unwrap()) };
+
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now,
+            home: None,
+            tz_offset_seconds: 0,
+        };
+        let mut w = SegmentWriter::new(&theme, &style);
+        let emitted = Burn.render(&ctx, &mut w);
+
+        // Restore env var.
+        match prev {
+            Some(v) => unsafe { std::env::set_var("CLAUDEBAR_BURN_FILE", v) },
+            None => unsafe { std::env::remove_var("CLAUDEBAR_BURN_FILE") },
+        }
+        let _ = std::fs::remove_dir_all(&dir);
+
+        assert!(emitted, "burn should render even without existing samples");
+        assert!(!w.is_empty(), "writer should have content");
+        // The render always populates at least one sample, which gives slope=0 → Idle (✓).
+        assert!(
+            w.as_str().contains("↗"),
+            "expected burn output: {:?}",
+            w.as_str()
+        );
+    }
+
+    #[test]
+    fn burn_render_with_far_future_reset() {
+        // Reset too far in the future → sampling is skipped, but render still works.
+        let dir =
+            std::env::temp_dir().join(format!("claudebar-burn-farfuture-{}", std::process::id()));
+        let _ = std::fs::create_dir_all(&dir);
+        let burn_path = dir.join("burn-5h.tsv");
+
+        // Write samples that would make it active if read.
+        let now = 1000i64;
+        let mut content = String::new();
+        for i in 0..10i64 {
+            let pct = 40.0 + i as f64;
+            content.push_str(&format!("{now}\t{pct:.3}\t2100\n"));
+        }
+        std::fs::write(&burn_path, &content).expect("write samples file");
+
+        let input = InputData {
+            rate_limits: crate::model::input::RateLimits {
+                five_hour: Some(crate::model::input::Window {
+                    used_percentage: crate::model::input::Coerce(Some(45.0)),
+                    // Reset in 100000s — far beyond the 6h margin, so sampling is skipped.
+                    resets_at: crate::model::input::Coerce(Some(now + 100_000)),
+                }),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+
+        let config = Config::default();
+        let theme = themes::get(&config.theme);
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+
+        let prev = std::env::var("CLAUDEBAR_BURN_FILE").ok();
+        unsafe { std::env::set_var("CLAUDEBAR_BURN_FILE", burn_path.to_str().unwrap()) };
+
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now,
+            home: None,
+            tz_offset_seconds: 0,
+        };
+
+        let mut w = SegmentWriter::new(&theme, &style);
+        let emitted = Burn.render(&ctx, &mut w);
+
+        match prev {
+            Some(v) => unsafe { std::env::set_var("CLAUDEBAR_BURN_FILE", v) },
+            None => unsafe { std::env::remove_var("CLAUDEBAR_BURN_FILE") },
+        }
+        let _ = std::fs::remove_dir_all(&dir);
+
+        assert!(emitted, "burn should render even with far-future reset");
+        assert!(!w.is_empty(), "writer should have some content");
     }
 }

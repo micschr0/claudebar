@@ -207,6 +207,10 @@ impl Segment for Git {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::model::Config;
+    use crate::model::Thresholds;
+    use crate::model::input::InputData;
+    use crate::{styles, themes};
 
     #[test]
     fn clean_branch() {
@@ -289,5 +293,195 @@ mod tests {
     #[test]
     fn garbage_stash_output_is_zero() {
         assert_eq!(parse_stash_count("garbage"), 0);
+    }
+    #[test]
+    fn git_unavailable_returns_false() {
+        // Mock an environment where git is not available.
+        let original_path = std::env::var("PATH").ok();
+        // SAFETY: using raw env manipulation is the only way to mock PATH in tests.
+        unsafe { std::env::set_var("PATH", "") };
+        // Also unset which(1) lookup which might short-circuit.
+        unsafe { std::env::set_var("PATH", "") };
+
+        let input = InputData {
+            cwd: Some("/tmp".to_string()),
+            ..Default::default()
+        };
+        let config = Config::default();
+        let theme = themes::get(&config.theme);
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 0,
+            home: None,
+            tz_offset_seconds: 0,
+        };
+        let mut out = SegmentWriter::new(&theme, &style);
+
+        // Git should be unavailable in the mocked environment.
+        // render() should return false (safe fallback, no panic).
+        assert!(!Git.render(&ctx, &mut out));
+
+        // Restore PATH.
+        if let Some(p) = original_path {
+            unsafe { std::env::set_var("PATH", p) };
+        } else {
+            unsafe { std::env::remove_var("PATH") };
+        }
+    }
+
+    #[test]
+    fn git_no_cwd_returns_false() {
+        let input = InputData::default();
+        let config = Config::default();
+        let theme = themes::get(&config.theme);
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 0,
+            home: None,
+            tz_offset_seconds: 0,
+        };
+        let mut out = SegmentWriter::new(&theme, &style);
+        assert!(!Git.render(&ctx, &mut out));
+    }
+
+    #[test]
+    fn git_non_absolute_cwd_returns_false() {
+        let input = InputData {
+            cwd: Some("relative/path".to_string()),
+            ..Default::default()
+        };
+        let config = Config::default();
+        let theme = themes::get(&config.theme);
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 0,
+            home: None,
+            tz_offset_seconds: 0,
+        };
+        let mut out = SegmentWriter::new(&theme, &style);
+        assert!(!Git.render(&ctx, &mut out));
+    }
+
+    #[test]
+    fn git_render_clean_status() {
+        // Create a temp git repo with one commit.
+        let dir = std::env::temp_dir().join(format!("claudebar-git-test-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("README.md"), "# test").unwrap();
+
+        // Use full /usr/bin/git path to avoid PATH-related concurrency issues.
+        let git = "/usr/bin/git";
+        let output = std::process::Command::new(git)
+            .arg("init")
+            .arg(&dir)
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "git init failed: {output:?}");
+
+        let _ = std::process::Command::new(git)
+            .args([
+                "-C",
+                &dir.to_string_lossy(),
+                "symbolic-ref",
+                "HEAD",
+                "refs/heads/main",
+            ])
+            .output();
+        let _ = std::process::Command::new(git)
+            .args([
+                "-C",
+                &dir.to_string_lossy(),
+                "config",
+                "user.email",
+                "test@test.com",
+            ])
+            .output();
+        let _ = std::process::Command::new(git)
+            .args(["-C", &dir.to_string_lossy(), "config", "user.name", "Test"])
+            .output();
+
+        let output = std::process::Command::new(git)
+            .args(["-C", &dir.to_string_lossy(), "add", "."])
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "git add failed: {output:?}");
+
+        let output = std::process::Command::new(git)
+            .args(["-C", &dir.to_string_lossy(), "commit", "-m", "initial"])
+            .env("GIT_AUTHOR_DATE", "2024-01-01T00:00:00")
+            .env("GIT_COMMITTER_DATE", "2024-01-01T00:00:00")
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "git commit failed: {:?}", output);
+
+        let input = InputData {
+            cwd: Some(dir.to_string_lossy().to_string()),
+            ..Default::default()
+        };
+        let config = Config::default();
+        let theme = themes::get(&config.theme);
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 0,
+            home: None,
+            tz_offset_seconds: 0,
+        };
+        let mut out = SegmentWriter::new(&theme, &style);
+        let rendered = Git.render(&ctx, &mut out);
+        assert!(rendered, "expected render to return true for clean repo");
+        let s = out.as_str();
+        assert!(s.contains("main"), "expected branch name in output: {s:?}");
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn git_parse_status_with_non_git_dir_returns_none() {
+        let dir =
+            std::env::temp_dir().join(format!("claudebar-git-nonrepo-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("readme.txt"), "hello").unwrap();
+
+        let input = InputData {
+            cwd: Some(dir.to_string_lossy().to_string()),
+            ..Default::default()
+        };
+        let config = Config::default();
+        let theme = themes::get(&config.theme);
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 0,
+            home: None,
+            tz_offset_seconds: 0,
+        };
+        let mut out = SegmentWriter::new(&theme, &style);
+        assert!(!Git.render(&ctx, &mut out), "expected false for non-repo");
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

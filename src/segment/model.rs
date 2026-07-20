@@ -55,7 +55,6 @@ impl Segment for Model {
                 out.raw(" ");
             }
             let color = match level.as_str() {
-                "low" | "medium" => ctx.theme.dim,
                 "high" => ctx.theme.bar_ok,
                 "xhigh" => ctx.theme.bar_warn,
                 "max" => ctx.theme.effort,

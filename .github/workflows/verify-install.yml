@@ -11,29 +11,35 @@ on:
         required: false
 
 permissions: {}
+concurrency:
+  group: verify-install-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify-linux:
+    name: Verify Linux
     strategy:
       fail-fast: false
       matrix:
         target: [x86_64-unknown-linux-musl, aarch64-unknown-linux-musl]
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
       - name: Run install.sh in a clean HOME (no cargo — forces Tier 1)
         env:
           CLAUDEBAR_TARGET: ${{ matrix.target }}
+          CLAUDEBAR_SKIP_SETUP: ${{ matrix.target == 'aarch64-unknown-linux-musl' && '1' || '' }}
+          TARGET: ${{ matrix.target }}
         run: |
           export HOME="$RUNNER_TEMP/verify-home"
           mkdir -p "$HOME"
 
           # Strip cargo/rustc from PATH so a broken prebuilt download (Tier 1)
           # can't be silently masked by falling through to `cargo build` (Tier 2).
-          export PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '\.cargo/bin' | paste -sd:)
+          export PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '\.cargo/bin' | tr '\n' ':' | sed 's/:$//')
           if command -v cargo >/dev/null 2>&1; then
             echo "cargo still on PATH: $(command -v cargo) — PATH stripping failed" >&2
             exit 1
@@ -54,19 +60,20 @@ jobs:
           # The runner is x86_64 — an aarch64 binary can't execute here without
           # emulation. CLAUDEBAR_TARGET only needs to prove the matching asset
           # downloads, verifies, and extracts; only run it when arch matches.
-          if [ "$(uname -m)" = "x86_64" ] && [[ "${{ matrix.target }}" == x86_64-* ]]; then
+          if [ "$(uname -m)" = "x86_64" ] && [[ "$TARGET" == x86_64-* ]]; then
             "$HOME/.claude/claudebar" --version
             echo '{}' | "$HOME/.claude/claudebar" render
           fi
 
   verify-macos:
+    name: Verify macOS
     strategy:
       fail-fast: false
       matrix:
         os: [macos-15-intel, macos-15]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -77,7 +84,7 @@ jobs:
 
           # Strip cargo/rustc from PATH so a broken prebuilt download (Tier 1)
           # can't be silently masked by falling through to `cargo build` (Tier 2).
-          export PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '\.cargo/bin' | paste -sd:)
+          export PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '\.cargo/bin' | tr '\n' ':' | sed 's/:$//')
           if command -v cargo >/dev/null 2>&1; then
             echo "cargo still on PATH: $(command -v cargo) — PATH stripping failed" >&2
             exit 1
