@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Harden the custom Homebrew publish job in `release.yml`: `set -euo pipefail`, input-assertion of the dist artifact, a verified `class Claudebar` → `class ClaudebarATBeta` rename via `re.subn` substitution counting, and an informational `brew audit --new` step for formula-class / filename drift visibility
+- Enable `mold` linker for x86_64-unknown-linux-musl release builds to cut link time
+
+### CI
+- Centralize zizmor suppressions in `zizmor.yml`; inline ignores for known false positives in the homebrew app-token workflow
+- SHA-pin the docs deploy `actions/*` suite (`configure-pages`, `upload-pages-artifact`, `deploy-pages`, `settings`)
+- Inline the homebrew tap publish into `release.yml` as a dedicated job (drops `homebrew-app-token.yml`) and auto-prune older prereleases after each publish via `gh release delete --cleanup-tag`
+- Add `cargo-llvm-cov` + `scttnlsn/covrs` PR coverage reporting on `ubuntu-latest`
 
 ## [2026.7.7]
 
