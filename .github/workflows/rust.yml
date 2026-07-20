@@ -23,17 +23,26 @@ jobs:
   check:
     name: fmt, clippy, test, build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read      # checkout requires contents:read for actions/checkout
+      pull-requests: write # scttnlsn/covrs posts PR comments and annotation
+      checks: write       # and line-annotations as check runs
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
+          persist-credentials: false
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c
+        with:
+          toolchain: stable
           components: rustfmt, clippy
+
+      - name: Install mold linker
+        run: sudo apt-get install -y mold
 
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
 
-      - uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2
+      - uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2.82.9
         with:
           tool: cargo-auditable
 
@@ -56,16 +65,39 @@ jobs:
         env:
           INSTA_UPDATE: no
 
-      - name: Check release profile
-        run: cargo check --release --locked
-
 
       - name: Check release profile (auditable)
         run: cargo auditable build --release --locked
       - name: Install dist (pinned to Cargo.toml cargo-dist-version)
-        uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2
+        uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2.82.9
         with:
           tool: cargo-dist@0.32.0
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2.82.9
+        with:
+          tool: cargo-llvm-cov
+
+
+      - name: Generate coverage data (lcov)
+        run: cargo llvm-cov --locked --all-features --lcov --output-path lcov.info
+
+      - name: Generate coverage HTML
+        run: cargo llvm-cov --locked --all-features --html --output-dir target/llvm-cov/html
+
+      - name: Coverage PR comment
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: scttnlsn/covrs@0a048b99b9b4b8aaa5d006d60caaf55c8a13c11d # v0.3.2
+        with:
+          coverage-files: lcov.info
+          annotate: true
+
+      - name: Upload HTML coverage report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: coverage-html
+          path: target/llvm-cov/html/
+          retention-days: 7
 
       - name: dist workflow drift check
         run: dist generate --check
@@ -86,13 +118,18 @@ jobs:
           - os: macos-15-intel
             target: x86_64-apple-darwin
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
+          persist-credentials: false
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c
+        with:
+          toolchain: stable
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
         with:
           key: ${{ matrix.target }}
       - name: Check release profile
-        run: cargo check --release --locked --target ${{ matrix.target }}
+        env:
+          TARGET: ${{ matrix.target }}
+        run: cargo check --release --locked --target $TARGET
