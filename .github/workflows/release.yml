@@ -15,6 +15,9 @@
 
 name: Release
 permissions: {}
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
 
 # This task will run whenever you push a git tag that looks like a version
 # like "1.0.0", "v0.1.0-prerelease.1", "my-app/0.1.0", "releases/v1.0.0", etc.
@@ -52,6 +55,7 @@ on:
 jobs:
   # Run 'dist plan' (or host) to determine what tasks we need to do
   plan:
+    name: Plan
     runs-on: "ubuntu-22.04"
     outputs:
       val: ${{ steps.plan.outputs.manifest }}
@@ -62,7 +66,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
       - name: Install dist
@@ -81,8 +85,10 @@ jobs:
       # (PRs run on the *source* but secrets are usually on the *target* -- that's *good*
       # but also really annoying to build CI around when it needs secrets to work right.)
       - id: plan
+        env:
+          DIST_CMD: ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }}
         run: |
-          dist ${{ (!github.event.pull_request && format('host --steps=create --tag={0}', github.ref_name)) || 'plan' }} --output-format=json > plan-dist-manifest.json
+          dist $DIST_CMD --output-format=json > plan-dist-manifest.json
           echo "dist ran successfully"
           cat plan-dist-manifest.json
           echo "manifest=$(jq -c "." plan-dist-manifest.json)" >> "$GITHUB_OUTPUT"
@@ -121,7 +127,7 @@ jobs:
       - name: enable windows longpaths
         run: |
           git config --global core.longpaths true
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
       - name: Install Rust non-interactively if not already installed
@@ -144,9 +150,12 @@ jobs:
         run: |
           ${{ matrix.packages_install }}
       - name: Build artifacts
+        env:
+          TAG_FLAG: ${{ needs.plan.outputs.tag-flag }}
+          DIST_ARGS: ${{ matrix.dist_args }}
         run: |
           # Actually do builds and make zips and whatnot
-          dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --output-format=json ${{ matrix.dist_args }} > dist-manifest.json
+          dist build $TAG_FLAG --print=linkage --output-format=json $DIST_ARGS > dist-manifest.json
           echo "dist ran successfully"
       - id: cargo-dist
         name: Post-build
@@ -171,6 +180,7 @@ jobs:
 
   # Build and package all the platform-agnostic(ish) things
   build-global-artifacts:
+    name: Build global artifacts
     needs:
       - plan
       - build-local-artifacts
@@ -179,7 +189,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       BUILD_MANIFEST_NAME: target/distrib/global-dist-manifest.json
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
       - name: Install cached dist
@@ -197,8 +207,10 @@ jobs:
           merge-multiple: true
       - id: cargo-dist
         shell: bash
+        env:
+          TAG_FLAG: ${{ needs.plan.outputs.tag-flag }}
         run: |
-          dist build ${{ needs.plan.outputs.tag-flag }} --output-format=json "--artifacts=global" > dist-manifest.json
+          dist build $TAG_FLAG --output-format=json "--artifacts=global" > dist-manifest.json
           echo "dist ran successfully"
 
           # Parse out what we just built and upload it to scratch storage
@@ -216,10 +228,11 @@ jobs:
             ${{ env.BUILD_MANIFEST_NAME }}
   # Determines if we should publish/announce
   host:
+    name: Host
     permissions:
-      contents: write
-      attestations: write
-      id-token: write
+      contents: write  # Create GitHub Release and upload artifacts
+      attestations: write  # Generate artifact attestations
+      id-token: write  # Request OIDC token for attestation signing
     needs:
       - plan
       - build-local-artifacts
@@ -232,7 +245,7 @@ jobs:
     outputs:
       val: ${{ steps.host.outputs.manifest }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
       - name: Install cached dist
@@ -250,13 +263,16 @@ jobs:
           merge-multiple: true
       - id: host
         shell: bash
+        env:
+          DRY_RUN: ${{ needs.plan.outputs.dry_run }}
+          TAG_FLAG: ${{ needs.plan.outputs.tag-flag }}
         run: |
           STEPS="--steps=upload"
-          if [ "${{ needs.plan.outputs.dry_run }}" != "true" ]; then
+          if [ "$DRY_RUN" != "true" ]; then
             STEPS="$STEPS --steps=release"
           fi
-          dist host ${{ needs.plan.outputs.tag-flag }} $STEPS --output-format=json > dist-manifest.json
-          if [ "${{ needs.plan.outputs.dry_run }}" = "true" ]; then
+          dist host $TAG_FLAG $STEPS --output-format=json > dist-manifest.json
+          if [ "$DRY_RUN" = "true" ]; then
             echo "artifacts uploaded (dry run — no release created)"
           else
             echo "artifacts uploaded and released successfully"
@@ -313,29 +329,83 @@ jobs:
           ANNOUNCEMENT_TITLE: "${{ fromJson(steps.host.outputs.manifest).announcement_title }}"
           ANNOUNCEMENT_BODY: "${{ fromJson(steps.host.outputs.manifest).announcement_github_body }}"
           RELEASE_COMMIT: "${{ github.sha }}"
+          RELEASE_TAG: ${{ needs.plan.outputs.tag }}
         run: |
           # Write and read notes from a file to avoid quoting breaking things
           echo "$ANNOUNCEMENT_BODY" > $RUNNER_TEMP/notes.txt
 
-          gh release create "${{ needs.plan.outputs.tag }}" --target "$RELEASE_COMMIT" $PRERELEASE_FLAG --title "$ANNOUNCEMENT_TITLE" --notes-file "$RUNNER_TEMP/notes.txt" artifacts/*
+          gh release create "$RELEASE_TAG" --target "$RELEASE_COMMIT" $PRERELEASE_FLAG --title "$ANNOUNCEMENT_TITLE" --notes-file "$RUNNER_TEMP/notes.txt" artifacts/*
+      - name: Prune older prereleases
+        # Prune older betas after each publish; stable releases are untouched.
+        # grep exit 1 (no older prerelease) and a concurrent-delete 404 are
+        # tolerated so the host job cannot fail and block homebrew/announce.
+        if: ${{ needs.plan.outputs.dry_run != 'true' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.release-app-token.outputs.token }}
+          RELEASE_TAG: ${{ needs.plan.outputs.tag }}
+        run: |
+          gh release list --json tagName,isPrerelease -q \
+            '.[] | select(.isPrerelease) | .tagName' \
+            | { grep -vFx "$RELEASE_TAG" || true; } \
+            | while IFS= read -r tag; do
+                echo "pruning older prerelease: $tag"
+                gh release delete --yes --cleanup-tag "$tag" || true
+              done
 
   custom-homebrew-app-token:
+    name: Publish homebrew tap
     needs:
       - plan
       - host
     if: ${{ (!fromJson(needs.plan.outputs.val).announcement_is_prerelease || fromJson(needs.plan.outputs.val).publish_prereleases) && needs.plan.outputs.dry_run != 'true' }}
-    uses: ./.github/workflows/homebrew-app-token.yml
-    with:
-      plan: ${{ needs.plan.outputs.val }}
-    secrets:
-      HOMEBREW_TAP_APP_ID: ${{ secrets.HOMEBREW_TAP_APP_ID }}
-      HOMEBREW_TAP_PRIVATE_KEY: ${{ secrets.HOMEBREW_TAP_PRIVATE_KEY }}
-    # publish jobs get escalated permissions
+    runs-on: "ubuntu-22.04"
     permissions:
-      "id-token": "write"
-      "packages": "write"
+      contents: read  # Only needs to push to homebrew-tap via app token
+    env:
+      PLAN: ${{ needs.plan.outputs.val }}
+      GITHUB_USER: "axo bot"
+      GITHUB_EMAIL: "admin+bot@axo.dev"
+    steps:
+      - uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.HOMEBREW_TAP_APP_ID }}
+          private-key: ${{ secrets.HOMEBREW_TAP_PRIVATE_KEY }}
+          owner: "micschr0"
+          repositories: "homebrew-tap"
+          permission-contents: write
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: true
+          repository: "micschr0/homebrew-tap"
+          token: ${{ steps.app-token.outputs.token }}
+      - name: Fetch homebrew formulae
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: artifacts-*
+          path: Formula/
+          merge-multiple: true
+      - name: Commit formula files
+        run: |
+          git config --global user.name "${GITHUB_USER}"
+          git config --global user.email "${GITHUB_EMAIL}"
 
+          for release in $(echo "$PLAN" | jq --compact-output '.releases[] | select([.artifacts[] | endswith(".rb")] | any)'); do
+            filename=$(echo "$release" | jq '.artifacts[] | select(endswith(".rb"))' --raw-output)
+            name=$(echo "$filename" | sed "s/\.rb$//")
+            version=$(echo "$release" | jq .app_version --raw-output)
+
+            export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+            brew update
+            brew style --except-cops FormulaAudit/Homepage,FormulaAudit/Desc,FormulaAuditStrict --fix "Formula/${filename}" || true
+
+            git add "Formula/${filename}"
+            git commit -m "${name} ${version}"
+          done
+          git push
   announce:
+    name: Announce
     needs:
       - plan
       - host
@@ -348,6 +418,6 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
