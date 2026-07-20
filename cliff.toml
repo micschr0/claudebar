@@ -1,0 +1,57 @@
+# git-cliff configuration for claudebar
+#
+# Wired into cargo-dist via `changelog = "git-cliff"` in
+# [workspace.metadata.dist]. We override three pieces of cliff's default
+# behavior and accept everything else — group auto-derivation with emoji
+# headings, scope-preserved commit subjects, conventional-commit
+# preprocessing — exactly as cliff ships them:
+#
+#   1. header — CalVer accuracy note (cliff's default uses the keep-a-changelog
+#      boilerplate that asserts SemVer, which we don't follow)
+#   2. body   - strip the `- YYYY-MM-DD` date suffix from each section heading
+#      because CalVer already encodes the date; cliff 2.x renders the group
+#      value as `<!-- N -->🚀 Features` (sort-index + emoji prefix), so we
+#      also strip the leading comment prefix via `split("-->" | last`
+#   3. footer — `[X.Y.Z]: compare/…` link anchors for cross-release navigation;
+#      cliff's default emits none
+#
+# Local sanity check:
+#   git cliff --unreleased
+#   git cliff --tag <calver> -o CHANGELOG.md
+
+[changelog]
+header = """
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+Versions follow CalVer (`YYYY.M.PATCH`) with optional `-beta.N` pre-release suffixes;
+see `RELEASING.md` for the release ritual.
+"""
+
+body = """
+{% if version %}## [{{ version }}]
+{% else %}## [Unreleased]
+{% endif %}
+
+{% for group, commits in commits | filter(attribute="merge_commit", value=false) | unique(attribute="message") | group_by(attribute="group") %}
+### {{ group | split(pat="-->") | last | trim_start }}
+{% for commit in commits | sort(attribute="message") %}
+- {{ commit.message | split(pat="\n") | first | trim_end | upper_first }}
+{% endfor %}
+{% endfor %}
+"""
+
+footer = """
+{% for release in releases %}{% if release.previous -%}
+[{{ release.version }}]: https://github.com/micschr0/claudebar/compare/{{ release.previous.version }}...{{ release.version }}
+{% endif %}{% endfor %}
+"""
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+tag_pattern = "[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z]+\\.[0-9]+)?"
+topo_order = false

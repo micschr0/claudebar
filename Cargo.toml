@@ -75,6 +75,9 @@ publish-jobs = ["./homebrew-app-token"]
 # Pin .tar.gz (not dist's .tar.xz default) to preserve the existing release-URL
 # contract and keep the install.sh diff minimal.
 unix-archive = ".tar.gz"
+# Hand CHANGELOG regeneration to git-cliff on tag-push. cliff.toml at the
+# repo root maps conventional-commit types to Keep-a-Changelog sections.
+changelog = "git-cliff"
 ci = ["github"]
 # We pin actions to commit SHAs in release.yml for zizmor compliance,
 # which diverges from what cargo-dist generates. Accept this drift.
