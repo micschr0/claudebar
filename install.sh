@@ -1,10 +1,20 @@
 #!/usr/bin/env bash
 # install.sh — one-command installer for claudebar
 # Usage: curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+# Beta channel (latest prerelease, may be unstable):
+#   CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 set -euo pipefail
 
 BIN_DEST="$HOME/.claude/claudebar"
-RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases/latest"
+RELEASE_CHANNEL="${CLAUDEBAR_CHANNEL:-stable}"
+case "$RELEASE_CHANNEL" in
+  stable) RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases/latest" ;;
+  beta)   RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases" ;;
+  *)
+    printf '\033[31mUnknown CLAUDEBAR_CHANNEL: %s (expected: stable, beta)\033[0m\n' "$RELEASE_CHANNEL" >&2
+    exit 1
+    ;;
+esac
 
 red()   { printf '\033[31m%s\033[0m\n' "$*"; }
 green() { printf '\033[32m%s\033[0m\n' "$*"; }
@@ -73,6 +83,11 @@ LATEST_RELEASE_JSON=""
 fetch_latest_release() {
   if [ -z "$LATEST_RELEASE_JSON" ]; then
     LATEST_RELEASE_JSON=$(curl_https "$RELEASE_API")
+    # beta channel hits the /releases list (newest first, includes prereleases);
+    # stable hits /releases/latest, which is already a single object.
+    if [ "$RELEASE_CHANNEL" = "beta" ]; then
+      LATEST_RELEASE_JSON=$(printf '%s' "$LATEST_RELEASE_JSON" | jq -c '.[0] // empty')
+    fi
   fi
   printf '%s' "$LATEST_RELEASE_JSON"
 }
@@ -317,6 +332,10 @@ workdir=""
 main() {
   local src_dir target installed=1
 
+  if [ "$RELEASE_CHANNEL" = "beta" ]; then
+    bold "⚠ Beta channel — installing the latest prerelease, which may be unstable."
+  fi
+
   check_dependencies
   mkdir -p "$HOME/.claude"
 
@@ -345,7 +364,11 @@ main() {
     exit 1
   fi
 
-  "$BIN_DEST" setup --yes --force --binary-path "$BIN_DEST"
+  if [ -n "${CLAUDEBAR_SKIP_SETUP:-}" ]; then
+    echo "Skipping setup (CLAUDEBAR_SKIP_SETUP is set)"
+  else
+    "$BIN_DEST" setup --yes --force --binary-path "$BIN_DEST"
+  fi
   link_onto_path
 
   echo ""

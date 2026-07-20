@@ -27,12 +27,33 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 brew install micschr0/tap/claudebar && claudebar setup
 ```
 
+Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable users onto a prerelease:
+
+```bash
+brew install micschr0/tap/claudebar@beta
+```
+
 <details><summary>Review the script first</summary>
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh -o install.sh
 claude -p "Audit this script for anything unsafe, then summarize what it does" < install.sh
 bash install.sh
+```
+</details>
+
+<details><summary>Try a beta before it's stable</summary>
+
+Prereleases (tagged e.g. `2026.7.6-beta.1`) get their own versioned Homebrew formula (`claudebar@beta`) and are also installable via the script:
+
+```bash
+CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+```
+
+The plain `micschr0/tap/claudebar` formula always tracks stable; `claudebar@beta` follows the latest prerelease. To switch from the Homebrew beta back to stable:
+
+```bash
+brew uninstall micschr0/tap/claudebar@beta && brew install micschr0/tap/claudebar
 ```
 </details>
 
@@ -97,7 +118,7 @@ Then remove the `statusLine` entry from `~/.claude/settings.json` and, optionall
 
 ---
 
-**More:** [documentation & live demo](https://micschr0.github.io/claudebar/) · [build from source](https://micschr0.github.io/claudebar/#build) · [contributing a theme](CONTRIBUTING-themes.md) · [changelog](CHANGELOG.md) · [verifying releases](SECURITY.md#verifying-a-release) · [report an issue](https://github.com/micschr0/claudebar/issues)
+**More:** [documentation & live demo](https://micschr0.github.io/claudebar/) · [build from source](https://micschr0.github.io/claudebar/#build) · [contributing](CONTRIBUTING.md) · [contributing a theme](CONTRIBUTING-themes.md) · [changelog](CHANGELOG.md) · [verifying releases](SECURITY.md#verifying-a-release) · [report an issue](https://github.com/micschr0/claudebar/issues)
 
 ## License
 

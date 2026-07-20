@@ -61,6 +61,10 @@ targets = [
   "x86_64-apple-darwin",
   "aarch64-apple-darwin",
 ]
+# Stable → Formula/claudebar.rb; with publish-prereleases on, beta tags drive
+# the same job into the @beta branch (release.yml's custom-homebrew-app-token
+# job). Without this flag, that job's `if:` short-circuits prereleases.
+publish-prereleases = true
 # Hosted shell installer (curl | sh) as a binary-only alternative to install.sh.
 installers = ["shell", "homebrew"]
 # Bundle the binary plus auto-detected README + LICENSE (both at repo root).
@@ -74,6 +78,9 @@ publish-jobs = ["./homebrew-app-token"]
 # Pin .tar.gz (not dist's .tar.xz default) to preserve the existing release-URL
 # contract and keep the install.sh diff minimal.
 unix-archive = ".tar.gz"
+# Hand CHANGELOG regeneration to git-cliff on tag-push. cliff.toml at the
+# repo root maps conventional-commit types to Keep-a-Changelog sections.
+changelog = "git-cliff"
 ci = ["github"]
 # We pin actions to commit SHAs in release.yml for zizmor compliance,
 # which diverges from what cargo-dist generates. Accept this drift.
