@@ -46,6 +46,26 @@ impl Segment for Duration {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::model::{Config, InputData, SegmentKind};
+    use crate::render::render_with;
+    use crate::{styles, themes};
+
+    fn render_dur(ms: u64) -> String {
+        let input = InputData {
+            cost: crate::model::input::CostInfo {
+                total_duration_ms: crate::model::input::Coerce(Some(ms)),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        let cfg = Config {
+            segments: vec![SegmentKind::Duration],
+            ..Default::default()
+        };
+        let theme = themes::get(&cfg.theme);
+        let style = styles::get(&cfg.style);
+        render_with(&input, &cfg, &theme, &style, 0, None, 0)
+    }
 
     #[test]
     fn fmt_seconds() {
@@ -60,5 +80,12 @@ mod tests {
     #[test]
     fn fmt_hours() {
         assert_eq!(fmt_duration(3_720_000), "1h02m");
+    }
+
+    /// Sub-second durations render as "0s" (the minimum granularity).
+    #[test]
+    fn duration_renders_below_one_ms() {
+        let out = render_dur(500);
+        assert!(out.contains("0s"), "expected '0s' for sub-second: {out:?}");
     }
 }

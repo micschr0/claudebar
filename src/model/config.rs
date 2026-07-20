@@ -15,7 +15,6 @@ use std::path::{Path, PathBuf};
 /// *which* are enabled (presence) and their *order* (render order).
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "kebab-case")]
-#[non_exhaustive]
 pub enum SegmentKind {
     Directory,
     Git,
@@ -23,12 +22,10 @@ pub enum SegmentKind {
     RateLimits,
     DevContext,
     Model,
-    Effort,
     Clock,
     Cost,
     Lines,
     Duration,
-    Project,
     Burn,
 }
 
@@ -69,13 +66,11 @@ impl SegmentKind {
             SegmentKind::RateLimits => "Rate Limits",
             SegmentKind::DevContext => "Dev Context",
             SegmentKind::Model => "Model",
-            SegmentKind::Effort => "Effort",
             SegmentKind::Clock => "Clock",
             SegmentKind::Cost => "Cost",
             SegmentKind::Lines => "Lines",
             SegmentKind::Duration => "Duration",
             SegmentKind::Burn => "Burn",
-            SegmentKind::Project => "Project",
         }
     }
 
@@ -91,7 +86,7 @@ impl SegmentKind {
     }
 }
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(default, deny_unknown_fields)]
+#[serde(default)]
 pub struct Thresholds {
     /// Bar turns warn-colored at or above this percent.
     pub warn: u16,
@@ -160,7 +155,7 @@ impl Default for Thresholds {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(default, deny_unknown_fields)]
+#[serde(default)]
 pub struct Config {
     pub theme: String,
     pub style: String,
@@ -238,7 +233,6 @@ impl Config {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[non_exhaustive]
 pub enum ConfigError {
     #[error("config i/o error: {0}")]
     Io(String),
@@ -317,6 +311,53 @@ mod tests {
         let path = unique_temp_path();
         std::fs::write(&path, "theme = \"unclosed").unwrap();
         assert_eq!(Config::load_or_default(Some(&path)), Config::default());
+        let _ = std::fs::remove_file(&path);
+    }
+    #[test]
+    fn config_default_has_expected_theme() {
+        let cfg = Config::default();
+        assert_eq!(cfg.theme, "tokyo-night");
+    }
+
+    #[test]
+    fn config_default_has_all_default_segments() {
+        let cfg = Config::default();
+        assert_eq!(cfg.segments, SegmentKind::DEFAULT.to_vec());
+    }
+
+    #[test]
+    fn config_default_has_expected_style() {
+        let cfg = Config::default();
+        assert_eq!(cfg.style, "powerline");
+    }
+
+    #[test]
+    fn config_load_missing_file_returns_default() {
+        let path = std::path::PathBuf::from("/nonexistent/path/config.toml");
+        let result = Config::load(&path);
+        assert!(result.is_ok());
+        let cfg = result.unwrap();
+        assert_eq!(cfg.theme, Config::default().theme);
+        assert_eq!(cfg.segments, Config::default().segments);
+    }
+
+    #[test]
+    fn config_save_then_load_round_trips() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("claudebar-test-config-roundtrip.toml");
+        let _ = std::fs::remove_file(&path);
+        let cfg = Config {
+            theme: "rose_pine".to_string(),
+            segments: vec![SegmentKind::Git, SegmentKind::DevContext],
+            ..Default::default()
+        };
+        cfg.save(&path).expect("save");
+        let loaded = Config::load(&path).expect("load");
+        assert_eq!(loaded.theme, "rose_pine");
+        assert_eq!(
+            loaded.segments,
+            vec![SegmentKind::Git, SegmentKind::DevContext]
+        );
         let _ = std::fs::remove_file(&path);
     }
 }

@@ -102,7 +102,7 @@ fn effective_clock_mode(th: &Thresholds) -> &str {
 pub(crate) fn detect_tz_offset() -> i32 {
     static OFFSET: LazyLock<i32> = LazyLock::new(|| {
         UtcOffset::current_local_offset()
-            .map(|o| o.whole_seconds())
+            .map(time::UtcOffset::whole_seconds)
             .unwrap_or(0)
     });
     *OFFSET
@@ -274,22 +274,7 @@ mod tests {
     // Segment render
     // ------------------------------------------------------------------
 
-    fn strip_ansi(raw: &str) -> String {
-        let mut out = String::with_capacity(raw.len());
-        let mut in_escape = false;
-        for ch in raw.chars() {
-            if in_escape {
-                if ch == 'm' {
-                    in_escape = false;
-                }
-            } else if ch == '\x1b' {
-                in_escape = true;
-            } else {
-                out.push(ch);
-            }
-        }
-        out
-    }
+    use crate::render::strip_ansi;
 
     fn render_clock(epoch: i64, offset_seconds: i32, mode: &str) -> String {
         let input = crate::model::InputData::default();

@@ -179,7 +179,7 @@ body {{ background:#0d0d14; padding:28px; display:flex; justify-content:center;
 .title {{ position:absolute; left:50%; transform:translateX(-50%);
           font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
           font-size:12px; color:#8a8a8a; }}
-.term {{ padding:14px 16px; font-size:13px; line-height:1.32; }}
+.term {{ padding:6px 8px; font-size:13px; line-height:1.32; }}
 .row {{ white-space:pre; min-height:1.32em; }}
 """
     return f"""<!DOCTYPE html><html><head><meta charset="utf-8"><style>{css}</style></head>

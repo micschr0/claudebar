@@ -4,6 +4,16 @@ on:
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: false
+        default: "info"
+        type: choice
+        options:
+          - debug
+          - info
+          - warn
 
 concurrency:
   group: renovate-${{ github.ref }}
@@ -15,6 +25,7 @@ permissions: {}
 
 jobs:
   renovate:
+    name: Renovate
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,7 +44,7 @@ jobs:
           permission-contents: write
           permission-pull_requests: write
 
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
       - uses: renovatebot/github-action@6d859fc95779be83a0335ca704879b47e5d79641 # v46.1.16
@@ -45,3 +56,6 @@ jobs:
           GIT_AUTHOR_EMAIL: micschr0@mailbox.org
           GIT_COMMITTER_NAME: micschro
           GIT_COMMITTER_EMAIL: micschr0@mailbox.org
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+          RENOVATE_ONBOARDING: "false"
+          LOG_LEVEL: ${{ inputs.logLevel || 'info' }}

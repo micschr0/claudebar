@@ -41,36 +41,19 @@ pub fn write_bar(
     buf.push_str(RESET);
 }
 
-/// Build a self-colored bar of `width` cells for `pct` percent.
-///
-/// `pct` may exceed 100 (over-limit); the filled run is clamped to `width`.
-#[must_use]
-pub fn make_bar(
-    pct: u32,
-    width: u8,
-    fill: Color,
-    track: Color,
-    fill_ch: char,
-    empty_ch: char,
-) -> String {
-    let mut out = String::with_capacity(usize::from(width) * 4 + 16);
-    write_bar(&mut out, pct, width, fill, track, fill_ch, empty_ch);
-    out
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn plain(pct: u32) -> String {
+    fn plain_w(pct: u32, width: u8) -> String {
+        let mut s = String::new();
+        write_bar(&mut s, pct, width, Color(1), Color(2), '#', '-');
         // Strip ANSI to count cells deterministically.
-        let s = make_bar(pct, 6, Color(1), Color(2), '#', '-');
         s.chars().filter(|c| *c == '#' || *c == '-').collect()
     }
 
-    fn plain_w(pct: u32, width: u8) -> String {
-        let s = make_bar(pct, width, Color(1), Color(2), '#', '-');
-        s.chars().filter(|c| *c == '#' || *c == '-').collect()
+    fn plain(pct: u32) -> String {
+        plain_w(pct, 6)
     }
 
     #[test]

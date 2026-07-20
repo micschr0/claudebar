@@ -36,6 +36,17 @@ bash install.sh
 ```
 </details>
 
+<details><summary>Try a beta before it's stable</summary>
+
+Prereleases (tagged e.g. `2026.7.6-beta.1`) are built and published like any other release, just marked as a prerelease — `install.sh` normally only ever installs the latest stable one. To try the newest prerelease instead:
+
+```bash
+CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+```
+
+Switch back to stable any time by reinstalling without the env var. Homebrew always tracks stable.
+</details>
+
 ## What it looks like
 
 Colors shift as usage crosses **50%** and **80%**:
@@ -97,7 +108,7 @@ Then remove the `statusLine` entry from `~/.claude/settings.json` and, optionall
 
 ---
 
-**More:** [documentation & live demo](https://micschr0.github.io/claudebar/) · [build from source](https://micschr0.github.io/claudebar/#build) · [contributing a theme](CONTRIBUTING-themes.md) · [changelog](CHANGELOG.md) · [verifying releases](SECURITY.md#verifying-a-release) · [report an issue](https://github.com/micschr0/claudebar/issues)
+**More:** [documentation & live demo](https://micschr0.github.io/claudebar/) · [build from source](https://micschr0.github.io/claudebar/#build) · [contributing](CONTRIBUTING.md) · [contributing a theme](CONTRIBUTING-themes.md) · [changelog](CHANGELOG.md) · [verifying releases](SECURITY.md#verifying-a-release) · [report an issue](https://github.com/micschr0/claudebar/issues)
 
 ## License
 

@@ -51,7 +51,7 @@ pub enum Command {
     /// List the built-in themes and styles.
     List {
         /// List segments (kebab-case names, labels, default status) instead of themes/styles.
-        #[arg(long = "segments")]
+        #[arg(long = "list-segments")]
         list_segments: bool,
     },
     /// Sync the config file: add any new segments introduced in newer claudebar versions.
@@ -92,4 +92,81 @@ pub enum Command {
         #[arg(long, value_name = "PATH")]
         binary_path: Option<PathBuf>,
     },
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use clap::Parser;
+
+    #[test]
+    fn editor_is_unset_returns_none() {
+        // `Edit` is a bare variant with no extra fields — parse it.
+        let cli = Cli::try_parse_from(["claudebar", "edit"]).expect("edit subcommand must parse");
+        assert!(matches!(cli.cmd, Some(Command::Edit)));
+    }
+
+    #[test]
+    fn init_print_emits_toml_to_stdout() {
+        // Verify that `init --print` parses correctly.
+        let cli =
+            Cli::try_parse_from(["claudebar", "init", "--print"]).expect("init --print must parse");
+        match cli.cmd {
+            Some(Command::Init { force, print: true }) => {
+                assert!(!force, "--force should default to false");
+            }
+            other => panic!("expected Init {{ force: false, print: true }}, got: {other:?}"),
+        }
+
+        // Verify that a default Config serializes to valid TOML.
+        let cfg = claudebar::model::Config::default();
+        let toml_str = toml::to_string_pretty(&cfg).expect("default Config must serialize to TOML");
+        assert!(
+            toml_str.contains("theme ="),
+            "TOML output must contain a theme key"
+        );
+        assert!(
+            toml_str.contains("tokyo-night"),
+            "default theme should be tokyo-night"
+        );
+        assert!(
+            toml_str.contains("[thresholds]"),
+            "TOML output must contain a [thresholds] section"
+        );
+    }
+
+    #[test]
+    fn smoke_subcommand_defaults_to_render() {
+        // When no subcommand is given, it should default to Render.
+        let cli = Cli::try_parse_from(["claudebar"]).expect("bare claudebar must parse");
+        assert!(
+            cli.cmd.is_none(),
+            "bare invocation should have cmd=None (default Render)"
+        );
+    }
+
+    #[test]
+    fn init_without_print_is_write_mode() {
+        let cli = Cli::try_parse_from(["claudebar", "init"]).expect("init must parse");
+        match cli.cmd {
+            Some(Command::Init { force, print }) => {
+                assert!(!force);
+                assert!(!print);
+            }
+            other => panic!("expected Init, got: {other:?}"),
+        }
+    }
+
+    #[test]
+    fn doctor_subcommand_parses() {
+        let cli =
+            Cli::try_parse_from(["claudebar", "doctor"]).expect("doctor subcommand must parse");
+        assert!(matches!(cli.cmd, Some(Command::Doctor)));
+    }
+
+    #[test]
+    fn smoke_subcommand_parses() {
+        let cli = Cli::try_parse_from(["claudebar", "smoke"]).expect("smoke subcommand must parse");
+        assert!(matches!(cli.cmd, Some(Command::Smoke)));
+    }
 }
