@@ -22,9 +22,9 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     permissions:
-      contents: read      # actions/checkout needs explicit contents:read when job perms override workflow perms
-      pages: write        # deploy-pages requires pages:write
-      id-token: write     # deploy-pages requires OIDC id-token for attestation
+      contents: read  # explicit — job perms override workflow perms
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
