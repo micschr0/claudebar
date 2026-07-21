@@ -355,8 +355,8 @@ jobs:
             fi
 
             if [ "$is_pre" = "true" ]; then
-              target="Formula/${name}@beta.rb"
-              commit_name="${name}@beta"
+              target="Formula/${name}-beta.rb"
+              commit_name="${name}-beta"
               python3 - "$src" "$target" <<'PY'
           # Strip the bottle block (multiline regex) and rename the class
           # with a verified substitution count — a no-op rename surfaces
@@ -372,7 +372,10 @@ jobs:
               count=1,
               flags=re.MULTILINE | re.DOTALL,
           )
-          out, n = re.subn(r'^class Claudebar ', 'class ClaudebarATBeta ', out, count=1, flags=re.MULTILINE)
+          # Formulary.class_s maps @ to AT only before a digit (/(.)@(\d)/),
+          # so claudebar@beta would need class "Claudebar@beta" — not a legal
+          # Ruby constant. A dash suffix folds to ClaudebarBeta instead.
+          out, n = re.subn(r'^class Claudebar ', 'class ClaudebarBeta ', out, count=1, flags=re.MULTILINE)
           if n != 1:
               sys.stderr.write('::error::class rename failed — dist formula template drifted\n')
               sys.exit(1)
