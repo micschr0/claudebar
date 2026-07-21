@@ -346,6 +346,7 @@ jobs:
             filename=$(echo "$release" | jq '.artifacts[] | select(endswith(".rb"))' --raw-output)
             name=$(echo "$filename" | sed "s/\.rb$//")
             version=$(echo "$release" | jq .app_version --raw-output)
+            src="Formula/${filename}"
             # Refuse to write a half-clobbered formula if dist's
             # download-artifact step delivered nothing.
             if [ ! -s "$src" ]; then
@@ -360,6 +361,10 @@ jobs:
           # Strip the bottle block (multiline regex) and rename the class
           # with a verified substitution count — a no-op rename surfaces
           # dist template drift instead of pushing a broken formula.
+          import re
+          import sys
+
+          src_text = open(sys.argv[1]).read()
           out = re.sub(
               r'^  bottle do\b.*?\n  end\n',
               '  bottle :disable, reason: "pre-release tap formula"\n',
