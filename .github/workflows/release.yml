@@ -333,8 +333,8 @@ jobs:
       - name: Commit formula files
         # Why: set -euo pipefail aborts on silent failures. Artifact asserted non-empty
         # before rewrite (partial download can't clobber). Prerelease: python strips
-        # bottle block + renames class with verified subn count. brew audit || true surfaces
-        # class/name drift without blocking.
+        # bottle block + renames class with verified subn count. brew info load-test
+        # blocks on class/name drift before it reaches users.
         run: |
           set -euo pipefail
 
@@ -389,7 +389,18 @@ jobs:
             export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
             brew update || true  # transient tap-remote flake must not abort publish
             brew style --except-cops FormulaAudit/Homepage,FormulaAudit/Desc,FormulaAuditStrict --fix "$target" || true
-            brew audit --new --formula "$target" || true  # informational — must not block
+            # Load the formula through Formulary so a class/filename mismatch
+            # fails here instead of at user install time. Path-based audit is
+            # disabled upstream; ruby -c only checks syntax and passes a wrong
+            # class name, so neither catches this.
+            brew tap-new --no-git micschr0/tap 2>/dev/null || true
+            tap_dir="$(brew --repository micschr0/tap)/Formula"
+            mkdir -p "$tap_dir"
+            cp "$target" "$tap_dir/"
+            if ! brew info --formula "micschr0/tap/$(basename "$target" .rb)" >/dev/null; then
+              echo "::error::formula failed to load — class/filename mismatch in $target" >&2
+              exit 1
+            fi
             git add "$target"
             # Byte-identical (no-op) diff is benign
             if ! git diff --cached --quiet -- "$target"; then
