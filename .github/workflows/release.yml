@@ -66,7 +66,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install dist
@@ -127,7 +127,7 @@ jobs:
       - name: enable windows longpaths
         run: |
           git config --global core.longpaths true
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install Rust non-interactively if not already installed
@@ -189,7 +189,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       BUILD_MANIFEST_NAME: target/distrib/global-dist-manifest.json
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install cached dist
@@ -245,7 +245,7 @@ jobs:
     outputs:
       val: ${{ steps.host.outputs.manifest }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install cached dist
@@ -353,6 +353,12 @@ jobs:
                 gh release delete --yes --cleanup-tag "$tag" || true
               done
 
+  # Stable releases land in Formula/claudebar.rb; prereleases (driven by
+  # publish-prereleases=true in Cargo.toml's [workspace.metadata.dist])
+  # land in Formula/claudebar@beta.rb. The two never collide in a single
+  # commit, so `brew upgrade` cannot silently bounce stable users onto a
+  # beta. If you regenerate this file with `dist generate`, reapply this
+  # prerelease branching and the python-heredoc formula rewrite below.
   custom-homebrew-app-token:
     name: Publish homebrew tap
     needs:
@@ -375,7 +381,7 @@ jobs:
           owner: "micschr0"
           repositories: "homebrew-tap"
           permission-contents: write
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: true
           repository: "micschr0/homebrew-tap"
@@ -387,23 +393,77 @@ jobs:
           path: Formula/
           merge-multiple: true
       - name: Commit formula files
+        # Why this step is shaped the way it is:
+        #   - set -euo pipefail — any silent failure aborts the publish.
+        #   - The dist artifact is asserted non-empty before any rewrite,
+        #     so a partial download can't half-clobber a tap formula.
+        #   - The prerelease path runs a python heredoc that strips the
+        #     bottle block (an @-suffixed formula must not share a bottle
+        #     triple with the stable name) and renames `class Claudebar`
+        #     → `class ClaudebarATBeta` so Homebrew's filename-to-class
+        #     lookup succeeds. The rename is verified by substitution
+        #     count, not just by sed fate.
+        #   - `brew audit` (informational, || true) surfaces drift between
+        #     formula content and file/class names without blocking.
         run: |
+          set -euo pipefail
+
           git config --global user.name "${GITHUB_USER}"
           git config --global user.email "${GITHUB_EMAIL}"
 
+          is_pre=$(echo "$PLAN" | jq --raw-output '.announcement_is_prerelease')
           for release in $(echo "$PLAN" | jq --compact-output '.releases[] | select([.artifacts[] | endswith(".rb")] | any)'); do
             filename=$(echo "$release" | jq '.artifacts[] | select(endswith(".rb"))' --raw-output)
             name=$(echo "$filename" | sed "s/\.rb$//")
             version=$(echo "$release" | jq .app_version --raw-output)
+            # Refuse to write a half-clobbered formula if dist's
+            # download-artifact step delivered nothing.
+            if [ ! -s "$src" ]; then
+              echo "::error::dist formula artifact missing or empty: $src" >&2
+              exit 1
+            fi
+
+            if [ "$is_pre" = "true" ]; then
+              target="Formula/${name}@beta.rb"
+              commit_name="${name}@beta"
+              python3 - "$src" "$target" <<'PY'
+          # Strip the bottle block (multiline regex) and rename the class
+          # with a verified substitution count — a no-op rename surfaces
+          # dist template drift instead of pushing a broken formula.
+          out = re.sub(
+              r'^  bottle do\b.*?\n  end\n',
+              '  bottle :disable, reason: "pre-release tap formula"\n',
+              src_text,
+              count=1,
+              flags=re.MULTILINE | re.DOTALL,
+          )
+          out, n = re.subn(r'^class Claudebar ', 'class ClaudebarATBeta ', out, count=1, flags=re.MULTILINE)
+          if n != 1:
+              sys.stderr.write('::error::class rename failed — dist formula template drifted\n')
+              sys.exit(1)
+          open(sys.argv[2], 'w').write(out)
+          PY
+            else
+              target="$src"
+              commit_name="${name}"
+            fi
 
             export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-            brew update
-            brew style --except-cops FormulaAudit/Homepage,FormulaAudit/Desc,FormulaAuditStrict --fix "Formula/${filename}" || true
-
-            git add "Formula/${filename}"
-            git commit -m "${name} ${version}"
+            # A transient Homebrew-tap-remote flake must not abort a publish.
+            brew update || true
+            brew style --except-cops FormulaAudit/Homepage,FormulaAudit/Desc,FormulaAuditStrict --fix "$target" || true
+            # Surface — but do not block on — audit-grade issues like
+            # class-name / filename mismatch.
+            brew audit --new --formula "$target" || true
+            git add "$target"
+            # Don't fail the job when the formula content is byte-identical
+            # to the previous beta; an empty staged diff is benign.
+            if ! git diff --cached --quiet -- "$target"; then
+              git commit -m "${commit_name} ${version}"
+            fi
           done
           git push
+
   announce:
     name: Announce
     needs:
@@ -418,6 +478,6 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false

@@ -27,6 +27,12 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 brew install micschr0/tap/claudebar && claudebar setup
 ```
 
+Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable users onto a prerelease:
+
+```bash
+brew install micschr0/tap/claudebar@beta
+```
+
 <details><summary>Review the script first</summary>
 
 ```bash
@@ -38,13 +44,17 @@ bash install.sh
 
 <details><summary>Try a beta before it's stable</summary>
 
-Prereleases (tagged e.g. `2026.7.6-beta.1`) are built and published like any other release, just marked as a prerelease — `install.sh` normally only ever installs the latest stable one. To try the newest prerelease instead:
+Prereleases (tagged e.g. `2026.7.6-beta.1`) get their own versioned Homebrew formula (`claudebar@beta`) and are also installable via the script:
 
 ```bash
 CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
-Switch back to stable any time by reinstalling without the env var. Homebrew always tracks stable.
+The plain `micschr0/tap/claudebar` formula always tracks stable; `claudebar@beta` follows the latest prerelease. To switch from the Homebrew beta back to stable:
+
+```bash
+brew uninstall micschr0/tap/claudebar@beta && brew install micschr0/tap/claudebar
+```
 </details>
 
 ## What it looks like

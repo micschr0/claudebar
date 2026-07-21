@@ -62,6 +62,10 @@ targets = [
   "x86_64-apple-darwin",
   "aarch64-apple-darwin",
 ]
+# Stable → Formula/claudebar.rb; with publish-prereleases on, beta tags drive
+# the same job into the @beta branch (release.yml's custom-homebrew-app-token
+# job). Without this flag, that job's `if:` short-circuits prereleases.
+publish-prereleases = true
 # Hosted shell installer (curl | sh) as a binary-only alternative to install.sh.
 installers = ["shell", "homebrew"]
 # Bundle the binary plus auto-detected README + LICENSE (both at repo root).

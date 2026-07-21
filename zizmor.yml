@@ -30,10 +30,6 @@ rules:
   artipacked:
     ignore:
       - release.yml
-
-  # ---------- rust.yml ----------
-  #
-  # dtolnay/rust-toolchain is pinned to a commit SHA.
   # The `# stable` comment on the `uses:` line is for humans only;
   # the action does not actually resolve a branch ref.
   stale-action-refs:
