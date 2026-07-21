@@ -56,3 +56,5 @@ tmp/
 # Local skills tooling (not part of the project)
 skills-lock.json
 .agents/skills/
+# Local AI runtime state
+.atl/
