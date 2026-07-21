@@ -3,7 +3,7 @@
   "extends": ["config:best-practices", ":semanticCommits"],
   "gitAuthor": "micschr0 <61987798+micschr0@users.noreply.github.com>",
   "prCreation": "immediate",
-  "rebaseWhen": "never",
+  "rebaseWhen": "auto",
   "labels": ["dependencies"],
   "dependencyDashboard": true,
   "configMigration": false,
@@ -40,9 +40,10 @@
       "automerge": true
     },
     {
-      "description": "Automerge non-major Cargo updates (CI is the gate)",
+      "description": "Automerge non-major Cargo updates (CI is the gate); exclude pre-1.0 (semver) and require the dependency to already exist",
       "matchManagers": ["cargo"],
       "matchUpdateTypes": ["patch", "minor"],
+      "matchCurrentVersion": "!/^0/",
       "automerge": true
     },
     {
