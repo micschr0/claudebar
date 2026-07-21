@@ -23,8 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read  # explicit — job perms override workflow perms
-      pages: write
-      id-token: write
+      pages: write        # required by actions/deploy-pages
+      id-token: write     # required by actions/deploy-pages for OIDC
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}

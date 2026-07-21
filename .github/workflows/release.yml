@@ -183,9 +183,9 @@ jobs:
   host:
     name: Host
     permissions:
-      contents: write
-      attestations: write
-      id-token: write
+      contents: write     # release creation + asset upload
+      attestations: write  # SLSA provenance for release artifacts
+      id-token: write     # OIDC for attestation signing
     needs:
       - plan
       - build-local-artifacts
