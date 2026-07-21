@@ -1,9 +1,6 @@
 name: Verify install.sh
 
-# Runs after every GitHub Release is published and actually executes
-# install.sh end-to-end against that release's real assets — catches
-# asset-naming mismatches (tag-in-filename, sums-file rename, etc.) that
-# `install.sh` can silently 404 on, before a user hits them.
+# End-to-end install.sh against published release assets — catches asset-naming mismatches before users hit 404s.
 on:
   release:
     types: [published]
