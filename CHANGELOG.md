@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
+## [2026.7.21]
+
 ### Added
 - Ship Homebrew prereleases to a versioned `@beta` formula: `brew install micschr0/tap/claudebar@beta` for beta users; the plain `claudebar` formula keeps tracking the latest stable, so `brew upgrade` cannot silently bump stable users onto a prerelease
 - Document the `claudebar@beta` install path and the `brew uninstall && brew install` switch-back command in the README
