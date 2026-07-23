@@ -38,6 +38,26 @@ Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable 
 brew install micschr0/tap/claudebar-beta
 ```
 
+<details><summary>What each install method verifies</summary>
+
+Every method checks the SHA256 of the downloaded archive. They differ in whether they also verify [build provenance](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) — proof that the binary was built by this repo's `release.yml`, not just that it matches a published hash.
+
+| Method | SHA256 | Build provenance |
+|---|---|---|
+| `mise` | yes | yes, automatic |
+| `install.sh` | yes, fatal on mismatch | yes, if `gh` is installed and authenticated |
+| Homebrew | yes | no |
+| `claudebar-installer.sh` (hosted) | yes | no |
+
+`install.sh` treats a checksum mismatch as fatal but never fails the install on a provenance error — it scopes trust to `release.yml` via `gh attestation verify --signer-workflow` and warns if that check cannot complete. To verify a download by hand:
+
+```bash
+gh attestation verify claudebar-x86_64-unknown-linux-musl.tar.gz \
+  --repo micschr0/claudebar \
+  --signer-workflow micschr0/claudebar/.github/workflows/release.yml
+```
+</details>
+
 <details><summary>Review the script first</summary>
 
 ```bash
