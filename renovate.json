@@ -5,7 +5,6 @@
   "rebaseWhen": "auto",
   "labels": ["dependencies"],
   "dependencyDashboard": true,
-  "configMigration": false,
   "platformAutomerge": true,
   "timezone": "Europe/Berlin",
   "schedule": ["after 8am and before 6pm on Monday"],
@@ -46,9 +45,12 @@
       "automerge": true
     },
     {
-      "description": "Disable GitHub Actions updates — managed manually",
+      "description": "Group GitHub Actions bumps and automerge non-major",
       "matchManagers": ["github-actions"],
-      "enabled": false
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "github-actions",
+      "minimumReleaseAge": "3 days",
+      "automerge": true
     },
     {
       "description": "Major updates require manual review",
