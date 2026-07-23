@@ -19,16 +19,19 @@
 > On macOS: `brew install --cask font-hack-nerd-font` (the font used in the screenshots).
 
 ```bash
+# verifies SHA256 · build provenance when gh is available
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
 **Homebrew**
 ```bash
+# verifies SHA256
 brew install micschr0/tap/claudebar && claudebar setup
 ```
 
 **mise**
 ```bash
+# verifies SHA256 · build provenance, automatically
 mise use -g github:micschr0/claudebar && claudebar setup
 ```
 
@@ -44,10 +47,12 @@ Every method checks the SHA256 of the downloaded archive. They differ in whether
 
 | Method | SHA256 | Build provenance |
 |---|---|---|
-| `mise` | yes | yes, automatic |
-| `install.sh` | yes, fatal on mismatch | yes, if `gh` is installed and authenticated |
-| Homebrew | yes | no |
-| `claudebar-installer.sh` (hosted) | yes | no |
+| `mise` | ✓ | ✓ automatic |
+| `install.sh` | ✓ fatal on mismatch | ~ needs `gh`, installed and authenticated |
+| Homebrew | ✓ | · |
+| `claudebar-installer.sh` (hosted) | ✓ | · |
+
+<sub>✓ verified, ~ conditional, · not checked</sub>
 
 `install.sh` treats a checksum mismatch as fatal but never fails the install on a provenance error — it scopes trust to `release.yml` via `gh attestation verify --signer-workflow` and warns if that check cannot complete. To verify a download by hand:
 
