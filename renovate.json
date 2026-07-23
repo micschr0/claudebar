@@ -1,7 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices", ":semanticCommits"],
-  "gitAuthor": "micschr0 <61987798+micschr0@users.noreply.github.com>",
   "prCreation": "immediate",
   "rebaseWhen": "auto",
   "labels": ["dependencies"],
