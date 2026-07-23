@@ -27,6 +27,11 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 brew install micschr0/tap/claudebar && claudebar setup
 ```
 
+**mise**
+```bash
+mise use -g github:micschr0/claudebar && claudebar setup
+```
+
 Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable users onto a prerelease:
 
 ```bash
