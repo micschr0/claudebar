@@ -19,12 +19,20 @@
 > On macOS: `brew install --cask font-hack-nerd-font` (the font used in the screenshots).
 
 ```bash
+# verifies SHA256 · build provenance when gh is available
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
 **Homebrew**
 ```bash
+# verifies SHA256
 brew install micschr0/tap/claudebar && claudebar setup
+```
+
+**mise**
+```bash
+# verifies SHA256 · build provenance, automatically
+mise use -g github:micschr0/claudebar && claudebar setup
 ```
 
 Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable users onto a prerelease:
@@ -32,6 +40,28 @@ Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable 
 ```bash
 brew install micschr0/tap/claudebar-beta
 ```
+
+<details><summary>What each install method verifies</summary>
+
+Every method checks the SHA256 of the downloaded archive. They differ in whether they also verify [build provenance](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) — proof that the binary was built by this repo's `release.yml`, not just that it matches a published hash.
+
+| Method | SHA256 | Build provenance |
+|---|---|---|
+| `mise` | ✓ | ✓ automatic |
+| `install.sh` | ✓ fatal on mismatch | ~ needs `gh`, installed and authenticated |
+| Homebrew | ✓ | · |
+| `claudebar-installer.sh` (hosted) | ✓ | · |
+
+<sub>✓ verified, ~ conditional, · not checked</sub>
+
+`install.sh` treats a checksum mismatch as fatal but never fails the install on a provenance error — it scopes trust to `release.yml` via `gh attestation verify --signer-workflow` and warns if that check cannot complete. To verify a download by hand:
+
+```bash
+gh attestation verify claudebar-x86_64-unknown-linux-musl.tar.gz \
+  --repo micschr0/claudebar \
+  --signer-workflow micschr0/claudebar/.github/workflows/release.yml
+```
+</details>
 
 <details><summary>Review the script first</summary>
 
