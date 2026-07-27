@@ -7,7 +7,6 @@
   "dependencyDashboard": true,
   "platformAutomerge": true,
   "timezone": "Europe/Berlin",
-  "schedule": ["after 8am and before 6pm on Monday"],
   "cargo": {
     "rangeStrategy": "update-lockfile"
   },
