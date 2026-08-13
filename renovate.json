@@ -20,7 +20,7 @@
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
-    "schedule": ["after 8am and before 6pm on Sunday"]
+    "schedule": ["at any time"]
   },
   "packageRules": [
     {
@@ -44,12 +44,12 @@
       "automerge": true
     },
     {
-      "description": "Group GitHub Actions bumps and automerge non-major",
+      "description": "Group GitHub Actions bumps; manual merge (workflow files get secret access on CI run)",
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "groupName": "github-actions",
       "minimumReleaseAge": "3 days",
-      "automerge": true
+      "automerge": false
     },
     {
       "description": "Major updates require manual review",
