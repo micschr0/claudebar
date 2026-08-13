@@ -28,7 +28,7 @@ jobs:
   # Run 'dist plan' (or host) to determine what tasks we need to do
   plan:
     name: Plan
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-24.04"
     outputs:
       val: ${{ steps.plan.outputs.manifest }}
       tag: ${{ !github.event.pull_request && github.ref_name || '' }}
@@ -138,7 +138,7 @@ jobs:
     needs:
       - plan
       - build-local-artifacts
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-24.04"
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       BUILD_MANIFEST_NAME: target/distrib/global-dist-manifest.json
@@ -194,7 +194,7 @@ jobs:
     if: ${{ always() && needs.plan.result == 'success' && (needs.plan.outputs.publishing == 'true' || needs.plan.outputs.dry_run == 'true') && (needs.build-global-artifacts.result == 'skipped' || needs.build-global-artifacts.result == 'success') && (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-24.04"
     outputs:
       val: ${{ steps.host.outputs.manifest }}
     steps:
@@ -303,7 +303,7 @@ jobs:
       - plan
       - host
     if: ${{ (!fromJson(needs.plan.outputs.val).announcement_is_prerelease || fromJson(needs.plan.outputs.val).publish_prereleases) && needs.plan.outputs.dry_run != 'true' }}
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-24.04"
     permissions:
       contents: read  # Only needs to push to homebrew-tap via app token
     env:
@@ -417,7 +417,7 @@ jobs:
       - custom-homebrew-app-token
     # always() lets prerelease publish skip while still waiting for host (required).
     if: ${{ always() && needs.host.result == 'success' && (needs.custom-homebrew-app-token.result == 'skipped' || needs.custom-homebrew-app-token.result == 'success') }}
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-24.04"
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
