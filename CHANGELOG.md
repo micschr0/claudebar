@@ -2,9 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## [Unreleased]
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+Versions follow CalVer (`YYYY.M.PATCH`) with optional `-beta.N` pre-release suffixes;
+see `RELEASING.md` for the release ritual.
+
+<!-- next-release -->
 
 ## [2026.7.21]
 
@@ -131,10 +133,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2026.6.20]
 
 Initial development history: dev-context segment, `migrate` subcommand, 10 additional themes, CI badge, `--no-default-features` CI coverage, and the three-tier `install.sh` fallback rewrite.
-
-[Unreleased]: https://github.com/micschr0/claudebar/compare/2026.7.7...HEAD
-[2026.7.7]: https://github.com/micschr0/claudebar/compare/2026.7.5...2026.7.7
-[2026.7.5]: https://github.com/micschr0/claudebar/compare/2026.7.3...2026.7.5
-[2026.7.3]: https://github.com/micschr0/claudebar/compare/2026.7.2...2026.7.3
-[2026.7.2]: https://github.com/micschr0/claudebar/compare/2026.6.24...2026.7.2
-[2026.6.24]: https://github.com/micschr0/claudebar/compare/v0.2.0...2026.6.24
