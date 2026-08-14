@@ -1,23 +1,26 @@
 # git-cliff configuration for claudebar
 #
-# Wired into cargo-dist via `changelog = "git-cliff"` in
-# [workspace.metadata.dist]. We override three pieces of cliff's default
-# behavior and accept everything else — group auto-derivation with emoji
-# headings, scope-preserved commit subjects, conventional-commit
-# preprocessing — exactly as cliff ships them:
+# Used by `.github/workflows/release-prep.yml`, which runs
 #
-#   1. header — CalVer accuracy note (cliff's default uses the keep-a-changelog
-#      boilerplate that asserts SemVer, which we don't follow)
-#   2. body   - strip the `- YYYY-MM-DD` date suffix from each section heading
-#      because CalVer already encodes the date; cliff 2.x renders the group
-#      value as `<!-- N -->🚀 Features` (sort-index + emoji prefix), so we
-#      also strip the leading comment prefix via `split("-->" | last`
-#   3. footer — `[X.Y.Z]: compare/…` link anchors for cross-release navigation;
-#      cliff's default emits none
+#   git-cliff --unreleased --tag <calver> --strip all > section.md
+#   sed -i '/<!-- next-release -->/r section.md' CHANGELOG.md
+#
+# to splice one new section into CHANGELOG.md below the `<!-- next-release -->`
+# marker. Historical, hand-written entries are never regenerated. cargo-dist then
+# picks the `## [<version>]` section out of CHANGELOG.md for the GitHub Release
+# body (dist autodetects the file — do NOT set a `changelog` key in
+# [workspace.metadata.dist]; that key takes a path, not a generator name).
+#
+# Two non-obvious choices:
+#
+#   - `--prepend` is NOT used: it writes above the `# Changelog` header. Same
+#     reason there is no footer link-anchor block — it would be re-emitted at
+#     the top of the file on every release.
+#   - The `<!-- N -->` group prefixes only force section order; the body
+#     template strips them via `split(pat="-->") | last`.
 #
 # Local sanity check:
-#   git cliff --unreleased
-#   git cliff --tag <calver> -o CHANGELOG.md
+#   git-cliff --unreleased --tag 2026.8.14
 
 [changelog]
 header = """
@@ -31,22 +34,18 @@ see `RELEASING.md` for the release ritual.
 """
 
 body = """
-{% if version %}## [{{ version }}]
-{% else %}## [Unreleased]
-{% endif %}
 
+{% if version -%}
+## [{{ version }}]{% if previous.version %}(https://github.com/micschr0/claudebar/compare/{{ previous.version }}...{{ version }}){% endif %}
+{%- else -%}
+## [Unreleased]
+{%- endif %}
 {% for group, commits in commits | filter(attribute="merge_commit", value=false) | unique(attribute="message") | group_by(attribute="group") %}
 ### {{ group | split(pat="-->") | last | trim_start }}
-{% for commit in commits | sort(attribute="message") %}
+{% for commit in commits | sort(attribute="message") -%}
 - {{ commit.message | split(pat="\n") | first | trim_end | upper_first }}
+{% endfor -%}
 {% endfor %}
-{% endfor %}
-"""
-
-footer = """
-{% for release in releases %}{% if release.previous -%}
-[{{ release.version }}]: https://github.com/micschr0/claudebar/compare/{{ release.previous.version }}...{{ release.version }}
-{% endif %}{% endfor %}
 """
 
 [git]
@@ -55,3 +54,17 @@ filter_unconventional = true
 split_commits = false
 tag_pattern = "[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z]+\\.[0-9]+)?"
 topo_order = false
+
+# Keep-a-Changelog sections. `chore` is dropped entirely — the overwhelming
+# majority are Renovate dependency bumps, which are not user-facing for a
+# statusline renderer. To surface non-dep chores, skip only `^chore\\(deps` and
+# map the rest to Changed.
+commit_parsers = [
+  { message = "^feat", group = "<!-- 0 -->Added" },
+  { message = "^fix", group = "<!-- 1 -->Fixed" },
+  { message = "^(perf|refactor|style)", group = "<!-- 2 -->Changed" },
+  { message = "^docs", group = "<!-- 3 -->Documentation" },
+  { message = "^test", group = "<!-- 4 -->Testing" },
+  { message = "^(ci|build)", group = "<!-- 5 -->CI" },
+  { message = "^chore", skip = true },
+]
