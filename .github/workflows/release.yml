@@ -250,7 +250,7 @@ jobs:
         if: ${{ needs.plan.outputs.dry_run != 'true' }}
         # Attestation is defense-in-depth — transient service outage must not block a release.
         continue-on-error: true
-        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: "artifacts/claudebar-*.tar.gz"
       # GITHUB_TOKEN releases don't trigger downstream workflows (GitHub loop-prevention).
