@@ -26,6 +26,25 @@ jobs:
       - name: Run shellcheck
         run: shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
 
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+    container:
+      # Bundles shellcheck + pyflakes, so `run:` blocks get linted too.
+      # `--user root`: the image runs as `guest`, which cannot write the workspace.
+      image: rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
+      options: --user root
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Lint workflows
+        # Same severity floor as the ShellCheck job, so `run:` blocks are held
+        # to one standard instead of two.
+        env:
+          SHELLCHECK_OPTS: -S warning
+        run: actionlint -color .github/workflows/*.yml
+
   bats:
     name: Bats
     runs-on: ubuntu-latest

@@ -81,6 +81,17 @@ tasks:
     desc: Regenerate the GitHub social-preview card (Pillow only)
     cmd: python3 scripts/gen_social_preview.py
 
+  release:
+    desc: "Open a release PR; defaults to today's CalVer: task release [-- 2026.8.20]"
+    cmd: gh workflow run release-prep.yml {{if .CLI_ARGS}}-f version='{{.CLI_ARGS}}'{{end}}
+
+  release-beta:
+    desc: "Open a prerelease PR: task release-beta -- 2026.8.20-beta.1"
+    # -beta.N is not derivable: release.yml prunes every prerelease tag but the newest.
+    cmd: |
+      [ -n "{{.CLI_ARGS}}" ] || { echo 'usage: task release-beta -- 2026.8.20-beta.1' >&2; exit 1; }
+      gh workflow run release-prep.yml -f version='{{.CLI_ARGS}}'
+
   install:
     desc: Install claudebar into ~/.claude
     cmd: bash install.sh
