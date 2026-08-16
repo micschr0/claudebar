@@ -8,6 +8,25 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.8.15-beta.1](https://github.com/micschr0/claudebar/compare/2026.7.21...2026.8.15-beta.1)
+
+### Fixed
+- Correct permission input name (#65)
+- Grant statuses permission (#77)
+- Grant workflows permission, fix dead lockfile schedule (#76)
+
+### Documentation
+- Add mise install method and per-method verification info (#63)
+- Release 2026.7.21 in changelog (#58)
+
+### CI
+- Automate CalVer release prep (#84)
+- Drop GIT_AUTHOR/COMMITTER overrides so app identity is … (#68)
+- Drop renovate gitAuthor override so auto-rebase works (#61)
+- Drop top-level schedule (#67)
+- Enable GHA automerge, drop stale gitAuthor/configMigration (#62)
+- Repin Swatinem/rust-cache to v2.9.2 to fix zizmor (#74)
+
 ## [2026.7.21]
 
 ### Added
