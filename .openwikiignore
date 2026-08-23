@@ -1,0 +1,8 @@
+# OpenWiki corpus scope — keep the doc agent on the Rust core.
+# These paths are excluded from exploration to keep token usage low.
+docs/
+video/
+screenshots/
+assets/
+tmp/
+scripts/
