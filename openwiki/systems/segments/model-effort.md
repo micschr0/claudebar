@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Model-effort segment"
+openwiki_generated: true
+---
+
 # Model-effort segment
 
 Model name + effort level.

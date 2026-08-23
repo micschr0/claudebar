@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Architecture overview"
+openwiki_generated: true
+---
+
 # Architecture overview
 
 ## Layout model

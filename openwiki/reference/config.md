@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Config reference"
+openwiki_generated: true
+---
+
 # Config reference
 
 TOML at `$XDG_CONFIG_HOME/claudebar/config.toml` (fallback

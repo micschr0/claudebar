@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "claudebar — OpenWiki quickstart"
+openwiki_generated: true
+---
+
 # claudebar — OpenWiki quickstart
 
 > Status: first-pass documentation. Grounded in source inspection; regenerate

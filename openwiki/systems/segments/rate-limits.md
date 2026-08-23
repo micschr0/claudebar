@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Rate-limits segment"
+openwiki_generated: true
+---
+
 # Rate-limits segment
 
 Rate-limit windows with reset countdowns.

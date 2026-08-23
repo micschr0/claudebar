@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Release pipeline"
+openwiki_generated: true
+---
+
 # Release pipeline
 
 CalVer-based releases automated via `cargo-dist` + GitHub Actions.

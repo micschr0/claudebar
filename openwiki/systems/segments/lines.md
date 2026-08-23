@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Lines segment"
+openwiki_generated: true
+---
+
 # Lines segment
 
 Added/removed line counts (+N −M) in one color slot.

@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Input contract"
+openwiki_generated: true
+---
+
 # Input contract
 
 Claude Code invokes `claudebar render --hook` (or `claudebar` directly) with

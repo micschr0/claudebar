@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Threshold semantics"
+openwiki_generated: true
+---
+
 # Threshold semantics
 
 Thresholds control color bands and visibility of the rate-limit/context

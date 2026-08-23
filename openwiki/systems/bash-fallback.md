@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Bash fallback"
+openwiki_generated: true
+---
+
 # Bash fallback
 
 `statusline-command.sh` — the zero-toolchain fallback for environments without

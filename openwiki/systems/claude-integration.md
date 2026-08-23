@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Claude Code integration"
+openwiki_generated: true
+---
+
 # Claude Code integration
 
 How claudebar wires into Claude Code's `statusLine` and stays in sync with

@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Scripts & tooling"
+openwiki_generated: true
+---
+
 # Scripts & tooling
 
 Python/JS/bash tooling under `scripts/` for docs, screenshots, benchmarks,

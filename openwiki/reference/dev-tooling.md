@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Dev tooling"
+openwiki_generated: true
+---
+
 # Dev tooling
 
 Conventions and tools for contributors.

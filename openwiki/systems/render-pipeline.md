@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Render pipeline"
+openwiki_generated: true
+---
+
 # Render pipeline
 
 The composition layer that turns `(input × config)` into one ANSI status line.

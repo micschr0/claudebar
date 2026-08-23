@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Duration segment"
+openwiki_generated: true
+---
+
 # Duration segment
 
 Session duration.

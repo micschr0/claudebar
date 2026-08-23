@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Segment seam"
+openwiki_generated: true
+---
+
 # Segment seam
 
 The `Segment` trait is the extension point for new status segments.

@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Cross-session state"
+openwiki_generated: true
+---
+
 # Cross-session state
 
 Two pieces of local state persist across sessions so later renders can account

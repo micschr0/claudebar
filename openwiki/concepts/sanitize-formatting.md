@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Sanitize & formatting"
+openwiki_generated: true
+---
+
 # Sanitize & formatting
 
 Shared hardening + formatting helpers in `src/sanitize.rs`, used by segments

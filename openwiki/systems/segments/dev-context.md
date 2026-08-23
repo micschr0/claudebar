@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Dev-context segment"
+openwiki_generated: true
+---
+
 # Dev-context segment
 
 Worktree / PR / agent sub-elements with review-state indicators.

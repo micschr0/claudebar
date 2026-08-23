@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "CLI reference"
+openwiki_generated: true
+---
+
 # CLI reference
 
 `Cli` + `Command` enum in `src/cli.rs` (clap derive); dispatch in

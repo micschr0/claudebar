@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Clock segment"
+openwiki_generated: true
+---
+
 # Clock segment
 
 Current time with 12h/24h detection and tz offset.

@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Burn segment"
+openwiki_generated: true
+---
+
 # Burn segment
 
 Burn-down state derived from a cache file.

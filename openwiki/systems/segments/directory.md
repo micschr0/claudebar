@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Directory segment"
+openwiki_generated: true
+---
+
 # Directory segment
 
 Shows the current working directory, abbreviated fish-style.

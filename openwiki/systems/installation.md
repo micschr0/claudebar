@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Installation"
+openwiki_generated: true
+---
+
 # Installation
 
 `install.sh` — one-command install with supply-chain verification.

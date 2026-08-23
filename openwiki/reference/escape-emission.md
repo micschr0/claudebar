@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Escape emission"
+openwiki_generated: true
+---
+
 # Escape emission
 
 How ANSI is produced and measured.

@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Segments"
+openwiki_generated: true
+---
+
 # Segments
 
 Each segment is documented on its own page under `systems/segments/`. Common

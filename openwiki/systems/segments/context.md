@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Context segment"
+openwiki_generated: true
+---
+
 # Context segment
 
 Token usage: bar + percentage, fmt_tokens k/M rounding.

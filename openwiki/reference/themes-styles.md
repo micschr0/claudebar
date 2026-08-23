@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Themes & styles"
+openwiki_generated: true
+---
+
 # Themes & styles
 
 Named registries resolved to value structs. No globals — `themes::get` /

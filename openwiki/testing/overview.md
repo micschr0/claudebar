@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Testing overview"
+openwiki_generated: true
+---
+
 # Testing overview
 
 Layered test strategy: unit per module → integration → golden snapshots →

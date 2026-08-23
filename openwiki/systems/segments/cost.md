@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Cost segment"
+openwiki_generated: true
+---
+
 # Cost segment
 
 Session cost in USD.

@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "Git segment"
+openwiki_generated: true
+---
+
 # Git segment
 
 Shows branch state: branch name, ahead/behind counts, modified/untracked,

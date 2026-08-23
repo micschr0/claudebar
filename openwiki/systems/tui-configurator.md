@@ -1,3 +1,9 @@
+---
+type: "Reference"
+title: "TUI configurator"
+openwiki_generated: true
+---
+
 # TUI configurator
 
 `claudebar config` — interactive theme/style/segment setup with a **live
