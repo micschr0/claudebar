@@ -43,6 +43,23 @@ rules:
     ignore:
       - rust.yml
 
+  # ---------- npm-release.yml ----------
+  #
+  # The publish workflow never installs dependencies (it only runs npm
+  # publish against pre-built templates). setup-node's default cache is
+  # explicitly disabled with cache: ''. zizmor still flags the default cache
+  # enablement with low confidence; the cache itself is a no-op here.
+  cache-poisoning:
+    ignore:
+      - npm-release.yml
+
+  # npm publish authenticates with the NPM_TOKEN secret. We deliberately
+  # avoid npm trusted (OIDC) publishing for the platform packages, so the
+  # publish commands keep NODE_AUTH_TOKEN. Documented rather than enforced.
+  use-trusted-publishing:
+    ignore:
+      - npm-release.yml
+
 
 # ---------- homebrew-app-token.yml (reusable workflow_call) ----------
 #
