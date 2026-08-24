@@ -1,0 +1,35 @@
+{
+  "name": "@micschr0/claudebar",
+  "version": "0.0.0",
+  "description": "A powerline statusline for Claude Code: segments, themes, and a live TUI configurator in a single native binary.",
+  "bin": {
+    "claudebar": "./bin/claudebar.js"
+  },
+  "optionalDependencies": {
+    "@micschr0/claudebar-darwin-x64": "0.0.0",
+    "@micschr0/claudebar-darwin-arm64": "0.0.0",
+    "@micschr0/claudebar-linux-x64-musl": "0.0.0",
+    "@micschr0/claudebar-linux-arm64-musl": "0.0.0"
+  },
+  "files": [
+    "bin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/micschr0/claudebar"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "statusline",
+    "powerline",
+    "rust",
+    "cli",
+    "tui"
+  ],
+  "author": "micschr0",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

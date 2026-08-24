@@ -41,18 +41,38 @@ Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable 
 brew install micschr0/tap/claudebar-beta
 ```
 
+**npm** *(macOS & Linux)*
+```bash
+# installs the prebuilt native binary for your platform
+npm install -g @micschr0/claudebar && claudebar setup
+```
+
+**pnpm** *(macOS & Linux)*
+```bash
+# same per-platform package, installable with any npm-registry package manager
+pnpm add -g @micschr0/claudebar && claudebar setup
+```
+
 <details><summary>What each install method verifies</summary>
 
 Every method checks the SHA256 of the downloaded archive. They differ in whether they also verify [build provenance](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) — proof that the binary was built by this repo's `release.yml`, not just that it matches a published hash.
 
 | Method | SHA256 | Build provenance |
 |---|---|---|
-| `mise` | ✓ | ✓ automatic |
 | `install.sh` | ✓ fatal on mismatch | ~ needs `gh`, installed and authenticated |
 | Homebrew | ✓ | · |
+| `mise` | ✓ | ✓ automatic |
+| npm / pnpm | ✓ (per-platform pkg ships the verified release binary) | · |
 | `claudebar-installer.sh` (hosted) | ✓ | · |
 
 <sub>✓ verified, ~ conditional, · not checked</sub>
+
+> [!NOTE]
+> The npm/pnpm packages ship the **already-attested** release binaries (built and
+> provenance-signed by `release.yml`, then repackaged unchanged), but the package
+> itself is not published with [npm registry provenance](https://docs.npmjs.com/generating-provenance-statements/) —
+> enabling it would attest the repackaging workflow, not the build. The `release.yml`
+> build provenance on those binaries is what the `install.sh` command below verifies.
 
 `install.sh` treats a checksum mismatch as fatal but never fails the install on a provenance error — it scopes trust to `release.yml` via `gh attestation verify --signer-workflow` and warns if that check cannot complete. To verify a download by hand:
 
@@ -164,6 +184,7 @@ printed, but the command always exits `0` on success.
 ```bash
 brew uninstall claudebar
 # or: rm ~/.claude/claudebar   # script install
+# or: npm uninstall -g @micschr0/claudebar   # npm / pnpm: pnpm remove -g @micschr0/claudebar
 ```
 
 Then remove the `statusLine` entry from `~/.claude/settings.json` and, optionally, `~/.config/claudebar/`.
