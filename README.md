@@ -56,7 +56,7 @@ Every method checks the SHA256 of the downloaded archive. They differ in whether
 | `install.sh` | ✓ fatal on mismatch | ~ needs `gh`, installed and authenticated |
 | Homebrew | ✓ | · |
 | `mise` | ✓ | ✓ automatic |
-| npm / pnpm | ✓ (per-platform pkg ships the verified release binary) | · |
+| npm / pnpm | ✓ (ships verified binary) | · |
 | `claudebar-installer.sh` (hosted) | ✓ | · |
 
 <sub>✓ verified, ~ conditional, · not checked</sub>
