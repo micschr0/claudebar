@@ -66,8 +66,9 @@ targets = [
 # the same job into the @beta branch (release.yml's custom-homebrew-app-token
 # job). Without this flag, that job's `if:` short-circuits prereleases.
 publish-prereleases = true
-# Hosted shell installer (curl | sh) as a binary-only alternative to install.sh.
-installers = ["shell", "homebrew"]
+# Homebrew is the only cargo-dist-built installer; install.sh (repo root) is
+# the documented curl | sh path and is not built here.
+installers = ["homebrew"]
 # Bundle the binary plus auto-detected README + LICENSE (both at repo root).
 auto-includes = true
 # SHA256, sha256sum-compatible output.
