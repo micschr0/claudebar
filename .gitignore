@@ -21,6 +21,12 @@ benchmark-report.txt
 
 # Rust build output
 /target
+# Local cargo/home build artifacts (sandbox CARGO_HOME/TARGET_DIR)
+/.cargo-home
+/.target
+
+# Local clone of the reference CCometixLine repo (review scratch)
+/_ccom
 
 # insta snapshot review leftovers
 *.snap.new

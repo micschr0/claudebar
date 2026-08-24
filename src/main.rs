@@ -11,15 +11,20 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 fn main() -> ExitCode {
     let cli = Cli::parse();
-    match cli.cmd.as_ref().unwrap_or(&Command::Render) {
-        Command::Render => run_render(&cli),
-        Command::Config => run_config(&cli),
-        Command::Init { force, print } => run_init(&cli, *force, *print),
+    match cli
+        .cmd
+        .as_ref()
+        .unwrap_or(&Command::Render(cli::Overrides::default()))
+    {
+        Command::Render(_) => run_render(&cli),
+        Command::Config(_) => run_config(&cli),
+        Command::Init { force, print, .. } => run_init(&cli, *force, *print),
         Command::List { list_segments } => run_list(*list_segments),
-        Command::Sync => run_sync(&cli),
+        Command::Sync(_) => run_sync(&cli),
         Command::Smoke => run_smoke(),
-        Command::Doctor => run_doctor(&cli),
-        Command::Edit => run_edit(&cli),
+        Command::Doctor(_) => run_doctor(&cli),
+        Command::Edit(_) => run_edit(&cli),
+        Command::Update { check, channel } => run_update(*check, *channel),
         Command::Completions { shell } => run_completions(*shell),
         Command::Setup {
             settings_path,
@@ -27,6 +32,7 @@ fn main() -> ExitCode {
             yes,
             force,
             binary_path,
+            ..
         } => run_setup(
             &cli,
             settings_path.clone(),
@@ -41,7 +47,8 @@ fn main() -> ExitCode {
 /// Resolve the config, applying any `--theme` / `--style` overrides.
 /// Warns on stderr when the config file exists but cannot be parsed.
 fn resolve_config(cli: &Cli) -> Config {
-    let path = cli.config.clone().or_else(Config::default_path);
+    let o = cli.effective_overrides();
+    let path = o.config.clone().or_else(Config::default_path);
     let mut cfg = match path {
         Some(ref p) => {
             if p.exists() {
@@ -53,24 +60,24 @@ fn resolve_config(cli: &Cli) -> Config {
                     }
                 }
             } else {
-                Config::load_or_default(cli.config.as_deref())
+                Config::load_or_default(o.config.as_deref())
             }
         }
         None => Config::default(),
     };
-    if let Some(t) = &cli.theme {
+    if let Some(t) = &o.theme {
         if !themes::NAMES.contains(&t.as_str()) {
             eprintln!("claudebar: warning: unknown theme '{t}' — using tokyo-night");
         }
         cfg.theme = t.clone();
     }
-    if let Some(s) = &cli.style {
+    if let Some(s) = &o.style {
         if !styles::NAMES.contains(&s.as_str()) {
             eprintln!("claudebar: warning: unknown style '{s}' — using powerline");
         }
         cfg.style = s.clone();
     }
-    if let Some(segs) = &cli.segments {
+    if let Some(segs) = &o.segments {
         let mut parsed: Vec<SegmentKind> = Vec::with_capacity(segs.len());
         for s in segs {
             match SegmentKind::from_kebab(s) {
@@ -103,7 +110,11 @@ fn run_render(cli: &Cli) -> ExitCode {
 fn run_config(cli: &Cli) -> ExitCode {
     #[cfg(feature = "tui")]
     {
-        let path = cli.config.clone().or_else(Config::default_path);
+        let path = cli
+            .effective_overrides()
+            .config
+            .clone()
+            .or_else(Config::default_path);
         match claudebar::tui::run(path) {
             Ok(()) => ExitCode::SUCCESS,
             Err(e) => {
@@ -135,7 +146,12 @@ fn run_init(cli: &Cli, force: bool, print: bool) -> ExitCode {
             }
         }
     } else {
-        let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
+        let path: PathBuf = match cli
+            .effective_overrides()
+            .config
+            .clone()
+            .or_else(Config::default_path)
+        {
             Some(p) => p,
             None => {
                 eprintln!("claudebar: no config path found — set $HOME or use --config.");
@@ -366,7 +382,12 @@ fn run_list(segments: bool) -> ExitCode {
 fn run_sync(cli: &Cli) -> ExitCode {
     use claudebar::model::SegmentKind;
 
-    let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
+    let path: PathBuf = match cli
+        .effective_overrides()
+        .config
+        .clone()
+        .or_else(Config::default_path)
+    {
         Some(p) => p,
         None => {
             eprintln!("claudebar: no config path found — set $HOME or use --config.");
@@ -487,7 +508,11 @@ fn run_doctor(cli: &Cli) -> ExitCode {
     println!("{} git on PATH", check_mark(has_git));
 
     // 4. config.toml parses?
-    let config_path = cli.config.clone().or_else(Config::default_path);
+    let config_path = cli
+        .effective_overrides()
+        .config
+        .clone()
+        .or_else(Config::default_path);
     let config_ok = match config_path {
         Some(ref p) if p.exists() => Config::load(p).is_ok(),
         _ => true, // no config or default path = fine
@@ -518,7 +543,12 @@ fn run_doctor(cli: &Cli) -> ExitCode {
 }
 
 fn run_edit(cli: &Cli) -> ExitCode {
-    let path: PathBuf = match cli.config.clone().or_else(Config::default_path) {
+    let path: PathBuf = match cli
+        .effective_overrides()
+        .config
+        .clone()
+        .or_else(Config::default_path)
+    {
         Some(p) => p,
         None => {
             eprintln!("claudebar: no config path found — set $HOME or use --config.");
@@ -562,6 +592,69 @@ fn run_edit(cli: &Cli) -> ExitCode {
 
 fn check_mark(ok: bool) -> &'static str {
     if ok { "✓" } else { "✗" }
+}
+
+/// `claudebar update` — report whether a newer release is available.
+///
+/// With `check` true, the command never returns `2` (update available); it only
+/// exits `0` on success so it is safe inside `set -e` shells and `&&` chains.
+/// Exit codes otherwise: `0` up to date, `1` check failed, `2` an update is
+/// available.
+fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
+    let installed = match claudebar::update::Version::parse(env!("CARGO_PKG_VERSION")) {
+        Some(v) => v,
+        None => {
+            eprintln!("claudebar: internal: unknown installed version");
+            return ExitCode::FAILURE;
+        }
+    };
+
+    let latest = match claudebar::update::fetch_latest() {
+        Ok(l) => l,
+        Err(e) => {
+            eprintln!("claudebar: {e}");
+            eprintln!("claudebar: ensure `curl` is installed and you are online.");
+            eprintln!(
+                "claudebar: usage docs: https://github.com/micschr0/claudebar#checking-for-updates"
+            );
+            return ExitCode::FAILURE;
+        }
+    };
+
+    println!("claudebar {installed} ({channel} channel)");
+    match claudebar::update::recommend(&installed, &latest, channel) {
+        claudebar::update::Recommendation::UpToDate => {
+            println!("You are on the latest {channel} release.");
+            ExitCode::SUCCESS
+        }
+        claudebar::update::Recommendation::Update {
+            version,
+            is_beta,
+            stable,
+        } => {
+            if is_beta {
+                println!("Update available: {version} (prerelease)");
+            } else {
+                println!("Update available: {version} (stable)");
+            }
+            if let Some(s) = &stable {
+                println!("Latest stable release: {s}");
+            }
+            println!();
+            println!("Install/update: https://github.com/micschr0/claudebar#installation");
+            if is_beta {
+                println!();
+                println!(
+                    "This is a prerelease. To stay on stable only, use the default `stable` channel."
+                );
+            }
+            if check {
+                ExitCode::SUCCESS
+            } else {
+                ExitCode::from(2)
+            }
+        }
+    }
 }
 
 fn which_ok(cmd: &str) -> bool {

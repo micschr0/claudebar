@@ -43,6 +43,7 @@ pub mod segment;
 pub mod setup;
 pub mod styles;
 pub mod themes;
+pub mod update;
 
 #[cfg(feature = "tui")]
 pub mod tui;
