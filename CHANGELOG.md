@@ -8,6 +8,12 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.8.24-beta.1](https://github.com/micschr0/claudebar/compare/2026.8.15-beta.1...2026.8.24-beta.1)
+
+### Added
+- Add manual release check command (#96)
+- Publish claudebar via npm platform packages (#97)
+
 ## [2026.8.15-beta.1](https://github.com/micschr0/claudebar/compare/2026.7.21...2026.8.15-beta.1)
 
 ### Fixed
