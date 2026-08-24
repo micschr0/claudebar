@@ -122,7 +122,7 @@ you mean to release.
 **[SPEC]**
 Run these before tagging to catch problems without burning a tag:
 
-- **`dist plan`** — offline dry-run. Prints the planned artifacts: the four `claudebar-<target>.tar.gz` archives, the per-archive `.sha256` files, the unified `sha256.sum`, and `claudebar-installer.sh`. Use `dist plan --output-format=json` to inspect the build matrix and confirm that the announced version matches `Cargo.toml`.
+- **`dist plan`** — offline dry-run. Prints the planned artifacts: the four `claudebar-<target>.tar.gz` archives, the per-archive `.sha256` files, and the unified `sha256.sum`. Use `dist plan --output-format=json` to inspect the build matrix and confirm that the announced version matches `Cargo.toml`.
 
   ```bash
   dist plan
@@ -156,7 +156,6 @@ Push a throwaway smoke tag to verify the full pipeline end-to-end: real archives
 2. **Confirm the GitHub Release** for `2026.6.99` has:
    - four `claudebar-2026.6.99-<target>.tar.gz`... *— note:* dist names archives by target only, **`claudebar-<target>.tar.gz`** (e.g. `claudebar-x86_64-unknown-linux-musl.tar.gz`), which omits the version segment. Expect four archives, one per target.
    - the unified **`sha256.sum`** checksum file (plus per-archive `.sha256` files).
-   - the **`claudebar-installer.sh`** shell installer.
 
 3. **Download the `x86_64-unknown-linux-musl` archive** and confirm the binary reports the tag:
 
