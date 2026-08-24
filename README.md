@@ -134,8 +134,30 @@ crit = 80   # bar turns red
 | `claudebar setup` | Wire claudebar into Claude Code's `settings.json` |
 | `claudebar list` | List built-in themes and styles |
 | `claudebar doctor` | Diagnose font, git, config, and PATH issues |
+| `claudebar update` | Check for a newer claudebar release (manual; never runs during rendering) |
 
 More commands and flags: `claudebar --help`.
+
+### Checking for updates
+
+`claudebar update` compares your installed version against the newest GitHub
+release. It is fully manual and session-free — the statusline render path never
+makes a network call, so it cannot stall or error the statusline.
+
+By default it compares against the newest **stable** release (the default
+install path). Pass `--channel beta` to also consider prereleases.
+
+```bash
+claudebar update
+# claudebar 2026.8.15 (stable channel)
+# Update available: 2026.8.16 (stable)
+# Install/update: https://github.com/micschr0/claudebar#installation
+```
+
+Exit codes (script-friendly): `0` = up to date, `1` = check failed (e.g. no
+network), `2` = an update is available. In `set -e` shells or `&&`-chains, where
+an exit of `2` would be treated as an error, add `--check` — the result is still
+printed, but the command always exits `0` on success.
 
 ## Uninstall
 
