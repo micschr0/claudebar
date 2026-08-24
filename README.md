@@ -41,13 +41,13 @@ Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable 
 brew install micschr0/tap/claudebar-beta
 ```
 
-**npm** *(macOS & Linux)*
+**npm**
 ```bash
 # installs the prebuilt native binary for your platform
 npm install -g @micschr0/claudebar && claudebar setup
 ```
 
-**pnpm** *(macOS & Linux)*
+**pnpm**
 ```bash
 # same per-platform package, installable with any npm-registry package manager
 pnpm add -g @micschr0/claudebar && claudebar setup
