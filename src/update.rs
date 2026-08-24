@@ -112,28 +112,15 @@ impl Ord for Version {
     }
 }
 
-/// Compare two full prerelease strings (e.g. `beta.1` vs `beta.2`).
+/// Compare two prerelease suffixes. claudebar uses CalVer with a single
+/// `-beta.N` shape (`2026.8.15-beta.1`), so we only need numeric beta levels;
+/// a missing suffix (a full release) always sorts higher than a prerelease.
+/// Kept deliberately simple — see ponytail: handles only `-beta.<u32>`; a
+/// different prerelease shape would need the full semver comparison.
 fn cmp_prerelease(a: &str, b: &str) -> Ordering {
-    let a_ids: Vec<&str> = a.split('.').collect();
-    let b_ids: Vec<&str> = b.split('.').collect();
-    let n = a_ids.len().min(b_ids.len());
-    for i in 0..n {
-        let ord = cmp_prerelease_id(a_ids[i], b_ids[i]);
-        if ord != Ordering::Equal {
-            return ord;
-        }
-    }
-    // All shared identifiers equal: fewer identifiers is lower (semver rule).
-    a_ids.len().cmp(&b_ids.len())
-}
-
-fn cmp_prerelease_id(a: &str, b: &str) -> Ordering {
-    match (a.parse::<u64>(), b.parse::<u64>()) {
-        (Ok(x), Ok(y)) => x.cmp(&y),       // numeric ids compare numerically
-        (Ok(_), Err(_)) => Ordering::Less, // numeric < alphanumeric
-        (Err(_), Ok(_)) => Ordering::Greater,
-        (Err(_), Err(_)) => a.cmp(b), // alphanumeric ids compare lexically
-    }
+    let a_num = a.strip_prefix("beta.").and_then(|n| n.parse::<u64>().ok());
+    let b_num = b.strip_prefix("beta.").and_then(|n| n.parse::<u64>().ok());
+    a_num.cmp(&b_num)
 }
 
 /// A single release entry from the GitHub releases API. We only need the tag;
@@ -203,7 +190,7 @@ pub fn fetch_latest() -> Result<Latest, UpdateError> {
     let releases: Vec<Release> =
         serde_json::from_slice(&output.stdout).map_err(|e| UpdateError::Parse(e.to_string()))?;
 
-    let mut versions: Vec<Version> = Vec::new();
+    let mut versions: Vec<Version> = Vec::with_capacity(releases.len());
     for r in releases {
         if let Some(v) = Version::parse(&r.tag_name) {
             versions.push(v);
