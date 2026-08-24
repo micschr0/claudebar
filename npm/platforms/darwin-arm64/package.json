@@ -1,0 +1,20 @@
+{
+  "name": "@micschr0/claudebar-darwin-arm64",
+  "version": "0.0.0",
+  "description": "macOS (Apple silicon arm64) native binary for claudebar",
+  "files": [
+    "claudebar"
+  ],
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/micschr0/claudebar"
+  },
+  "author": "micschr0",
+  "license": "MIT"
+}
