@@ -41,12 +41,6 @@ Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable 
 brew install micschr0/tap/claudebar-beta
 ```
 
-**npm**
-```bash
-# installs the prebuilt native binary for your platform
-npm install -g @micschr0/claudebar && claudebar setup
-```
-
 **pnpm**
 ```bash
 # same per-platform package, installable with any npm-registry package manager
@@ -184,7 +178,7 @@ printed, but the command always exits `0` on success.
 ```bash
 brew uninstall claudebar
 # or: rm ~/.claude/claudebar   # script install
-# or: npm uninstall -g @micschr0/claudebar   # npm / pnpm: pnpm remove -g @micschr0/claudebar
+# or: pnpm remove -g @micschr0/claudebar   # npm / pnpm install
 ```
 
 Then remove the `statusLine` entry from `~/.claude/settings.json` and, optionally, `~/.config/claudebar/`.
