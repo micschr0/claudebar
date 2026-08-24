@@ -31,6 +31,7 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
+          cache: '' # no dependencies are installed; don't let setup-node enable a cache (zizmor)
 
       - name: Resolve release tag
         id: tag
