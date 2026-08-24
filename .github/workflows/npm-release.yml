@@ -61,7 +61,9 @@ jobs:
           for a in claudebar-*.tar.gz; do
             t="${a#claudebar-}"; t="${t%.tar.gz}"
             mkdir -p "$RUNNER_TEMP/extracted/$t"
-            tar -xzf "$a" -C "$RUNNER_TEMP/extracted/$t"
+            # cargo-dist tarballs nest the binary under claudebar-<target>/;
+            # strip that prefix so the binary lands at extracted/<target>/claudebar.
+            tar -xzf "$a" -C "$RUNNER_TEMP/extracted/$t" --strip-components=1
           done
 
       - name: Assemble publishable packages (templates + version + binary)
