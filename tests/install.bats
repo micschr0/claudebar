@@ -205,24 +205,26 @@ setup() {
 @test "archive_has_unsafe_paths flags path traversal" {
   mkdir -p sub
   echo evil > sub/x
-  tar -czf evil.tar.gz --transform 's|sub/x|../escape|' sub/x
+  tar -czf evil.tar.gz -C sub --transform 's|^x$|../escape|' x
   run archive_has_unsafe_paths evil.tar.gz
   [ "$status" -eq 0 ]
 }
 
-@test "extract_archive extracts a clean archive" {
-  echo bin > claudebar
-  tar -czf clean.tar.gz claudebar
+@test "extract_archive strips the cargo-dist target directory" {
+  mkdir -p claudebar-x86_64-unknown-linux-musl
+  echo bin > claudebar-x86_64-unknown-linux-musl/claudebar
+  tar -czf clean.tar.gz claudebar-x86_64-unknown-linux-musl
   mkdir out
   run extract_archive clean.tar.gz out
   [ "$status" -eq 0 ]
   [ -f out/claudebar ]
+  [ ! -d out/claudebar-x86_64-unknown-linux-musl ]
 }
 
 @test "extract_archive refuses a traversal archive" {
   mkdir -p sub
   echo evil > sub/x
-  tar -czf evil.tar.gz --transform 's|sub/x|../escape|' sub/x
+  tar -czf evil.tar.gz -C sub --transform 's|^x$|../escape|' x
   mkdir out
   run extract_archive evil.tar.gz out
   [ "$status" -eq 1 ]

@@ -187,13 +187,12 @@ extract_archive() {
     red "Archive contains unsafe paths (.. or absolute) — aborting"
     return 1
   fi
-  tar --no-same-owner -xf "$archive" -C "$dest"
+  # gVisor returns ENOSYS when tar creates a directory then opens files in it.
+  tar --no-same-owner --strip-components=1 -xf "$archive" -C "$dest"
 }
 
 install_binary() {
   local workdir="$1" src
-  # cargo-dist archives nest the binary in a target-named subdirectory
-  # (e.g. claudebar-x86_64-unknown-linux-musl/claudebar), not at the root.
   src=$(find "$workdir" -maxdepth 2 -type f -name claudebar | head -n1)
   if [ -z "$src" ]; then
     red "Extracted archive did not contain a claudebar binary"
