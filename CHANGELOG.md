@@ -8,6 +8,16 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.8.26-beta.1](https://github.com/micschr0/claudebar/compare/2026.8.24-beta.1...2026.8.26-beta.1)
+
+### Fixed
+- Hide style-list glyphs for styles with icons off (#109)
+- Strip cargo-dist target prefix on extract (#105)
+- Strip cargo-dist target prefix when extracting release assets (#100)
+
+### Documentation
+- Dedup beta block, unchain setup, copyedit (#108)
+
 ## [2026.8.24-beta.1](https://github.com/micschr0/claudebar/compare/2026.8.15-beta.1...2026.8.24-beta.1)
 
 ### Added
