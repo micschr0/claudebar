@@ -471,8 +471,13 @@ fn render_style_row(
     let empty2 = format!("{0}{0}", style.bar_empty);
     let fill_span = Span::styled(fill2, Style::default().fg(CHROME_OK));
     let empty_span = Span::styled(empty2, Style::default().fg(CHROME_DISABLED));
-    let project_span = Span::raw(style.glyphs.project);
-    let duration_span = Span::raw(style.glyphs.duration);
+    // Only icon-enabled styles emit glyphs at render time (SegmentWriter::icon gates
+    // on style.icons), so a style with icons off must show none here either.
+    let icon_span = if style.icons {
+        Span::raw(style.glyphs.duration)
+    } else {
+        Span::raw("")
+    };
 
     let mut line = Line::from(vec![
         Span::raw("  "),
@@ -484,9 +489,7 @@ fn render_style_row(
         fill_span,
         empty_span,
         gap_b,
-        project_span,
-        Span::raw(" "),
-        duration_span,
+        icon_span,
     ]);
     if is_cursor {
         line = line.style(cursor_bg);
@@ -1087,4 +1090,36 @@ fn draw_help_overlay(f: &mut Frame, overlay_area: Rect) {
         .border_style(Style::default().fg(CHROME_ACCENT));
 
     f.render_widget(Paragraph::new(content).block(block), overlay_area);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::model::config::Config;
+
+    fn row_text(style_name: &'static str) -> String {
+        let cfg = Config {
+            style: style_name.to_string(),
+            ..Config::default()
+        };
+        let app = App::new(cfg, None);
+        render_style_row(&style_name, &app, false, Style::default())
+            .spans
+            .iter()
+            .map(|s| s.content.as_ref())
+            .collect()
+    }
+
+    #[test]
+    fn style_row_shows_icon_only_when_style_enables_icons() {
+        for name in crate::styles::NAMES {
+            let style = crate::styles::get(name);
+            let has_glyph = row_text(name).contains(style.glyphs.duration);
+            assert_eq!(
+                has_glyph, style.icons,
+                "{name}: row shows duration glyph = {has_glyph}, but style.icons = {}",
+                style.icons
+            );
+        }
+    }
 }
