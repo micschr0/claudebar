@@ -95,7 +95,19 @@ jobs:
         run: |
           set -euo pipefail
           section="$RUNNER_TEMP/section.md"
-          git-cliff --unreleased --tag "$VERSION" --strip all > "$section"
+          # For a stable release, roll up every commit since the last stable tag
+          # (not just since the last beta) so intermediate betas aren't dropped.
+          if [[ "$VERSION" != *-beta.* ]]; then
+            last_stable="$(git tag -l | grep -vE -- '-beta\.' | sort -V | tail -1)"
+            range="${last_stable:+$last_stable..}"
+          else
+            range=""
+          fi
+          if [[ -n "$range" ]]; then
+            git-cliff "$range" --tag "$VERSION" --strip all > "$section"
+          else
+            git-cliff --unreleased --tag "$VERSION" --strip all > "$section"
+          fi
           grep -q '^### ' "$section" \
             || { echo "::error::git-cliff produced no entries — nothing to release"; exit 1; }
           grep -q '<!-- next-release -->' CHANGELOG.md
