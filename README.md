@@ -97,7 +97,7 @@ brew install micschr0/tap/claudebar-beta
 Or via the script:
 
 ```bash
-CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | CLAUDEBAR_CHANNEL=beta bash
 ```
 
 `micschr0/tap/claudebar` always tracks stable; `claudebar-beta` follows the latest prerelease. Back to stable:
