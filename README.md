@@ -19,56 +19,56 @@
 > On macOS: `brew install --cask font-hack-nerd-font` (the font used in the screenshots).
 
 ```bash
-# verifies SHA256 · build provenance when gh is available
+# verifies SHA256, plus build provenance when gh is available
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
 **Homebrew**
 ```bash
 # verifies SHA256
-brew install micschr0/tap/claudebar && claudebar setup
+brew install micschr0/tap/claudebar
 ```
 
 **mise**
 ```bash
-# verifies SHA256 · build provenance, automatically
-mise use -g github:micschr0/claudebar && claudebar setup
-```
-
-Betas ship to a versioned formula so `brew upgrade` cannot silently bump stable users onto a prerelease:
-
-```bash
-brew install micschr0/tap/claudebar-beta
+# verifies SHA256 and build provenance automatically
+mise use -g github:micschr0/claudebar
 ```
 
 **pnpm**
 ```bash
 # same per-platform package, installable with any npm-registry package manager
-pnpm add -g @micschr0/claudebar && claudebar setup
+pnpm add -g @micschr0/claudebar
+```
+
+Then wire it into Claude Code. It shows a diff, asks before writing, and backs up the old file:
+
+```bash
+claudebar setup
 ```
 
 <details><summary>What each install method verifies</summary>
 
-Every method checks the SHA256 of the downloaded archive. They differ in whether they also verify [build provenance](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) — proof that the binary was built by this repo's `release.yml`, not just that it matches a published hash.
+Every method checks the SHA256 of the downloaded archive. Only some also verify [build provenance](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds), which proves that this repo's `release.yml` built the binary. A matching hash on its own does not.
 
 | Method | SHA256 | Build provenance |
 |---|---|---|
-| `install.sh` | ✓ fatal on mismatch | ~ needs `gh`, installed and authenticated |
-| Homebrew | ✓ | · |
+| `install.sh` | ✓ fatal on mismatch | ~ needs `gh`, authenticated |
+| Homebrew | ✓ | ✗ |
 | `mise` | ✓ | ✓ automatic |
-| npm / pnpm | ✓ (ships verified binary) | · |
-| `claudebar-installer.sh` (hosted) | ✓ | · |
+| npm / pnpm | ✓ (ships verified binary) | ✗ |
+| `claudebar-installer.sh` (hosted) | ✓ | ✗ |
 
-<sub>✓ verified, ~ conditional, · not checked</sub>
+<sub>✓ verified, ~ conditional, ✗ not checked</sub>
 
 > [!NOTE]
 > The npm/pnpm packages ship the **already-attested** release binaries (built and
-> provenance-signed by `release.yml`, then repackaged unchanged), but the package
-> itself is not published with [npm registry provenance](https://docs.npmjs.com/generating-provenance-statements/) —
-> enabling it would attest the repackaging workflow, not the build. The `release.yml`
-> build provenance on those binaries is what the `install.sh` command below verifies.
+> provenance-signed by `release.yml`, then repackaged unchanged). The package itself
+> carries no [npm registry provenance](https://docs.npmjs.com/generating-provenance-statements/),
+> since that would attest the repackaging workflow rather than the build. What
+> `install.sh` checks is the `release.yml` provenance on the binaries themselves.
 
-`install.sh` treats a checksum mismatch as fatal but never fails the install on a provenance error — it scopes trust to `release.yml` via `gh attestation verify --signer-workflow` and warns if that check cannot complete. To verify a download by hand:
+`install.sh` treats a checksum mismatch as fatal; a provenance error only warns. It scopes trust to `release.yml` via `gh attestation verify --signer-workflow`. To verify a download by hand:
 
 ```bash
 gh attestation verify claudebar-x86_64-unknown-linux-musl.tar.gz \
@@ -86,15 +86,21 @@ bash install.sh
 ```
 </details>
 
-<details><summary>Try a beta before it's stable</summary>
+<details><summary>Beta channel</summary>
 
-Prereleases (tagged e.g. `2026.7.6-beta.1`) get their own versioned Homebrew formula (`claudebar-beta`) and are also installable via the script:
+Prereleases (tagged e.g. `2026.7.6-beta.1`) ship to a separate Homebrew formula, so `brew upgrade` keeps stable users on stable:
+
+```bash
+brew install micschr0/tap/claudebar-beta
+```
+
+Or via the script:
 
 ```bash
 CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
-The plain `micschr0/tap/claudebar` formula always tracks stable; `claudebar-beta` follows the latest prerelease. To switch from the Homebrew beta back to stable:
+`micschr0/tap/claudebar` always tracks stable; `claudebar-beta` follows the latest prerelease. Back to stable:
 
 ```bash
 brew uninstall micschr0/tap/claudebar-beta && brew install micschr0/tap/claudebar
@@ -111,7 +117,7 @@ Colors shift as usage crosses **50%** and **80%**:
 
 <img src="screenshots/strip-overlimit.png" width="860" alt="Over limit: past the threshold">
 
-All segments — three off by default (dev-context, burn, clock):
+All segments. Three are off by default (dev-context, burn, clock):
 
 <img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock">
 
@@ -155,11 +161,11 @@ More commands and flags: `claudebar --help`.
 ### Checking for updates
 
 `claudebar update` compares your installed version against the newest GitHub
-release. It is fully manual and session-free — the statusline render path never
-makes a network call, so it cannot stall or error the statusline.
+release. You run it yourself: the render path makes no network call, so the
+statusline never stalls on it.
 
-By default it compares against the newest **stable** release (the default
-install path). Pass `--channel beta` to also consider prereleases.
+It compares against the newest **stable** release. Pass `--channel beta` to
+include prereleases.
 
 ```bash
 claudebar update
@@ -168,10 +174,9 @@ claudebar update
 # Install/update: https://github.com/micschr0/claudebar#installation
 ```
 
-Exit codes (script-friendly): `0` = up to date, `1` = check failed (e.g. no
-network), `2` = an update is available. In `set -e` shells or `&&`-chains, where
-an exit of `2` would be treated as an error, add `--check` — the result is still
-printed, but the command always exits `0` on success.
+Exit codes: `0` = up to date, `1` = check failed (e.g. no network), `2` = update
+available. In `set -e` shells or `&&`-chains, where exit `2` reads as an error,
+add `--check`: it still prints the result but exits `0` on success.
 
 ## Uninstall
 
@@ -181,7 +186,7 @@ brew uninstall claudebar
 # or: pnpm remove -g @micschr0/claudebar   # npm / pnpm install
 ```
 
-Then remove the `statusLine` entry from `~/.claude/settings.json` and, optionally, `~/.config/claudebar/`.
+Then remove the `statusLine` entry from `~/.claude/settings.json`, and `~/.config/claudebar/` if you want the config gone too.
 
 ---
 
