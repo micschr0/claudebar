@@ -8,6 +8,11 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.8.27](https://github.com/micschr0/claudebar/compare/2026.8.26-beta.1...2026.8.27)
+
+### Fixed
+- Move CLAUDEBAR_CHANNEL to bash side of pipe (#111)
+
 ## [2026.8.26-beta.1](https://github.com/micschr0/claudebar/compare/2026.8.24-beta.1...2026.8.26-beta.1)
 
 ### Fixed
