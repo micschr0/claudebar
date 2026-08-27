@@ -23,6 +23,19 @@ bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 # Pinned to HTTPS + TLS 1.2+ so a redirect or MITM can't downgrade the connection.
 curl_https() { curl --proto '=https' --tlsv1.2 -fsSL "$@"; }
 
+# GitHub's unauthenticated API allowance is 60 requests/hour per IP; shared CI
+# egress addresses exhaust it and the release lookup 403s. Authenticate when a
+# token happens to be in the environment. curl drops the header on a cross-host
+# redirect, so it never reaches the asset CDN.
+api_get() {
+  local token="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
+  if [ -n "$token" ]; then
+    curl_https -H "Authorization: Bearer $token" "$@"
+  else
+    curl_https "$@"
+  fi
+}
+
 install_hint() {
   case "$1" in
     curl) echo "  macOS:  brew install curl" ;;
@@ -82,7 +95,7 @@ detect_target() {
 LATEST_RELEASE_JSON=""
 fetch_latest_release() {
   if [ -z "$LATEST_RELEASE_JSON" ]; then
-    LATEST_RELEASE_JSON=$(curl_https "$RELEASE_API")
+    LATEST_RELEASE_JSON=$(api_get "$RELEASE_API")
     # beta channel hits the /releases list (newest first, includes prereleases);
     # stable hits /releases/latest, which is already a single object.
     if [ "$RELEASE_CHANNEL" = "beta" ]; then
