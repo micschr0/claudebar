@@ -5,16 +5,29 @@ on:
   schedule:
     - cron: "0 8 * * *"
 
-permissions:
-  contents: write
-  pull-requests: write
+concurrency:
+  group: openwiki-update-${{ github.ref }}
+  cancel-in-progress: false
+
+# Default deny-all. The update job re-grants only what create-pull-request
+# needs: contents: write to push the openwiki/update branch, pull-requests:
+# write to open the PR against it.
+permissions: {}
 
 jobs:
   update:
+    name: OpenWiki update
     runs-on: ubuntu-latest
+    permissions:
+      contents: write       # push the openwiki/update branch
+      pull-requests: write  # open or reuse the PR against it
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
     steps:
+      - uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
       # The secrets context is not readable from a job-level `if:`, so the guard
       # has to be a step that later steps key off. Without it every scheduled run
       # goes red on a repo that has no key configured.
@@ -30,16 +43,17 @@ jobs:
 
       - name: Check out repository
         if: steps.guard.outputs.enabled == 'true'
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Full history so `openwiki code --update` can diff HEAD against the
           # commit it last documented; a shallow clone hides that commit and the
           # update runs against an empty change summary.
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Node.js
         if: steps.guard.outputs.enabled == 'true'
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
 
