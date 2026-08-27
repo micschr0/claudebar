@@ -467,8 +467,15 @@ fn render_style_row(
     let sep_span = Span::raw(style.separator);
     let gap_a = Span::raw("  ");
     let gap_b = Span::raw("  ");
-    let fill2 = format!("{0}{0}", style.bar_fill);
-    let empty2 = format!("{0}{0}", style.bar_empty);
+    // Dot-meter styles draw their bars from `bar_dots`, so the swatch has to
+    // come from the same source the renderer uses.
+    let (fill2, empty2) = match style.bar_dots {
+        Some(levels) => (format!("{0}{0}", levels[4]), format!("{0}{0}", levels[0])),
+        None => (
+            format!("{0}{0}", style.bar_fill),
+            format!("{0}{0}", style.bar_empty),
+        ),
+    };
     let fill_span = Span::styled(fill2, Style::default().fg(CHROME_OK));
     let empty_span = Span::styled(empty2, Style::default().fg(CHROME_DISABLED));
     // Only icon-enabled styles emit glyphs at render time (SegmentWriter::icon gates
@@ -1108,6 +1115,20 @@ mod tests {
             .iter()
             .map(|s| s.content.as_ref())
             .collect()
+    }
+
+    #[test]
+    fn style_row_swatch_uses_the_style_own_bar_glyphs() {
+        for name in crate::styles::NAMES {
+            let style = crate::styles::get(name);
+            let (fill, empty) = match style.bar_dots {
+                Some(levels) => (levels[4], levels[0]),
+                None => (style.bar_fill, style.bar_empty),
+            };
+            let text = row_text(name);
+            assert!(text.contains(fill), "{name}: swatch missing fill glyph");
+            assert!(text.contains(empty), "{name}: swatch missing empty glyph");
+        }
     }
 
     #[test]
