@@ -66,3 +66,6 @@ skills-lock.json
 .agents/skills/
 # Local AI runtime state
 .atl/
+
+# local planning notes
+tasks/

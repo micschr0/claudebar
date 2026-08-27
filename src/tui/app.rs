@@ -521,6 +521,9 @@ pub(crate) fn segment_help(kind: SegmentKind) -> &'static str {
         SegmentKind::Duration => "Duration — session wall-clock duration",
         SegmentKind::Burn => "Burn — cumulative session cost",
         SegmentKind::Clock => "Clock — current time (12h/24h, configurable seconds)",
+        SegmentKind::UpdateNotice => {
+            "Update Notice — badge when a newer release exists (checks once a day)"
+        }
     }
 }
 

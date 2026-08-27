@@ -117,7 +117,7 @@ Colors shift as usage crosses **50%** and **80%**:
 
 <img src="screenshots/strip-overlimit.png" width="860" alt="Over limit: past the threshold">
 
-All segments. Three are off by default (dev-context, burn, clock):
+All segments. Four are off by default (dev-context, burn, clock, update-notice):
 
 <img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock">
 
@@ -161,8 +161,8 @@ More commands and flags: `claudebar --help`.
 ### Checking for updates
 
 `claudebar update` compares your installed version against the newest GitHub
-release. You run it yourself: the render path makes no network call, so the
-statusline never stalls on it.
+release. You run it yourself, and the render path never blocks on the network,
+so the statusline cannot stall on it.
 
 It compares against the newest **stable** release. Pass `--channel beta` to
 include prereleases.
@@ -173,6 +173,13 @@ claudebar update
 # Update available: 2026.8.16 (stable)
 # Install/update: https://github.com/micschr0/claudebar#installation
 ```
+
+Add the `update-notice` segment to see the result inline, as an "↑ 2026.8.20"
+badge on the statusline. It is off by default: enabling it opts into one
+background check per day, run by a detached child process that writes a small
+cache next to your config file. The statusline itself only reads that cache and
+never waits for the check. With the segment disabled, nothing is fetched and no
+cache is written.
 
 Exit codes: `0` = up to date, `1` = check failed (e.g. no network), `2` = update
 available. In `set -e` shells or `&&`-chains, where exit `2` reads as an error,

@@ -436,6 +436,7 @@ mod tests {
             now: 0,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut w = SegmentWriter::new(&theme, &style);
         assert!(!Burn.render(&ctx, &mut w));
@@ -531,6 +532,7 @@ mod tests {
             now,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
 
         let mut w = SegmentWriter::new(&theme, &style);
@@ -594,6 +596,7 @@ mod tests {
             now,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut w = SegmentWriter::new(&theme, &style);
         let emitted = Burn.render(&ctx, &mut w);
@@ -660,6 +663,7 @@ mod tests {
             now,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
 
         let mut w = SegmentWriter::new(&theme, &style);

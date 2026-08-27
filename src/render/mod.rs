@@ -11,7 +11,7 @@ pub mod writer;
 pub use float::strip_ansi;
 pub use writer::SegmentWriter;
 
-use crate::model::{Config, InputData, RESET, Style, Theme};
+use crate::model::{Config, InputData, RESET, SegmentKind, Style, Theme};
 use crate::segment::RenderCtx;
 use crate::segment::clock;
 use crate::{styles, themes};
@@ -24,6 +24,11 @@ pub fn render_line(input: &InputData, cfg: &Config, now: i64) -> String {
     let style = styles::get(&cfg.style);
     let home = std::env::var("HOME").ok();
     let tz_offset = clock::detect_tz_offset();
+    if cfg.segments.contains(&SegmentKind::UpdateNotice) {
+        // Keeps the badge current without the render ever blocking on the
+        // network: a detached child does the check, at most once a day.
+        crate::update::refresh_in_background(now);
+    }
     let line = render_with(input, cfg, &theme, &style, now, home.as_deref(), tz_offset);
     if cfg.thresholds.float {
         float::emit_float(input, cfg, now, home.as_deref());
@@ -43,7 +48,9 @@ pub fn render_with(
     home: Option<&str>,
     tz_offset_seconds: i32,
 ) -> String {
+    let newer = cached_update(cfg);
     let ctx = RenderCtx {
+        update: newer.as_ref(),
         input,
         theme,
         style,
@@ -58,6 +65,19 @@ pub fn render_with(
     } else {
         render_fixed(&ctx, cfg, theme, style)
     }
+}
+
+/// The cached release newer than this binary, or `None` — including whenever
+/// the `update-notice` segment is disabled, which is what keeps the cache read
+/// off everyone else's render path.
+fn cached_update(cfg: &Config) -> Option<crate::update::Version> {
+    if !cfg.segments.contains(&SegmentKind::UpdateNotice) {
+        return None;
+    }
+    let installed = crate::update::Version::parse(env!("CARGO_PKG_VERSION"))?;
+    crate::update::read_cache()?
+        .latest
+        .filter(|latest| *latest > installed)
 }
 
 /// Fixed layout: a single line, segments joined by separators. The original

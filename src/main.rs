@@ -609,9 +609,17 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
         }
     };
 
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_secs() as i64)
+        .unwrap_or(0);
+
     let latest = match claudebar::update::fetch_latest() {
         Ok(l) => l,
         Err(e) => {
+            // Stamp the failed attempt so a background refresh backs off for a
+            // day instead of retrying on every render.
+            claudebar::update::write_cache(now, None);
             eprintln!("claudebar: {e}");
             eprintln!("claudebar: ensure `curl` is installed and you are online.");
             eprintln!(
@@ -620,6 +628,10 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
             return ExitCode::FAILURE;
         }
     };
+
+    // The cache always records the newest stable release, independent of the
+    // channel this invocation reported on.
+    claudebar::update::write_cache(now, Some(latest.stable.as_ref().unwrap_or(&latest.overall)));
 
     println!("claudebar {installed} ({channel} channel)");
     match claudebar::update::recommend(&installed, &latest, channel) {

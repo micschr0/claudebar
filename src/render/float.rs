@@ -51,6 +51,9 @@ fn render_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>) -
         now,
         home,
         tz_offset_seconds: 0,
+        // The float readout is a plain-text mirror of the session state; an
+        // update badge belongs on the status line only.
+        update: None,
     };
 
     let mut parts: Vec<String> = Vec::with_capacity(SegmentKind::ALL.len());

@@ -18,7 +18,8 @@
 
 use serde::Deserialize;
 use std::cmp::Ordering;
-use std::process::Command;
+use std::path::PathBuf;
+use std::process::{Command, Stdio};
 use thiserror::Error;
 
 /// Which release channel to compare against. The install path by default
@@ -214,6 +215,89 @@ pub fn fetch_latest() -> Result<Latest, UpdateError> {
     })
 }
 
+/// A day between background update checks.
+const REFRESH_INTERVAL: i64 = 86_400;
+
+/// The last update check's outcome, as persisted for the render path.
+#[derive(Debug, Clone)]
+pub struct CachedCheck {
+    /// When the check ran, epoch seconds — stamped even when it failed, so an
+    /// offline machine retries daily instead of on every render.
+    pub checked_at: i64,
+    /// The newest stable release, if the check succeeded.
+    pub latest: Option<Version>,
+}
+
+/// Where the update-check cache lives — beside the config file, so XDG
+/// resolution stays in exactly one place.
+#[must_use]
+pub fn cache_path() -> Option<PathBuf> {
+    Some(crate::model::Config::default_path()?.with_file_name("update-check.json"))
+}
+
+/// Persist an update check. Best-effort: any failure is silently dropped, and
+/// `latest = None` records a failed check so the retry interval still applies.
+pub fn write_cache(checked_at: i64, latest: Option<&Version>) {
+    let Some(path) = cache_path() else {
+        return;
+    };
+    if let Some(dir) = path.parent() {
+        let _ = std::fs::create_dir_all(dir);
+    }
+    let body = serde_json::json!({
+        "checked_at": checked_at,
+        "latest": latest.map(ToString::to_string),
+    });
+    let _ = std::fs::write(&path, body.to_string());
+}
+
+/// Read the cache. Missing, unreadable, or malformed all yield `None`, the
+/// same degrade-silently contract as `InputData::parse`.
+#[must_use]
+pub fn read_cache() -> Option<CachedCheck> {
+    parse_cache(&std::fs::read_to_string(cache_path()?).ok()?)
+}
+
+fn parse_cache(raw: &str) -> Option<CachedCheck> {
+    let v: serde_json::Value = serde_json::from_str(raw).ok()?;
+    Some(CachedCheck {
+        checked_at: v.get("checked_at")?.as_i64()?,
+        latest: v
+            .get("latest")
+            .and_then(serde_json::Value::as_str)
+            .and_then(Version::parse),
+    })
+}
+
+/// Spawn a detached `claudebar update --check` when the cache is missing or
+/// older than [`REFRESH_INTERVAL`].
+///
+/// The caller never waits on the child and never sees its output — the render
+/// returns immediately and the cache is updated whenever the child finishes.
+/// Without a usable cache path there is no way to rate-limit, so nothing is
+/// spawned at all.
+pub fn refresh_in_background(now: i64) {
+    if cache_path().is_none() {
+        return;
+    }
+    let due = match read_cache() {
+        Some(c) => now.saturating_sub(c.checked_at) > REFRESH_INTERVAL,
+        None => true,
+    };
+    if !due {
+        return;
+    }
+    let Ok(exe) = std::env::current_exe() else {
+        return;
+    };
+    let _ = Command::new(exe)
+        .args(["update", "--check"])
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn();
+}
+
 /// The outcome of comparing the installed version against the latest release.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Recommendation {
@@ -257,6 +341,28 @@ mod tests {
 
     fn v(s: &str) -> Version {
         Version::parse(s).unwrap()
+    }
+
+    #[test]
+    fn cache_roundtrip_and_garbage() {
+        let good = parse_cache(r#"{"checked_at":42,"latest":"2026.8.20"}"#).unwrap();
+        assert_eq!(good.checked_at, 42);
+        assert_eq!(good.latest, Some(v("2026.8.20")));
+
+        // A failed check: stamped, but nothing to show.
+        let failed = parse_cache(r#"{"checked_at":42,"latest":null}"#).unwrap();
+        assert_eq!(failed.latest, None);
+
+        // Malformed, wrong types, missing stamp, unparseable version.
+        assert!(parse_cache("{").is_none());
+        assert!(parse_cache(r#"{"checked_at":"soon"}"#).is_none());
+        assert!(parse_cache(r#"{"latest":"2026.8.20"}"#).is_none());
+        assert_eq!(
+            parse_cache(r#"{"checked_at":42,"latest":"nope"}"#)
+                .unwrap()
+                .latest,
+            None
+        );
     }
 
     #[test]
