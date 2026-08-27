@@ -130,7 +130,7 @@ fn resolve_path(path: &str, home: Option<&str>) -> Option<PathBuf> {
 /// # Errors
 ///
 /// Returns the underlying [`std::io::Error`]; the caller treats it as best-effort.
-fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
+pub(crate) fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
     let parent = path.parent().unwrap_or_else(|| Path::new("."));
     std::fs::create_dir_all(parent)?;
     let name = path

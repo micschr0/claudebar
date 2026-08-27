@@ -221,8 +221,9 @@ const REFRESH_INTERVAL: i64 = 86_400;
 /// The last update check's outcome, as persisted for the render path.
 #[derive(Debug, Clone)]
 pub struct CachedCheck {
-    /// When the check ran, epoch seconds — stamped even when it failed, so an
-    /// offline machine retries daily instead of on every render.
+    /// When a check was last started, epoch seconds — stamped before the
+    /// network call and again when it finishes, so an offline machine retries
+    /// daily instead of on every render.
     pub checked_at: i64,
     /// The newest stable release, if the check succeeded.
     pub latest: Option<Version>,
@@ -239,19 +240,21 @@ pub fn cache_path() -> Option<PathBuf> {
 /// `latest = None` records a failed check so the retry interval still applies.
 pub fn write_cache(checked_at: i64, latest: Option<&Version>) {
     if let Some(path) = cache_path() {
-        write_cache_at(&path, checked_at, latest);
+        let _ = write_cache_at(&path, checked_at, latest);
     }
 }
 
-fn write_cache_at(path: &Path, checked_at: i64, latest: Option<&Version>) {
-    if let Some(dir) = path.parent() {
-        let _ = std::fs::create_dir_all(dir);
-    }
+/// Returns whether the cache actually landed on disk. That is the one failure
+/// the caller has to react to: an unwritable config directory means the daily
+/// backoff can never be recorded.
+fn write_cache_at(path: &Path, checked_at: i64, latest: Option<&Version>) -> bool {
     let body = serde_json::json!({
         "checked_at": checked_at,
         "latest": latest.map(ToString::to_string),
     });
-    let _ = std::fs::write(path, body.to_string());
+    // Reuses the float readout's writer: a torn read here reads as "no cache",
+    // which would spawn a redundant check on the next render.
+    crate::render::float::write_atomic(path, &body.to_string()).is_ok()
 }
 
 /// Read the cache. Missing, unreadable, or malformed all yield `None`, the
@@ -290,13 +293,21 @@ fn is_refresh_due(cache: Option<&CachedCheck>, now: i64) -> bool {
 ///
 /// The caller never waits on the child and never sees its output — the render
 /// returns immediately and the cache is updated whenever the child finishes.
-/// Without a usable cache path there is no way to rate-limit, so nothing is
-/// spawned at all.
+/// Without a usable cache path, or when the cache cannot be written, there is
+/// no way to rate-limit, so nothing is spawned at all.
 pub fn refresh_in_background(now: i64) {
     let Some(path) = cache_path() else {
         return;
     };
-    if !is_refresh_due(read_cache_at(&path).as_ref(), now) {
+    let cached = read_cache_at(&path);
+    if !is_refresh_due(cached.as_ref(), now) {
+        return;
+    }
+    // Claim the slot before the child starts its network call. `curl` waits up
+    // to 15s, and until the child writes, every further render would see the
+    // same stale cache and spawn a check of its own. Re-stamping keeps the
+    // version already known so the badge survives the claim.
+    if !write_cache_at(&path, now, cached.and_then(|c| c.latest).as_ref()) {
         return;
     }
     let Ok(exe) = std::env::current_exe() else {
@@ -377,13 +388,13 @@ mod tests {
         assert!(read_cache_at(&path).is_none());
 
         // A successful check. The parent directory does not exist yet either.
-        write_cache_at(&path, 1_700_000_000, Some(&v("2026.8.20")));
+        assert!(write_cache_at(&path, 1_700_000_000, Some(&v("2026.8.20"))));
         let got = read_cache_at(&path).expect("cache readable");
         assert_eq!(got.checked_at, 1_700_000_000);
         assert_eq!(got.latest, Some(v("2026.8.20")));
 
         // A failed check overwrites it: stamped, but nothing to show.
-        write_cache_at(&path, 1_700_000_100, None);
+        assert!(write_cache_at(&path, 1_700_000_100, None));
         let got = read_cache_at(&path).expect("cache readable");
         assert_eq!(got.checked_at, 1_700_000_100);
         assert_eq!(got.latest, None);
@@ -398,6 +409,26 @@ mod tests {
         std::fs::write(&path, "not json").unwrap();
         assert!(read_cache_at(&path).is_none());
         let _ = std::fs::remove_dir_all(path.parent().unwrap());
+    }
+
+    #[test]
+    fn unwritable_cache_path_reports_failure() {
+        // A regular file where the cache's parent directory should be: nothing
+        // can be created under it, on any platform and as any user.
+        let blocker = unique_temp_path();
+        std::fs::create_dir_all(blocker.parent().unwrap()).unwrap();
+        std::fs::write(&blocker, "not a directory").unwrap();
+
+        let path = blocker.join("update-check.json");
+        assert!(
+            !write_cache_at(&path, 1_700_000_000, Some(&v("2026.8.20"))),
+            "an unwritable path must report failure, not swallow it"
+        );
+        // Failing closed matters because the caller uses this to decide whether
+        // spawning a check can ever be rate-limited.
+        assert!(read_cache_at(&path).is_none());
+
+        let _ = std::fs::remove_dir_all(blocker.parent().unwrap());
     }
 
     #[test]
