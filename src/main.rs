@@ -629,9 +629,11 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
         }
     };
 
-    // The cache always records the newest stable release, independent of the
-    // channel this invocation reported on.
-    claudebar::update::write_cache(now, Some(latest.stable.as_ref().unwrap_or(&latest.overall)));
+    // The cache always records the newest *stable* release, independent of the
+    // channel this invocation reported on. With no stable release at all there
+    // is nothing to record — caching `overall` here would badge stable-channel
+    // users toward a prerelease.
+    claudebar::update::write_cache(now, latest.stable.as_ref());
 
     println!("claudebar {installed} ({channel} channel)");
     match claudebar::update::recommend(&installed, &latest, channel) {
