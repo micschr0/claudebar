@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:4deb4828d12a530e84af8dc0496edd41e0673d333218770b7721614f19fb3f5b",
+  "claims": [
+    {
+      "id": "claim_26b703167494443096772554d21d3b33",
+      "statement": "claudebar integrates with Claude Code by patching the single `statusLine` key of the user-owned `settings.json` (a foreign file, not claudebar's own TOML) so it points at a fixed `claudebar render` command, leaving every other key untouched.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L1-L8",
+          "version": "repo-lines-v1:sha256:d1e46c941a240c064c870f2242b3205d76de0d5b3fd8203439f28e4ddadf627d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzY1OTdiNzYzMGVmMTA2YThhNzY3MTU4NWEzZjI1NWU4NmMzMzBkMTQ5M2VjM2VkMGEyOWMwNDllNDY3ZDFiMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTdlYjU0Y2M1M2MyZWRlYzI5NmRkYjBkOWEzOTg4NmRiN2IxYWI3ODk4NjBmYzEyM2Q1ZWU3Y2Y3YTczN2Q3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODNhYzQ0ZmY2OTA0YzNjZWZkOTM3Njk1NzgyODdjZTg5NTNkOWJmNmVkMzM3ZDg1YTlkYmMzNTIwOGUyYjg0ZCJ9"
+        },
+        {
+          "resource": "repo://src/setup.rs#L189-L194",
+          "version": "repo-lines-v1:sha256:0d3c27fcf293d2567c57c91499ad5a7a01cb51f52bd413f058a34761319dd558:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2QyNGU3MGMyYTRmZWFlZWMwM2NhNzBjM2ZiODFmYjcwYTFhMTczMTNlOGRiNmQ1ZmY5MTkxYzc4ZmMxYmQ1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Y3NmYzNjgwNDNlOGFlNjVmMDYzOTg1MGI3NWFkMDc2ZjFlM2FiN2QxNjdkOWE1NGQ2MDc0NjE0MjFmODMzYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmRkODgwNzQ2ZGZkOTE2NDBiOTlmZWFlZGIxMThiYmQwYThhZGQ5YWYyOTQ1ZmQwY2FmOTU2NDRkMmYwMzkzYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c28d0f6df69e4c6e8346d10eedf37ff1",
+      "statement": "The command wired into `statusLine` is the fixed constant `STATUSLINE_COMMAND = \"claudebar render\"`, serialized as `{\"type\":\"command\",\"command\":\"claudebar render\"}`; it is never built by formatting external input into the JSON command field.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L119-L134",
+          "version": "repo-lines-v1:sha256:9c3c06db5a44dff7bf8b9963a4fe0ba90c16a79fe11237d7e0e3637cc01deb95:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODkwZjYwODNmNmY0ZmJiYzQxNzliMTJmNDU3YTlmMTNmMDhkNjQ2ZDI4NGRhYThhOTQwN2UyZGUxZmRmMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkNmI1NWM2ODQyOGJkOWU4ZDZiNGU0Y2YwYmJmYmI4Mjc4MWEzMjU4NjEwYWU5ZTAxMjI3NzA0NjM1MGQwN2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczNTAwNGIxOTc2NGE1YjA0NzU2ZWRlMzJkOGQ1YzBkOTExNjQzZTQ3MjYyYTFlYjRhZTk2Mjc3Y2UwNjk1NmYifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L13-L15",
+          "version": "repo-lines-v1:sha256:993051ea3032892f5e33de75e32279a2a0b278e83f58010d43b76c8bd85c5023:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODAzYmVhOTFjYzQ1YzZhMjA0YmRlYThkNDMzM2U4MzY3M2I0YzY3MWQ1M2U5MDQ2NTFlZjAxNjRlMDE0NTVlZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjcwMDg2YTNkNjM5NzBiMzUxNGJhODdkM2VkZTRlNDhmMGRjNjNjNGE2MWM5ZTcwMGM1MTgxY2RhYjdiZDNjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjcwOWM1NDVkYjA3NzJiZGQ0ZWM2ZDk2YjNlZjdmOTI3ZWQwZWU1NzNiMDlhMDlmZTUwYzQ3MzQxYWEyNGU1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWI4MTVhZjJlYzkwMmIwM2Y3ZWZiZDI5MWU0YWUxN2JlMzQzMDcwY2Q2OTJlMTU5NjM5OWIyYzJmZTk2MWM3MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4bbdf443034c460d8c876d8f5d7b9397",
+      "statement": "`claudebar setup` (Command::Setup in cli.rs) resolves the settings path from `--settings-path`, then `$SETTINGS`, then `$HOME/.claude/settings.json`, and dispatches to `run_setup` in main.rs.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli.rs#L121-L142",
+          "version": "repo-lines-v1:sha256:2604013c90b2567c4361ca8c77f8e0febf2e28bedd5d110b96aa73afdc29f421:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmZTY1NjExNjQyZWE2YWZkMjkwYjhkZjk1ZDBiOWVkOTc2MTlmNmM0N2ZjNDhhMjJhYTUxMDE0MDc0MzU0NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmMDAwZWE3MWIyMmQ1YWY2YzNjM2ZiMWU4YTI2NzUwY2VmZjFiNDFmNDg2ZTVkM2E5NDY5OTU3ODczMzMzODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlOGE5M2IzNDhhYWJmYjM5Y2Q1YTNhMDg2MmM4YWNmMjExZTJhY2YyMWYzNDM2NjFjMTQwZjFjYTU4NDBmYjkifQ"
+        },
+        {
+          "resource": "repo://src/main.rs#L220-L236",
+          "version": "repo-lines-v1:sha256:5b77a5d983cbb3eda7388efb3bb8b457e394af441eaa6cecce6d6377590f89d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiMGRkMTE3OGIwYzNkMDQyZmY0Mjk0YmVhNzE3YTdhMjdjN2NmMzhkZWVhMDQ5YzAxN2U3ZjdiNDgwMTRiMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1YjFmOTYwMjAxZmU2MmI1MDMyZTMzMDcxOTdlMzdmMWQ1ZDBhYzI5ZmZjZDE5MWFiM2UxNjA5OTNjZTc5ZjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1YWMwN2ZjMzdhMzhhNDhjNTVhMDE3YWIwOTA5YjRiNjUxNGU0YmRhMzhkYjExYmEwM2Q3ZDkwYTM2YjkwZjgifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L107-L117",
+          "version": "repo-lines-v1:sha256:8c5044aac206f6a6c3db90cff09b349a8121bc2a33c37fd8e1ee6731e7975d7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjYzM3MmU0ZDk4YWJlODc4MDI4MGQ5ZjZjY2RlZjMxY2EyZGZiMTdmZjc3OWE5NWYwNDU3ZTcyN2UxM2EwZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjNDY0MGUyMzFiZjgyNTk4ZjQ5ZTAxNDZmNjdlYmNmMzBjNWRlYmI3MTQyNGQ1MTRlMDljZjA2NDEyYWQ2M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViMDM3NzZjZDliZjkzZTE1YzAxN2IxYTdiMWI3OWYyOWQzMjE4YmE0OTI3YzgyMDE1MDk1MzM0NzIwZjI0NDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c9ce4557547f4334ac2b944068bd846c",
+      "statement": "An optional `--binary-path PATH` substitutes an absolute install location in the statusLine command instead of assuming `claudebar` is on `$PATH`; install.sh invokes `\"$BIN_DEST\" setup --yes --force --binary-path \"$BIN_DEST\"`.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L367-L369",
+          "version": "repo-lines-v1:sha256:f3addac57dc6d783efee13c9d262b87e48c8bdb6b4171e6f04de7ebc48363d6e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjJkNTFiYjllNmViNGUxY2RhYzUyMGZmOWI5Y2UzNDM1OWNkMTc1NThiOGE0NjkxOTc3ZjQ3OWUwYmMyMThkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA5MWMxZmFlOTM3N2JiOTM1MDRmNTFmYWYxODBhM2I3OTI0YmMwYWFlOTcyY2IwOTExMzYxYTUwMzk5NmY5NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjAwMGYyNTM5ZmViMGFkMDNmMzI3NzA2NDNkN2U2MDMyMDNjOTMxNDdlMDU3YjI4NjYzMDFkZDE4MmJhNzg0MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjEzZTgyY2NiNTE5MTZlZjVmOGYxNzIwYzllMTQwOWY2OWJmYTc4NzU3ZmI4YWY4MjM4ZDM0NDkxYmJhNDRlZCJ9"
+        },
+        {
+          "resource": "repo://src/setup.rs#L119-L134",
+          "version": "repo-lines-v1:sha256:9c3c06db5a44dff7bf8b9963a4fe0ba90c16a79fe11237d7e0e3637cc01deb95:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwODkwZjYwODNmNmY0ZmJiYzQxNzliMTJmNDU3YTlmMTNmMDhkNjQ2ZDI4NGRhYThhOTQwN2UyZGUxZmRmMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkNmI1NWM2ODQyOGJkOWU4ZDZiNGU0Y2YwYmJmYmI4Mjc4MWEzMjU4NjEwYWU5ZTAxMjI3NzA0NjM1MGQwN2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczNTAwNGIxOTc2NGE1YjA0NzU2ZWRlMzJkOGQ1YzBkOTExNjQzZTQ3MjYyYTFlYjRhZTk2Mjc3Y2UwNjk1NmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_83cd843c7a4a43c5a59a53ebbb66d020",
+      "statement": "`classify` maps the current `statusLine` state to an Outcome: absent key → WillSet; equal to desired → AlreadyConfigured; differing with `--force` → WillSet; differing without `--force` → Conflict (refusing to overwrite).",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L167-L180",
+          "version": "repo-lines-v1:sha256:a54bbc8c72e37d3b56f5d24f17882a5e2ea84a7a608eb1ea1a4ff1513e48b4d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMzU5MmVjMjZlYjE1YjllNWYyZjJkNTA1NTA4MGU5ZWIyYmJkYThkMDhmZDUxMWI2ZjQ0NWU3ZWM4MjViZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyYTJiYzEzMTcyZjMwZDFmMGJkNzgzODdhMzFjNDBkODFlMGQ4MGMwZDg5NzBkOTZhY2I2NDM2NDM0NWM0YTMifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L94-L105",
+          "version": "repo-lines-v1:sha256:4fb4e37b1bca97736f49c64232f3b67d19f9a2a724f1a47bc42c51bce3f1f181:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ZjdhMzZlMDU4NmQ3NjI4ZDY2NTY2ODBhNWZmNTBkNWRmNGRmNzQ1MDNiN2JhYTkyMWY1ZTU4ODBmYjY4YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MmZjMTliZjY1ZjI2OThhOTI2OGRlNGQzMzZkNmNhMWE0NWVhZGQwOGJlMDcxOThkZDQwNzhiOTRhZTljNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhNWIyMzVjMTFjMjgzYjRmMjE0MGMyMGUxODFjYjVjYmYxZjljZTVjZTQ5MmRmZjllZGExYzVlOTg0M2Y5ODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4ce958e17ab24d15aa44e9247815d779",
+      "statement": "Both the WillSet and Conflict outcomes print a `statusLine:` diff block showing the old and new JSON lines; WillSet then prompts for confirmation unless `--yes`, and refuses (exits failure) in a non-interactive session without it.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L167-L180",
+          "version": "repo-lines-v1:sha256:a54bbc8c72e37d3b56f5d24f17882a5e2ea84a7a608eb1ea1a4ff1513e48b4d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMzU5MmVjMjZlYjE1YjllNWYyZjJkNTA1NTA4MGU5ZWIyYmJkYThkMDhmZDUxMWI2ZjQ0NWU3ZWM4MjViZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyYTJiYzEzMTcyZjMwZDFmMGJkNzgzODdhMzFjNDBkODFlMGQ4MGMwZDg5NzBkOTZhY2I2NDM2NDM0NWM0YTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7bfa93a208624467be111e475b16972d",
+      "statement": "`--print` shows what would change and exits without writing; `--yes` skips the confirmation prompt; `--force` allows overwriting a different existing statusLine value.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli.rs#L128-L139",
+          "version": "repo-lines-v1:sha256:b37a3df06b368dae2fff94fba37f8d19793d3f95ef0c86173ef072b384a64ca4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1ODdjOWE0ZDI5YTdjNmRkZTg1YmNkYTI3NzZkOGJjNzQ0NzQ2YWJlNzcyOTlhNzM3MGQ3YTI4NzRmOWNmMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhMmJiNjk4Mjk0OTQyNmFmODRlMGRiYzdhMDAwYTlkYjQ5MjA1NjZmOWI3MGYzZWJhNGFiYTQ3NWE0NGViZjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkNjI5ZWUwN2QwNGJkZjk2NzM2MzIxMjZmNDQ1ZjMyYjQyMTJkMzg4OWY1YjgzNzRhNzFkMDQwMzZhNTdmYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkN2RhYzQ0YTE1MmFmOTg3OGZkYzgxNzU1MmRkOWJiNDQ1NjU2NjYzZDM2ODVlMWZjYmFiNGRlNzlkZGYyOGMifQ"
+        },
+        {
+          "resource": "repo://src/main.rs#L287-L289",
+          "version": "repo-lines-v1:sha256:15622f3f5aca27e832f6a4e1b8256cd575f3ee4f101e901edb978837f18832b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU1ZDE3MzM4MjM5MzY3ZDZkZTgxYjM2OGQ2YWU5ODdmNzI2YTc2M2E3MWRjOGYwNjIyMDU2YjdiMWRjNGRhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUyMmM0MmNkMTljNmQwM2Q4MDhjNDUyNzIwNTUyODI1YjdlYTFjNWI0OTFiMjE4NTExY2FjNzQxNWNmOWQ5YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGIyZDEyN2NmMmYyNzEwZGQ0NGQ2NmFiZjlhOTRhMmI2ZTNiNmM1OTgxNjBlY2U5M2U2M2RkMzdkNDRiYzM0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWE4MWNhMjM2ZTMyMGZjNmEwMjVhYzkwNDU5ZDE0ODcwMzY5ZWQxMzcxZTYyYTk1ZTQ5OGE2ZWE5NzkxM2FjNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f4876e209d2846e99b820b115c864113",
+      "statement": "setup.rs intentionally does NOT follow the forgiving/infallible-parse philosophy: malformed settings.json surfaces as a typed SetupError (Io or Parse) per CLAUDE.md error-handling conventions, while a missing file loads as an empty JSON object.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L136-L165",
+          "version": "repo-lines-v1:sha256:010b881e6c8c4102ed71489095ad022e5a65adc2f48e7c76a661b939f27adccb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMTNlMTlkYjFmYTY4ODQ3M2NmMTUyNTNlZTg2ZDA2MjQ5MTFkNDVkOWIyMjZiNmY0ZTdiMTQ3MGRkYmVmZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhZmJjZDhmNjYyODMwYjM2MjEwYWZhNDViNDJiNWM2M2M5NmYwYjFlNmQyMWFjOWE2MGIxOTY3YzdjNzVjZmYifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L5-L8",
+          "version": "repo-lines-v1:sha256:0bd9bdf5e63f73acb8f804bb410a7eebaafa0f9aef18e60d255ad1850163322d:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2YyOTYyMDYyYzhiMGI1NjYyN2JjOWY3ZjE4OGEwNzdlMjU5ZTBiNmVlY2E1ZjZjYzI2ZjIzZWJmNjhhYmI1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTdlYjU0Y2M1M2MyZWRlYzI5NmRkYjBkOWEzOTg4NmRiN2IxYWI3ODk4NjBmYzEyM2Q1ZWU3Y2Y3YTczN2Q3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQ0YjE1ZDEzYmFkMDdlZjU0Y2IxMmMxNjFiNTk1NzhhMWY3ZjMyMTBlYWFjMmU4NjgxNzkwNGUxNTNhNGNkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODNhYzQ0ZmY2OTA0YzNjZWZkOTM3Njk1NzgyODdjZTg5NTNkOWJmNmVkMzM3ZDg1YTlkYmMzNTIwOGUyYjg0ZCJ9"
+        },
+        {
+          "resource": "repo://src/setup.rs#L85-L92",
+          "version": "repo-lines-v1:sha256:bad59d0d7075419afa1181d7373793b392ddd23ef9fd8f2a8945552bda5c26cb:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmNhMDdjZDUwNjQ1OThlZDQ3YjU3NGNhMzRiMjg3NjYzNzE5ODcwNDEwZDhhODNjZDliNWJiMzc1M2I1NGE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTY3ZGNjYjAwZTYzN2U5ZmNkY2FmNGM1MGVhMDkzNzBhNGNkMDQ4Y2Y5MGRjMTgxYjc1NGUwYTQzOGMzNmVmMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTM0MWRiYjdlZWNmN2NhNzA5YWIwMTBiM2QwNzIzODQxNWUwMDA4ZjE1MjExNTI5ODBkN2ExYTI2Nzg0M2U1OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_52704ded21ae476ead7361b99981d463",
+      "statement": "On a parse failure of an existing settings.json, run_setup first backs up the file to `settings.json.bak-{now}` before surfacing the error, so the user's original file is never lost.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L245-L261",
+          "version": "repo-lines-v1:sha256:b6c428784fba62aae1fb45f4ad5861afce6c453458a606d64078773af6e8ed58:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1M2UwZjYyMDI5MjY2NWM3YjU4NWNhNDQ5YmQ1NDdlMTgwNTFlZjBiYmE1ZTVkODlkY2RhZWFiODQ2ZmY3ZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0ZjIyMWNjNTQ0OTI5Njc2ODg1ODUxMGUyZGEzM2U5ZTZiYjM4ZGEzMzlkY2FkZDZkYzFhMWU5ZmM0ZDhlZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhMjIzZjllMjgxMjg1Y2QyNDU1ZTcxN2QxNjNlNGVmYWY1NTc4MDdkNWYxYmYzZTUxMzM4NTA0MjMzMjc3MmMifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L196-L219",
+          "version": "repo-lines-v1:sha256:a21d12bdb25b918aab5dc62c474994734cd9d1a917d21af4e10af71fcb3f58ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZjdmZDYwNzlhNTQwZmI2Y2Y5OTY3MTZlOTdkNDc5MTljYjcwMTg0YjVlNjgxNGRmZWI3YWZjYzgwZGYzOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFhNTYxNGRiYWY4NGZiYmY1NWYxYzBlZWZhNmVhZWNmNGE2ZjNlMThmZDRkNzcyZTE3ZDVlMWJiMDk0YWE3N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3NjA0NGIzMmIwYjJlZWMyNWZhMDU4NDE3NDJlMWI3NWMzYzg2ZjI2NTViMjlkNmMyNDQxZGE1Y2JjOThiMTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5a99a85819a94bf7ad83effbeec8052c",
+      "statement": "Before writing, run_setup backs up the existing settings.json via backup_settings/backup_path (only when the file exists), then apply inserts the statusLine value and save_settings pretty-prints with a trailing newline, creating parent directories as needed.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L310-L332",
+          "version": "repo-lines-v1:sha256:1e93e4e22e9ade93679fb8c05d1a40b34f1ed613e619c93b285fe05b3d39c452:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExN2VkODdjN2RlZGFmOGRhNTk5MDIwMDFmZGJkYzg2NDFmODRhZjY1MTU5NjZmMzg0OWZkNmYzOTMyYWFhNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2Y2VmNGFiYzIwMzNkM2E4MDEzYjE0MjgyNjYwNTg0MmE5MWIzNThjMDQ1MDllOTZhY2NlNWM5YzlhNTk2NDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwYjhkMDFhMmIyMWY0ZjA5NDNlNGEwMjNkN2M2ODMyOWIwZDAwZDA0M2ZhM2YwODMwMmRjYjkwMmMwNjNmNTYifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L196-L238",
+          "version": "repo-lines-v1:sha256:1f89ffe2a68cd6f8842f1d1b3ef456dfe2958d0c4f455670de86cdd37cddb142:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZjdmZDYwNzlhNTQwZmI2Y2Y5OTY3MTZlOTdkNDc5MTljYjcwMTg0YjVlNjgxNGRmZWI3YWZjYzgwZGYzOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFhNTYxNGRiYWY4NGZiYmY1NWYxYzBlZWZhNmVhZWNmNGE2ZjNlMThmZDRkNzcyZTE3ZDVlMWJiMDk0YWE3N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9380961543a49299f23f166c766baf0",
+      "statement": "After a successful write, run_setup calls print_setup_preview, which renders a built-in fixture through the real CLI config path so `setup` proves the wiring works without needing to restart Claude Code.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L328-L331",
+          "version": "repo-lines-v1:sha256:fe8e3a0f6a5899628ae8be8721172df98994833ee57e77d475cfa789e4457df1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTAzNzBjMGIyOTM4MmNkYjBjYTRiNGM3MDI1YmJjZGUzYTQ0MmY3OTI1NjQ4ZTFkMWZjZWY4ZGZlZTkyZDFhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2UzMzE4ZjQ4ODI4ZmFkNzlkMjM3MzY2NzdjY2I2NzFkNWRmY2EyOGZlZDMxNjc3M2Q5Y2QxMzkwMzcyMjU3YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGY4ZDM0NDQyNTJhYThiZWE1MzQwZDkzNTBmNjY3NWM4OWIyOTQ1YWY3NWQxMDU0YjIwZWY1MzgzOGY5MjMyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDM1MTEzZGRmOTZmNzVlN2VlNGY2MzAyNjhkNTY3MjhkOTJjMmFjNGJiYjZjYWIyZWMwNDFlOWIxZjgwNzI3ZiJ9"
+        },
+        {
+          "resource": "repo://src/main.rs#L342-L355",
+          "version": "repo-lines-v1:sha256:6d18bb4caf9dd00184fb2e2d6829ea996847541d695cb64a59a81b5c4bc7c97a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3ZWRkYzAwMDk0NjJlMGNhM2M5ZjVmNjA4YzZkYWIwZGFmODAzYTRlMzYyZDFjYTRiMDQwNzYxZmIxZTE5MjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5NTk5MGJhNmY5OGJiOTJjZWI1MDVmYzUyNjJhN2Q2YzBjZjQ2YTZkZmM1MzAwNjg2ZDJkMTU4Y2I3OGViMTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f0896cef6b324f25a86388f887612984",
+      "statement": "`check_nerd_font` detects installed Nerd Fonts via `fc-list :family` and falls back to scanning common font directories for .ttf/.otf files with \"Nerd\" in the name; it is used by doctor and by config bootstrap to fall back to the unicode style.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L188-L195",
+          "version": "repo-lines-v1:sha256:fdb3b8022618d926e6ecdd78e971ccef1d82abd8ae017f4bf8e4a29cdfadae53:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FiOTAwODY1YzQ1ODVhNGEwNWU2MDRkYTFiMTMwODcwMDgyODdiNzYxN2ZjZjgzMzFjOTRhZmE0OTI4Zjc3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTc2NWYxOGMxZjIwNTI1YmY1YWZmMGY0NTkwNTFiYmMyNWQzNWU1NDc4YzExMjdlYWZhMmU5MTQxOThkNjA0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmQyNTc1ZGNiOGE4ZThlOGZhMjc0NzM3ODcxMWQ4NjI3NzNhYzk1NDk1ZjhjNjE0ODcxMGY5NmM2N2UwOGJmYiJ9"
+        },
+        {
+          "resource": "repo://src/main.rs#L503-L504",
+          "version": "repo-lines-v1:sha256:37ac667b445117c171c962b120c9e025d3ad3d8634f81fdb8aff0e35ef6fda0f:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmE4NDNkNTg1ZDE3NDExZGI4NzFlODcxNTY2NTcxODU0ZjZiNjhhMGI2N2YxNzQyMDM2MjgxOGE3Njc2MGNkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGM0MTU2ZmQ0MDdjZDA2Y2RiZjQ2MjU4ODkxMWNiOTY2NzZiMGI4MGM5YTQ0OTUwOTlmMThmM2U1NzFlMjQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWZjOWQ3NzNmZGE5Y2U3OThjZmE4M2ExMTNlZDE3MzJhMGRlZWUwNzY1NzM4MzQwZjJhMTE5YTE1NzY4NTc2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDIyMzg5YjhkY2U5ZTc1NTJkZDEzYmM1YTQyYTVmNjBkZTdkOTRiMTNjOTFkNTEyY2U2MWY0N2VmY2JmNWY5MiJ9"
+        },
+        {
+          "resource": "repo://src/setup.rs#L38-L84",
+          "version": "repo-lines-v1:sha256:07e533a05477e061f27c75161b04d5341522eedea31f44049a0656421bd2dbb7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjNDg0ODA1YWIxMzE2MzJlOGU0MTkyNmM1ZWQ4MDY4MWRhN2NiMWQwODBlOTM0ZDlkNDUyYWExMmRmZTU0NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkOTMzYTk3ODU3Zjc1MDhjZDliOGYyZDU5NWRkOTFjYmMxMjkxMzdhZmJmZmFjNmQ3Y2M1MTY5OGU5NjZhNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxOTJkYzNjMThhNGQ2N2E4M2FlMGI4OGE4NTY0NWI1NDcwMTgwOTQwNjVkNmI0NTg3ZTBmZDUzOWYzN2E3YjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_74d11760a2044881b8ee72158adb8f46",
+      "statement": "`resolve_editor_from` picks the editor for `claudebar edit`, with EDITOR winning over VISUAL and falling back to `vi` when neither is set.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L572-L578",
+          "version": "repo-lines-v1:sha256:70bc7aa2d595d825271c16765c9f32ec7118669cf69f1918f2be7f09b19be130:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODY3YTU4NWJhMzVjYWFmNjIxZjZiZjM4MjM0MzA0YjU2MjJjYzZkMDZkNDgzYmI4YzdiODY2MjYyMjUzMjRjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzIyMjI3MGFmYTY0MGVkOGJkNGViYWExMGQ3MDNiODhjNWE4MDkxZWE0YjdjNzNlYTQxNDRlOThmOGU3NWIzMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk5YmRlZmVlYWNhNjM0MGUwMjkwZGM4NmU4ODljODlkNWUxODlhYTViYTQ0YjU4NWIzYjcwNzM0ZjRhNjJkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTVlNDk5NDFjYzVmNDY3YWI4YjlkOWY1NGYzMGY2OTgwNzU0MDYxYjhlYjQzYzNhMTNiNWQyM2JmYjdhOGExYSJ9"
+        },
+        {
+          "resource": "repo://src/setup.rs#L33-L36",
+          "version": "repo-lines-v1:sha256:5d3136d4bd58d33f8dfc307a39bcdef3df7f7448fc3a8f1e3f322b739a4308cd:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTM1NWM1MGM0ZjFjYmY0ZTM1MDg1Zjk5Zjc0Nzc2YjE0YmIzZDY4ODVmODI0NzM1YmRjYWZlM2Y1MDIwNTgwNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjRjNGI1YmMwMDM4ZTIzMzdhYTExMGZkODVkZGU3Y2RlODFhMzU0ZDIyNDg3NTUxNjQwODY2NTY2NDExMTVmMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjVlMWNlMjQ5YTM1NmE1YjY5MmQ0NzFlZWFjNWM1Zjk0ZWI2NzYxMGVhMjJlMDNlNzE2OTkxNDMwMzdjOTY0ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0339c54ff9644c3bb7b3f1f869f3b321",
+      "statement": "`claudebar doctor` checks five conditions including whether statusLine is configured by reading the `statusLine.command` string and reporting success if it contains \"claudebar\", and always exits 0 as informational.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L522-L542",
+          "version": "repo-lines-v1:sha256:1535b39ab6e7518a0062499e0799b1ae92435ab9967061e1d24901bd0d82f10d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzZWMzMGY4YjIxN2JjMjRlNmFiNTYwOTY1MmM5ZWU2ZGY0NzMyM2UxY2U5MGNmNTBmNTdmYzE3YzAzOGYzYTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MDljNTgzMmIyOTNlNWZmMzIwNjFkNjg5NzAyYTU5YzYzZGMxZTRhYmFkZmFjNTkwZTIyMzBiODAxMzAyMzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxY2E5ZWI1Y2FkMmY2YzEyNGQzMWZjYjEzYTFkZmUzYTQzMDM5YmI2NmNiMGExZjZkM2U4MjFmY2VmY2UwODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2YzYxM2RhNDllOGQ0Y2YyOTM5NzQyZDcxMjUyNmYwZDZkMDBiYTcyOWMwYjQyN2Q1MjdiMWVhNWFiN2ZiNzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6f59a2c96c3a433298cf3077c3c69329",
+      "statement": "Render overrides (`--theme`, `--style`, `--config`, `--segments`) are attached to the setup subcommand via `Overrides`, and setup subcommand overrides win field-by-field over top-level overrides in `Cli::effective_overrides`.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli.rs#L10-L28",
+          "version": "repo-lines-v1:sha256:0b6ead602535c69b9ff662abb43a683fe1cca5f419d4f32e130724732f2126dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczNzgxOGMyYzU2NjY0NDcyNzQ4YTQxODVkMmRlOGE0ZWNkN2Q1M2Y2YjhhMDIzMDMyMzI2MDMwMDJhYWJkYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxMzI0NzY3M2FiYmIzZjdmZmE1MzkwMjA4ODNmNDJjNjBjZmVmMjUwZTY2YWM1ODcwOWJiZjg2YzM3NmQwNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMjVhYzc5MjAwZjA2NmVhMGZjYjJkMzQwZjNmMWE1ZmM4NWJjMTk5YTg5NjVjZjMzYWY4OWIxNDI2ZGEzMDgifQ"
+        },
+        {
+          "resource": "repo://src/cli.rs#L45-L76",
+          "version": "repo-lines-v1:sha256:7ca9ceddc93f5cf67aba53764cd1351ab1ebaf07b1fda297eb75bec690bfb76f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkNmJlODUwZThlMTNhYjI1YzJkOTU4NGNhNmZkZmU5N2E4N2M3NjhlZWI3MGU1NWMwZTRmN2I0YjdmMGQ2OTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzODNkYTI2MTkyYWIxZjVkNmFiOTZmYmI0YzI5OTgyMzYwZWM5MmRmODRiNTY3YzhmNzE0YzNlYjJmODVkMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjZWIyNDdlMjU2MzI2YjQ0ZmQ3OTQwZjQ4NjEzZmVmNDVhOGRkMDhjMzIzMDRjNGIzMGYwN2YzODVhYWJhMTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_424d6311d2b341eca8d56bf4c5f982f0",
+      "statement": "`statusline-command.sh` is the legacy Bash statusline: it reads session JSON from stdin, requires jq and git, and renders segments in the order `directory | git | tokens+ctx-bar | rate-bar+timer | dev-context | model` with the Tokyo Night palette and Powerline separators.",
+      "evidence": [
+        {
+          "resource": "repo://statusline-command.sh#L1-L4",
+          "version": "repo-lines-v1:sha256:74f4a4d38a4872e93310e724ab522825c685050d49ef23879d6021f1d18d9348:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjg3NWY5Mjg1NDZhZWU3ODU1Y2IxZGI5YWZjOGFiM2YxYThhMzRkNDNkZTViYmQ2MmY3MDc2ZDdiYTlmMzkxNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODAzMWNiNjU5ZDBlMWZmZDU1NDVhYmRlYWJhZjgwNDQ1Yjk4MDU5OTAzMDJmZjQxMmMzZDAyZmMwNjYxOTBkNSJ9"
+        },
+        {
+          "resource": "repo://statusline-command.sh#L102-L117",
+          "version": "repo-lines-v1:sha256:21149ba9b4870b479277da14b851fb934e9f72bbaa8abd297b8985c5b7a524d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxOGM1MjdkYTdiMzhkYTk5NzdkNzBiZWI0NDk5NzdiM2IzMDlmZTIxZDcwNWMzYTkzNmYzZjMzNThkYTFjOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NjlkMjM3Y2Q0MjBiOWQzOGI5ODFhMGE0ZjY3NzAxOTBhNGE4M2RjYTFmZTU2YzRmNWJhMWUyY2JjMGVmNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyNjIxZmUzYmEyYzI5MGM3NjVmNDFiMzZiNWVjNjQ3NTQ3MjhiNjUxZWRlMjRlOThjZDE0YWY3YWIwMmY2MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlMDRkZmFhYjk5MzE5ZTA0NTllOTVlYjVjYmQ0MmQyNzk0ODdhNzU5NmJhOTU4MWU2Nzc0MGUwZGZmOTQ3NGMifQ"
+        },
+        {
+          "resource": "repo://statusline-command.sh#L254-L273",
+          "version": "repo-lines-v1:sha256:9b6211320990b6c7497dbeb2706ed4d3f5c2368e273e90cb862ab1c632939d91:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NjlkMjM3Y2Q0MjBiOWQzOGI5ODFhMGE0ZjY3NzAxOTBhNGE4M2RjYTFmZTU2YzRmNWJhMWUyY2JjMGVmNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3MTE1ZDhjMDA4NDQ3M2Q4NjhhMjlmNjRlM2Q5NzRkOGE5MTAwNmZlMmQ4OTA4NmE5M2FiOWZiZGI4Mjk2ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4OTFkYmRmYzA0MDJjZDRiYTYwZmFiMWJlMzI0NWRmZWM1NTljNWQ3YWZjN2UyMWI4N2U3OTVhNzNkMDVlNWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ee76808f0d24065890f56439b7698e4",
+      "statement": "The Rust `Config::default` layout deliberately mirrors the Bash statusline's segment order (placing `lines` between `context` and `rate-limits`) rather than the canonical `SegmentKind::ALL` order, and this parity is guarded by the `default_matches_bash_layout` test.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L1-L9",
+          "version": "repo-lines-v1:sha256:3cb10f4ff446d8fec4ab4d46ff800c40173290cdb577f333145e469ba2118cbf:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDY4ODJiZDJhNTk0NDExMDk4ODllODgxZGY3NGExZTM4OWMyMTY1YzE0YWY1NWQ0YmE2NGY0YzAwNDA2ZjEwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDM5NWQ3YWU1MzkwMDdkODdlNzVkZjAzYjVmM2YwOTZiZWIyNmEyMTkxZDczZjVmZTlmM2FkNzBlOTAzNDk0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGRhZjk0YTk4YmU3ZmFmYWI2NGY1NGIyN2E5MzBhZDkwZjgwMWIzZjhkOTI5YzU4NmM1MDUyZjM0MGQ2MzQxNyJ9"
+        },
+        {
+          "resource": "repo://src/model/config.rs#L241-L249",
+          "version": "repo-lines-v1:sha256:4f83aa8f3e8d053e703067c4568374f3f77e02ee4fc70ea7e9171d70f1f317cd:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJiNWVkZjU5NDljZmVhNjc4MjJjZjY5MTEzMjM2M2Q2OGQ2ZjFlMTY5ZjVlMGQ0ZjdjMTRlNWZhMWU2ZDRlNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDllYzNiM2ZjOWNlZGYwODIwNGJjYzRhZTBhNWYxMzBjOGQ4MTNiODE1NDRlZDQ0ZWFhYmNhMDg4MTM5ODYzNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmM0MDUyZTNkOGVkMzM0OWI4YmU2YmIzOTk3Nzk0ODVjZjk0NDgzYWUyZjM5Zjg1MjNlYzcyYTA0MTU0YjUwMSJ9"
+        },
+        {
+          "resource": "repo://src/model/config.rs#L34-L57",
+          "version": "repo-lines-v1:sha256:bf630d64d4a80ed230c60f3a774401a5217ccd8ea2cc4629c7e3c7fc8e65ffcc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkNzdkMDk3MDRjMDNmODAwNjAxNzlkZmVkZGEwMWY2NTRlNTUyYWI3YTZlN2FkODEyYzJhZDQ1OTEyMTMwY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5NTkyODBmNjE1NmMxZjY1MWI1MjJiMWIxODYxNjNiNjZkYjQ1YWRiZmE5YmM2NzFiZWQwNzM1MjllZWMxZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhYjdiN2RmZmEzZDE2ZjI0MGI1MTljODYwYjQ4MjVkNGJjMWI2YzdmZTk2NDFlZjgzN2RkNWY3NjQzOWUxZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5YTZiMDE5MDY2Mzg0M2VmMzBiMzYzMzRmMjZmZjE5M2IzODZlZmYwNTE5ZWE2YjkwNjE0ZjJmMTYwZDE0MTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d671fabbe4814458b8ab37b42de83f2b",
+      "statement": "setup.rs unit tests cover desired_status_line binary-path override, all classify force/state combinations, malformed JSON and non-object roots surfacing as Parse errors, missing-file-as-empty-object, save/load roundtrips, apply preserving unrelated keys, backup path construction/copy, config-path precedence, and editor precedence.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L258-L427",
+          "version": "repo-lines-v1:sha256:a2dce2ed7f9f58fb6a0b541392d8d616c55dce813e66417c484ce6588454d6e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MmI1ZWRmNTk0OWNmZWE2NzgyMmNmNjkxMTMyMzYzZDY4ZDZmMWUxNjlmNWUwZDRmN2MxNGU1ZmExZTZkNGU1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ODkzZjQwZTM3ODFlYjg5NmM4MmQwNDZhMDgwNjdhMTFlMzVjZGYyZjFkZmFmMjZmZWE5MGI4ZGI2Njc2NDEzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0MTQwYmQxYzgyNGY5ZWQzNjc5NTNiODliMzY2MzFlNWI3NTQwM2UyN2EyODJlMzg4NjRkMDE3ZGJkY2FhYTJjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-26T22:48:34.063Z"
+  }
+}

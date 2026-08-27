@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:27db44415406a4e4f661c1d77ad9254a91a259413d0f727f478f28ba827003ce",
+  "claims": [
+    {
+      "id": "claim_639d6fc2ae254164880857f498837b09",
+      "statement": "The RateLimits segment (src/segment/rate_limits.rs) renders Claude Code's 5-hour and 7-day rate-limit windows into a single statusline segment, returning true from render (via the Segment trait) iff anything was emitted; limit_sync.rs optionally shares the highest usage seen across sessions on a host.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L1-L11",
+          "version": "repo-lines-v1:sha256:55db50c3f7c22e26c44a5a78d02b6120071029d7d0a85318e0d0c6c36087bd46:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxM2NhODlkNTUyYzUwNWI0OWEyMmJhODg3YTUwOGI3N2UyOTA1MTEzNDM2N2NkZjExZGUwMDA5Y2UwNmEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3ZDU1ZGQwMGMzMmZjMTMzZmY2M2JkM2U5NGNmY2UyMzFiYWUwMjQ2ZmZiZjlhM2I3MzkyMWEyZTBhOTlkOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1MmRlMDE0ZTBlMjRhMTc0ODUyN2VkYzFlNGNkYzM0ZTFhM2ViMTVlYmY5OTYwY2Q0Y2FkODIzMDFlMTQzZjQifQ"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L62-L93",
+          "version": "repo-lines-v1:sha256:082301b64d2f1cdc73462a7f4cab2abae7a2ca3580ad759f300a3f4309a6f05d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3ZWM2OGEyNGIzZmFhODU0Zjg4N2IwNjZiNDg3MjIxYjVlOGUyNDBhYTg4MzVjMjhhYjY2OGRhZDc4MWFhZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjYWRmN2MzYTc1MDYzYTFhZDQyNjQ0N2VhMDZlMDI5YTlmNWM0OWZkNWY3YjEyM2Q1MDBkNThjMTJkOTEwMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2M2ZkYjdiZDA4MTMzZGI2YjViZmVhNTgwMmJhNTQxNjJmYzM1MzlhYzcxZGMxYjE3YjllYzIzMjRjZTYyOWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fe868dc5e8c744cab3a3a31fe1b10534",
+      "statement": "The input model defines RateLimits with two optional Window fields, five_hour and seven_day, each carrying used_percentage (a Coerce<f64> that can exceed 100) and resets_at (a Unix epoch in seconds); numeric fields are wrapped in Coerce so a wrong-typed or unparseable value degrades to None instead of aborting the whole parse.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L60-L76",
+          "version": "repo-lines-v1:sha256:c659eed3fccc3c4ae44fe517e74829bc39be8fb2abeb4ade809a6a19e499d314:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MjZjNjUzOGRhOWEzMTg0M2JhNWExMjU2NzMzZThiY2NjMmU5M2U1ODdmMmRkMDdiNDkzYzYxNWYzZWM4YTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0ODQ3ZTBlMGVhOGE5NDUzODdkYjNmYmIwZGFkODcwNjNiZGFlZmQwOTA5NTA2OThmMzNkOTY5MzQ0MGI4NWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3OGY3ZTE1NmI4YTY0MWRiZmYyYmUwNWI0ZTY3N2MwODQ2MWJlZjI5OGZmOWNiOGFmMjVlZTc0MDhlNTI2NjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_665b0f9f92fd4885a4b25c80212d97e6",
+      "statement": "The weekly window is joined to the 5-hour window by SegmentWriter::window_gap(), a dim-colored glyph (theme.dim + style.window_gap) that is lighter than the composer's inter-segment separator so the pair reads as one grouped segment rather than a boundary.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/writer.rs#L144-L154",
+          "version": "repo-lines-v1:sha256:dd9838e8de797c398ce8c61d0aad93c56d1ee8dce954af03a336d9263699eded:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjN2U4MTk2ZmE5YmY1MGYwYzRkMTM2ZWJkZmNiOTJlZTUxNzIzZWU0Y2FhMzMwNDZjNGFlMjlmMWM1MTgxZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkM2YzMDcwM2I1ZjBjYjcyZGRkNDQwZjNhNWZiYmJjZWNmMDFmMmE2MmQ3NWI1YzQ4NTM3OWU4NWYxOTAzYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4MWRjNjA4MTI4OGRlNTg2ODBhMmE1MWExM2UxZjFmNWQ0MmQ2MDZmMTEyZTY5OTEwYTU0MTgyODE2MjM0NGMifQ"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L83-L86",
+          "version": "repo-lines-v1:sha256:e02bf65bf208a25d8981472d2e326030b0266e0c8c128aff524ecda3856175b5:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTU1MWJkOWEyYzI5ZTRjNzE3YTcwYWI5MjdjY2IyMWE3NGI4NGEwOTNmNDFkODIzYTY3ZmYzMGVkMTFiOGUyNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI1OWU3ZmMxYzNkZTBmZjJmZGIwMmVkYzRlYTgzZDQ0ZDNhNmE3NjBhOTY1ZDRkNTVjZTFiYjk3ZjJiYzI3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODMzNmU4MDRlZmJmOWYyOTA0ZWUzNDc4NTA4Mzk4Mzc5YjQzM2VmOGUzZmVjMjU2MGI0YzdlZGVkNGI1ZDllZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjc5ODZmOGE0YWJmNjYwYjcyNDE0N2MzMmMyNmNhNjFjNWY1YjZlODAzMjlhM2NlOWNiMWIzNDEwMGJmNDAyNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2e9fed56b2c240d2b465a7c3d025235a",
+      "statement": "Each window body (write_window) is an icon followed by a colored progress bar and percentage: icon() + bar_pct() which emits the bar, a space, and '<pct>%' in the given color; the 5-hour window uses the clock glyph and the weekly window uses the weekly glyph. A reset countdown is appended via write_reset_value as ' ' + reset icon + ' ' + formatted value in theme.reset.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/writer.rs#L138-L142",
+          "version": "repo-lines-v1:sha256:acd9d49dc51474e0df6558e374d09a6712d2aebd315cbc95cb4b3d195d43a240:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA2NTA0NzQ0Y2JmMjFlYWE2MGU0ZDQ5ZTJmZGUzNzY1YzE0OTc0YzBlOTRmMTRiODdjNWNiMzYwZWYxNTk3NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGI2YjliNmI4ZGI1MTY5NzUxNzA0NTE2NjQzNTM4MjgxNmU3Mjk1Mjk3NDcyZjQ3Y2NlMmNkMjc4OTIzMzcyYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODU0ODA0YmUzODA5ODU2OWIxNzBkNjdhNDgxNjBmMjNmMGJlNTk1OTdlNDU4M2NlYmMzOTE2NmU1OTM0N2VjYSJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L178-L183",
+          "version": "repo-lines-v1:sha256:b02197a3f7cffa0a90e68506bc5c45aaa05d55acb67be9a846458c1d378c95d8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJjOGNkMTIxOGU1OTY0NjUwNjcwZTdlYTgyNGJmOGE0ZGE5MzQ3OTNmYmRkOWRhOThjZGUwMzg3NWUyZDkwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTZmOTk3ZjU0ODk1NDU0MTQyMDczNjgzMGJjYjU0Mzc3NDMwZWE5OTAxZDU1MjE5NmE2NGUxYTdmMTIyNWQwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2JjOThkNmIwZGM0OTJjNTAxNmRmMTA4MDVhM2E1NGViOWMxODRhNWE2MTM3ZTdmNGJlY2ZhMGMyMjA1NTBkMCJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L56-L60",
+          "version": "repo-lines-v1:sha256:1127f9b6182357bcb45b57bd72351a2ff70e9af3850732a6fe482a6ba1eb42d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBmYjZjYjY5ZmI3ZDg2MWFmODhiYWZjNWJjYmE3YTg5YmM0ZjM5YWE4M2I1ZDNlMDE0YTY1NDRjOTZhMjE3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmFhZTNjZWM0OGQxMGYyN2M3ZGEyMGQxZmI3YjQ5ZmMxZjFmM2U1ZjNjYzVkNDhhOWU1YmI0NjQyYjNjN2Q5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2Q1NzI1NTRhMGMwY2U3MzM4ZjQ5ZjAwYWE3NDc0NTQ1MzhlMDE3OWRkOWY2OWRmYTJkZGNmZjNlZDk0Mjc5MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_214f05b82f9a49c4a830dbb2523bfbe4",
+      "statement": "pct_in_range rounds a percentage and accepts it only when the rounded result lands in 0..=999; the upper bound rejects a leaked epoch timestamp (e.g. used_percentage of 1900000000) while still allowing over-limit values above 100, and this check is applied in both the 5-hour and weekly render paths.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L152-L152",
+          "version": "repo-lines-v1:sha256:88ef3d0e1ca49fc0afa89bd706a35501b11c145b04de4f9f7fbd3c2eeda51097:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODhlZjNkMGUxY2E0OWZjMGFmYTg5YmQ3MDZhMzU1MDFiMTFjMTQ1YjA0ZGU0ZjlmN2ZiZDNjMmVlZGE1MTA5NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODhlZjNkMGUxY2E0OWZjMGFmYTg5YmQ3MDZhMzU1MDFiMTFjMTQ1YjA0ZGU0ZjlmN2ZiZDNjMmVlZGE1MTA5NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzAzZjcyOWRhMWE5ZTBlM2NhMWFhMGEzYzRjMmFlZmZjZDJiZjg2ZTg1N2VhNWNlMDkxYjIxMDA1OTc1NTM0NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjE0NjEzNTYxMDI4MDk1MDdmMzA1ZjQ5MjZhMTY3NGExN2QzNjMxYzgyNGRjMmZjMGVjYjUzYmMxYjQ0MTllNiJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L39-L46",
+          "version": "repo-lines-v1:sha256:ca1a0c8bc7537e5d12d2ca34040d12a1f6df9ceb71abec6ecc7f502805e65595:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWYzOTljM2RiNWJjZGI5ZDU5YjgxMzg1NzgyNWI5MjhkOTVhODVkMTI1NDA5NTkyMGIxMGUyZDA2M2VjYWYzYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDYzNTc2MTg4NTc2MTQ5NmVhNGU5YjJkYmIyOTFhMjZjYzRiMzZlZmI3NThkYTAxYjY3ZDQ2YzlmNDNlMTdkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2U2NTdlMWZiODkxMmNmNDg4ZDI1ZWMzMmI2MGQ5MmJlODBiNjI0NDJmMjU1YTAxNmJhMTc0NTFhN2VlN2U4ZiJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L75-L77",
+          "version": "repo-lines-v1:sha256:831673f0f6f3abc9616b2a013d3e93b56b6d5773e5b31d81f1d33ed067e8c4ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjg5MWZhYzU0Y2MwNzIyMWI5NjU5YjZiMDNhMjQxY2E5M2JiODU0MmQwYTg3YmVmODE0ZjAxMTFiOTQyMDU4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBlZjRkMTU4NTc5NzQwNzhjZjNhMGE0NjgzYzg3ZjVkMzNmNzliYzJhOGNhZWJmOTg1ODg1MzU0MmIyYmQ1NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDJhZmJhNmE4OTdiNTgwN2U0Yzc4MGI0YWEzZjk1ZTFhNWY1ZjkzNjY4YjYzYjU0N2Q0YzMyOWU4Y2QzM2M2YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTRkZTBlMzFjNmZmNjkxNzhlNThiZGNjZDZkNDcyNTcxNWYwNzkzMzVjZTgxM2JmMGFkMDQ2NDMxZDE4YTU0ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_18e43c1fb86e42b38fbb76e60c61aefd",
+      "statement": "The 5-hour bar color follows the warn/crit thresholds (defaults warn:50, crit:80): pct >= crit -> bar_crit, pct >= warn -> bar_warn, otherwise bar_ok; the weekly bar is bar_crit at/above crit and otherwise bar_warn, with no ok state because the weekly gauge only appears once past the show threshold.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L90-L96",
+          "version": "repo-lines-v1:sha256:de91afd750984e0636bda0101a44ca1bd679a7b8cd546335d17dae7a75e8c6a2:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGU1NGI2OTk5ZGYwNmIwNDVlMWNhNDIyYjI3OThiMmY3OWM1NjdhYzM4MjBhOWZkNmUxMzFlM2RhYjhkNWUzYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOThlOGVmMjI2ZjE0YjJlYmU4NDZmZjliNWFhZmIzZjU5NmJmNmQwZjgzZWJkNDNlZGQ3MmJmMzFlYzEyYjQwZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDJkMmI0N2Q2NGQ0ZTk0NGM2YzE4NzQ4NTIzNTU0YTQxMGM2NGVkNzI3YzBmNDA2OWZjMTA1M2I4M2U3YTE1YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmFkODZhMTEzM2VjZDVmYTBjOGUyZmZhZmJkZGM0ZTIxZGNjMTg5ZWFkMTk5NWJjNzBjNGUxNDg5YjA3Y2I3OCJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L160-L168",
+          "version": "repo-lines-v1:sha256:2dfdaae695c5be45d0b7293e79d278ca5ccb54dec96ba588d8cc4c1e169537fb:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDIyYTk1Y2U0YzEyYmExODZkZTI3NDMyMTNiN2ZmYjJjMTcyNGYxMTFiOGQ0NTZmM2Q0ZGI0MmJlNmM5NDYzOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDJkYTgxM2M2YzJhZDdkMjZjMGQyZGM3ZWIyNWQ5NzcwMTI1ZmRkYzkzMDM1YTNkMzUzYWE1YzcxY2IwNDNkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjAxZTk2Y2QyNDQ1ZTc2NGM5ODdiZWM4ZDYwMzU5NmMxM2U2NjVhMzMwNTUxMDYzMWExYWRmMjg5ZTY5MmRmOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDQ5NjhhZDI3MzAxMDI1ZDYwMGY2ZDUxZDRmZWFkYTFkODA4ZTVjZDU3OThhNGQ2ZGUzNDRkMTc0YzY0MGVjMCJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L78-L82",
+          "version": "repo-lines-v1:sha256:8afc99e6d684693baceb609f095034361534a6bac77ad3ebf6a56e84b8650e71:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODkwMDhmNTI3MDY4MzUxN2NmMjc2YjE2NjYxZDJmYTFlOGM1MjJiNWM0NjkwNjhlMmYwOWNkNzVkMGI3MWE5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMThmMzA4MTBmODc1N2JkZTQxOTJiYWE2ZDc4ZWRiOTM1ZmFhM2UwZjBlOTc0NTQwMWM3NTI2NTAwYmZiYjgyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODMxNjczZjBmNmYzYWJjOTYxNmIyYTAxM2QzZTkzYjU2YjZkNTc3M2U1YjMxZDgxZjFkMzNlZDA2N2U4YzRjZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDZkMTZiNjg0YWFiNzU5ZGEyYWE2YTg2MmJlODEzMTFiODNhMmRhZjBjYjBiNDFmZmNjODY2OTk5NWVkZjA1YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2d076f9315284c29a866bedff944d29d",
+      "statement": "The weekly (7-day) window is only surfaced once its rounded percentage is at or above th.weekly_show_at (default 75); below that threshold the weekly gauge renders nothing and the segment shows only the 5-hour window. When shown after the 5-hour window it is joined via window_gap().",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L132-L132",
+          "version": "repo-lines-v1:sha256:06e699bbb0c2851cd032015b2610f35819ab1609656733e9a1ef2340289f6dba:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDZlNjk5YmJiMGMyODUxY2QwMzIwMTViMjYxMGYzNTgxOWFiMTYwOTY1NjczM2U5YTFlZjIzNDAyODlmNmRiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDZlNjk5YmJiMGMyODUxY2QwMzIwMTViMjYxMGYzNTgxOWFiMTYwOTY1NjczM2U5YTFlZjIzNDAyODlmNmRiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRlYTUwOTI3YTRmZTNkNmJkY2VlNjU3OTA1NDFmMTRlOTZiYTJkZTVkN2Q4ZmYwMWY3N2M5YjYxZWJmZmVlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmJkMzQ4MDRiYmNmMWNjNzYwYjQ1NjFkM2RiNWJhZGY5MmZiZDQwYWUzOTk2OWJhMWE5ZDRmMzQ0ODhhYzE1MSJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L75-L90",
+          "version": "repo-lines-v1:sha256:9c04f714e5e1ed3f23e40f37f6301ccebf3e83db81afc7edf79e83670ef1b562:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4OTFmYWM1NGNjMDcyMjFiOTY1OWI2YjAzYTI0MWNhOTNiYjg1NDJkMGE4N2JlZjgxNGYwMTExYjk0MjA1ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyYWZiYTZhODk3YjU4MDdlNGM3ODBiNGFhM2Y5NWUxYTVmNWY5MzY2OGI2M2I1NDdkNGMzMjllOGNkMzNjNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2NTE0YmJhZTRkYWY4ZDgwZmM0MzgwNDdiNzQ2NDkyNzRkNzhhMmNhMjAyYTE1ZDdhMGYwM2ZkZmY1YmMyNzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_302ae41621d443cabcbf5381e6cfc602",
+      "statement": "crate::sanitize::fmt_reset(resets_at, now) formats the time-until-reset adaptively as 'Nd Nh' / 'Nh Nm' / 'Nm Ns' / 'Ns', returning None when the target is missing (<= 0) or already in the past; in the latter case no countdown is emitted but a window with a past reset still renders its percentage.",
+      "evidence": [
+        {
+          "resource": "repo://src/sanitize.rs#L110-L134",
+          "version": "repo-lines-v1:sha256:4a79e568eeb615b32d600d2fdaf4acf1be145ab22b15a87312853362cab60ad7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiNjM4OGZjMTZhNzI0ZTA0NjY3ZDhmYzQ3M2EzZDVlYWIxODFlNDE5YzU5MmZkMDdiYTkzYjFiNDczN2NkNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxZmYyMGIwYzExMTFhNDk1Yzg1OGViOTU0Nzc4Mzg3YjEyMTc2MTUwYWNmOTQ3YjJlNjc4NWM5YmE0YzU4MmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L291-L304",
+          "version": "repo-lines-v1:sha256:67b422370622d9478a16f844828a8aecf53363be897141f283f818b96a66b7d5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4ZmEwYTAzMzZiZGUzMTU4YTljNmM0OWE3M2YwNGNmNTliM2ExMzdhMjlmODFjNzk1MzFmY2I0ZWZmYzU3ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwMGRiMDQwZjI5MDliZjk3OGZmMGE5NTZhNTVlODNjNjUzNDE4ZGU2YmI2OGY4MDQxZGE5NzZmOGQzZDIyNzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhODliNThlMjgwZGZiNTgwOGU1NDY2NDliMDU4MTAzYWEzY2Y3ZDEyMDk5MzdmYmMyZDRjNTExZmMwOWQyMjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_102c6a35b94342bb8f1f947444722b5d",
+      "statement": "Cross-session sync is opt-in via Thresholds.limit_sync (default false). In effective_5h/effective_7d, when enabled the session's own (pct, reset) snapshot is recorded into the shared store, then the shared high-water mark is preferred when its reset is in the future; otherwise the session's own values are used. For the weekly window only sessions whose usage crosses weekly_show_at contribute to the store.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L124-L125",
+          "version": "repo-lines-v1:sha256:4e444fe95b84899e233ff254dedaa24f9f23e344be6a6dc091754c7d9d20759c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA2MGYyNGYyNTU2ZTNiNGNjNDI1MmE5YmExODM5ZjFkYjQ1MWIwNDZkNzg4YjY3MDQxMGVkYzNmYjkyYjFmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzg1Y2M3OThhNzdmNTBlMjEwNGNmYjRhMGNlMWJiYWNjOTJiNDM3OWJmNTFlYWZjYjk3MTNlYjJkYTQ3MTY2NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTIxYWViZWU2M2UxZjYxNzQ1ZTUwMDg0N2UwMDkyMWUwYzhhMGE5YTRhMjdiNDZkM2Y1Y2YwZWQwMWQ5ZWE0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWZmYmQyMTEzNDMzNTdmOTE1Zjg3M2RiODI3ZmI3YWEyMzc1NTlmYzZiYWYzNmMyMGIzZmRjYzM5Y2I2MTA2YyJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L101-L142",
+          "version": "repo-lines-v1:sha256:dfc2283dc35f0ddbec283436f20ba1e86a49e727def89c8c5e8a7f48e742fa02:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhYTNkMWE2MzNiZGUzYmVkOTAyZDNiNGMzOGIwZmUwZWE3MzU4OWI2OTY0ZjY5OTIxYTBiMWY3YzBiMjhmMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0ZGM3NGEwNmZlYjdjZGFiMmJlZGUxZmQ5MDg3OTc1OTkwOThlMmU4ZWRlMTVlMTM0NjgxNTIyMDUwYjU1MTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmYTI2ODFkOWUyODY4NmFiNzJhYjhjMjVjZmE4OTAyYmJkOWFlNWNiYjgwZGQxMjU3ZjdkZjgwMGM3ZGViMDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_977cbcccdd174594b5bad652730d88e3",
+      "statement": "cache_dir() resolves the sync store: $CLAUDEBAR_LIMIT_SYNC_DIR overrides everything (used by tests); otherwise $XDG_CACHE_HOME/claudebar, falling back to ~/.cache/claudebar; it returns None when neither override nor $HOME is set, in which case callers no-op.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L51-L63",
+          "version": "repo-lines-v1:sha256:2e85c67875cdab5045760aafab7123e7c6cf16ba6420e2c8859f9cce6b4f6d23:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0Zjg2MzI1OWUyYmRjNTQwN2Q1NzA0YTRhNzgwODE2ZDU5N2ZkNTE3YTBkYWM0MjA3Y2ZhYzQ1OWUzNTM3ODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4YTIwZTM0ZjFjYjk0NDg0YzA3YmU2MmNiNGUzNzVkZjBhZjQ2MWMxYzk3Nzk3NTI2YmE1MzllYWFmYjliYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4NzdmNTM1NTIyYmNlYWY3OTM1NjZlMTE5ODMzNTMxYTJhMDk2MjU4OGU0NDVkNDQ0MjlhYjBhOTUwMmIyMjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e095ce8cba674249a3a1b65d64f71b65",
+      "statement": "Per window there is a directory limit-5h.d / limit-7d.d; each record is itself a directory created with atomic mkdir and named '<reset:%010d>_<pct:%07.3f>'. Fixed-width fields make lexical sort match (reset, pct) ordering so the last entry is the highest reset then the highest pct; mkdir is atomic (distinct names for concurrent records, idempotent for identical values), and parse_entry defensively returns None for anything not shaped like the module's own entries.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L100-L104",
+          "version": "repo-lines-v1:sha256:d4f07a64dea77bfa0bd6b1280ef81a25e32a4c8dc79a2f9f96c674a2f9a8e529:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE3MTI4OTFkNDdhZGQ4NzkzYjY2ZmViYWIyMWJjMWMyYWRlNGM4ZmU5YzRkODUzODIzNDAzZTIxOTMwNmJlYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmUyZTg1NTU5ZTcxNGQyMDA0NDgxNmU3MDI4MDkwN2ViMzhhM2JjN2NkOTgzOTc5MzM2ZjRjYzlmZDFiOTM5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTY1MDYyYzJlNDU0Zjg0NGRhZWZhZWUxNzNkZjg0MjM5MTE0OThiM2JjNTQ0NjY2YWU1MDM4NTc0NDdjYTg1OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWM1YTI0ZGUwZTU3YWIwYTJlMzA2YmE5MTQ5ZTRlYzJkNmEzMWI1ODVmMmQ3ZDYzOTVhMTJiZTAwMzkyZDQzMyJ9"
+        },
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L66-L85",
+          "version": "repo-lines-v1:sha256:1f4136396e5f7af4b1e812fc03ba9367cb0f905113bf057e911881909ce16c67:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiYTAwY2MwZDRkZjcxZjUwZmMxOWYwMDY4ZWFhYjkxMTc5NWVkOTZmYmNjOTZhMjNhYWM2NGMzYjE5MTg5YjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwOGU2MGQyMmI1ZWNkYjU1MzYxYjhhM2JhOGRkOTdiYzRiNTE1NjVkMjcwZDgyNGMyZDNlMWRiNWJlYjBhZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzNmJhMzEyYmUzMWNiNGI2ODNkNzRkNzFhYzY1ODlmZjJlNzhlOWY1ZjQwMDUxNjU4ZGM1MmM1MDA0YTEwNzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_152a048f564f4a7181324f6566412185",
+      "statement": "latest() lists the window dir, takes the highest (reset, pct) entry, and rmdirs the rest, keeping the store to a single entry per window so the file count stays bounded across sessions and renders; read and GC errors are swallowed (missing dir yields None, failed rmdir ignored).",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L112-L140",
+          "version": "repo-lines-v1:sha256:50323a5d65a1e9ea2ed5f42e123b45558207e5a46e744b9e90b4f85b311a57ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkZTNkNjEyYWFkNTIwMmQ2ODUyN2I1ZTFjOTQ5Nzg3MzY0N2UzMWVlZjRjMjc3NDM3MmJjYzk4YTRmYzljODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZTNhNDk4OWE4MjRjZDU0OTM3ZjExYTg5NTM3NTQ5YjY5YmM2M2FhZDQ5MmZlYWZjMmY2MWJmNWY1M2E3MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0MjNiZjUyM2MzNGM3MDc3YzE2NWQzYzdmYTYwZjZkOTVmMWM1ZGRhZmEwOGM4YTdjMmQ1YjkyYzhkY2IzM2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7175e497c8594773a45991acdba3b097",
+      "statement": "record() rejects implausibly-far-future resets: the 5-hour window resets at most 6 hours ahead (FIVE_HOUR_MAX_AHEAD_SECS), the 7-day window at most 8 days ahead (SEVEN_DAY_MAX_AHEAD_SECS); it also no-ops for a non-finite or out-of-range pct (outside 0.0..=999.0). All filesystem errors are swallowed because the cache is best-effort and never breaks rendering.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L42-L44",
+          "version": "repo-lines-v1:sha256:77b3a111bcc69e0fb6e4c3d5b68dcd6b45c559d72986f70b3e1af25b6cb88a3f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWY5MTQ5MTE5NzYxNTg2YTI1MTRmMTc5MDgyZjU4YWMwYWZjYzhiYTJkODU3NGZmNWNmYmJhNTY5OTJkYmNkZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDIyOTNjY2UwMDczMTlhMGY5Mjk5YjRhNzg4M2I5ZDc2ZWFiMmU3MWFmOWE0MGI3ZDdjYzVmNWI1YWE4MzFhNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjdlYjVmMGU0ZWZkNjA5MDNiMzQ5MTZkYTg4MjVmYWNlYWQyYTk0NGFhYjg3MzEyYTcwNzRhOTEyODZmYmJjNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzJhYzQ5NjI5ZTIzMGM1Nzk1Mjg4NGIzOGM2MDhhYzY5ZDU0MTg3ZTU2MWQ5OTNjODY5NjRjNjZiMzFhYzc3OSJ9"
+        },
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L93-L105",
+          "version": "repo-lines-v1:sha256:cfee0d0bc50f887548b11b00250ed215552c308069c53e9de416ed91618a3096:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5M2Y3MjgzZDlhMzI4YjY5NGQzZTE2MmUwZTkyZjdkMGI4NWZhNDIzY2RmMmI5ZTQwODE3ZDQxMmFjMTNiODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0MThlYWE0ZjI3ZTU3Y2Q4YjlkNGUyNTg4NDVlY2ZkMzkwNWEzMWJhNDQ0NTc1Mzk1NTQxYjczYTkyZmZkZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NDQzOTQ4ODBmOWE3MWRkN2UxM2UwMDliY2I3YzkwYTc5ZTQ3OTY2YWFhMmE2MDllZDYxYmFlYTU5M2NmNjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b9b0018e154c48f3a28a36489cd31294",
+      "statement": "The segment never breaks rendering: absent fields degrade to None, wrong types are forgiven by Coerce, and render returns false (nothing shown) when neither window has anything to display; the weekly window only appears once pct >= weekly_show_at and is joined by window_gap(); percentages over 999 are never trusted but over-limit values up to 999 still render with crit colors.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L156-L158",
+          "version": "repo-lines-v1:sha256:200631d3c61ee7bb44260fda15fe1b85c6a442e126ed26194157e2ec1b738ebd:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDNiZDI2NTljOGRkY2U1ZjhkN2NhNDU1NjUzZWU1Y2FiNDNkZGI0YmI0NDEzN2U1OTkyZGMyMTliODhlNmY1ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjE0NjEzNTYxMDI4MDk1MDdmMzA1ZjQ5MjZhMTY3NGExN2QzNjMxYzgyNGRjMmZjMGVjYjUzYmMxYjQ0MTllNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWUwMDg4Y2RkMjMwNWE4ZDQ5ZWRmOGM1MjBkNDVhNWYwZDNjMzU2YWZmMzhmZTIxMGMyNzIxOGY5YTIxMzQ0NCJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L261-L269",
+          "version": "repo-lines-v1:sha256:bce57fc903b9e168ebe3144f955f2eb5100c8b62ce53e70d816e7717d186aa4f:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTZjMzdmZTQyOTRlOWIxNzNjYTdiOGQwNTM3ZDdlMzkzZmZkZTNlZGQzYTI2MzdlNDVhZmRhZjcyMjQ2OTc1NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTAwZGIwNDBmMjkwOWJmOTc4ZmYwYTk1NmE1NWU4M2M2NTM0MThkZTZiYjY4ZjgwNDFkYTk3NmY4ZDNkMjI3MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWY1ODg5MGI0MWI4MDU1MTQ4ZWNkZDNjMTFhNGFiYmI2MWYxNGI3ZGYwZWY3OWFmMGJkOTJhNzVhNzk2Mzg5OSJ9"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L307-L309",
+          "version": "repo-lines-v1:sha256:3287b77beddc37035ff220f6000eca5990e758a4a6bcd190aee4ace1e6ab3cc1:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWE4NDExM2M3ZjYzZmI5MmU3MjFlZmIxMTAxN2FjZTA1YWM2NTk5YWYxMWNkZGMwMzZjMDE3OWIzNzNjNTk5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTAwZGIwNDBmMjkwOWJmOTc4ZmYwYTk1NmE1NWU4M2M2NTM0MThkZTZiYjY4ZjgwNDFkYTk3NmY4ZDNkMjI3MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2QzOWNjNTI1ZWM3MGJkODUwMzdhYjNjZWQzYmFmNmVmZjAyNWIyZTYzNjM5NDZjNzFhNGRjY2Q1MDllYmQ5NiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-26T22:48:34.063Z"
+  }
+}

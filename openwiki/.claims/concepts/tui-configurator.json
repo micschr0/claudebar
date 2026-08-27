@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:99a97793c948e05466164d2ec2b3a86a501bb0528c9d10ea6d0bf043a3807739",
+  "claims": [
+    {
+      "id": "claim_3827ce00321c48dcaad19bfd300ff383",
+      "statement": "The TUI configurator is feature-gated behind the optional `tui` Cargo feature, which depends on optional ratatui, crossterm, and ansi-to-tui crates and is enabled by default; `pub mod tui` is gated by `#[cfg(feature = \"tui\")]` in lib.rs, and building with `--no-default-features` yields a minimal render-only hook that never links the TUI dependencies.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L18-L36",
+          "version": "repo-lines-v1:sha256:c01526f82fe44dba5d0eb38b0d8d68c9ed4adcdb70307b0a8dfde295837be28a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2ZjZjMWM3M2U0Njg1YjZmNTU3OTJhZTUzOTI1NTNmZjc5ZDNjYzA2N2IwYjc0ZTA2ODY5OGY2YjJjNzZiODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwMzRiMTMyY2VlMmI3OTAxMmRmNGRlMDE0MTY5MDYwOGE2ODE3NzNlMzkyNmVmYjM0MGIyNGZlMTBkNDM1NDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4ZTFlZmViODAzMjJjZjQwNjE2ODQ3ZmJjZTAyYmRjOTA4OTRhMzYwY2JjMDI1ZGMzMTZhZGZlMDg1OTcwZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjNWQ2YWQzNTA4YmUzMWEzOGU2YmYxMjllZjA2OGI5OWZhMGRiOGFkMjM4NWUwOGNiNWQyZDMxNTRkMzllYTAifQ"
+        },
+        {
+          "resource": "repo://src/lib.rs#L48-L49",
+          "version": "repo-lines-v1:sha256:e7799876f6ba4c732a704ac825a94ac80509b97e8678e637c75c5dffed550f35:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjllN2MyNTRkNGU1YzVjYjYxZjVjNmExZTM2NGM5OTczMzQwMjJiNDZjYmIxYTI4ZTEyMzU4ODIzNzVlMDJjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ5ODU4NWU3ZjBiZTBkNzcyMjZhYTc5NzgyNWIyMGY2MzQxMThhZTYwODdiZmEzMWUwMzI4NWYzMGY4YmI1OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTllYTg0NmQxZTg0OTViYWRjZTJmZDM2OWZjODRjMzE3NDQxYmY1ODdlZTQyOGJkMzlkZjI1ZDk3NGRiNDNjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGUwMjYwMTgxYzQ2ODkzMjZmYWM3Mzg4YWQ4ZTg4M2Y0M2E1YjM5MDgxMmRmNmUwZWE2N2M4NmNmNmIxYmEzMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9dfffb771bf4ae1865b70c0cbaa4d69",
+      "statement": "The TUI is never linked on the render hot path: the optional ratatui/crossterm/ansi-to-tui dependencies are only compiled when the `tui` feature is selected, and `render_line`/`render_with` never depend on them.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L33-L36",
+          "version": "repo-lines-v1:sha256:32da7a85c3b2d57a2948313832dfea5b815bd83e025258489c79ced779ce3ff4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWMzNzcwNWNkN2VhZjIwNzgzM2MyOTUyMzBiM2IzYzZmNTEyNTVmZTdlNWY2NTRjOTQ2ZjM2MjU2MjliMjZkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzAzNGIxMzJjZWUyYjc5MDEyZGY0ZGUwMTQxNjkwNjA4YTY4MTc3M2UzOTI2ZWZiMzQwYjI0ZmUxMGQ0MzU0NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWI5ZDVlODlmMzUxZDFlYjk5YzFkODA5ZGE2ZjMxYzY1Yjk1OTQ4NWZiNzE5MDE0MWJmYjVmMDYwZjQ1NzRkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1ZDZhZDM1MDhiZTMxYTM4ZTZiZjEyOWVmMDY4Yjk5ZmEwZGI4YWQyMzg1ZTA4Y2I1ZDJkMzE1NGQzOWVhMCJ9"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L1-L32",
+          "version": "repo-lines-v1:sha256:42694f27dc853a6ec631a6ab0b29430c7187eea6951315732388fe1fa02371e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiODIxZGRkNGUyNDc0MTAwZDJlZTE0OTc4MjRjZmQ2NzVkMjg4NjkzNDFmYTEyMWYyMjdkNGRkMTFhNDI3ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmYmZiYWYwOGZkOWFmZjc1NzM4ZGQzZWY4MWNlMGEyMmEwZDg5YTRjMWEyYjZlZDdhYzEwMGQ4MDQ0MWU1ZDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dd79400ff5024afda922b533b45aa5f5",
+      "statement": "The `config` subcommand dispatches through run_config in main.rs, which resolves a save path from the `--config` override or `Config::default_path()` and calls claudebar::tui::run(path); without the `tui` feature it prints that the configurator is unavailable and points the user at editing the TOML directly, returning a failure exit code.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli.rs#L78-L96",
+          "version": "repo-lines-v1:sha256:e58d38d0a126997c140a0cbe03f18f60a89da8999d8a968b914179ccee708e53:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjZjE2MzI3YjIzNzE5MjcwOGRjODVjYTc5MWQ0MGE4YmQzOTA1YzFjZDYwMjhjMzYyNjM3ZjU0YzFjMTY5NDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2ZjE4NGRhNDYwZWRmMmUzYjc5ZDdlYTIxNjM4MmEwZDg0ODAxZTEyM2EwMmE5YmU3YWFkMjZjZDg1NTc1NzQifQ"
+        },
+        {
+          "resource": "repo://src/main.rs#L110-L133",
+          "version": "repo-lines-v1:sha256:d6185a415f27e7056971ab7a580dce1572e0e5d5b99c5c89282062be46acca94:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxYzBhOTlkN2E4YzJkMDZmMWU4MjM1ZWQ1NzExYzFmMjgzNDViZWM2MzI3ZDU0YzEzMTA3NGE2ODY1M2IwMGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkZmZkZTExMjM2YWVhY2I1NzhjNmJmNjkxM2Y4ZTAzNmYzYTBmZmQzYmI2OTdjMTA5ZGJlOWU5MGE4YmY3MzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhNDY1MDg2ZDliYmE2MjNmNzIxZjM1Yjg3MWJiYTI4NmRiNTAzNGFhZWI2YzQ2YTEzOWRhNjExOWU0YjBmNjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b928b98f44cf41c8b5751fe4dc33f2b0",
+      "statement": "tui::run loads the config via Config::load_or_default (so a missing or malformed file becomes the default config and can never block the editor from opening), computes the effective save path from the explicit path or Config::default_path(), builds the App, enters the terminal via TerminalGuard, runs the event loop, and always drops the guard before returning.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/mod.rs#L55-L70",
+          "version": "repo-lines-v1:sha256:222492ddbc0deaa5d900fb97e32dd413348dd5c4118986528b304e22e49a92ac:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiZWJlNGI1NGFmNGE3NTJjYmQzNmQxY2I1ZDljOTQ1MjkwNDAyZDg4N2MwOWU3ZmQ1OGQ4MGVjODJmNWFkMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1OGZiNjQxMjAxZThkOWQxNDQ5NTIxNDgzMzlkMjg3ZTMxYmM3ZTY2OTZkNjQwN2JhYjA0NjUyYTFkZGYzZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a96bf8671571419abb5128f155f67694",
+      "statement": "TerminalGuard is an RAII guard owning the ratatui Terminal; enter() enables raw mode, enters the alternate screen, enables mouse capture, and builds the terminal, while its Drop implementation restores the terminal unconditionally (including on panic or early return) by disabling raw mode and mouse capture, leaving the alternate screen, and restoring the cursor.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/mod.rs#L26-L53",
+          "version": "repo-lines-v1:sha256:44e997f3149d1d15d263d4b7918ecef12ca9dd2918e33e446bf0af58f84f0239:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyYmZkNTgyYTZkZDA1NzhhMTVjZGU4Y2VlMWEyOTRhNmJmN2QzMWFiMWZjM2UyNDk5ZTgxNjAzMTY4YjNhNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwYzg0MGMxZTFmZmYzNzdlYmIxMzZiNTJlZmI0OTdmMGI1ZGQ1ZDZjODZjYzliZDhlNGQ5MWM1NGY4NDBiMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyNGI4OGIzMDNhMTJjZmUyMjM1ZTFlMmU4ZmM0ODkwYWQ3NzE2ZTIwY2E1YTgyZjM0NWEzZTllZTM4ZWE4MjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4982dda7b7d6422e94f7ac9719a62ae4",
+      "statement": "The TUI uses a split-pane layout rendered by ui::draw: a top row with a left menu panel and a right detail panel, and below them a bottom live-preview strip, a one-line status row, and a hint bar; draw refuses to render below 80 columns by 20 rows and stores the panel Rects on the App each frame (via Cell interior mutability) for mouse hit-testing.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/ui.rs#L55-L105",
+          "version": "repo-lines-v1:sha256:e9ef242b7b25ca16e1126e64010cb830e7d605519e27ced0bc77614ebe4d2401:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkYmVlMDcyYjJmNjdmMWFkM2QyYTdlMjc3NmNmNGNmMTgzOWVhZGRlNzI1YjkzZGFhOGM1OTM1OWE5YjQ3ZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3YzI3NGJiZmY3NzJhZDcyOGVjNDUzYmNjN2Y3ZTdkYzQ5ZDM0OTYxYmE3OTYwMzM5NzZlNmIyOTlmMTJmZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZTZkYjM2YzEyYmRlMzMwNjQ0NGEwZmZhZjhkZThiMmE3ZTcwYWE2OGYwNzZhMmVmM2YxMzMxYzBmNDE0MTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_476843e039904c1e821f4b1df3c0f00e",
+      "statement": "The live preview renders through the exact same render path as the hook: preview::render resolves the theme and style from the edited config and calls render_with with a fixed FIXED_NOW epoch and fixed /home/me home prefix for determinism, then converts the resulting ANSI string into a ratatui Text via ansi_to_tui::IntoText, so there is structurally no second render path for the preview to diverge on.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib.rs#L3-L6",
+          "version": "repo-lines-v1:sha256:6de52041c6d166b638fa5aebe398279514d798202f1aca5a9edfd9026666dfcc:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjA2NTczN2UwNzFmOWZiY2RmNTRiOGFkMzhlNjZlNGI2ZjFmOWZhMWMwMWVkNmFmOWQ5NjY0ZDIyMmE5NjQwMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzAzOGQ2YWYyZTBjYTEzNTAwOWQ4OTBmNDQxZWJjZjNjYTAwZmU4MGU4OTc0ZWJmMmNlZGUwZTVlMGNhY2ZiOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGIyYzBiNmNlOTEzODdhMmZjNmM5MTk2ZWFlYzI4YzkxN2QwYmY1Njc1ZTY2MjdhNzJhNDFlOTliZWNmODIxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWEwMWM4ZmNhMGVjZjIyNTBmOTYxNzNkMjEyNmE5OTEwNTM0ZmMwZWZjYzNhZDBhODVkZGRiODAwOGZhMDRjNiJ9"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L34-L61",
+          "version": "repo-lines-v1:sha256:d150f4e27c23dd47cc1f232373f693240dd569cea9082fd73ee61c28cb0af5b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5NjMxOGUxODYzZmFlZDdiNmVhMDY0OTdkYTYxODVmNjg1ZTVhZGUwNzNjNzk2MDAwMGM4YmRhZGVjMWUzZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1ZmY3OTVhYmFlYTJjYmIyMTMyYzA0YzM4MjIyNmUyNmI5YzliNGJjNDg4ZWQwOGFiNjYwYTRjYmZiNjRmOGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkifQ"
+        },
+        {
+          "resource": "repo://src/tui/preview.rs#L12-L33",
+          "version": "repo-lines-v1:sha256:6da5667d14a839367b5e19ca9b3570407513eed29f8197e7c3cd382699c495ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZWE0OGMxOGRmZjg2ZjAzZTM5YzhjNmYwZDQxODg0YThjYTJhOThlYzVjZjFiYjAzYTA5NTQzZmQxMTU0NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkYjZjNDBkYmE0ZDkzMjE5ZDMyYzVlNTRjNzEzNzczNTVmMGQyNzU3MzBiYjc0YzMzODE5MjdjNTZmM2MzYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f7574e21264a432795ea57890dc29ce4",
+      "statement": "sample::all() returns six named Samples (typical, over-limit 5h, no git, no effort, dev context, weekly window), each an InputData parsed once from a committed fixture so the preview is byte-identical to what the hook would emit for that input; the App cycles through them, and p/P advance forward/backward.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/app.rs#L172-L180",
+          "version": "repo-lines-v1:sha256:798a8cda7a81b516840948337298462d9c260d7231b3d6c78624853317fdde1f:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Y4ODVkY2ZkODAwODQ0YjE2ZWQ1ZjNmMDk5OTVjMGI2MTkyYTZiNzNiYWY1MzQ4NDFkZjQ1N2QxYzFkY2QwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTIzOTY2NWVmYjNjYjVjZGM5MTU4MDM1OWQzZTY3N2FmYzU3NzhhZDc4N2M0N2NmMDM5MmRmYzEzNDg0YTA1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWJiYmRkZTY5MThkMGE1NTQwMGQwNTYyY2M0NjZkZGU0NDY0YjgxNWYyNjFjMDA0YjU5OWI3YjVlOWU1NTdjMSJ9"
+        },
+        {
+          "resource": "repo://src/tui/mod.rs#L425-L430",
+          "version": "repo-lines-v1:sha256:5457231e143d425426e082c6112bdb701a858fdda2a819f976e574426c3acf71:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTEzMGI1YWI4ODlmOTVmMzc0OTUxZjM5NTUwZDZjMzNhMWRiNTlkZDc3Yzc3M2U3YmJiOGQ4NWI2MTdjNzliNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjJiNGQ5YzljZTY1NDg0NWJkZmIzODQ0ZjFiYjQ3NmY0MzUzZjFkMTgxODJkZTdhYWFiNDNlNjllMjQwNWU1ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjllNGE4MWEyNzg5MjkzZjhiYWY1OGFkOWU2Zjg2ZDg4ZWU0YzBhZTYzNzhlMmU1M2MyNmQ5ODY3MDExMjlmMiJ9"
+        },
+        {
+          "resource": "repo://src/tui/sample.rs#L13-L41",
+          "version": "repo-lines-v1:sha256:75038afb64aa9971b1fdc384bb0716636760b57008c32f68fb5a0960fe6f1be0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1ZjQwNjYwNGVhNjNlZmM4YjZhZTIwNGE0MjhjNzY2Yjk3ZWRlYmZkNDQ3ZjA2NjE3NTBiMzNjNWM4NmQ2MTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyMDI2MTIzN2ZkZGFkYzM5MTFkNzljMzQ2NTNhYjUyM2FhYmYwZDc4M2E1MDNiZWM5M2ZkNmQzOTgyOTZlM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_437c1acd2a06407c88df0e110e72ced3",
+      "statement": "app.rs deliberately keeps all configurator state and mutating logic free of ratatui draw calls so the helpers can be unit-tested without a terminal; App holds the live config, a saved_config snapshot used by is_dirty(), cursor state, the rebuilt list_rows/selectable_indices/section_starts, the focused panel, a swatch_cache from themes::NAMES, preview samples, transient status, and the mode flags pending_reset/pending_quit/reorder_mode/show_help/should_quit.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/app.rs#L1-L3",
+          "version": "repo-lines-v1:sha256:83635bcf421f23f5afab38dfe37611d85b54e5d6d18c16be0c23bd0a85a0005c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWEwZmE4ZTJhNmRlNjJjNjJmMjQzOTM1MDg5Nzc4ODA0Yzg5M2ZlNWY0MjBlNjM3OTBhNzFkNmM4OThhY2RmNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjg4NGI5ODFiMGE5N2RiYjUzMTZlMDE4OTVlZWIyNDhkN2Y3ODA5NDIwZmFjYTIzNmJlZGMyYWQ2ODI1MDZjNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGU5NjJmM2NkNzE3MmE4NmExZDRkYTcyMTliODBiNzU0NjE4ZjUxZmQ3ZDE0MGM3ODc3M2MxMjBjOTA2OTFkNyJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-26T22:48:34.063Z"
+  }
+}

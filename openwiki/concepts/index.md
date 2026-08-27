@@ -1,0 +1,7 @@
+# Files
+
+- [Rate limits: windows, thresholds, and cross-session sync](rate-limits.md) - How the rate-limits segment renders Claude Code's 5-hour and 7-day usage windows — percentage rounding and color thresholds, weekly-show gating, reset countdowns — and how limit_sync shares a high-water mark across sessions on a host.
+- [Security: terminal-injection hardening](security-and-sanitization.md) - How claudebar defends its statusline against ANSI/OSC escape injection: every host-provided string (cwd, git branch, model name, effort, dev-context) is stripped of terminal-control bytes by sanitize::strip_control before it reaches the rendered line, in both the Rust render path and the bash fallback.
+- [Segments: the composable statusline units](segments.md) - How the 11 renderable statusline segments work — the Segment trait seam, the injected RenderCtx, the SegmentWriter emission API, SegmentKind enable/order semantics, and each segment's contract.
+- [Themes, styles, and the color model](themes-and-styles.md) - How the fixed-struct Theme of named 256-color slots, the Style/GlyphSet definitions, and the built-in theme and style registries work, and how to add a theme or style consistently.
+- [TUI configurator (feature-gated)](tui-configurator.md) - The optional ratatui/crossterm interactive configurator launched by `claudebar config`, which edits a Config in a split-pane UI, renders a live preview through the real render path, and persists the edited Config back to TOML on save.

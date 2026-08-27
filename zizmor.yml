@@ -42,6 +42,10 @@ rules:
   superfluous-actions:
     ignore:
       - rust.yml
+      # peter-evans/create-pull-request handles branch creation, the
+      # add-paths filter and PR reuse across scheduled runs. Rebuilding that
+      # with `gh pr create` in a script step would be more code, not less.
+      - openwiki-update.yml
 
   # ---------- npm-release.yml ----------
   #
@@ -68,3 +72,12 @@ rules:
 # single-repo-scoped App token — GITHUB_TOKEN is never used.
 # Inline ignores in homebrew-app-token.yml suppress the remaining
 # zizmor findings. See that file for details.
+
+  # ---------- openwiki-update.yml ----------
+  #
+  # OpenWiki is a global CLI installed for the duration of one scheduled run;
+  # there is no Node project in this repo to hold it in a lockfile. The
+  # versions are pinned exactly and Renovate keeps them current.
+  adhoc-packages:
+    ignore:
+      - openwiki-update.yml

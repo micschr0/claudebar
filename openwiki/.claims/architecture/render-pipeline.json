@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8359a4f7f51ac46a6a6240a81d640d37b6bc466bfb40b692c11395b4a67afc2d",
+  "claims": [
+    {
+      "id": "claim_fce3354879fe41fdb6fcedbc211e32e9",
+      "statement": "render_line is the single rendering entrypoint shared by the statusline hook/CLI and the TUI preview; there is deliberately no second rendering code path, so the preview can never diverge from hook output.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib.rs#L51-L52",
+          "version": "repo-lines-v1:sha256:cc4a08b7f8bafdcc4e3a91fcfd9a56b71d39255d218f727145e5dcc7f659f42c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzM2NzQ2ZGRiZjJmNzBjZWY0OGY3YjE3NmRjNzU2MThlZTY5MWE3MDk3ZjE0Mzc3MTQ1MzliOGNjNThlNzVkNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzIwZWE4MmI4ZjFhY2VjOTZkNDA2MGM1YTBkOWE5NGIyMmY3NzRkMjI0Yzk3YjU3YmYyOGM2MjY0Y2U0ZjQ3MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2E4ZDllMjJlYmMxOTQzNjJlMDY4YTFhYmE4NzA3ZmQ4NzM2Y2QxYjczYjk4OWJkZDdjYjc1YWY2ZmM5NGI3NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L1-L4",
+          "version": "repo-lines-v1:sha256:dc566641947085dbcb137419c0cc01de78918f575fe88b90fed485f8b517471b:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmI4MjFkZGQ0ZTI0NzQxMDBkMmVlMTQ5NzgyNGNmZDY3NWQyODg2OTM0MWZhMTIxZjIyN2Q0ZGQxMWE0Mjc4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzYxOGI0NTNlMDZlNTMyODM1MmJjNzE1OTc5NDQyNzA3NDRjNGFjNDAwMzRhOGFkNTg0M2UzZjE4ZmQ3N2JlMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGY2ZWNlNTFiMTYxZmUxZTVjNjZlYTUzNDBhNjE1ODk3YzFlMzI5YzYyNzdiNDM2MjUxNmRmZTQ1MTYyZTYyMyJ9"
+        },
+        {
+          "resource": "repo://src/tui/preview.rs#L1-L7",
+          "version": "repo-lines-v1:sha256:ab0a6bcd09bc22716949a45fd06ffb4d8a306af4b30357d2e9c6ef72961ab820:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWJhZjhlMWYzZjcwMDI1ZDIwNDkzNmYzMzc0ZGY4NmRhMTMyMWRkMWMxOWMzOTEzZjU4NmFlYThlMjRjZGY3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODYzNjAxOGZkZTNkMmNjN2JhZGJiMzYzNzQzYzZhYWM3ODlmMzgyYTk2OTk5MWY3NzNmMjM5NmEyN2U5ZDJmZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzBjNTUxNThmZjJmOTRmNjllN2NlMWM0ZTQxYjJhYWRiZWY0ZTg5OWU5MmVhMTlhYWMxZDI3NGU3MjM5YTQzMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1dcfa749115848259fb856e37ba507a2",
+      "statement": "render_line resolves the theme and style via themes::get and styles::get, reads $HOME, detects the timezone offset, delegates to render_with, and additionally triggers the optional float readout when cfg.thresholds.float is set.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L22-L32",
+          "version": "repo-lines-v1:sha256:fd3711de3544deeb73cd10f6a6d95a8524cb270bb45635ebb42f63558fd8e2bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMzljZTRlYmFjZWUyYTU1OGI1ZGY1N2NkYTZkMGYzMTk1Yjc0ZDI5Mjc1ZjMyMWFhODY0ZjcwMzQ1ZGZmYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViZWIzY2U5YmU2NTBhMDQ4ZTE5NTBjNjBmNjBkNmYyMWIxMmM0N2YwYjc5YzIyZDMwZjI1MTAzZjcyNjA5NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmYmZiYWYwOGZkOWFmZjc1NzM4ZGQzZWY4MWNlMGEyMmEwZDg5YTRjMWEyYjZlZDdhYzEwMGQ4MDQ0MWU1ZDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_542f700630fd4e91944ed6ec147b1803",
+      "statement": "render_with is the lower-level entry that takes already-resolved theme, style, now, home, and tz_offset_seconds directly; the TUI preview and tests call it with deterministic values, and it dispatches between render_auto and render_fixed based on cfg.thresholds.layout.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L37-L61",
+          "version": "repo-lines-v1:sha256:1eddd4838bcb733a22375ab1e4391107cbc0a906926eec2b236ee08e35f696c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNzE4Mjk3YTczYWE4ZTZjN2NmODM2YWRiZjI4MTUzNWRiNTQzZDk5NTllOTg0Zjk0M2JkZWRmZjY5ZWJlZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkZjgwMjEwN2NiMDk4YzhmNWJjNDMwYjllNWI1OGZhMzU4N2NmM2RlNDM5ZWUyMDIwYjcyYmZkZDg5YTljMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkifQ"
+        },
+        {
+          "resource": "repo://src/tui/preview.rs#L19-L32",
+          "version": "repo-lines-v1:sha256:eb6a4417f85ee5a5fea8fccf614f90a7b3ba7e4ecab71a50fd9aaaa451987ebb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxYzUwYmVjOTg2OGZjNjgwNTAzMjI2OTU0OWM3Mzg5NzM4ZjZjODM2NGM2NDA0NmEwMGQwMDA0YmVmNTg1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2MjljMjEwNTE5YzI2NDY1NDc0YWJjZTY2NDhiNDA5ZGIwNDgwMWI1Y2I3NTU1ZTZkODBhZDBjZGNjNWVmZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkOGU2NTM1MzUxZDFkZTdmNTJjZWE5NGM1MDZjZjgyOWU0NTNmN2JkYjkzZTc0ZmNiNjI4NDczMGNjZWQxYjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d42213f35f574f359fad8d51926a2c6d",
+      "statement": "RenderCtx carries injected now, home, and tz_offset_seconds so segments never read the system clock or $HOME themselves; this injection keeps rendering deterministic and makes golden snapshots and the preview stable.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/mod.rs#L24-L39",
+          "version": "repo-lines-v1:sha256:a94bbb91035cd90c173819525b1d86c3658dc607ee3b68a46e39ef085b326c07:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDg5ZGRjNTRhZDI3YzJjMWUxNjVjNWRlZGYwMmI1YTU2YWQxY2U0Yzg4MzJkMTQyNGQyYjgwZDJhZDA1NDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyYjE4OWEwMDJlODk0YThkM2Q1ZDYwNzdiMWNhMDVkNTZlNDkwOGIwYzVhMGQwNWU1MzBiMTViODg5NzcyYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4Mzg5ODVhZjA1NjM5NDBmNjI2MDM4NjRhYWZjNjUwMmY4ZjczNjQyNGIzMjkyYjYxOGI0ZTExMzdjMDE0ODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d1d6d5a350a646b8aba5f2c696047cac",
+      "statement": "The render hot path must not touch the network, filesystem, or environment except $HOME and timezone detection; the single deliberate exception is the opt-in rate-limit sync cache whose I/O errors are all swallowed so they can never break rendering.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L1-L36",
+          "version": "repo-lines-v1:sha256:a76fba8901a7e2bbda76f29f6d098bb26c1ba37e907cba110ecec087dbabc74c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxM2NhODlkNTUyYzUwNWI0OWEyMmJhODg3YTUwOGI3N2UyOTA1MTEzNDM2N2NkZjExZGUwMDA5Y2UwNmEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2YTQ0MzczMTUwOGRkZmQ4MzVmMDgxMTEyYzIyNDFhMDJjODBjODM2MmM1ZDQzYjNiNTRjMTI3MDViNTc0ZjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4MTgyN2RkZDYyOWQ2MmFmZTkwNjYwOWFmM2Y4NzkzY2ViNDc5MGIzZmQ1NGRiM2UyMjU0NWM0ZjI2NTM2MmQifQ"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L98-L135",
+          "version": "repo-lines-v1:sha256:86bd1a445ba8ee4de280e6b3baa424eb2708d09aebf52fce260efe80d9330448:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1YWNhMzEyMzc0MjY4ODZhZTEwMmRiYTY3NGZlZWQ3OGEyYWMzYmQzYTYxMWQxYzM0NTlhM2Y5NzZlNGE0MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmY2M4NzcyYmMwMzU5NzE3NGFiNzQ1NGIzNTE0N2FmZjlkNGJhODc4ZDU5MWM0NDAxNzcyYjA4OGQwNjBhMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjNzllYjBkNTJjN2M5ZWJkZDUxYmM2NjViMDE1MjY2YzdjMWFiNTJlNWRjODI3OTkxYzBlYTAxMTdiNjA1MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzNjRmZWRkZWE1MzlhODcwMGNhYTc1MDYzODNkZTNiOTNlYjg5MTJjODI5YWY4MDY0Njk1ZjhjZmNmMjhjNmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_25bcf260aa4349a4b23d307a3b3409c4",
+      "statement": "themes::get resolves a named Theme (unknown names fall back to Tokyo Night) and styles::get resolves a named Style (unknown names fall back to Powerline); Color writes SGR escapes via the no-alloc Color::write_fg and the RESET constant.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/palette.rs#L12-L34",
+          "version": "repo-lines-v1:sha256:3d95be78783e12e978ff691a4ab74ea9b76c44323b8985bd5ba9fe4834d24447:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4M2ZjYzUyMDVjMmM3YWQzMjM4NDRjZjkzNjJjZGFhM2JjM2I2NjE2MmExZGQ3ODJiNWM0ODI3MTJjMzY2MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYzM1MDM5ZWY4YjMxOTFmODg1NDgyNzZlMmUxMDlhZWJjNTBmOGYyNjdkZWVkMjZlMmJiMDFiZjc1ODhlODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjOGI4YmNmYWExNjMxZmRhNjJlOWM3MDU3MTJiYmU0NmM1NjQzOTAxZDMxZDQ4OGJkYTIyOGViZGYzZjgxMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMmU1ZDEwYjM2NjU5YmNlNGI5YzYyNTY2Nzk0M2JlZDQ2Njc5ODdlNzEwYTFiNzEyNjMwYmUwZGI1OWEwNTAifQ"
+        },
+        {
+          "resource": "repo://src/styles/mod.rs#L179-L190",
+          "version": "repo-lines-v1:sha256:cfb71924c97d546cdb180f291c3023087804b8d293d8f94b840932738389af10:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlOThjMmQxMzkxN2YzODAwNTQwNDM5NjFkYzE1NjQ0ZmZlMTJjNDhmMzExM2EyMWFiZmViNzMwZjAyOTY0YjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/themes/mod.rs#L458-L479",
+          "version": "repo-lines-v1:sha256:a73a4e684ab88f06437ded5628dd23ee164c19dc9446e8a36b18af952237f8b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1Njk1Y2YwMDEyY2JkNzNiNDg2NDdjZDAzNWZkYjQ5MWViYTE5ZGRiMmQ4NzRlNzJkZmRjZDY2MmEzMjYwOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhMmI1ZjNkOGE4NjNlYmZhYjQwMDkzODAxNDAyMzEyMDZjMDNhYWVhNDg0MmMwZmNkZDllMzg5Y2RhYzE1ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_660d476ba3ea4a20911455b3f5332978",
+      "statement": "render_fixed iterates cfg.segments in order, renders each through its own SegmentWriter, and joins adjacent non-empty segments with the composer's separator to produce exactly one line; it is used whenever layout is not auto.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L63-L80",
+          "version": "repo-lines-v1:sha256:d16df8c7d181993807be1cea9e7ba134352b0e0207799b0a36194b6e1a72d9e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljNTZmNTQyYmI4Mjg0NThlOWQ1NzFlMjdlMmQ4OTI0YTQ2Yjc1ZmE1YWE1ZDMyMDVkOWM3YzdmZTc5NjFjZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM0ZjkxNmRlOWIxNTBjMmQ5ZWQwMTlhZjRkNGYzZmU1MGY5ZGFkN2FjNzVkYmRiNmM3ZmE2MjA1ZWIxM2Q3NjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c90c7ca4fcf46beaa9cfc0f6493c144",
+      "statement": "render_auto renders each segment to its own owned string then greedily packs segments across up to max_lines lines so each line fits the terminal width minus wrap_margin; a terminal width of 0 disables wrapping and falls back to a single line, and terminal_width reads $COLUMNS first, then stty size, else 0.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L152-L175",
+          "version": "repo-lines-v1:sha256:7057ef3b66e5ca6329bdf60dfbe4626b337e2e1170cbfcbdda68de6974413d44:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2MGExY2I1MTk2MjBkZTk4YjQzNzk5Y2E1NDMyNDcxMzlkNzkxOWZiNjI4MWE1ZGUxMDhlZTE1YWRlNmQ4NmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmOGIyYTAyMGQ5OTY3MTJhNDA5MDRiMDM3MTk1ODkxNWE1NTk5NzEyMjRiYzk0M2MwMzdkNTMzYzI4YWU4M2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4NGYyMzdkOTBkZmY0OGMxZDQyNTZiMzI4NzZkYTgyOGFlYmY0M2Q0ZDc4MTdmZWU2Njc3Y2NjZGFhYzE1NjAifQ"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L83-L150",
+          "version": "repo-lines-v1:sha256:cfbe7cb0f8135e6c07b1141fb2f2d8c7f42d2df9a5ab4ec2fed3749619c2fc6d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlZmE3NmM3NTdhNDljNWMwNDFiYzBmNjA5MjhjMmVlZWMxODNiY2QzODA3MDIxZTNjZDFjOTUwNjVjMTU2NDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1OWM0OTlmMzAzN2JkNDczOThkMTBiZjJjMzM2YzFlZDM2NWJmYmIzODkwMWI5YjBmZjgyM2MwZGIyOTI1MWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5MWFlMTQ1MDU5YzFkZTViN2YwOGYyZmM2NTg0MzBjOGNkZTg3YmU3NzljNjQ1ZjQ2MmEwYzM0NDEzMWY3Y2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9d8a57bc29ea47eb9ace772df2ceb066",
+      "statement": "The composer owns separators: a separator (space + glyph in the theme's separator color + space, or a lone space for the lean empty separator) is placed only between adjacent non-empty segments, and empty segments are dropped with their separators so no dangling separator appears.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L188-L202",
+          "version": "repo-lines-v1:sha256:85cf396a2c473bad2852445cff3752b0eafbd5671684f48a66faea5f890daeb3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMmU1YTNkNDQzZmM5OWNlNzc0ZTg1MWEwMDg4ZmJkNzljNzdlMmQ5YjMzNDY1YTk3YjBhODMyYzU1MjQzYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/segment/mod.rs#L1-L6",
+          "version": "repo-lines-v1:sha256:80d80935c4a99d3a5e38dc9ea82bfc66c9e6e89f882031a94b26bec550983a8f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDc4NDg4OTA5NDdhODdmNjliYmJiOTJkNzBhNzc0YmMxOGY1MDY2OTAwZjI2ODM0NGQ5M2Q0MGE4NjU3MDk5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTEzMDBhY2JkNDgyZTI5MTRiNjYxYzM3Y2I2Y2QzOTA2ZjU4NDAwMTU1Yjc1NTlmZjViOWM0MDg2OWY3YWYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTdiYTM5M2YxZjM4YjE2MWJhMWQ5MDFjZDgyNjMxZmNmOWY5ODBjOGU4ZmNjYjgxMjM4MDg2M2FmODU2ZDE4OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1203b9689c504a058b48451e629bcabc",
+      "statement": "SegmentWriter is the single place segments emit colored, glyph-decorated text; segments never embed raw ANSI, never hardcode theme colors, and never decide whether icons render. On the hot path colored/colored_fmt/raw_fmt write directly into the buffer via write_fg and format_args to avoid throwaway String allocations.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/writer.rs#L1-L8",
+          "version": "repo-lines-v1:sha256:eaa1b2c179641a75dd7148f9ef50a5bd05d833f0686b8d333dcc9415ff322587:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzkzM2ExNjg4NWM0Mzg3OGFhMzQzZDU3ZTM2ODkxYjgwMjQ0YzYwOWI3NDY1NGJlNzM5YmMzYWFhOTE2NmY4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI4Y2JjNzIyY2VhMWZmYzdhNmI5OTc3N2M4NGU1YzFhNWZlYTVlN2QxMjllMDM4Y2I3Y2Y3OGY0OWRmYWQ5YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmQ0ZTQzM2RhYmJkNmEwZmU4ZGU1NWY2NDg1NjAwNWMxODgwZjEyOGNjMjU3N2ZiZDU5OGU4YTc4M2FmZGM1NyJ9"
+        },
+        {
+          "resource": "repo://src/render/writer.rs#L116-L118",
+          "version": "repo-lines-v1:sha256:e3944d4e98b04f7890a864d5f1885bdeb612cff65575cf37769609c25ddc2224:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjYzZmY3MGViYTlmNmM2Nzc4Nzk1Y2Y1YzFhOWEyZjkxZjZjMGZhNWZhNDljNmJhYjE5ZmVlMzQ4ZGZkNzUyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWNjMzQ4OGQ3ZjI5MzE3ZTlkYjRiZjY0YTVkMzQzZDM4ZWVlZDIyOGUwZTEwNjdmNjJmYjE4NzYxY2E4ZDM4YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQ5MWI5YTkwZjdkYzUzMDQzYjFmMjEyZmM1ODE1ZjE5NGY3MjBhZWI5MTk0YjBjNjEzZWE3Njc1OGE2MDVlOCJ9"
+        },
+        {
+          "resource": "repo://src/render/writer.rs#L46-L82",
+          "version": "repo-lines-v1:sha256:2544f2ed3b80e2cb89012ca7e0f06b637ad3cc8807e4f6d0945ccab490872535:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxYWFhZTcwNWI2MzMwYjU2OWQ2NzdkYjcxYjRmNDE2MWQ3MzA2ZWU0YmRmMTRkOGRkMjgzNjcyMjdiMWJjYjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVjZTdiZjIxNmU1OWQ4ZWI5YzQxNGM0YjY2YmI0Mjc3YmJiNWQ0YThjOWJhNTZjZjg1Yjg0OGFmYzk4MDAwYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjOWMwMDE5NmExYTgzMjk5YWM5YzAxMTE4NWM2YmM1ZTUzNzUxYzlhMjJiZTI3ZTJmNmU5MmFiYjc4NDg0ZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d27bb0a4fbc045c9a09f62eb48bde76b",
+      "statement": "SegmentWriter::colored_with maintains an active-color stack so a nested span that ends with a reset restores the enclosing span's color instead of leaving trailing text at the terminal default.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/writer.rs#L169-L197",
+          "version": "repo-lines-v1:sha256:2b9ed06f1fc7008019cf33dcb67ada8f1f81eb186fa27bb5b87070e3937d21d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMjlhNDA1OTA4MDA3ZGIwOWM1MzMwOGNmZjgzNGZjZGQ3MmIyYTM1Y2YxMjRhNmZjNmFjOGI3YTcyMjk5OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2MjI2ZWEyZDExODkzNmYxYTdmYTMyOTk0MjcyMTY0MDYzN2Q5OTExNjU5YTVhMTMyMDYxMWIwMmUxMGJkYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/render/writer.rs#L56-L68",
+          "version": "repo-lines-v1:sha256:e2a2eee6f6f2e26e5beb4c05860ce542a4d4195af9f808edccc580b5c23a83a3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1OWFlNDBmMTNkNWYyNGQ0OTZkMmExNTc3YzVlZDM5M2U2MmI4MDkyN2ZjODg3NWRiYmVhODkyN2U0NmExODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmOTAzMDMxZWNlZDQ3ZmZmMjZjMjI4ZGQ0NGY2YmFiNDUzNWU3ZjY5NGVjMjgyNGNmNjU3YWNiODAzNDU0NTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjYmJhZGZjYmVhMGI2OTcyMzcwMDRhN2QwMGUzZmM4OGNkODJjMmE5ODdjNjgyMDk5M2RjZDIyMGUwMmZhODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_97b8a98cf5ad4aaabfe59c08d324d69b",
+      "statement": "write_bar builds a progress bar directly into the buffer (mirroring bash make_bar) with no allocation beyond the result, clamping the filled run to width, providing at least one filled cell whenever pct > 0, and painting fill and track with write_fg.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/bar.rs#L1-L42",
+          "version": "repo-lines-v1:sha256:ee8c3bb55809be930675ba38e22bf2cbb28ea6cf67d35e4de5d6c6f9cba0ee2f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4YmUxODE1MjViODA0ZjU2YmFjNDc2MTY5NjBiNzA5MDdmNGNjYTQwNzBhMGNlZGU3OWNiOWFjMjI3ZmEzNTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cb75a17c9885476fa344307187ea341b",
+      "statement": "Host-provided strings (cwd, git branch, model display name) are sanitized with sanitize::strip_control before emission, stripping ESC, BEL, CR, and LF so host data cannot inject ANSI or OSC escape sequences into the status line.",
+      "evidence": [
+        {
+          "resource": "repo://src/sanitize.rs#L4-L12",
+          "version": "repo-lines-v1:sha256:5c355e67f2fcbe7f55e33afd6a40012bf43d59eef35a963a203ee25ce3c5d11e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI4NTg5YWE4MTkyZTdhN2I5ZWRlYjYyYjM3NjE2MTBkZDY3ZGFlYmFlNzAwMjg4YjVlZjExM2UwZjU3YzBiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDg1MDkyMThlNGRkODVlOTM2MDBhOTBkZjhhZDJmNWM2ZmIyOTkwMzI3YmUxNzNkMWEzZGQ0Y2Y5MmI4ZmJjYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjg3OWUxZjE5NjkwNDRjZjQyMTVjY2RmNzZiNjk3MDQ1YjYzZTM1MDE0YTM5MGUzNjY5YmQ4OWE5OGMwMGU4NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2d327ca630224693918e9d6fa30dba4c",
+      "statement": "The float readout reuses the exact same Segment implementations as the colored path (rendered with the ASCII style icons-off then stripped of ANSI), joined by float_sep and written atomically and best-effort to float_file with ~ expanded via home; any failure is silently swallowed so it never breaks rendering.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/float.rs#L1-L13",
+          "version": "repo-lines-v1:sha256:9300ed15f272b9fd6a2fe8e00a97f9aace96d6ccf445bf236a94be6f12882949:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyMmY0ZjkxZDlkMTg4MjhmN2FmMWMyYjMyZWZhZGMwODBhZjFkNzhhZmI1ZTM1YjA5NzA2YTFiMGQ5OTIyOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5MDljNWJjNGZjMmU4ODI4OGRlODA1MTBhNTc0MTk2ODVlYWIzY2M0MDg5YTE0ZjNjODc2MGYzYmFkZWM3YjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzOWQ5OTkxMzVlZTkzNjAyMTFiNGY1ZDI2ZDE4OWI5OTQ2ZjhiYzM4MzI4M2ZjYzViYjhhZWMwNmFhMzNiMzcifQ"
+        },
+        {
+          "resource": "repo://src/render/float.rs#L126-L149",
+          "version": "repo-lines-v1:sha256:c2c6505fb24e7cc942f9812fd60465c9b1729dac675fb7db7fd1c0c0e39d03a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMWU4YjYyZTMzYmM0ODQxYzg2YTUyYmJmZDQyNGFlNDFlMGJiZWE4MjQyMmQxMGUwZDIwYjlmMzA1ZmI0MGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5ZDhmM2U0YjFjYzcwNjBlYjRiZmEwYWY4MDNlNTAyOWE2ODc3YjNkMjAyMmZiMWQ5Y2Q4YjJhYmUxYzgzYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/render/float.rs#L28-L68",
+          "version": "repo-lines-v1:sha256:4ac644de2a6522e5a0345e26bc5d41c5f2b9a50f1f618530f4d298ed8e037f87:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyNzdiZmI2NDYwZjM2ZjM1YWUzNWQwYWNmOTQ0ZmM5NTVlYWZiZTM1ZWE5MTI5YzI2ZTg5Y2U5YjhjNTQwZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YTEzZjBmMmY0NDk2Njk5NGMwOGIzMTQ3Y2ZkOWQyNjk1ZmEyZjRmYTdlZjY4NDgyOTdlMzIyYzU2NTMxODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1ZTc0ZThjMWZiYzc3NTBmMTU1OWFkZjI5NmVjMjJkM2NjZWY5ZDQ3MDAyMjYxMmYyMDU1MWI2Y2JhNWU4ZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6aa0e33d959c4a7e8fa8b1dcdff3837c",
+      "statement": "width::visible_width computes visible terminal width of an ANSI string in pure Rust by stripping SGR escapes and counting codepoints as 1 column (2 for wide CJK/kana/Hangul/emoji, 0 for combining marks); it is used by the auto-layout path to measure segments and separators.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/width.rs#L1-L47",
+          "version": "repo-lines-v1:sha256:3138eb65cbf5a326c75182cb4fc759cf123e54eda7d2209a4cc0f1fac95b5836:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4MGI5NDczZDA3YzQ0MmMyODQ5M2VmMGU3ZjQwNGUxOGVlNjY1YWFkZWFmMmFhOWE0ZTkwNDJlZmExMjVmMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0YTQ1NjI0YzAyYzgyYmU4MDI5MDAyZDFkMzZlNzA4M2U0OTAxMGJiNTZhNGM1MWI4NGIwOGRmN2IxNjIwYmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cfa7211182fa42f29ad44c0b598f1ead",
+      "statement": "The timezone offset consumers are explicit and consistent: the clock segment (src/segment/clock.rs) converts the injected tz_offset_seconds to a time::UtcOffset via UtcOffset::from_whole_seconds and applies it to ctx.now when formatting the wall-clock time; render_line (src/render/mod.rs) injects the offset from clock::detect_tz_offset, which reads the system local offset once cached in a LazyLock and falls back to 0 (UTC); and the TUI preview / fixed-clock tests inject 0 (UTC) for determinism. The offset is never read from the ambient environment inside render_line's callers.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L22-L27",
+          "version": "repo-lines-v1:sha256:66067788fb5ffabb93ef1427405d40eb21b758a4a2f72b44e34ab25e8c739217:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWQzOWNlNGViYWNlZTJhNTU4YjVkZjU3Y2RhNmQwZjMxOTViNzRkMjkyNzVmMzIxYWE4NjRmNzAzNDVkZmZhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjEzZTdlMzE3ZDhiZWZmODliYmU5NmZlOTliOTE1MWNhYWQ3MWVkYjIxZWRkMTgwMjc0OGI1ZjAzNTA1ZDYwZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWJlYjNjZTliZTY1MGEwNDhlMTk1MGM2MGY2MGQ2ZjIxYjEyYzQ3ZjBiNzljMjJkMzBmMjUxMDNmNzI2MDk0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmRiMjBhOWQ3ZDA3NDU3NjAwYTI3YzBjOWNhYzY1NmE0ZWYzMGE1M2QzOTZhNDYxMjg4NWVkYzQxOTgzNWEzYyJ9"
+        },
+        {
+          "resource": "repo://src/segment/clock.rs#L100-L109",
+          "version": "repo-lines-v1:sha256:b85b645c6e08ec6baec54156f849ac118653ff60073f0d3ace7c7ef286d705cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyMjYzYTVhMWQ4MjRlMzJmMWE2MGEwNTBiMGRjOGI1ZWQxYzNjOGZkM2FkMjRkMTAyODIzOTkxZTg1OTRiMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5NDE1MGU4MDE1MzBjNWRiZjZkZWMyMmE5NzE2ZWUwZThlNTc3MDc2YTllZDVlNzM4YTVjMTIzNWRhZjc3NTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlZWU1ZTkyZWExODNjNjc1MDA3NDA3ZTZmOTE4OWJiZjIxNTk3NWI2M2Q5MjgyMWZlYzkzYmMzZWI5MWRkYTMifQ"
+        },
+        {
+          "resource": "repo://src/segment/clock.rs#L124-L154",
+          "version": "repo-lines-v1:sha256:3a9974d679172ef7c47d0a5f58851154b2611dabdea09dbba99d94d7606c9bcf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ODQ3Nzc2MTk5NDU5OWI2ZDliYmM3NDI0NDE0ZmQ3ZjNiMGI3YjhmZTUzN2Y2MTJiM2EwZWI2Y2VmZWRiNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MzgzZWUxNDQ2MTE4MDI4MjZmNDhkOWZiM2ZmY2UxMGZjYTk5MDEzNTkyMGMyMGEyZWE0MzU0M2Y4YWQ3NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/tui/preview.rs#L19-L32",
+          "version": "repo-lines-v1:sha256:eb6a4417f85ee5a5fea8fccf614f90a7b3ba7e4ecab71a50fd9aaaa451987ebb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxYzUwYmVjOTg2OGZjNjgwNTAzMjI2OTU0OWM3Mzg5NzM4ZjZjODM2NGM2NDA0NmEwMGQwMDA0YmVmNTg1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2MjljMjEwNTE5YzI2NDY1NDc0YWJjZTY2NDhiNDA5ZGIwNDgwMWI1Y2I3NTU1ZTZkODBhZDBjZGNjNWVmZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkOGU2NTM1MzUxZDFkZTdmNTJjZWE5NGM1MDZjZjgyOWU0NTNmN2JkYjkzZTc0ZmNiNjI4NDczMGNjZWQxYjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-27T14:08:42.273Z"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:10f982e9e8581bed5a7689e7ecdce6187754afbf703010ec367c59392210fb41",
+  "claims": [
+    {
+      "id": "claim_0e85c2042ed948e48afb23ed198e6b31",
+      "statement": "claudebar is a single native Rust binary whose render hot path is `render_line` in src/render/mod.rs, shared by the Claude Code hook and the TUI preview, so the live preview can never diverge from what the hook emits; there is deliberately no second ANSI composition path.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib.rs#L1-L52",
+          "version": "repo-lines-v1:sha256:114af78009a0468bb0ada519d61e97316d21bdc290c4fbcc254afe402c1d7cd8:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkZTMzZWZlOGMwYTQ0NTQ2MDYwNjQ0ZmI3NmYyOWI3MWE3Y2Y0ZGYwNmM2ZjAwZTA0MzRmMTI4NzU4ZjA0ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyMGVhODJiOGYxYWNlYzk2ZDQwNjBjNWEwZDlhOTRiMjJmNzc0ZDIyNGM5N2I1N2JmMjhjNjI2NGNlNGY0NzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/main.rs#L12-L45",
+          "version": "repo-lines-v1:sha256:6e0a17f6c087eb0e43a813699d59738405e8f7dbe807d2b289c51ced9abf539e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlYzkzNmQ2OGQ0YTNlMzIyMzBkNGZiYWI1ODVmZTI0MTA5ODAwNzQzM2Y0YTI5NjliNmEyNWE0YTlhMjdkMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzMDYxNWNlYTBlMjZjYmQ5NGY0MTU2YWMwNzRhMWVkMGUzNjgwMDczNzMxODEyYmE4ZmRlZGMwMWRlMDk4N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhMDNhNTI3MzNlODM1ZjVlNTI1MTkxZGRlNGQwYzNkYzJmOGRhNjlkNzVjNTcwNjMxMDBjZTIyOWQ2ZjdhNTIifQ"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L1-L32",
+          "version": "repo-lines-v1:sha256:42694f27dc853a6ec631a6ab0b29430c7187eea6951315732388fe1fa02371e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiODIxZGRkNGUyNDc0MTAwZDJlZTE0OTc4MjRjZmQ2NzVkMjg4NjkzNDFmYTEyMWYyMjdkNGRkMTFhNDI3ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmYmZiYWYwOGZkOWFmZjc1NzM4ZGQzZWY4MWNlMGEyMmEwZDg5YTRjMWEyYjZlZDdhYzEwMGQ4MDQ0MWU1ZDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d5d70e14348e4cbc8d33487af1271708",
+      "statement": "claudebar is a plain CLI/hook project (a single native Rust binary), not an OpenWiki repository itself, despite its wiki documentation being generated under an openwiki/ folder.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L1-L11",
+          "version": "repo-lines-v1:sha256:2066111756019639fd4ad6a1c6bd7323a3db5fdcf9d2b66a57aa9fac5e0ba943:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMTgwZjljMTI2OTAzYmNjMzMxYWE5NTQ1NmU0OTQ0NGE3ZDRkMDExZThhMmE4M2Y1ZGM4NzAyMzkxODEyZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0NzFjZjc2MDM4NmQzZWU4YjAyOWU1ZGQ4MDdmYTE5ZTdhY2QzZTQzNTI3OGI4ZDc3OWE1NGE3MmM3NWY0OTcifQ"
+        },
+        {
+          "resource": "repo://src/lib.rs#L1-L6",
+          "version": "repo-lines-v1:sha256:6d31b3e0b473130e188f3f5bb1ef491102ebddd5c17b8da99909dd258b1c91c1:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmRlMzNlZmU4YzBhNDQ1NDYwNjA2NDRmYjc2ZjI5YjcxYTdjZjRkZjA2YzZmMDBlMDQzNGYxMjg3NThmMDRmNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzAzOGQ2YWYyZTBjYTEzNTAwOWQ4OTBmNDQxZWJjZjNjYTAwZmU4MGU4OTc0ZWJmMmNlZGUwZTVlMGNhY2ZiOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWEwMWM4ZmNhMGVjZjIyNTBmOTYxNzNkMjEyNmE5OTEwNTM0ZmMwZWZjYzNhZDBhODVkZGRiODAwOGZhMDRjNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_92d2690d537a4e50930099e78328affd",
+      "statement": "Configuration-less operation renders the default 8-segment layout (directory, git, model, context, lines, rate-limits, cost, duration) using the Tokyo Night palette and Powerline style via Config::default().",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L1-L57",
+          "version": "repo-lines-v1:sha256:2388ac159749bb87d9f4bde7214f4a5f7b1e74f5de3cac5f663c5abbed040845:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ODgyYmQyYTU5NDQxMTA5ODg5ZTg4MWRmNzRhMWUzODljMjE2NWMxNGFmNTVkNGJhNjRmNGMwMDQwNmYxMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5NTkyODBmNjE1NmMxZjY1MWI1MjJiMWIxODYxNjNiNjZkYjQ1YWRiZmE5YmM2NzFiZWQwNzM1MjllZWMxZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5YTZiMDE5MDY2Mzg0M2VmMzBiMzYzMzRmMjZmZjE5M2IzODZlZmYwNTE5ZWE2YjkwNjE0ZjJmMTYwZDE0MTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bdef6978ff1a400d9b2729c9f88d40cb",
+      "statement": "Segments never read environment or time directly: `now`, `home`, and `tz_offset_seconds` are injected through the RenderCtx struct, while ambient state is resolved once at the top of the render path, keeping rendering deterministic and testable.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L22-L61",
+          "version": "repo-lines-v1:sha256:6ccc5b8715667d4dd581e25dcb404c07d7e2693bb4f886289a28ddea98b32ca7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMzljZTRlYmFjZWUyYTU1OGI1ZGY1N2NkYTZkMGYzMTk1Yjc0ZDI5Mjc1ZjMyMWFhODY0ZjcwMzQ1ZGZmYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViZWIzY2U5YmU2NTBhMDQ4ZTE5NTBjNjBmNjBkNmYyMWIxMmM0N2YwYjc5YzIyZDMwZjI1MTAzZjcyNjA5NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkifQ"
+        },
+        {
+          "resource": "repo://src/segment/mod.rs#L24-L47",
+          "version": "repo-lines-v1:sha256:bbaccb36e2a4ad1d50f818bb1b74fd292b166969766cf1cfcb660e92cb2445c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDg5ZGRjNTRhZDI3YzJjMWUxNjVjNWRlZGYwMmI1YTU2YWQxY2U0Yzg4MzJkMTQyNGQyYjgwZDJhZDA1NDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyYjE4OWEwMDJlODk0YThkM2Q1ZDYwNzdiMWNhMDVkNTZlNDkwOGIwYzVhMGQwNWU1MzBiMTViODg5NzcyYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxYmU2MzA2NWU5ZTUyYTE4YmUzNmIxOTg5YjIyNWNmNmQwNjVkZGRiMTYyZTMyMGZkNTc0MmMzMmYwMGFlNWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6fa4bb5fde194e0799ec138b297c6c93",
+      "statement": "InputData::parse is infallible: every session JSON field is deserialized through a forgiving Coerce<T> deserializer so a wrong-typed or absent field degrades to None instead of aborting the render.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L94-L108",
+          "version": "repo-lines-v1:sha256:b38c3105b564657487b2989afc40aef34ba1268197bad6d34d221333de830527:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhZmVkMjc0YWE2NjQ2MjAzNGZkYWQyYzQ5OWFhNzE5MzNiMDEzNjM4YzNhN2I3MWIwOTk3OTA0YjA4OWJkOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyMGIwY2Y1ZjJkYzZlZjllMDQ3MTMyZjUxZTY0ZWVlMDg1ZjZkMzUyMTExOGQ4ODg3ZWJkNjJiZThkZGNmNjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwY2Q2MDQwMGViODYwMmUyNjc4ZDQ1Njk1MDgwMzI0YzNjNjY3NDdlOTZhZTU4NTQwMjAwZjUwNGFmMjAyNjcifQ"
+        },
+        {
+          "resource": "repo://src/model/input.rs#L151-L151",
+          "version": "repo-lines-v1:sha256:cfeffabb8a052332991623e5257bcdf0608cd6c58aa214f850220d2bb6f47548:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2ZlZmZhYmI4YTA1MjMzMjk5MTYyM2U1MjU3YmNkZjA2MDhjZDZjNThhYTIxNGY4NTAyMjBkMmJiNmY0NzU0OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2ZlZmZhYmI4YTA1MjMzMjk5MTYyM2U1MjU3YmNkZjA2MDhjZDZjNThhYTIxNGY4NTAyMjBkMmJiNmY0NzU0OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjlhMTdkYjQxZGI0ODg4OWFiZGY5Yzc2YzUyNjliODBiM2ZkY2NmZjY2MjllZmExM2E4Y2UxNTM1NDg0MjllMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODU0MTBiMWNiNTY4ZWYyZjU4MWQ1YjE4OTdkNmY2ZTc1YTViMzU4Zjk4NWZmZWNiYTM4NTllYWYzMDkwNjU1ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_70c026bba3b94cc78d0f011fb1d39762",
+      "statement": "Every host-provided string (cwd, git branch, model name, dev-context) is stripped of terminal-control bytes (ESC, BEL, CR, LF) by sanitize::strip_control before it reaches the rendered status line.",
+      "evidence": [
+        {
+          "resource": "repo://src/sanitize.rs#L1-L12",
+          "version": "repo-lines-v1:sha256:80b505a1e494836b884181217b041cd6d020ba18d785b8d182931c937d9d2706:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMjhmYjQ3ZDE0OWQ5NGU0MzNmMDE3MWE0MzhhNGI0OTgyMjFiNDQ5NjA5MWNlYmFlMjQ0ZmVjOTMyZGQwOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4NzllMWYxOTY5MDQ0Y2Y0MjE1Y2NkZjc2YjY5NzA0NWI2M2UzNTAxNGEzOTBlMzY2OWJkODlhOThjMDBlODQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7326a2e003e34d61b94b6624a4d11772",
+      "statement": "The render hot path never touches the network; only the manual `claudebar update` command performs network I/O, using curl against the GitHub releases API, and it has its own documented exit codes (0 up-to-date, 1 could not check, 2 update available).",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L1-L18",
+          "version": "repo-lines-v1:sha256:967317701cb3d9310cfb3eb487a3099bb32b11bdd6e2c4fc871576c9e8639634:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjYzA5OTViYTgxZDI0OGU4MzdiOTBmMTM3NDI1ZGNiODAzOThmYjc4YWI2YjQ2NjdjYTUyODkwYTI1Y2NiZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5YzUzMmE3NWVlMGVhN2UyYWY5MTM0NWIwM2FiY2VjZjYyZTM3YzNiMmNiMTcwNGE2M2FkMWI4YTlhNTk5ODQifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L154-L178",
+          "version": "repo-lines-v1:sha256:53f4ab9c41b53b4861215498636b18cacafdf48103b96e53683182847433939f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGY4NDJjOTExYzI4YjRiODc0ZjgzYmE5YmEyZjE4MTQ4YTJlNGI4OGU0MDkxNjE4OWRhODZkYzFhOTJkNDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0YTYyZGJlMjQzMDBhNDU3MjM5M2M5YjI1NzYwOGE1MWI3NzFiOWMxMDlkMWNlNWQ5ZGFlNmE4ODk5OTkxYzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MmZjMTliZjY1ZjI2OThhOTI2OGRlNGQzMzZkNmNhMWE0NWVhZGQwOGJlMDcxOThkZDQwNzhiOTRhZTljNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlYjEzZWUyZTAwNzQ0MzBjYjE2ZTkxMDI0YmY0ZmJhZWExYzI4MmYwNDU3OWMyOTk3ZDNmN2JkZjZkNDllMGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5b2e444c7775418597055459f8d36915",
+      "statement": "The default Config layout deliberately mirrors the Bash statusline's segment order (lines placed between context and rate-limits) and therefore differs from the canonical all-segment order; this parity is guarded by a test.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L32-L57",
+          "version": "repo-lines-v1:sha256:695428f918257da82f602a41c04aae09919c254190a235edd1ebfeadfc6a73ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNWEzNjJhZTgzMGU4YTU2ZGMwNGJhMWE5YWYwZjE1MjY3ZGRkNjQzNTBmZjFkYThiM2MyYWRiYjlmYmY4NGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5NTkyODBmNjE1NmMxZjY1MWI1MjJiMWIxODYxNjNiNjZkYjQ1YWRiZmE5YmM2NzFiZWQwNzM1MjllZWMxZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3MGEwM2NhMjQwYmU4MGU3MDcwMzY3ZDM2Nzg3YWQzMWE5NzI0OWZjZmVhYWI1NzlmMWQ3YjE5NTc2MTY1ZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5YTZiMDE5MDY2Mzg0M2VmMzBiMzYzMzRmMjZmZjE5M2IzODZlZmYwNTE5ZWE2YjkwNjE0ZjJmMTYwZDE0MTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_058c9b9949964c20a64c87379f17d795",
+      "statement": "The core render path builds without the tui feature (--no-default-features); the tui feature is the only optional dependency group, gating ratatui/crossterm/ansi-to-tui which are never linked on the render hot path.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L18-L36",
+          "version": "repo-lines-v1:sha256:c01526f82fe44dba5d0eb38b0d8d68c9ed4adcdb70307b0a8dfde295837be28a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2ZjZjMWM3M2U0Njg1YjZmNTU3OTJhZTUzOTI1NTNmZjc5ZDNjYzA2N2IwYjc0ZTA2ODY5OGY2YjJjNzZiODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwMzRiMTMyY2VlMmI3OTAxMmRmNGRlMDE0MTY5MDYwOGE2ODE3NzNlMzkyNmVmYjM0MGIyNGZlMTBkNDM1NDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4ZTFlZmViODAzMjJjZjQwNjE2ODQ3ZmJjZTAyYmRjOTA4OTRhMzYwY2JjMDI1ZGMzMTZhZGZlMDg1OTcwZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjNWQ2YWQzNTA4YmUzMWEzOGU2YmYxMjllZjA2OGI5OWZhMGRiOGFkMjM4NWUwOGNiNWQyZDMxNTRkMzllYTAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-26T22:48:34.063Z"
+  }
+}

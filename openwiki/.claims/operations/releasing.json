@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:86a41fac88ae9997ba7657c35fe9d8ec99a1a761dc7a186a387735f7c8dd24d7",
+  "claims": [
+    {
+      "id": "claim_470ab8ae59d04c059b04e09fbc0acbb5",
+      "statement": "Cargo.toml [package] version is the single source of truth for the release version; cargo-dist requires the pushed git tag to equal it byte-for-byte and a mismatch fails the release, so the manifest is bumped before tagging.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L1-L3",
+          "version": "repo-lines-v1:sha256:9c9ded0e3b320b8fad972146a9c1ccee2720a38ffdec03faf7082a3c3d07f0b7:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGEzY2Q1YTgxYjNmOWE2MjFhYTQ5M2Q5MGM0NWY0MmFiNTcxZDRlNDJiOGFlNWFmZjM1MWNiMGEwMmQwNmQ4MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDVkYWYwMzliZjYyNDhkNmFjOTUwMjdlMzUxZmQwODhjNzM1ZjQzYmQ3NjBjNTRmZGI4YWE5ODkwMzgzMThlMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2I5YThlYzI1YzBjZmQwMDdlYWM5MmRkODRhZjM5MDc0ZGM3NDg0OGZmZjM1MDI3ODMxNjI2MGVkZGYzOTI1NSJ9"
+        },
+        {
+          "resource": "repo://RELEASING.md#L19-L25",
+          "version": "repo-lines-v1:sha256:5181ec9a787052728a0cca64e04f1b2b142df04145c6b1a8aa277a170c377a63:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDQ2NjE4MjM1ZTU0YzUyYmU4NjQxYWVmNGQ4M2ZhMDQ5NWNkYzdkY2ZjODFjYmYyNmZjZmEwYzU3MjU5YzdiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjRjNjA0ZmE1ZTcxYTk5MmVmOTYyOTc5M2QzNmFkMjdkNGNjNDQ0ZGMyMWJmZDg4ZmM3MjgwN2Y4ZDRlZTFiMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjllMWExMDVhYjU2MjJhODBiN2YzMWQwZGQ3MDdmZGI4Yjk3NzQ5YTk1MDI1MTcwMGE2NWVhMDk5MzhiMjY1MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDQxZDIzMTJmYmI2MTBlMGNhNTgzZGFlOGFiYTJjNzExZWU1MDI4N2ZhNDZhNDYwNjY5ZTc0MjI3MmQ1OTVmZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_30efffc4876249388f5b2117b776222a",
+      "statement": "claudebar uses digit-first CalVer YYYY.M.PATCH with no leading zeros and no 'v' tag prefix; leading zeros are invalid semver that break both Cargo's manifest parse and dist's tag/version match.",
+      "evidence": [
+        {
+          "resource": "repo://RELEASING.md#L27-L35",
+          "version": "repo-lines-v1:sha256:1f161212afc6e6b124cfa98f7c481bba0cb80fa6abe6187efaf80c10fe7a1c51:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDRkN2Q0OTljMzhlNDY5ZDJlZjNmODE4Y2E4ZjJjOTY4ZDk4NDBjM2M2YzhiMDIwZmJmZjRiMDhiMmE0ZDNkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg4ZmQxNDVjN2FjOTZiZGNjZDZkODI2ZGQ0MmRmYzIyMjYzYTVmMmMzYTMyZWIxOTE4ZWIyN2QwMmQxNDhiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2VkNjNlMThmZmUyOTlmNTBjYzhmYjk4ZWUwOTZkYjU4MmM1ODk2MTdmZmJjOTI0M2E0YzQ4NDAwOTRjMWIyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjc5OGI0MjJlNDgzNDJiZDhjOTExNDgwNDUwYmUxMjg1ZjU2NzM4YTBjOTQ0ZmI5NWUzZTczMjVjYmExYWRmZiJ9"
+        },
+        {
+          "resource": "repo://cliff.toml#L55-L55",
+          "version": "repo-lines-v1:sha256:70037405561e97610f02d87d94a78ad3e45c39d9fe691c2fb8be563e8e5ef943:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzAwMzc0MDU1NjFlOTc2MTBmMDJkODdkOTRhNzhhZDNlNDVjMzlkOWZlNjkxYzJmYjhiZTU2M2U4ZTVlZjk0MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzAwMzc0MDU1NjFlOTc2MTBmMDJkODdkOTRhNzhhZDNlNDVjMzlkOWZlNjkxYzJmYjhiZTU2M2U4ZTVlZjk0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTk1ZGQxZDU2Nzg3MGY5ZDI1NzY0ZTM0ZTQyNzBjYjljZDE4NGRjNzI5OGU5ZjYyNTExZWY1YThkYzBmM2I3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTU0NWRmZGU3MWIyMGY5NDE2OWI1ODY2OGY1YmM2ODlkY2Y4NmE5NjU4ZWFkODJiMjRkMTI5Y2IwZjExNWE1NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3422207fe3ab413b95d5d0940e731b3d",
+      "statement": "The release.yml tag trigger glob '**[0-9]+.[0-9]+.[0-9]+*' matches the digit-first, no-v-prefix CalVer tag.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L15-L19",
+          "version": "repo-lines-v1:sha256:2c6855e21fb7c06f1fc16507af26d5eec9b09ef94d98ea924fb218595f15ed43:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk2ZGM0ODE0OWY1YTgzZDFlZDZkYmIzOWJiYzdlMmI5MDJhYTNkMzRkNmJkNWFlNGIyOTFiNjhkZjBjYTc5YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGMyZWI1NTBkODMzMWY4Nzg4YjE5ZDkyNDRmMTk0MzU1MjU1MjA3ODAwYzc4NzJiNDBjYWIwN2VjMWVhY2EyMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWMwNjg2NDg5NDI2MDBjNWJkYWJmZDk1ZTFmOGNhZGI0NTM5MDMwYjFlYjhiYjAxNmE2YTQxMGQ4NWIxMTQ3YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzlkMGE4NjE3NWUzNDA4NGUwYmEzNmIwMDNhNGFmYTg4YjNjN2EyNDUzYmVhMjI2NDFiOTBiYTBiZDJkNWMzMiJ9"
+        },
+        {
+          "resource": "repo://RELEASING.md#L35-L35",
+          "version": "repo-lines-v1:sha256:d88fd145c7ac96bdccd6d826dd42dfc22263a5f2c3a32eb1918eb27d02d148be:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg4ZmQxNDVjN2FjOTZiZGNjZDZkODI2ZGQ0MmRmYzIyMjYzYTVmMmMzYTMyZWIxOTE4ZWIyN2QwMmQxNDhiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg4ZmQxNDVjN2FjOTZiZGNjZDZkODI2ZGQ0MmRmYzIyMjYzYTVmMmMzYTMyZWIxOTE4ZWIyN2QwMmQxNDhiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGYyNDYyY2M3MjFjMDA4MWU3YjI1ODRmNTVkMjJhNjU0MDM5MDdlNjY3NTRhZjYwZWUwYjUzYWIyNWRlYjE0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjc5OGI0MjJlNDgzNDJiZDhjOTExNDgwNDUwYmUxMjg1ZjU2NzM4YTBjOTQ0ZmI5NWUzZTczMjVjYmExYWRmZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b8342a021a924b25806fff21dfb1ec7b",
+      "statement": "release-prep.yml's prepare job (manual dispatch, default version is today's CalVer) opens a chore(release): <version> PR containing exactly three files: the Cargo.toml version bump, the Cargo.lock synced via cargo metadata, and a git-cliff-generated CHANGELOG.md section spliced below the <!-- next-release --> marker, while validating the version against the CalVer regex and rejecting existing tags.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release-prep.yml#L34-L131",
+          "version": "repo-lines-v1:sha256:9fad9285326e58050cf57dbd6a49215d1f591ce97b00193c2f4f73dfc0f2d69b:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwZjk1OTJkZGExYmQ2M2ExZjA4NmVmNjYxYjY3ZTI4MzE4ZGE0MWZmMDIwY2E1Zjg2ZTlhMGZiYmZiYmMwN2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhNGViZjk4NjFlNjgzOTk5ZjhiYmJkZjljM2RlZDc2YWFmOGY4NDc2YTc2OTNlMjYzNGQ1ZjU2ZGJhOGQ2MWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0YmNiYWE5Nzg3MDQ1OWVlNTY0ZDBiN2IyYmZkZDY5ZTAxMjljY2RiNDYzZDVmNTQzZTE3NmEwOTY0ODJjZjAifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/release-prep.yml#L66-L79",
+          "version": "repo-lines-v1:sha256:02ea2f5c644f1337608e7984f918d1633d2ad1319fc92203e6472952ab00c925:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjMTU1YWNlZWJkMmFjY2Y5MzgwMDZmNmUyYmQ2ODc3NzcyYjg1YWQ1NGE4ZDI1ZmE4M2M0MGVlZTUyM2FiOTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI2ZjFlZTI3ZjIzMGVhMmU0NWU3MzM5ZWI3NWY1ZmI2MzEyOThjM2FhNjU2YTMxM2ZmMWUwODFlZmVmMWE1ZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2OTAwZWY1NTgwNjhkNjM2M2NlZjlmYWIxYmUyOTJjOTc2NGE3ZjBlOGY2Y2U1ZGEyMzQ5MmQ5OWI4NDQ5M2QifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/release-prep.yml#L80-L91",
+          "version": "repo-lines-v1:sha256:ba93920aa4c1a8c4efcf6f4890f545c8e090edd59e34cb8c6f7ac94d5eb96ff8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMmZkMDZlMjIxYmJkOWZkNjYxYjViNzg2Mzc5M2ViYjAwMWVmNDcyMWE5OWZlNjA2ZGE5YWE0ZGZjNWU0MjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkY2ZkMjlmNzVlYjE5YzQyNDNlOWUzZjY1MWZiMDA2YjJlNDY1NjY0MDk2OGMzOTJkZjEwMjliOWMyZGViZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIxMTYzNThjMDEwYTFlOTM3OTJhMzA4MGE0MTYzNzExYzYzNGE3YzdiNjJhMTFlNGEwMWY0YWE5Mjg5NmQxMTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bedc093fc597473d8b3a88296d6b4061",
+      "statement": "release-prep.yml's tag job fires on any push to main touching Cargo.toml, reads the version from the manifest, and pushes the matching git tag with the GitHub App token because a tag created with GITHUB_TOKEN would not trigger release.yml; if the tag already exists it is a no-op.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release-prep.yml#L132-L169",
+          "version": "repo-lines-v1:sha256:fea578327cd92a1b56d6d22434da3e7730097916e9607a6841542e3e5ebaf765:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2Njc5ZWFmOWFlZmIxYTU1YWY0YTNlZmMxMWJmNzA0NTUwZjNmMjQxMmVmOTRiNTE5ZGI0NjIxOWFjOWZhOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5YmExM2YzODIzNjQ5ZGI0NTJhMDQ5NmEyMjc3YWNiNTg3YmJiZjhlNzM3MGEyNWE4ZTgxZmYxZGY1ZDljMzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMmJmODcwNjczYzMwNDg2Yzg1MWRjNDdjNzQ2M2I0ZGI2OGFhYjQxZGNiZmVmMTNmM2MyZjVhZGQzOGNiN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://RELEASING.md#L62-L65",
+          "version": "repo-lines-v1:sha256:f4aa69261d3c94c28f8bf0abba9b770f8ab4bcce62dcfc51869ccd643ae44bb8:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFiYzg4M2I1NDk1Yjk0M2Q0MGI2MjY2YjljNTE1YmVjZTk2Y2I5NTNkYTZkNmY2NTk2N2UzN2UyZjY1YmYxNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDU4YjQ5NTMxYjcwM2NhNGFjZWViZDI3ZGVlYWE0ODJkNTc5MWYxZTIwZTgzMDZiYzc0M2QyZmY5YjVhYWE4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjllZTI5MjVmMzAyODM4YTVkZjEyMTY1OTNmNGMzMzcyMjc0NWI0YzU1YzMzYTM2YTlmYzhkODkxOTUyNGViZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWFmMzJiY2Y2NGM3YzBhYjAyOWNmOWFhOWNmNDE4Yzk0OTEzZTA2YjMxZTRhYjg3YzMyZjU3MGQ0OTk0NWY3MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5be93eb0cbd24069868ef43a6e9d7757",
+      "statement": "The release PR body and the GitHub Release body come from the CHANGELOG: release.yml tags a merged commit and dist autodetects CHANGELOG.md, using the '## [<version>]' section as the GitHub Release body; cliff.toml excludes 'chore' commits (mostly Renovate bumps) from the generated sections.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L83-L85",
+          "version": "repo-lines-v1:sha256:691647c221067e2d44560a0fa6d0d8541dcba503c3c4aac25cd4514f4687383f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjQ2MGJkMTYyYTAyMWZhZjEyMjU1MTU1NWJkOTI2YjhhYmEwYjc5OWIyNjcyNTZhMThmODgzZTRiMGJmNmNkYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTcwYjQ4MzAzYjA5ZmFkNmY5MzQ1OTE5NTQ4YzE1MzlhZTI3OWQxYjA0MmNhOWM2ZmZiZmYxZjA0NzJkNDk0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWE1M2U4NjQ3Y2EyZjdkNGQ5OTAwMWMyOGJiYjAzMTU1ZmM1MTI1MmI3MDhhNmQwMmMzMjRlNDU0YmMxYjY4ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGJjZWFlODJlNGIwNzYyYjFlZTY1ODdjYTRjYTJlZDQxN2IxY2UyNWQ4NmVmNWUxN2JjMWU0MGQ3ZGIzMTYwMiJ9"
+        },
+        {
+          "resource": "repo://RELEASING.md#L66-L68",
+          "version": "repo-lines-v1:sha256:1af32bcf64c7c0ab029cf9aa9cf418c94913e06b31e4ab87c32f570d49945f70:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmFhM2MxMDM2YWNjNjc3ZWM5YzE4MzBlZjQ2MmFjMzM0NTA3YzdjY2Q3NjgwZmQyZjU0NjJhODdiYWM2ZDY3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzM0YjQwOTU2OTVhNDZlODIwY2MxYjU0NDFkZDNmNjhkYzAzNmMyM2QyYzc1NGI2ZWNkZDM5NzNjNDhjOTBlYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGY4YjI0YWVlZmM5NWZlMjI4ZGE1YzhkM2M3YWJhZjRlYjk4MWZkMGI1NzJjZjI4YjQ0YjNhYTk4ODFkZmE1YyJ9"
+        },
+        {
+          "resource": "repo://cliff.toml#L58-L70",
+          "version": "repo-lines-v1:sha256:1dd25303120e41c4eed8cddd5909b4105737aa55ed1e6edcd8d0424d924bba12:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0NjhmM2M0NTc3ZmI2NzJlNTBkNmE5OWRmODk2NWUzNjZmYmYxYzgzYjI0MGVjMDdmYzhlMGI0MTg2YzUwMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDE2ZTA5Zjc4YmEzMTZjMDMyNTY4MjEzYjg1NWVlNzU2ZTQxNTY1ZDkxOGYwOTUxOWM4MWZkNjIwZjQwNjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlNjUyNjQ3NGFhMWI3YjY1MzQ5M2M3NjMzNDUwNzU3MjI3OGFiMGUwNTRiYWI3OTFjNDg3N2Y3OTZkZmQ4ZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7097abdbe70f4177a880a171f4fea17a",
+      "statement": "For a stable release, release-prep.yml's git-cliff roll-up spans every commit since the last stable tag (not since the last beta) so intermediate betas aren't dropped; the version's -beta.N suffix must be explicit because release.yml prunes all older prerelease tags, so N can't be derived from the tag list.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release-prep.yml#L17-L20",
+          "version": "repo-lines-v1:sha256:de88f035f9b89c81014375f3ac636095189be98601739b4c9af170389f6d0947:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ3OWNjNWY0MDY0OTk5ZmQ0M2E4ZjJiZDdlOGJlMzIzZmZkNzc0Y2U3ZDRhMmY2YTgwNGQxYjJhZjk0YTQ5ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2Y0ZThlZDEyNDM3ZDNiMmFmYjFmZGM3NGNhMzUwZDliNDE5OThjMzY4Y2M3YjcyZDg0YzllYmQxNWI2YmUwOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTU2ZGJlZWMxN2YwNDc0NzAyMGNlNDk4NjVlMDVmZDA1NzE1ODk4MDFlY2Y0NGMwYTM5MTE0YzRhMWY1YzEzYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQyYTExYjIzOTU4NDZiMzNiN2E3MGUyNzM0ODJmZjI0ZjBjMDc0ZjZjNmFiZjQ0YWUyZWJjYzRhYWE4YzNjNSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/release-prep.yml#L98-L110",
+          "version": "repo-lines-v1:sha256:be01bae65f1207fa1d2120093de89c78fd6e27d89b35049e578daafc70028364:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2MDc4YjlmMzE3MGI4YjBkOTIyM2QxNmJkZDRhODI4YzEzODVhOTk0OWMyODUyYjJiMWNhYzY5NWQyMzIzZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNTU5NzljZTczMDIwMzNlNmIyZmQ3ZDg4ZjUzN2EzYjhlMDkxZWEzMDVjODExZmZhMTI3NGJmNTc2NGVhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdiMTE3ZDkxN2I4MWExYjJkNjUxMTc1MmU3MmIxMjgxMzY3Mjk1OTZiY2MyMmEwYmYwZmNlMzJlMzVlZTJmZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5ZTBhOTBjNDE1NzdiODkxZTFkODdiZTY3ODIzNzkzMWY3NmY2NTM5MzRmZmM2NWVlMmU4MTBiNWYxMmI1M2QifQ"
+        },
+        {
+          "resource": "repo://RELEASING.md#L50-L53",
+          "version": "repo-lines-v1:sha256:a43997db325b975cc3965f0e1c008ad8037a1c8a3ff19f4a4516dfe423b982e0:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWJmODBhOGQ3ODMzYWI3NWYwMTlkOGJmYWZmMjQwODdmNGNmNGI2OGNkMGVjNGU4ZWQwNjE1OGI2OTY0YTEzNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzZiMTQxMzNjN2IxMWE1ZTAwNTlhODE4ZDhkNGNhNGE1ZTQ0ODViN2Y3YjNhNDk3MDBmZGRhNjFlNTcxYWMwZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzhkY2I2MzYyMDAwZWNjMzNlMjJiMDE5ZjVmZmI3NzNhY2VkMmE0NDBmOWJkMWE1ZGNlODlhNjRjMWM0MWU5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjA1YjgzNDg3NjRmNTk4YzI4NTdhNjI5MGVkYTVjMjNmN2VmZWZhNzAwYmQ2ZmJjM2UzNDM5NGM3YWRmMWI0YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_bbd95e35f74c4a849d8b55183fe05c06",
+      "statement": "A manual fallback is documented for cutting a release: bump Cargo.toml, sync Cargo.lock with a cargo command (a stale lockfile fails dist's locked build), splice a git-cliff --unreleased --tag <ver> --strip all section below the <!-- next-release --> marker, tag the byte-exact version, and push both commit and tag; a bare git push of the version bump to main is enough to cut a release because the tag job fires on it.",
+      "evidence": [
+        {
+          "resource": "repo://RELEASING.md#L72-L118",
+          "version": "repo-lines-v1:sha256:8b538ceb90344580b9465f3a83d06d1767af382b763c011c1f3543e2919fa312:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2OWJjYmU0ZjQyZWQzMDJmYWM4YzEzNDdjYjk0MmIwYzk3ZWYwYmExY2YwMzBhNTUwMDMyZjQ4OWYxM2M1YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmNzg5ZDMzYTJmODRhYTZiNTZkZjU2OTllMjk4OGQ4ZDAxYjVhY2IxN2U0MThmNDAwN2Y4MzQwZTRjNjA3MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmOGIyNGFlZWZjOTVmZTIyOGRhNWM4ZDNjN2FiYWY0ZWI5ODFmZDBiNTcyY2YyOGI0NGIzYWE5ODgxZGZhNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjNjY4OGExYjNiMTQ4ZDExYzE5YjY2OTk0MmEyN2NlYzQ5MWUzYzY3MTdmZjM0NDE2YmIxNjgwNTQ3NjQwZWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92a5afe50b62434aaf4cc9b184e1fa36",
+      "statement": "release.yml is generated by cargo-dist pinned to 0.32.0 in [workspace.metadata.dist]; rust.yml installs that exact pinned dist version and runs 'dist generate --check', which fails if release.yml drifts out of sync with the dist config so the pipeline cannot silently drift.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L1-L2",
+          "version": "repo-lines-v1:sha256:31cbc409e2701825d954055398438591387bb1ca15ffce44139f78ddaf80a3a3:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDA0YmI0YTAyZjVjMjczNjExYjA3MDM0YzM4NzAxMWJmYTIyMjNmZWRiOTgzNTY4ODkzZmM3YzE3ZDEzZTY2NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTFmMDc1NmQwYjIxYWUyOGZiZjVkYTBkMzM3OGE2YWUxZDEzYzc2OGUzMmMxODQwNjIwZGU3NTRhZTA4Y2IwMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTBkMzQyZWZjZjhmNWY5Y2JmMzI0MjE4ZDE5MjgxYTc3ODYxMmI4ZmRiZWNmNWM5MWQzNjg1NmYzZDYwODhmMSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/rust.yml#L102-L103",
+          "version": "repo-lines-v1:sha256:b7e53b0d6e9d0979a0d3b6d0d04c199a40527956d1aadda18cd3d32f6cadd3e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjc1MGQxMGFkNjgxY2M4Yjg1YzViMzliOGZhNmU4NGE0YzI2ZTAyMGIyYmU0YjdlMGUzZTEyMWZiZTI4YTRiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODllNjI4MmFjNzE4M2NkZTNkZWEzMmZhNWMyYzNmMjIyMzMzMmExODA0ODVjZWQ3MmVmOGVmMzU3NGZlNzVlZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmVjYmE2NmI0Y2MwMWJjOWU3ODkxNGU0OTA3YmRmZTI2Mjc3NTBlNjNiOGUwM2EyZjVhY2NkNzBlYzFjYTQxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGY1NGZjOTJlNGQyMzBkNjNkMWEzY2I4NDU5NDlhYTlhMDkzZDk3NzJjZjM3NTVmNmVlODcxMDA3MzYwMjhhNCJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/rust.yml#L71-L74",
+          "version": "repo-lines-v1:sha256:d1d9e2f4040a686c7b8b3ece40c8b91c5ecb2b35f2604c4d96ff97d91b21aa8c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk5YmEyZDI2YjM1NDZjN2Y1MWFhNmM2ZmE3MzdiNjU3Yjc5YTFkMjMyZTdhMGE1YWVmMjM5YWQ2YjFmNTRiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA1YjM4M2JiN2M2Y2I2NTdkODNlZGJiMjFhZTVlMDk3OThjMTU0Yjk4ZDk4ODNhN2Q0ZTFiNjFhZTNhYjgxNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmU2Y2UwNWVjZTRjOGNmMTZiNjU4NTQ5NzgzNmVlZGYzYjA2ZGI5NjhhZGVmNzZmZmY5MzEwMTMwMTZiZDExOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmRjOGRiYTdjZThiMGNiMDg4MDIxMzk1MWM5NWY2NjE1MDM2ZDM3OWFlZWYzMmQyNDZlZGJmMmJjODYzYmRmNiJ9"
+        },
+        {
+          "resource": "repo://Cargo.toml#L54-L57",
+          "version": "repo-lines-v1:sha256:797ae92774f41bde63eb48bb84e6a03ffc9ffc89f2c0620bc7bb2cd2f667f81a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDY5NmM4NGIyNmIxZjM0N2FkZDliYjllMjg4ZjkzOWJhZmZhN2IyMzZlZDBiMDQwM2FmY2Q4MDEwZDBkNDI1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTcwNTFjMWQ2ZDMzNmYyZjk2YmIyYjhkMWYxMWY2MTg5YjM3NTVhYjY2OWQ2NmZmZmFjMmEzM2M0YjdhMDdjMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmUyZTg3OWU2OGY0Njk2YWM0OTI4MWZmZjA4OTUxYWU3OGU5ZWIxZWE5M2ZjODFlMTdjYTg5MmQ2OTMyZWVjMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmVkZGE5NjM1NDMyNTVhZThmNWRjN2NiZmIyZTk2MDIwYWEzYWZkOWExOWU0MDRhNWJkNDkxZTQ0YWZjMDE1NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8e9c1b4d80bc4049999dcece507690b8",
+      "statement": "release.yml builds and packages four targets — x86_64-unknown-linux-musl, aarch64-unknown-linux-musl, x86_64-apple-darwin, aarch64-apple-darwin — producing the claudebar-<target>.tar.gz archives (named by target only, version segment omitted), per-archive .sha256 files, and the unified sha256.sum.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L58-L64",
+          "version": "repo-lines-v1:sha256:ef5774f7379d94a581d33365cc3b3153617e849d2c292a06069254635c2cd33c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzQxOTc5ODgzOWNmN2E0ODZjNzZkNGUyZmE5NjVkYzdmMDc4YTFiM2U3ZjY5MTI1ZTEyMzI0MDVmNmQwOTdmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjk0MTZlMDlmNzhiYTMxNmMwMzI1NjgyMTNiODU1ZWU3NTZlNDE1NjVkOTE4ZjA5NTE5YzgxZmQ2MjBmNDA2MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Q5ZjM1MjYyMzJmZGY4Zjk5ZTJkMjc1YmRhOGU4NzY4YTYwODk2MzZmYTI0OTVhNjUzOGZmNDQyNDY1ZDZjNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2I3MjA0ZjdiNGQxM2RhMmY0YjBhMzAxMWVkOTI5ZjkyNzYzNDgwNDgxZjM4OWIyMzkyNzE4NjYzMGMzNDRjNyJ9"
+        },
+        {
+          "resource": "repo://RELEASING.md#L157-L157",
+          "version": "repo-lines-v1:sha256:0a257e7430e19a660c9dd23bbca02ad606e1efb651c1bcbd7c257602d0230c51:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGEyNTdlNzQzMGUxOWE2NjBjOWRkMjNiYmNhMDJhZDYwNmUxZWZiNjUxYzFiY2JkN2MyNTc2MDJkMDIzMGM1MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGEyNTdlNzQzMGUxOWE2NjBjOWRkMjNiYmNhMDJhZDYwNmUxZWZiNjUxYzFiY2JkN2MyNTc2MDJkMDIzMGM1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjk2MjgzNjU2OGZlNmUzMGRkY2I4NzlmOWRhMDU3NjZlMWRjMThjZTU0ZTRmNDRiNTE5YTYxMzA1ZjgyOGMzYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjYwZjllN2FjOGFiN2FiMDFjYjlkZTZlMWEzYzMzMzkzZWIxOTEwODc0OGJkNDkyOTQ2YWRmZGIwNzY5OGMzMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_dd7a45fd4d1340f68b36dc85a6d99acd",
+      "statement": "The host job in release.yml creates the GitHub Release with a GitHub App token (via create-github-app-token) so the release: published event fires for downstream workflows — a GITHUB_TOKEN-created release would not — and the step must be reapplied after every 'dist generate'.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L250-L281",
+          "version": "repo-lines-v1:sha256:0b7c60155af69333bffb69dc51726398602190c50b044f2e9cd4cf0dacc065c4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyZGJhZTJiZDMxM2Q5MDBkYzNkZjQ4YjU5OWE0MjY4MDEwMTAyNTQ4ZWJkNzk0NjE0ODkyODE3ODc3NTc4NzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzODA1MzZiZGJiMzA0NzFlYjc5MTczYzhmZTU1MjQ5ZmI3M2Y5ZjEwZjZlNTliZjNjYTA5YzA1YTFlMzAyOTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5YjljNDkyMDMxNmUzODMyOGNhZDA2Y2YzZWMwYTYyOTUwZTFiMzJkMzYxN2FlYzM1NDVmNDUxOGUwOTcxZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmMDM5ZWYwZGMzZmRkNzI1YTQ0MDMzZjEyM2UzMmFkMGI0YTllYjhmMGE2OTc2YzRmNDI3OTcyMTViNzhmNjUifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/release.yml#L256-L258",
+          "version": "repo-lines-v1:sha256:df97c7411651544d6c70959751456044663efe72e7d5d6ea41ca8b423d133af1:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYzOWFmMTIzN2U0N2FmYmVkNDcwODMxM2M4NzBlZDY2MzY3YWU1MGJmYTQ0NzQ2ODg2MjQ1NTU2NTkwY2Y0NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzJkNTcwOTE4NzczZWFhY2Y3YWMxMGRiNGJmZDhjM2VkYjVmNWE2YjAwOWE0NjU3MjliMTNmMmMzOTNiZDg2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTllMjhkZThjZjMyYzg4N2FkNmMwMzNiNTg0NmIzNDU5NTEwNjcwODIwZTk2M2VmMDBlZDE2MmY3ZDQ4ODAxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWNmNzU1Nzk5OTQ0OThmMmQwMThjY2FlNjFmNzQxY2UxMTBjNWZiMTllY2JkNDE2NjM4NTM4MTJlN2Q0NWMyZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5a9dae2308bc4310af1aad84f98995dc",
+      "statement": "The host job signs the claudebar-*.tar.gz release assets with SLSA provenance via actions/attest-build-provenance (defense-in-depth, continue-on-error so a transient outage can't block a release), and prunes every older prerelease tag except the newly published one.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L249-L255",
+          "version": "repo-lines-v1:sha256:79ef214a74e54bf8525dc9744d2e056945b22b8d7b7066be30ef2acca6468dd4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjMyMGQwYmUxZTc1YWEwZjk5OGI1MTYxYjU3NWQ0OTI5MDM4YzVjYjg3NDM0YmRlMWI3YzNlODYyMTk1Yjg2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA5YTZhNTFlNjY2NTA5ZDYzMzM3OGEyOTZlMzJkMGFkMWIzODU2NWU5NjEyMzZmZmM4ZjUyODMzYzM4OWYyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODZiNjAzZTFkYTIwYmIyOGQ5OGFlMTU2OTM0ZWQ2MmRmMGQyZTZhZDEyODIxODc1NTBlNjY1YTc4ZGViZTY0NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGY5N2M3NDExNjUxNTQ0ZDZjNzA5NTk3NTE0NTYwNDQ2NjNlZmU3MmU3ZDVkNmVhNDFjYThiNDIzZDEzM2FmMSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/release.yml#L282-L296",
+          "version": "repo-lines-v1:sha256:69aa4dc06bf83c2d9a5770345542d0048106368c749b4c10188fb00f6af93a1e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkNWRmMjM3OGEyODkyYzhmMzExN2YxYjMzYWVmZDUzYzJlYjZkY2QzNmZiZGY4MjcwNWQ3NTYyNjIxZjhiZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhNWZkYzZmZGJkMmU1MjUzZWUyZWZkNzQyOGE5MDMzZGEyMGJhNDJkNDNiNTRiYTYzNDEzODg0MTA2YTdjZGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlNjRlYWY4MGRiZjI0MWMwOWVmOThhNjA3ZDM0OWYxYWQzN2Q3YTc0OTViNjUyZmFiNzBiMzE0ODFjZDM4ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3MGMxNDBhYTBiNDhlZGFlZDk2ZGJlMDI4YWFjN2IyZThhMWIwMjgzYmVjOTllNTJhMjg1ZTYwMzQxZWQxYTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_311c8e7d3899420d9b98825ab1cf3b6b",
+      "statement": "release.yml's custom-homebrew-app-token job publishes cargo-dist Homebrew formulae to the micschr0/homebrew-tap tap: stable releases land in claudebar.rb, while prereleases are renamed to claudebar@beta.rb with the bottle block stripped; it refuses to clobber a half-downloaded formula and fails on class/filename drift so a broken formula never reaches users.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L300-L410",
+          "version": "repo-lines-v1:sha256:b8d2651a0d317c9c3695a23c7420c82d9b7696bd3250a0c05b7062858b029909:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjMWQ1NGFhYjAyYzEwMDNmZmM0MzZhYWYxZThmYTY1MGZhZWQzZWYxOWU4YTBkMGJlZjkyN2Q0MDRiOTZjNmM3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJjZmRkYTU0Yzk2ZjA5M2I3Zjc5YTMwZDYzNDgzYTRkNmVlYmYyMTNiYjhjNGM4ZGUxZGJjZjEzODBiMjE5YTQ3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNzBjMTQwYWEwYjQ4ZWRhZWQ5NmRiZTAyOGFhYzdiMmU4YTFiMDI4M2JlYzk5ZTUyYTI4NWU2MDM0MWVkMWE3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlMzQ4MzBkNTc4NWVlYjczYWYwMWJiYWUxOWZjYjMzY2M1MGYyZDYxYjY0M2M2NDhlZTlkZjcxM2FhYzQzMGM2In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_34ef801b36154afe91654ae25c760af8",
+      "statement": "npm-release.yml runs AFTER a GitHub Release is published and repackages the already-attested claudebar-*.tar.gz binaries (unchanged, never rebuilt) into the @micschr0/claudebar thin-launcher plus the four per-platform optionalDependency packages, substituting the release tag for the 0.0.0 template placeholder in every package.json before publishing to npm.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/npm-release.yml#L1-L13",
+          "version": "repo-lines-v1:sha256:7e6765e2d247d3e0b25d63bd4d7c0f490779e1aa89cea69694d52b187f8a14f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxYzc0N2ViY2YwMjY3MTQ5ZGJmNzllN2I2MGNkNmE2MDMxYjFjNTQ5NzE2ZTdkZjkxM2U0OThhNjRhZWJkNTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmYTgzODA0MjgwNDlhZGI0YTYwZjhhYTZlYTIzNzJhZDliMDBhYTYzNjdlN2ZlYjhhNzZlODA4NGJhM2ExOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkYmJlYmVlNjNjYzUxMzQyYmFjZmNlODc1NzIzMWU0NWYzZmFhOGRiMjEzMzdkMDdhY2UyMDU5ZTE2OTEzMTcifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/npm-release.yml#L49-L67",
+          "version": "repo-lines-v1:sha256:5960b501ae23e6962f6066c91cdcb0bb4ddc5ceca047bef59191dd0af3b5ada4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5MmZkNjU2MjYzODYyZTEwOGRhNGE3ZjEyYTZkNDQ5ZDQyYzIyNTI4NGJjN2JhMTA5YmJjZDc5ODgxMDg2NTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4MTMzM2RmNjZkNTk1YzYyMjM3NDEyZTdkMTYwN2I1Y2ZiMDExNDdmMGYzYTlkYjdiN2FjNGU3MjljNDNkMjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhYTc5ZDA5OTU1ZDZmZTRmMGRiOThhYjNlMWRhNjkzNGRkNTlkYTU5YWQ3OGMyZmIyMTA1MjQ2ZmZiYTU1NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZkZjExM2Q2Y2U1Yjc2NjVhNzdkNjc1ODM5MDRmODQyMzJiNmFjM2I1NjVjMTJhNDgyNzk0NmZlY2EwZmVjNzIifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/npm-release.yml#L69-L85",
+          "version": "repo-lines-v1:sha256:857629cf97c0698790d5207258dfb3b8c06906278b9231bb14e7ffaac5f5589c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1ZDRhZWRmN2QwMDg0MjhmNmU3YWIxNTRkNjdhMjgzOWI0ZDQxYWVjZGNlNGQ5ZWRmMjA2NTdhMDY2ZGI4NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZTgyOTM2YjY2M2M3NDA0NzkyMjk3MWJiNDE5NjUxNDEyYWI1MGMxYTM4ODRhODkwNzRmNzZlZTZhNWIwN2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5MmI4ZDU0YjcyZTg0Yzc0YjM1NzAxYzdmZGE1NTAwYTY3MjFhNzA3MjlkMTc5Y2NhMWExYTdiY2NjZjUzYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiYzRlYzIwMDJkZmRiNzNjN2VkNWQ4OWQ0MzhhOTM0NGQ3NDZhODJkNjQ5ZjZkMmQ3YThjYzg4MDNmYzA3MzMifQ"
+        },
+        {
+          "resource": "repo://npm/main/package.json#L1-L13",
+          "version": "repo-lines-v1:sha256:19d04ad04fab7a447a0042a845dd65437365280efe4617247f36b3b40cb41e9b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjODBjNmYwOGIzNGUzNTdkNDRlNWRmY2MxNDZjOGUzMjM4NTZiZDFiNWQ1ZGI1YzQyNWE4MTBkZTJjNjNhMDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_09b97eb53cb0491ba0efdb00eb090ee0",
+      "statement": "Before publishing, npm-release.yml runs a host-platform smoke test that mirrors a real install by constructing the linux-x64-musl optionalDependency in place and running node '$pkg/bin/claudebar.js' --version.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/npm-release.yml#L87-L96",
+          "version": "repo-lines-v1:sha256:f4b4cb7a04aeab9ef42cf15c6884c7e3b46961dc8c6901977deeef026142d990:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5MDVkNDI5NjY4YjY3MTI5NTUxN2Y3NDc5MWMyMmZhZjVlMjkyZWNlZmM3MTYzNGI0YWE1NzRmNjhjNTlmMjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxNWJkNzcyZWY5NjNkM2IxZDgzY2VmMDAxNThlZjRlZmI5Mzg3YTAyMDMxOGY3ZDgzNTA3NGZlZDgxNzJiYzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyOTZmNzExOTQ5ODcyM2ExNDg4NDFlMDg2MWZmN2Y0YWE0YzFmYTgyOTRkODQ3ZjFlODQzMjJmZWY2Y2ZmM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmNGUzMjM3MzU0NTFhMGM2YjhiM2JiMjNiZjZiOGRlYjJhMjZjZGM3ZjYxNTc5NDQ2NjZlNDA1OTIwMjVhNzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b6d8281214c647968b0ef7bf6cc29f43",
+      "statement": "verify-install.yml triggers on release: published and end-to-end-tests install.sh against the published release assets in a clean HOME across a matrix of Linux-musl and macOS targets; it strips cargo/.cargo/bin from PATH to force the Tier 1 prebuilt download (so a broken prebuilt can't be masked by falling back to cargo build) and exercises both the piped-stdin curl|bash path and the sourced path, verifying the installed binary is executable, reports --version, and renders.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/verify-install.yml#L1-L67",
+          "version": "repo-lines-v1:sha256:54348df648e27a6d4711b32b80d8622cfa58d30ab11add4ef68fe8e7706ee71c:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmZDc2MTQxYTA0NWJiOGVjZDUwM2IzMDRhMzk2MjM0MzBiMThiNzhkNmY5ZTMxM2FmYmRlMjAxMWFiYmU2MTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNTU5NzljZTczMDIwMzNlNmIyZmQ3ZDg4ZjUzN2EzYjhlMDkxZWEzMDVjODExZmZhMTI3NGJmNTc2NGVhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmZjBiZjk3Njg0MjY2YjEwZjFiNjU4MGMxY2ZlZDJkZTIxYTc3MjI3M2I4YTJjOTgyNDYyODRiOTQyZmYwYzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8736eefbce774d89b6496bee5df0972c",
+      "statement": "Beyond the release pipeline, the repo's other workflows are: rust.yml (fmt, clippy across both feature sets, tests, auditable release build, pinned dist generate --check, PR coverage), security.yml (shellcheck + actionlint + bats + semgrep + cargo-audit + gitleaks + zizmor), renovate.yml (scheduled 03:00 UTC on renovate.json), benchmark.yml (Performance SLO), pages.yml (docs site to GitHub Pages), and openwiki-update.yml (scheduled 08:00 UTC openwiki code --update opening an openwiki/update PR).",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml#L4-L6",
+          "version": "repo-lines-v1:sha256:ffcae2a73731252e4eb8392cd37dbb7ad6ea28f6afd425d1e2407252a1622379:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2YyZmE3M2YwNzA0ODlkOTcyNGEwMjlkZmI1MDJhYTA4ODUwN2QwODU3OWJiYmNjOTRlZDkzNWMxYTA1MzMxNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTNhZWQ1MDJhNWFkZWU3YmIwY2FkZDQ2Y2Q3NDYzYjUzMjBjNmNjZWU0NDgwZDY2ODU0ODg0MzEwNjM3NjExOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjRlYWEzYmEyYmM2ZTNiYTA2MjQ5MDBmNDUyNjk2NTljYzA4ZTkxMGUwYjI1MjRkZjZkOTQzNWFmZjA5M2NiZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzk0NjJkNWYyYzIwN2U2YjRmODI4NDNkOTE1NGZmMGJiYWQwMzQzOTI0YjJjM2M0YmFiZDk5Yjg3Y2NkNGI4MiJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/pages.yml#L1-L8",
+          "version": "repo-lines-v1:sha256:5d397763c521fee950dc8a3edd3d4029b36b722ad767ff0ce235974da19ad1a3:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc2N2U2NTE4ZThmYmYxY2E2Y2FhZjBkODZjZmRmOTFjNTYxNmFiYmQzOTQ1OGVkN2Q3MzJiYzZiMmNlOWI5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2YyZmE3M2YwNzA0ODlkOTcyNGEwMjlkZmI1MDJhYTA4ODUwN2QwODU3OWJiYmNjOTRlZDkzNWMxYTA1MzMxNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWQxZjBlNzhjM2U3MTA3YmVkM2JhNmI3MWY2NWNhNjk2ZjIxNDQzMjcwZThhMmEyNjAzYzcxODhhMWQ3ZDAxYyJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/renovate.yml#L4-L11",
+          "version": "repo-lines-v1:sha256:7d341d400f9d8524b02f5953cbf93d573f8374bae1dde24c2cd313421c0e77b2:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTI4ODQwYTZiN2U2MDMwM2Q4N2JlNGQ0ZDgyYTUwYjMzMjg0MjkwZGVjNGUzNDI4ZDQ3ZDkzZmJlZmQxYzU5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ZhMWY5MGYzYmRkMWJjMGQ2MWE0ZWYyNDRmMzc1MmFmYzk1NTM1MDlmNzUwM2QzZjc0MTY0OTg2M2Q5NGZhNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWJlNWRlOGI0MWZmNjkwYzEyMTE5MzEwZjIyNGM2NWIwOGY1YWU0OWRiMDRjM2ZlZTExYWRjZDc4NmRkZmFiMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWEzNzRkMTQxZmMyMTFhYWIzZTRhOTM3NTE3NDAyYjRkZWNhNWZlNTFjYmUyMTcwNTE5M2MxYTRiMDdhOTUyMiJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/rust.yml#L49-L67",
+          "version": "repo-lines-v1:sha256:77b0efd788f7e2d063a181351f8b2ff94e68d893cbb79e09155db009aab0a915:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyMDc2NGRlNWNjYTUxNzk0NmUyNjZmMDViYWEzYmE1YmM3NjEwNTY4ZGFhMjk4ZTlhNmI2Y2IyMzA1MzIyZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwNzZiMmJiNGRiYjJjOTlkMDBiODQzMDE5Yjg4NzViMTllZWZkZjgyMzUxZTAyYTc5NWVjMTNjYjA5YThiMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlNmNlMDVlY2U0YzhjZjE2YjY1ODU0OTc4MzZlZWRmM2IwNmRiOTY4YWRlZjc2ZmZmOTMxMDEzMDE2YmQxMTgifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/security.yml#L17-L116",
+          "version": "repo-lines-v1:sha256:35c75cee2bf99685fbadc5ec9cf8a4e20daa9b319ecaa08ccb50085668a40dda:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhMWY1NGZmNTEwNmUxZjJiMTVlZDgyNTBhZTczNDNjM2M0NDQxNTZkY2Y1NTRhYjczYmMwZWY3NzYwMTBkNzk5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzOTNiNGUyOWMyMDNhYTBkOWQ3NTQyY2UyOTI5MzViODk2MDlkODM3NDFhNTI0YWRhNWVhYzI5NjA3YTllNmVjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3YTRlYmY5ODYxZTY4Mzk5OWY4YmJiZGY5YzNkZWQ3NmFhZjhmODQ3NmE3NjkzZTI2MzRkNWY1NmRiYThkNjFjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-26T22:48:34.063Z"
+  }
+}

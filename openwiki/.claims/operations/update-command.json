@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1f542bc5aeadb5b79b74050b55be20a3c19a386be9a4be4993f8d5572bbd9484",
+  "claims": [
+    {
+      "id": "claim_97d75d2ab718456cb48458f4b9a5aecb",
+      "statement": "`claudebar update` documents and returns three exit codes: 0 for up to date (or, with --check, the check succeeded), 1 when the check could not run (network/parse error), and 2 when an update is available (only without --check).",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L597-L602",
+          "version": "repo-lines-v1:sha256:6cb71ebf5816e6139593c0925a4987ce8caa57e51b4350f304a75e196f3cedd8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFiYzFlZGY3MWJmOWNkNGFmMTE3YTEzNWU0OWJjMWJjOWI0NmJlMzkyYjQ3ZTRlZDI2NGY2YzQwNjViZmNmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmE3YWM0ZGM4OWU1YzU4NDEzNzhlNzY0ZGM1MTI2Nzc3OTBlMzYzZWU3NjRiMGUzY2EwYjg4NDgxM2IyZjkxOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMzNGUwNWUzZGRlMzBiMGRhZGZlYWI2NTdjMmQ3Zjc3MjIzNjBlMjU5OGIwOGJhZjkzYTg0OWY0MDYzZDY1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQxMTI5Nzg5ODk4N2M5YjdlYTMyOWYwMjc4NTUzMjdhMDJmMmU2NDg2YWRiNzgzNjI0YjNmNDU0Nzc1MzMwMCJ9"
+        },
+        {
+          "resource": "repo://src/main.rs#L626-L655",
+          "version": "repo-lines-v1:sha256:0f2630b1e35bd95d23bcd4ad0919638371fa990be4188a3d4341dbd2a4572b14:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiNTMzODhiMmU4NzlmNjIzZDkxYzQzYWM4OTIzMDg1ZDNkMTkxMDViMDRkODZkM2JlMDhiNDk2ZTdmM2Q5YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1MDYxYzY3YmQ1MTAxYjZhMGFmZDIwNGUzOTJkN2M5Mjg5ZTg4YmM2NjAwOGYzMGYwY2EzZGJkMDJiZDUxYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0YTM2NWE5MGVjMTFlOTA0MzI3NTJjZjkzNzZlYzVlZDM2YjgwYmE1ZThlNjg1NGZjZjk4OTcwZDMwNDQ0NjkifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L14-L17",
+          "version": "repo-lines-v1:sha256:e696b4a4fdca8874a659959eed7f8c1530090f4f5942cea7f7d15c29e8c6d8a4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzE4ZTU4NTAyZTgxNTcwNzk4NjllMGQ0OTA3OTgwNjEwNGVmNTA5MTQ3MmQ0NjNlZTIwNWViMmY2Y2NlYTJlOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWE3MGMxYWNmZDY3MDIyN2M2MDJhYmQ1MDk2ZTI4MDlmMGRmYmZkMTVmMWFjZWMzMzI5ZWVhODAwZjEzZTQwNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjY5MjZlNTJjOTQyNDU2NTU1Yzk3OWFjNmJmZGEzYzEwZTdjMGM1NjNjZmFmMDhkNTNhMGRkNDc0MDdiMTVjOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODE0ZTFmOWJiZGI1ZDJiNGQwZjkzNDFlZjY3MTE3NWZiNmU4OWI1ZGJiZTdmMWZkMDJjNGQzNDQzMzMwOGQ0ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_af02455cf9844dc6b285731d87a9f771",
+      "statement": "The render hot path never touches the network; updating is an explicit `claudebar update` command, a deliberate design choice so the statusline hook stays offline and fast.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli.rs#L144-L148",
+          "version": "repo-lines-v1:sha256:67aca1693ee6b90d13de3ed2aef69f858e2845259249b9d88a260c56eb4a815b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjQ0OTMzYmViZjc4YjE4YWQ2NzgyOTQzMzU2N2NjOTgxY2ViN2IzYWU4YjJlNGU2MDk2NGU5ZjA0NDgyMmY1NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmJmY2VjMTUzM2JiOTdlMDQ0MThlZGUzMmM0Mzc2NTIyNDAxNjE0OTg1N2Y4OTg1MzkwOTQwNzE3MzkzMzViMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWFkYzFmNTJjY2UyYTdkM2QwNGU3ZmRmOTA4ZmM2MjUxZjVjZjQ5MTg4ZWYwMGUzMDFhMjk5NGY2OTUwNGRhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTcxNWI5NGM5ZDRiZTBiYmRhMzQ3NjFiMTlmNWFiNGRiZTY0NTc5MGUzOTIxZjc2NzY5OTk0NmEwMTYxNjdlOSJ9"
+        },
+        {
+          "resource": "repo://src/update.rs#L1-L5",
+          "version": "repo-lines-v1:sha256:a2585f8ec9daa274fb0db4d1f35ed28a270649971a27e4a501f5206a57eb7b56:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NjMDk5NWJhODFkMjQ4ZTgzN2I5MGYxMzc0MjVkY2I4MDM5OGZiNzhhYjZiNDY2N2NhNTI4OTBhMjVjY2JlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWY1MGYwYzZlMWJkZjU5Y2ViMDY1NDI1Zjk3OWYxNTg0YjE3MTdmYWNlNmE0ODAwOTliNjY5OGMwOTAyYTIyMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzA4ZGE2MWUxYmFlODc1NGVlNzlhYjY4OTU3ZWZiZTFkMDBjYTQ4MWVjODNhOTE1MmEwZTRiYzVkYzg5ZjJkNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_073c03632c7d49d1bdd311e38845df3c",
+      "statement": "The version source for update checks is the GitHub releases API at releases?per_page=30, the same channel install.sh and the Homebrew tap publish to.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L154-L154",
+          "version": "repo-lines-v1:sha256:50df842c911c28b4b874f83ba9ba2f18148a2e4b88e40916189da86dc1a92d46:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTBkZjg0MmM5MTFjMjhiNGI4NzRmODNiYTliYTJmMTgxNDhhMmU0Yjg4ZTQwOTE2MTg5ZGE4NmRjMWE5MmQ0NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTBkZjg0MmM5MTFjMjhiNGI4NzRmODNiYTliYTJmMTgxNDhhMmU0Yjg4ZTQwOTE2MTg5ZGE4NmRjMWE5MmQ0NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjUyZmMxOWJmNjVmMjY5OGE5MjY4ZGU0ZDMzNmQ2Y2ExYTQ1ZWFkZDA4YmUwNzE5OGRkNDA3OGI5NGFlOWM0NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGEzMGM1ZThjZjkzMmVlYzJkYTJjODVhOWU5NDBjODFjNGQ0N2RmZDU2ZjU1ODU1ZTdjNDdiMDlhMmFkZWMzYSJ9"
+        },
+        {
+          "resource": "repo://src/update.rs#L7-L12",
+          "version": "repo-lines-v1:sha256:f695bb5bf5b1b286c3f66033413ad1e202415b46a98956f098e9d0c9bb136fc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTI0MGI0ZDM4YzNhZTI2OGEwZmFiN2YwNmVlZWMwNzljZjUxOGYyOTU1MzA0Yjc4MTVhMWY2ZWFkNDZiNzgyZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWUzYWY3NmViMzFjNzI3NTU4ZGE3NGYzMDQ4ZTg4YTdhNDU5YmVlMjNmOWQzZmQ4OWJlYzIyZWJjMjUxNzI1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGRjMzQwNjE5MDM2Y2I4Y2I1MDVjZjUyZTljYjUxNjBjZmQyNjJiNjRjMjhlNjIxNzIyYjYzMGZmYWFhODgxYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzZkNGMwYmUxZTNmNjFmM2RhYmM4NmU2OWE4YWY2MTNlZWFjMDU4NzljOTQ1ZGY4YmNiMzA1MTg0MDRkN2YyNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2fd1d501a0c44ec2bcdb90bcf48d76b2",
+      "statement": "The update comparison is channel-aware via the `--channel` flag (default `stable`): stable compares against the newest stable release and only falls back to a prerelease when no stable release exists, while beta compares against the newest release across all channels; prereleases are only offered with --channel beta.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli.rs#L155-L157",
+          "version": "repo-lines-v1:sha256:848183fadad7e6e68dfcff99b5cdc6247f87bf7295c0b50e88aa31fdcda49cb3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTUwMTk0ZThmZTM5MzZkZDNlYTQ4Y2E3MTBjZmNjYTk4ZTVlYjU1ZTE0YzkyNGI4YWJhZDVkZjMyZDBlN2Y5NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWY1MDI4OThkZDQzZWI3N2FmNzMwYzQ2NWUwZWZmZjI1ZWY3NzNlNjIwZmNkZDMyMjQ2MTQ3MDA1OGM3Yzk1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODRmOTFiZTY5ZjNjYmY3NGQzYzc5Y2RiZDk0YzE3YTE1YmJhYjVmMzBhZDlhMTg4ZjA3ZDU5OGY2Nzc1OGM4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjc2YTU0NGNjMDIzZWQ0MDVlM2I5OGI4YTM1NDA5MGZhZDE2ZTllMThkNWVlOWY3YmE2YzNlNzAwNTMwMDlkMSJ9"
+        },
+        {
+          "resource": "repo://src/update.rs#L232-L252",
+          "version": "repo-lines-v1:sha256:f754ed2ac9bd1577a16cfb9c5500b698c55b5682d08d06f60eace9c2e252433c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNGMyNWFkYTM2Y2FkMjMxOTExNGE5ODA3MGY5MmQ0M2E0OGM3Y2ZhNDIxN2Q0MTA5ZjVjYzNlNzY0NzY3MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3NmE1NDRjYzAyM2VkNDA1ZTNiOThiOGEzNTQwOTBmYWQxNmU5ZTE4ZDVlZTlmN2JhNmMzZTcwMDUzMDA5ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L26-L30",
+          "version": "repo-lines-v1:sha256:d115a0049baee78ed5325f54c4486f630f706773e95df3fce8f866c1dfc81887:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI5MmNlYmM2OTJiNWRkZDExZTAyN2Q3MzNlNmYyYWQxNWQzNDEyMWZhZTliMjYxYTMzNzM0YWM5NzhkOGZhMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTA3MTQ0NTYyNjE5Y2E5NzQ1MzNjY2YyMTA2MTI2ODE2ZDkzNjU2NTZmN2YwMTk4YzFjMTJjYTQ5YWEyMmY4MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2VkMjliZGQxNGZjMTAzMjNiMjczY2RmM2Q3ZGY3N2ZiYzljODk5NzkxYmQzYzkxNGQ5N2Y5YmZiOTM3NWU3OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_736c9c279d8c409c9161693dbb2dc1a1",
+      "statement": "Versions are CalVer with an optional -beta.N prerelease suffix; Version::parse accepts exactly N.N.N with an optional prerelease and returns None for malformed tags, and ordering follows semver semantics where a release beats any prerelease within the same major.minor.patch and prereleases compare numerically by beta level.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L100-L124",
+          "version": "repo-lines-v1:sha256:065c2b278eabcea39e298e08d537543b3fdf3870ed086b0ab1e7d6714f03f299:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3ODZjOGFmNDYzMWJjNmUxM2FmNDFmMmFlYzhmMmQ5NzdjOTA0MmI2NThhZDVlMjZjYTM2ZDU0ODE5OTY5NGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmOTIyNzE5Njk2YWYwODhmMDk1MTE4ZWFkN2M5OTAwMTdlM2ExM2ZjODM5NzA1ZmQyOWUwNTI1ZjczZDhhMWIifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L41-L76",
+          "version": "repo-lines-v1:sha256:35abcd8b1e4c214cfec947b132fc375b60a8bf5a2439660be12dee8e6c26bb3d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3MWFlYjYzMTdmZTY2NjI4MWIxOTQ1OWRkNTczMWY2NzBlNzMyNzIzODgzODA5ZWI4NTEwZTAwZTBkNGM4YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhNzQ1MDdlM2ZiN2E3NDQ3ZmYxMDYzMTFiY2M0YjExZWFjZDIxYjhlYjJmZDBkZGNkMDc2MGNiMmNjMDUyNjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_af85bcf2da034308b9a4a8093cc9fcc6",
+      "statement": "fetch_latest shells out to curl (with --fail --silent --show-error --location --max-time 15) rather than an HTTP dependency, since the render hot path never calls this code.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L156-L179",
+          "version": "repo-lines-v1:sha256:81211e15ea9e409adc8db06e5a8e0c12dc6490cbc1923e6e169ecd4b6cd362f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZjA4MWEzYmI5MWQ1MTM1Mjg0ODhjNTk3ZWJhMmQ5MmYxYzVjMzMzMjQ0MWI4YjNlOWU1NTM4ZTQ5ZWMwODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmNzI3NzRiNGY3Y2NjY2YwOGRlYzM2ZGRmOGE4NjU2NGEyMTg2YTE3M2ViMThhNmM1NGE2OWUwYTEyNzEzZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkNjAzOThkYmEzNzY1MmFiNWU3N2JlZDVkMzJjOTVlZDJjMmVlM2I1MzNiMmY0NjczYjk4NTlmZjNlM2Y4YzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NzkzZTAzYTY3ODQ2NGJjMGQ4M2JjOGQwOGNkMGM1YTEzODcyMDZiYjM3MjAwNzc4ODFiMDgxMmRlNzBlMzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_98821c91dafe48bab5d785b6d3f3ab74",
+      "statement": "fetch_latest returns UpdateError::Network when curl is unavailable, exits non-zero, or times out, and UpdateError::Parse when the response is not a JSON list of releases or contains no parseable CalVer tag.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L143-L152",
+          "version": "repo-lines-v1:sha256:155d6913b25027c8e13b9fb1d697f2c108e73ebd5169b425962046e3f73640a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiZWQ3OWJjY2QzZDRmNGNkZTY1MmU2YmFmZGYzODhmOWJmZGNhZWMxZWQ4MDAyZjU0YTM0OTcyOWUzZDFkZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmZjBkYmI3YTBhMzEzY2NkNzgzN2YzNjYxZDc2Y2FlNDFlNGFlMWNhODRhN2NiZWJhMmE0ODIxOGNlMGM2YjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNjAzOThkYmEzNzY1MmFiNWU3N2JlZDVkMzJjOTVlZDJjMmVlM2I1MzNiMmY0NjczYjk4NTlmZjNlM2Y4YzkifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L180-L203",
+          "version": "repo-lines-v1:sha256:cb9c4d31833af92a96dcb37ba8027151f27f8199dc04b24a0227662fc87bd295:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmM2N2ZmM2QzYzlkZmU4MTkzNzMyNjk1ZWE5MjRjY2EzZTdiYzFkZTI4ODIxZjVhZTU0NDllNWU3ZjNlYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjYTQxNTliNjM0MjJhNThmY2RhNmU2NTlkN2MxNTMxNzZkN2YzOTE1MTgwMmEyMGEzNzc3MWI1NjBkYjc2YWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjMzMxMWMyZGU1YzVkNmQ2YzkzY2JkZDNkNmIxZTRiNWU0OTYxZTlkNGU2N2E0NzM3YjZjMWI4OGJhY2Q2ZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_953ad18ebd41430391aa811765e9f6af",
+      "statement": "The --check flag never exits 2 for update available and always exits 0 on success, making it safe inside set -e shells and && chains while still printing the result on stdout.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli.rs#L149-L154",
+          "version": "repo-lines-v1:sha256:b5292ce7416896aca9af87b55dbafdb88a533b047c927f74cf247df1b87303d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmMxNTAxMDE5ZjNlMzc1NmU5ZmNhNWUxOTNjZjQzNjQ5NDUwZTA3NjQzMTY2NzI4YmVkZjg1NzIxYWU5ODE2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTE4Yjk1MjJmYzhmZmQ0NzEwMGFhYTUxZmZlOGQyM2U1NWFhNjkxMzg2MjZmZjNlMDczZjg4MWVmODQyNTY4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTI2MzhjZWFhNGVlZGI0OTQ3YmU3ODQ2OGM3OTFiNWNlN2YyZDlhNjRlNWViMjViMTY4MzViOGE5MzU4Mzk5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODQ4MTgzZmFkYWQ3ZTZlNjhkZmNmZjk5YjVjZGM2MjQ3Zjg3YmY3Mjk1YzBiNTBlODhhYTMxZmRjZGE0OWNiMyJ9"
+        },
+        {
+          "resource": "repo://src/main.rs#L651-L655",
+          "version": "repo-lines-v1:sha256:a6ee4a309e028b96660f2754fe6a32066c9c2fa1354ac385b1cf98d9c4749107:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjljMmFhYjVmZDgwNDNlZGNkODg2ZWFkNmRhMjRiNTY5NTExMzlmNDM1N2UyYzg3NTJjNWQ3MzdjZTQzMWU2YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUyMmM0MmNkMTljNmQwM2Q4MDhjNDUyNzIwNTUyODI1YjdlYTFjNWI0OTFiMjE4NTExY2FjNzQxNWNmOWQ5YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2IxMzU0OWZhNzdjY2EwOTg4Yzc0ZTAzYWQwYTliZDIwM2FiMjUxNzM1NTVmMzhlMTNlMmU5ZmVhMmFkOWFlNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjRhMzY1YTkwZWMxMWU5MDQzMjc1MmNmOTM3NmVjNWVkMzZiODBiYTVlOGU2ODU0ZmNmOTg5NzBkMzA0NDQ2OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b3d0a0baad71433cbe7470e4680b1a2c",
+      "statement": "run_update parses the installed version from env!(CARGO_PKG_VERSION), prints the installed version and channel, and on an available update prints the version as stable or prerelease plus the latest stable release as context and an installation link, exiting 2 unless --check is set.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L603-L658",
+          "version": "repo-lines-v1:sha256:b90c4536f5e2415050300d0cc3dc844e29639bbe8833b9102793753c7d5e7afa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3OTVjMDBjOWU2YTg1Njg0ZmVkNGI5YTZkNjM4M2NiN2IxZDI1MGM4YWIxZmY5YTkwNzBhZWNlODYyNjg3ODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2ZDE0MGU2ZWM4ZjhhNTA4NDllMGRmMGE3OTQ5MjhjZGIyMGU1ZTVmNjRiN2EyZTllMzdlNTM5ODk5N2Y1ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1ZDI4NTQ5YTJlZThlMjU3ZmJlOTQyZmJiMGFiNmY5NDkwMTRjM2U0OTUyMDQwMmMzMTUxNDFjOWYzZjNjZTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_85b17b0c7afc43cd927d897af8dcff92",
+      "statement": "Unit tests pin the channel-aware behavior: a Stable-channel user at the newest stable is up to date even when a newer prerelease exists, a real newer stable is still offered on Stable, Stable falls back to overall when no stable exists, and Beta is up to date when the installed prerelease equals the newest release.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L283-L293",
+          "version": "repo-lines-v1:sha256:65782c081c3592b62efb16be73f4a46454c36ac94e90a26178011c96ad86e6f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxNzgzMTliNmZmMGE4NGM0ZTE5MjY0NWM1YTRiYjQ3YjExMzY2MTI4ZTUxZDk0MjY4YjVhNTNjYTA5NzE2ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0OTMzM2JjY2E1MjhkYjNlNWJmNWE2MGZhMTVjYTk2ZTE3OWUwODlkOTgzYTkzYWI4YThiMTNiNmFmZjIwZmUifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L311-L357",
+          "version": "repo-lines-v1:sha256:d562a15243a9a13f59a167c1218310d419538a1d8fa3653f629c98c53fa8431f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyZDgyOGEwMzdhYzFjODE1MzViMWQ1NTAwODMyMzIzYmZiYjg2NmEzYTNmODdlN2E2OGMxM2EyYmFlNTZmZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-26T22:48:34.063Z"
+  }
+}

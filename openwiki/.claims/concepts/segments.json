@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:a138681011e678b134311263c9711765d30a48e14c03f0ecc594add4d9c5d831",
+  "claims": [
+    {
+      "id": "claim_2b42fb02c62248c390ef63aa4105e04d",
+      "statement": "The Segment trait in src/segment/mod.rs is the extension seam for statusline units: render(&self, ctx: &RenderCtx, out: &mut SegmentWriter) -> bool writes a segment's body into the writer and returns true iff anything was emitted; an empty/absent segment returns false and the composer skips its separator.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/mod.rs#L41-L67",
+          "version": "repo-lines-v1:sha256:a4281113a50322b011fd519710d49104af176691539483bd002ec00241a967a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EzMjIzMmQ5YTVjMmZmYTMzZTIzNGM3YmVhYjZjYmUxOWRiM2YzNjliYTQ1ZDBlMTZmYjFjNzUwYmRjOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyN2U5M2RlOWQxMTcwM2U3NGNiYzRkM2Y3YmY1NTNlNjBkNTAxYWZkOGNkNzU5ZTUxYjQ4N2RiOTQ4NmZiMjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6dccaaa662024b189b2874e1dea83d20",
+      "statement": "Segments never know their neighbors, never emit a separator, and never embed a raw ANSI/color code; they read theme and style through the writer.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/mod.rs#L1-L7",
+          "version": "repo-lines-v1:sha256:f119f6ad9cfea43d536ab24235ec19e0b3f4abc47fbbfe9fee4336fa7ddce001:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDc4NDg4OTA5NDdhODdmNjliYmJiOTJkNzBhNzc0YmMxOGY1MDY2OTAwZjI2ODM0NGQ5M2Q0MGE4NjU3MDk5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjhiMDI0ZGMyNjBkOWNiMDBhMmUwNDkzZTFjNjE5MjZhMGQ0NTE5ZDI0NDJlMzVkNjFiMTBkODc2MDZmNTBiNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_992a03d5ce134a24b0ec0be7584c885c",
+      "statement": "RenderCtx injects now (epoch seconds), home, and tz_offset_seconds rather than letting segments read the ambient environment, so rendering is deterministic and testable; the clock reads locale only through these injected values and cached detection, never a subprocess.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L19-L31",
+          "version": "repo-lines-v1:sha256:7f9e5c0a3a61c495cafbfeed118f6af096a625718906f566cae3019a7959805f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkODQyNzQwMzE5ZDQxMjIyMDY4M2U4ODliMGU4NGNiNzE1MzdlYzkyMTZjMGJhOTg2YTI4Zjg5NDNiNDc3MTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMDEyNGMyMmI4NDVmMTY2MmRmZjlkZGZmMDM1NWI4ZDQxNmRjODBkYzYyZTgxZTgwNzFkYTg4NDYwZTIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NWIwNTEwZTdmOGU5Zjk4YjhiMjJiMDYxNzk2ZmM4NTIwNzk5YzJmOTNmMzg3Y2ZkY2E5ODI2M2FmM2U4ZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyYWMyZDY4NjdmN2U0MWNiNTJiOTVlZDg2OTY5MGIwOTdiZDgwMTc5NjkxMmE0YTI4OTQzY2M2YjUwNjY2OTcifQ"
+        },
+        {
+          "resource": "repo://src/segment/mod.rs#L24-L39",
+          "version": "repo-lines-v1:sha256:a94bbb91035cd90c173819525b1d86c3658dc607ee3b68a46e39ef085b326c07:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDg5ZGRjNTRhZDI3YzJjMWUxNjVjNWRlZGYwMmI1YTU2YWQxY2U0Yzg4MzJkMTQyNGQyYjgwZDJhZDA1NDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyYjE4OWEwMDJlODk0YThkM2Q1ZDYwNzdiMWNhMDVkNTZlNDkwOGIwYzVhMGQwNWU1MzBiMTViODg5NzcyYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4Mzg5ODVhZjA1NjM5NDBmNjI2MDM4NjRhYWZjNjUwMmY4ZjczNjQyNGIzMjkyYjYxOGI0ZTExMzdjMDE0ODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9e2c5ffb41f44745b38bbded80f7319f",
+      "statement": "SegmentKind (an 11-variant enum, serde kebab-case) encodes both which segments are enabled (presence in Config.segments) and their render order; SegmentKind::ALL is the canonical 11-segment order and SegmentKind::DEFAULT is the 8-segment default that mirrors the bash statusline's order (Lines placed between Context and RateLimits).",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L14-L57",
+          "version": "repo-lines-v1:sha256:639735b98d5660c2a45af49bf54fcc9f884e9daf7bd01bb0ef256098ccab4677:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzYTQ1ZTQ1ODg0YjdhYTdlZTgyZjdmMTczYWI3YzJjN2Q0NjI2M2IxMzg1NmViNGI2MDNlZWJiMGMyNTg4MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5NTkyODBmNjE1NmMxZjY1MWI1MjJiMWIxODYxNjNiNjZkYjQ1YWRiZmE5YmM2NzFiZWQwNzM1MjllZWMxZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1ZjA5NGFhMGZkNmFhOGU0OWZjYTYyM2Q1YjdjMWVjZWY4ZGFmMDE3YTk5NTgyNjFkNGYwMDBkY2U3NDE4NjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5YTZiMDE5MDY2Mzg0M2VmMzBiMzYzMzRmMjZmZjE5M2IzODZlZmYwNTE5ZWE2YjkwNjE0ZjJmMTYwZDE0MTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_24678acb80204ff2b862307684e5fdc5",
+      "statement": "Config::default uses SegmentKind::DEFAULT with Tokyo Night and Powerline, and the default_matches_bash_layout test locks the theme, style, segment order, and warn/crit thresholds to preserve bash parity.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L241-L249",
+          "version": "repo-lines-v1:sha256:4f83aa8f3e8d053e703067c4568374f3f77e02ee4fc70ea7e9171d70f1f317cd:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJiNWVkZjU5NDljZmVhNjc4MjJjZjY5MTEzMjM2M2Q2OGQ2ZjFlMTY5ZjVlMGQ0ZjdjMTRlNWZhMWU2ZDRlNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDllYzNiM2ZjOWNlZGYwODIwNGJjYzRhZTBhNWYxMzBjOGQ4MTNiODE1NDRlZDQ0ZWFhYmNhMDg4MTM5ODYzNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmM0MDUyZTNkOGVkMzM0OWI4YmU2YmIzOTk3Nzk0ODVjZjk0NDgzYWUyZjM5Zjg1MjNlYzcyYTA0MTU0YjUwMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d53b6622b1674a5cae905ca4f53fadae",
+      "statement": "SegmentKind::as_segment() resolves each of the 11 variants to its zero-sized &'static dyn Segment implementation, and SegmentKind::from_kebab parses kebab-case names back to a variant via the serde rename mapping.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L77-L86",
+          "version": "repo-lines-v1:sha256:c34277bb3004805819b266511b689d631569992ffc459845210edd36cf693750:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMzA2NjQ5OWI0NGNkMjZkM2MzMDJlYTdiMGQxZjhjZjFhZTQ2MDQ2ZDlkNTY0MDBkYTAzYTkzMWYyOGNiMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyZDJiNDdkNjRkNGU5NDRjNmMxODc0ODUyMzU1NGE0MTBjNjRlZDcyN2MwZjQwNjlmYzEwNTNiODNlN2ExNWMifQ"
+        },
+        {
+          "resource": "repo://src/segment/mod.rs#L49-L66",
+          "version": "repo-lines-v1:sha256:c0ea49209f4001d4b02b3c37314cc2a5c8925ed5ecaa9c99dbadca70f0b9ba40:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNWEzNjJhZTgzMGU4YTU2ZGMwNGJhMWE5YWYwZjE1MjY3ZGRkNjQzNTBmZjFkYThiM2MyYWRiYjlmYmY4NGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlY2M1NzQ3YWVkYmM0ZWQ2NzUwZWFlMDQ2YThhZjg2NWRlZTNiMWEwZjZlNjUwOTk1NzkyZmFhZjM3MTNiMTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_33833b3a05f24f18b381a2ec1900f7ca",
+      "statement": "The SegmentWriter is the single place segments emit colored, glyph-decorated text: it owns the resolved theme and style, restores an active color when nested colored_with/icon spans pop, renders icons only when the style enables them, and exposes window_gap() for joining related windows inside one segment.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/writer.rs#L1-L162",
+          "version": "repo-lines-v1:sha256:5fcad69552c85fb7b60fed848a29fd36b77b5b1dfcbde7a676ee2055113c39ab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzOTMzYTE2ODg1YzQzODc4YWEzNDNkNTdlMzY4OTFiODAyNDRjNjA5Yjc0NjU0YmU3MzliYzNhYWE5MTY2Zjg3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3YmM5OGQ2YjBkYzQ5MmM1MDE2ZGYxMDgwNWEzYTU0ZWI5YzE4NGE1YTYxMzdlN2Y0YmVjZmEwYzIyMDU1MGQwIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_198de5afc58b4650a3534cee59e8d8b5",
+      "statement": "The composer (render_fixed and the no-wrap path of render_auto) builds a fresh SegmentWriter per enabled segment, and appends a separator only between two adjacent non-empty segments; an empty/absent segment therefore takes its separator with it, and the auto path drops empty segments before wrapping.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L65-L99",
+          "version": "repo-lines-v1:sha256:48b0ff375259f62b0ad2abe84f0dc49d7b526d30c0c934bc3fa7d734ffa5a969:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNGYzYzkxOTJhZWMzZWJlYjhjN2E0NzA4NjMzZmU1Y2RhYzMzZTU5YTg0MjY0NTU0NzViZDg5Mjc5YTkzOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzM2Y3ZjlkMzY5ZTQ5MjZiNzFkMjNmNTc3ZWI3MDFlY2E0M2ZkMTc4OTRjZmE4NzAzOTlkMzA4N2RiYmM0MTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjNDkzNTE4Yzc0OWMwMDdkZTNlOWJhODljODk4ZjMyYTk3ZDIwZjJlZGE4ZGZkZjU0NjcxZDliNThhZjA0YzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5102c30845b7499aad14d9660bded3f7",
+      "statement": "The Directory segment renders the fish-style abbreviated cwd (collapsing $HOME to ~) in theme.dir with no icon, emits a leading space inside the colored run to match bash's ${C_DIR} %s, and returns false when cwd is absent or empty.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/directory.rs#L17-L28",
+          "version": "repo-lines-v1:sha256:00a9d77935b025e1b9ef5a06ceaece691396872124bbd006d078899ca26fc0f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyNGFjYzNkZWE2ZGE0Yzg3NmQ2MmUxZDFkNjE4NDU1OTg2ZjM0YTU0YWE1ZjZiYjczMzI1OTZmMDY4NTcyZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkNTgyNjU0Nzk5NWRlNzVjNGZiMjE1M2NlOTdjMDE2OGRlYTUwNzY4NThlNjRiNzk1NjRiMWI3ZWFhZGE5ZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_56c2fab0dedf494dad5c56732c83ad9e",
+      "statement": "The git segment only renders when cwd is a non-empty absolute path (starts with '/'); it runs two git commands scoped to cwd — a status command gated on non-empty stdout (not exit status) with stderr suppressed, and a stash count with GIT_OPTIONAL_LOCKS=0 run only after a branch is confirmed — and returns false for detached HEAD.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/git.rs#L1-L28",
+          "version": "repo-lines-v1:sha256:62f0f72ddf12597a46a68a9d86a95f60218353730054cb7561f4f4f624705d96:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhZWVlOGI0YjgyOWZlNTU2MjA5NmNmNWRhZWRmMmJhMDJjZDAxMDg2NWYzNTY2OWJjZDU4Mzk1NjI4NjUxNjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmM2MwYTExNmRkNTRjMzA0MGQ3Y2JhN2IyMjIxZmU3OTk3YjVhNjk5ZTMwYTBkMDAzMzc1YzQ3OGE0NWY2NTEifQ"
+        },
+        {
+          "resource": "repo://src/segment/git.rs#L134-L204",
+          "version": "repo-lines-v1:sha256:04a58be01726f0463421436c2b5c06812435bece8f3e8190e36ec94d66a5be7e:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNGJhNDg5MDlkYzViZmM2MTY3ZmQ5NTgwMWZlYzlmZTI1N2I1NzFhZjkxNWU1ZjBkYWM0OTJiMTljZTVmYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkMzVhMmEyZGJhMDI5ZWQ3OGE5NjI2YTllMDdjODZiZjczMzRiODBmMTM3NGM4Y2JhMzk0YjY4YzU0ZWExMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_afbf00ec3c534761924cf55bedc53d70",
+      "statement": "The Model segment renders model name in theme.model and effort level colored by value (high->bar_ok, xhigh->bar_warn, max->theme.effort, any other value->theme.dim); effort is gated on presence because it is absent for models without the param, and the segment emits nothing when both are absent.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/model.rs#L26-L68",
+          "version": "repo-lines-v1:sha256:4f567534c5066d27a89b458b601d8ff2360facb8129dd15c12a0307dd25a2941:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwYjNiNTgyOWVhYWRhNDUxNmM3YWM2NWVlOTQ5NDIyODNlNjBlOGY5ODQ4YmI4ODE2Zjc5MGY3MDRlZDYzM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0ZjU4MWFjZjFmODA5OTMxNDUyZjkyOWEyMzZmZWJhNTA4MjdiMWQ3YTA4YTY2MDMyMDFlY2RmOGI1NzQwYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b96a3928a4c54d9f83d37d0583c92eee",
+      "statement": "The Context segment always renders the total token count (formatted via fmt_tokens), even at zero tokens, and adds a threshold-colored usage bar plus percent only when a usable percentage lands in 0..=999; without a usable percentage it renders only the token icon and count.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/context.rs#L27-L58",
+          "version": "repo-lines-v1:sha256:50ea455ccd4edb60ce43be4fe7f1a9b3006709d29e7949bb1973870c5e85dc84:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlZjA3MDVlYWZkOGE3YTA0YmUxNGI0M2MzNWU1MmJlMjkwNzhhODc0NjhlYmQwMzhmN2E5ZGNhZjkzMzMwZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkMDRmNDUyMWU2NWFmMDFlYTMwOWQ4OWMxYWM2ODNkNjE5ZWM3ZDVlNTZjZTM1ZDI2YWMxMWFmOGMzZjQyODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5fdf61f304af4f9297bbf8eba1c49b35",
+      "statement": "The RateLimits segment renders both the 5-hour and weekly (7-day) windows in one segment joined by SegmentWriter::window_gap(), shows the weekly window only once used_percentage reaches the weekly_show_at threshold, validates every percentage through pct_in_range (rounds and accepts only 0..=999 to reject leaked epoch timestamps while allowing over-limit values), and emits nothing when neither window has anything to show.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L37-L46",
+          "version": "repo-lines-v1:sha256:6cc083b41e49bb4b16789cbfa21243b7c64e990c61774911019ea5edf80005bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkMWQ5NzMyY2YwZGY1NzQwNWVlODY5NzVhNDJhOTMyYzA1ZmQ3MmZlMDE1YmQ2ZjBmMmI3YTYwOTBlMzg4NzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhYmZmNzE4Yjg2ZDkwMTYyNDUwODBlMGMxM2VlMTY0MmRlMDQ1ZjI4MTdhMjZiMWRjYzg2ZTMwZDE0NzQ5YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlNjU3ZTFmYjg5MTJjZjQ4OGQyNWVjMzJiNjBkOTJiZTgwYjYyNDQyZjI1NWEwMTZiYTE3NDUxYTdlZTdlOGYifQ"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L62-L94",
+          "version": "repo-lines-v1:sha256:de8c0a95deb70995b50e174f114289ddbd90a1c25dd9557c2cccaa9061c76af3:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3ZWM2OGEyNGIzZmFhODU0Zjg4N2IwNjZiNDg3MjIxYjVlOGUyNDBhYTg4MzVjMjhhYjY2OGRhZDc4MWFhZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjYWRmN2MzYTc1MDYzYTFhZDQyNjQ0N2VhMDZlMDI5YTlmNWM0OWZkNWY3YjEyM2Q1MDBkNThjMTJkOTEwMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjNzllYjBkNTJjN2M5ZWJkZDUxYmM2NjViMDE1MjY2YzdjMWFiNTJlNWRjODI3OTkxYzBlYTAxMTdiNjA1MjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8ffecc4d65174c73a873ee89b60db451",
+      "statement": "With limit_sync enabled, the RateLimits segment records each session's 5-hour and (threshold-crossing) 7-day snapshots to a shared cross-session store and prefers the shared high-water mark when it still describes a live (future-reset) window, otherwise falling back to the session's own values.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L96-L142",
+          "version": "repo-lines-v1:sha256:e6dd1d5f19b8a09749d09979dd1d72d9cb4155e0e3e7efe97a7588693e9ce02d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjYTkwYmQ4MWVkODJkODYxMGZmNTJmYmVlOTkzZTY0OTYyNWIxMDUzZDI4NWIzMGRlNTJiN2EwZTcxNWM3ZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmYTI2ODFkOWUyODY4NmFiNzJhYjhjMjVjZmE4OTAyYmJkOWFlNWNiYjgwZGQxMjU3ZjdkZjgwMGM3ZGViMDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c94fc1d6294f46abb343f50b6ae33840",
+      "statement": "The cross-session limit sync store (src/segment/limit_sync.rs) records entries as atomic mkdir'd directories named <reset:%010d>_<pct:%07.3f> so lexical sort matches (reset, pct) ordering, keeps only the single highest entry per window, rejects implausibly-far-future resets, and swallows all filesystem errors so the cache is best-effort and never breaks rendering.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L1-L140",
+          "version": "repo-lines-v1:sha256:984b6fa2662d200fe144dcd10b55ff3810a98fefa3eefd0713157db70d609dc8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMTNjYTg5ZDU1MmM1MDViNDlhMjJiYTg4N2E1MDhiNzdlMjkwNTExMzQzNjdjZGYxMWRlMDAwOWNlMDZhM2ZlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmNDIzYmY1MjNjMzRjNzA3N2MxNjVkM2M3ZmE2MGY2ZDk1ZjFjNWRkYWZhMDhjOGE3YzJkNWI5MmM4ZGNiMzNlIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_ade18d05c8f84250b696b7ade9709797",
+      "statement": "The DevContext segment renders worktree name (worktree.name, falling back to workspace.git_worktree), PR number with a review-state indicator, and sub-agent name, and returns false when all three are absent.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/dev_context.rs#L20-L79",
+          "version": "repo-lines-v1:sha256:715055fc736ad9c39bf2fb2fda23f2c5b346ff19eebe5c47518ba1b12a865ee0:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYzQxMzJkYjY4OTlkY2NmYjQ4ODI1OGFkMjE2NWU3OTc2YzBjMzNhYzUyNTM1NTdhZTdhM2I3MjQ1MDFmYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkM2U0Mjg2Y2QxNzllMDE0ODhkZDEyY2Y0MjhhODYxYzg1NjE2YjUyMjcwZTFhOTNmZGNkY2RjMDBkZDZlMzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_64a7414a40664e7098127ac9edada7a5",
+      "statement": "The Cost segment renders session cost in USD with th.cost_decimals decimal places (clamped to 4) and hides when the cost is zero or absent; the Lines segment renders added/removed counts in a single theme.lines color slot using the plus/minus signs for visual distinction and hides when both are zero; the Duration segment renders session wall-clock duration and hides when zero or absent.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/cost.rs#L11-L25",
+          "version": "repo-lines-v1:sha256:8d07208280a06018583c212100d6399541e5067783abb24b35ffbf6c00d45bdf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5ZmQxZjgyMzUwMzA1MmNjNzA4NjU1OWIzNzk1ZTA1NDYwY2VlMzNjMWVkZGJjYmJhYWRiYWM0N2E2YTQwMzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiZGZmN2YzMjhmNTNlYjE3YTQ0NTY4MTRkMjAwMGJjOGVmN2Q4NWU3ZTU0NzhmMGZiMjg0NWM4NzY1Zjk0Y2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/segment/duration.rs#L27-L44",
+          "version": "repo-lines-v1:sha256:732cf50838326c10ced51431ac68b4281f647606b778e1e0d7c85d87bf111682:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MDJkNmNmNmVlMWIyMjg3ZjZmNDllNTMxZWU2ZTE1M2MxZDA4YzI5ZjEzMjQ5ZWUyYWI3M2JhM2Y0ZTg2NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYjhmNDJlODBjNTUzY2Y2YjMzNmU5YmIzY2Y4MDI4ZjYwNjkxNjcyMjBmMmU2OTkwYzIyNzdjMTUzZWJjYzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/segment/lines.rs#L13-L31",
+          "version": "repo-lines-v1:sha256:c9487b3baf04ff32b9ecc3a0ba298076a4db997aa5de0b56b9ee7c14d9301cc0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzYTBiY2E3MmU0NzMwYjdlNzM0YjQ2NmFmNjE5NjVlMDZjNzExYjgxMWUyOTIwNzZhYWUzYTE3NWQ0MzllODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1NTY1Y2NhMDZmNmJmNGFlMmM2ODY5ZjlkOGMzOGJlYTM0ZmI2MTFlZGI1OGJmNThjNmQ4Y2RhMDM4NGJhNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0002437afbc48adafc1a31468221a3e",
+      "statement": "The Clock segment renders 12h or 24h time from ctx.now and ctx.tz_offset_seconds using the time crate (no subprocess), controlled by th.clock_mode (auto/12h/24h/off), with auto consulting a LazyLock-cached locale preference from LC_TIME/LC_ALL/LANG, and returns false for mode 'off' or a negative now.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/clock.rs#L124-L154",
+          "version": "repo-lines-v1:sha256:3a9974d679172ef7c47d0a5f58851154b2611dabdea09dbba99d94d7606c9bcf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ODQ3Nzc2MTk5NDU5OWI2ZDliYmM3NDI0NDE0ZmQ3ZjNiMGI3YjhmZTUzN2Y2MTJiM2EwZWI2Y2VmZWRiNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MzgzZWUxNDQ2MTE4MDI4MjZmNDhkOWZiM2ZmY2UxMGZjYTk5MDEzNTkyMGMyMGEyZWE0MzU0M2Y4YWQ3NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/segment/clock.rs#L60-L94",
+          "version": "repo-lines-v1:sha256:ecb61731f7ad94e3ea46808db16c2e9833f0036a129ef7883b69b7fd1c956016:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiOTFjZjk4ZDk2MzU1YzM2MjcxNjU1MTNjYjJkMTYwYTVlYmQ4NjMwOTQ2OTZiMzE1ZGFmOTllZDUyZGUwYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyNmU3ZDMyZDYyZmNjN2IwNzE2Y2EwZmExOGViYjZlNTUwNzkxOGY2YzQ3MzI4NWRmY2FjMDc3ODkzMDRkZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxN2U0NjVkNmQ1MmQ3M2VjN2Y1OWIwZTQzODQ1ZjBlYjE1OWY5NDM1ODk0MWI0MTk3NDQyM2Q4MzM1MWI0ZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c8f66baab78b4dd5871429d814a40915",
+      "statement": "The Burn segment appends a (now, pct, resets_at) sample to a TSV cache on each render when a window is present, computes a least-squares linear-regression slope over th.burn_lookback, and renders a range-to-empty ETA in one of three states (warming/idle/active) colored red/yellow/green by urgency relative to the window reset; samples are only recorded when resets_at is within 6 hours as a plausibility guard.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/burn.rs#L289-L309",
+          "version": "repo-lines-v1:sha256:a84192e93fd62a1c1867b025f41a4c821c74a83820f03c6a7175e40122e45f1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhZmY2OGI1NjRiMmE4N2FhZTdhNjM2NGMwOTQ0ZWJkODM2M2E2ZDk0ZDZiY2U4YzVjZTM2YWE5OWM5NTEwZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MGY2MWY3Y2Q1NjhlMDFlMTUwOTUwNTBkNmNkNDFjMzRmOGU5MmY2MmYyMjA1ZWZhMDNmZDcwMDNiODJkNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViZjhmZDczZGU2MWM2MTI2NmI2NTQyOTcyYzdhYjJjYzE2NjQ4OTY1Y2FiYmY3MDk1ZjY1MGNhMDU4NzA4MDUifQ"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L36-L75",
+          "version": "repo-lines-v1:sha256:5a16e6f95042f8cd7ebcb4ccb928642cb62069c4f9cdd2058bf424cd9decabec:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2NmM5MWViZGRkZmNjYTU2MjI2M2Y3NGMyMjEyZGMyMzljYjNhOTE3N2ZhMzYyNmZhODI2NGU0MzVhMWMxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MGFiMGNkNmEwYTYyMTA4MzkwNzRlM2E1YzY5N2I1NzcyY2MzMmM5NTZiZDRlNzdjYTAzMWE4MzJkYzkwYjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3ZjRhMzFkYzhlMDcyNjExMjQ3MmFmNjdhYjQ0MmQ5MTQ1MmY0Y2IwZGZhMDhiYzZiNTIzNzM4OWI3N2U3NzEifQ"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L93-L158",
+          "version": "repo-lines-v1:sha256:5d126ec9a9d5b7622dce3f4c1147fca7ebcc0a99b5a9a5a38e256fa6e7b9ceff:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkMWNhZWE1MTVjMzdkM2EzNDgyMjY4MzcxN2M3ZDkxMDllNTkwYTgwNzM1YjYyYmY0NmU5MDgzYjExMTQ5ZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkZDdmMDUzZThmMmM3Y2RjMWY1ZDAxYmFhNjc2NDc2NmNhMzI2ODQ1OTU2NDE4MDNjODdiNjQ5ZGJlMjg4ZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQyZjdhMWJhZWE3YzkzODMzMDk1ODFlNDc2ZTY0ZmViYzFiNzQ0Yjc5MTIyMDM5ZjYwODdkMzdlN2Y0ZWNmNTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d288e584e3fb43fcbca0522442eb6ef4",
+      "statement": "Host-provided strings passed to the writer must be pre-sanitized with sanitize::strip_control, which removes ESC, BEL, CR, and LF to block ANSI/OSC escape injection through fields like cwd, git branch name, and model display name.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/writer.rs#L43-L45",
+          "version": "repo-lines-v1:sha256:5ce7bf216e59d8eb9c414c4b66bb4277bbb5d4a8c9ba56cf85b848afc98000a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWJmNmUzZTE0ZjFkMjk3OTM4YzEwYjhkOTk5NmRlZWYzMzRkMGU1NGIzOTVlMTMxMWU0YjVlMjRkNjkyYmJiMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDE4MDM3NDk1ODhmNTcwYzcxODgwYjUxNmU2MTdkMDU5YmI2MjU5NDdhZjQyZGQ4NjFiOGY2ZGVmNzlkMjRiYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmRiYThkMDJlMzBjN2Q5OTdjZjg3ZmMxNzk4MTM1NjJjZjMyZjRkMWU5NjUwOTVhNjhhNmViNmZiYjk5NTM4MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmM4MWNkZDc0YWIzMzFjNDgxZTZmNTc0NGY4Yzg0Y2U2MmVlOTViZDllMTk0NDYzY2RkOWI4ZDEwM2JiNDEwOSJ9"
+        },
+        {
+          "resource": "repo://src/sanitize.rs#L4-L12",
+          "version": "repo-lines-v1:sha256:5c355e67f2fcbe7f55e33afd6a40012bf43d59eef35a963a203ee25ce3c5d11e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI4NTg5YWE4MTkyZTdhN2I5ZWRlYjYyYjM3NjE2MTBkZDY3ZGFlYmFlNzAwMjg4YjVlZjExM2UwZjU3YzBiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDg1MDkyMThlNGRkODVlOTM2MDBhOTBkZjhhZDJmNWM2ZmIyOTkwMzI3YmUxNzNkMWEzZGQ0Y2Y5MmI4ZmJjYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjg3OWUxZjE5NjkwNDRjZjQyMTVjY2RmNzZiNjk3MDQ1YjYzZTM1MDE0YTM5MGUzNjY5YmQ4OWE5OGMwMGU4NCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-26T22:48:34.063Z"
+  }
+}
