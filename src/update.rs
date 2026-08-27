@@ -18,7 +18,7 @@
 
 use serde::Deserialize;
 use std::cmp::Ordering;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use thiserror::Error;
 
@@ -238,9 +238,12 @@ pub fn cache_path() -> Option<PathBuf> {
 /// Persist an update check. Best-effort: any failure is silently dropped, and
 /// `latest = None` records a failed check so the retry interval still applies.
 pub fn write_cache(checked_at: i64, latest: Option<&Version>) {
-    let Some(path) = cache_path() else {
-        return;
-    };
+    if let Some(path) = cache_path() {
+        write_cache_at(&path, checked_at, latest);
+    }
+}
+
+fn write_cache_at(path: &Path, checked_at: i64, latest: Option<&Version>) {
     if let Some(dir) = path.parent() {
         let _ = std::fs::create_dir_all(dir);
     }
@@ -248,14 +251,18 @@ pub fn write_cache(checked_at: i64, latest: Option<&Version>) {
         "checked_at": checked_at,
         "latest": latest.map(ToString::to_string),
     });
-    let _ = std::fs::write(&path, body.to_string());
+    let _ = std::fs::write(path, body.to_string());
 }
 
 /// Read the cache. Missing, unreadable, or malformed all yield `None`, the
 /// same degrade-silently contract as `InputData::parse`.
 #[must_use]
 pub fn read_cache() -> Option<CachedCheck> {
-    parse_cache(&std::fs::read_to_string(cache_path()?).ok()?)
+    read_cache_at(&cache_path()?)
+}
+
+fn read_cache_at(path: &Path) -> Option<CachedCheck> {
+    parse_cache(&std::fs::read_to_string(path).ok()?)
 }
 
 fn parse_cache(raw: &str) -> Option<CachedCheck> {
@@ -269,6 +276,15 @@ fn parse_cache(raw: &str) -> Option<CachedCheck> {
     })
 }
 
+/// Whether a background check is due: no cache at all, or one older than
+/// [`REFRESH_INTERVAL`].
+fn is_refresh_due(cache: Option<&CachedCheck>, now: i64) -> bool {
+    match cache {
+        Some(c) => now.saturating_sub(c.checked_at) > REFRESH_INTERVAL,
+        None => true,
+    }
+}
+
 /// Spawn a detached `claudebar update --check` when the cache is missing or
 /// older than [`REFRESH_INTERVAL`].
 ///
@@ -277,14 +293,10 @@ fn parse_cache(raw: &str) -> Option<CachedCheck> {
 /// Without a usable cache path there is no way to rate-limit, so nothing is
 /// spawned at all.
 pub fn refresh_in_background(now: i64) {
-    if cache_path().is_none() {
+    let Some(path) = cache_path() else {
         return;
-    }
-    let due = match read_cache() {
-        Some(c) => now.saturating_sub(c.checked_at) > REFRESH_INTERVAL,
-        None => true,
     };
-    if !due {
+    if !is_refresh_due(read_cache_at(&path).as_ref(), now) {
         return;
     }
     let Ok(exe) = std::env::current_exe() else {
@@ -341,6 +353,73 @@ mod tests {
 
     fn v(s: &str) -> Version {
         Version::parse(s).unwrap()
+    }
+
+    /// Unique temp path; nanos + pid keep parallel test runs from colliding.
+    /// No `tempfile` crate — `insta` is the only dev-dependency.
+    fn unique_temp_path() -> PathBuf {
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or(0);
+        std::env::temp_dir().join(format!(
+            "claudebar-update-test-{}-{}/update-check.json",
+            std::process::id(),
+            nanos
+        ))
+    }
+
+    #[test]
+    fn cache_file_roundtrip() {
+        let path = unique_temp_path();
+
+        // Nothing written yet: reading degrades to None rather than erroring.
+        assert!(read_cache_at(&path).is_none());
+
+        // A successful check. The parent directory does not exist yet either.
+        write_cache_at(&path, 1_700_000_000, Some(&v("2026.8.20")));
+        let got = read_cache_at(&path).expect("cache readable");
+        assert_eq!(got.checked_at, 1_700_000_000);
+        assert_eq!(got.latest, Some(v("2026.8.20")));
+
+        // A failed check overwrites it: stamped, but nothing to show.
+        write_cache_at(&path, 1_700_000_100, None);
+        let got = read_cache_at(&path).expect("cache readable");
+        assert_eq!(got.checked_at, 1_700_000_100);
+        assert_eq!(got.latest, None);
+
+        let _ = std::fs::remove_dir_all(path.parent().unwrap());
+    }
+
+    #[test]
+    fn cache_file_with_garbage_is_none() {
+        let path = unique_temp_path();
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(&path, "not json").unwrap();
+        assert!(read_cache_at(&path).is_none());
+        let _ = std::fs::remove_dir_all(path.parent().unwrap());
+    }
+
+    #[test]
+    fn refresh_is_due_without_a_cache() {
+        assert!(is_refresh_due(None, 0));
+    }
+
+    #[test]
+    fn refresh_backs_off_for_a_day() {
+        let stamped = |at| CachedCheck {
+            checked_at: at,
+            latest: None,
+        };
+        let now = 1_700_000_000;
+        assert!(!is_refresh_due(Some(&stamped(now)), now));
+        assert!(!is_refresh_due(Some(&stamped(now - REFRESH_INTERVAL)), now));
+        assert!(is_refresh_due(
+            Some(&stamped(now - REFRESH_INTERVAL - 1)),
+            now
+        ));
+        // A stamp from the future must not spin: saturating_sub keeps it at 0.
+        assert!(!is_refresh_due(Some(&stamped(now + 10_000)), now));
     }
 
     #[test]

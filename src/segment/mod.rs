@@ -71,3 +71,34 @@ impl SegmentKind {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{styles, themes};
+
+    /// Every `SegmentKind` must resolve to an implementation and survive a
+    /// render against empty input — a new variant that is never wired up, or
+    /// one that panics on missing data, fails here.
+    #[test]
+    fn every_kind_resolves_and_renders_empty_input() {
+        let input = InputData::default();
+        let theme = themes::get("tokyo-night");
+        let style = styles::get("powerline");
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 0,
+            home: None,
+            tz_offset_seconds: 0,
+            update: None,
+        };
+        for &kind in &SegmentKind::ALL {
+            let mut w = SegmentWriter::new(&theme, &style);
+            let _ = kind.as_segment().render(&ctx, &mut w);
+        }
+    }
+}

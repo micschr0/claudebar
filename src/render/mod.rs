@@ -74,10 +74,19 @@ fn cached_update(cfg: &Config) -> Option<crate::update::Version> {
     if !cfg.segments.contains(&SegmentKind::UpdateNotice) {
         return None;
     }
-    let installed = crate::update::Version::parse(env!("CARGO_PKG_VERSION"))?;
-    crate::update::read_cache()?
-        .latest
-        .filter(|latest| *latest > installed)
+    newer_than(
+        crate::update::read_cache()?.latest,
+        env!("CARGO_PKG_VERSION"),
+    )
+}
+
+/// The cached release, kept only when it is strictly newer than `installed`.
+fn newer_than(
+    latest: Option<crate::update::Version>,
+    installed: &str,
+) -> Option<crate::update::Version> {
+    let installed = crate::update::Version::parse(installed)?;
+    latest.filter(|latest| *latest > installed)
 }
 
 /// Fixed layout: a single line, segments joined by separators. The original
@@ -309,6 +318,30 @@ mod tests {
             None => unsafe { std::env::remove_var("COLUMNS") },
         }
     }
+    #[test]
+    fn newer_than_only_keeps_a_strictly_newer_release() {
+        let ver = |s: &str| crate::update::Version::parse(s).unwrap();
+
+        assert_eq!(
+            newer_than(Some(ver("2026.8.20")), "2026.7.21"),
+            Some(ver("2026.8.20"))
+        );
+        // Same version, and an older cache, must not badge.
+        assert_eq!(newer_than(Some(ver("2026.7.21")), "2026.7.21"), None);
+        assert_eq!(newer_than(Some(ver("2026.6.1")), "2026.7.21"), None);
+        // A failed check has nothing to compare.
+        assert_eq!(newer_than(None, "2026.7.21"), None);
+        // An unparseable installed version degrades instead of badging.
+        assert_eq!(newer_than(Some(ver("2026.8.20")), "not-a-version"), None);
+    }
+
+    #[test]
+    fn cached_update_is_none_when_the_segment_is_disabled() {
+        let cfg = Config::default();
+        assert!(!cfg.segments.contains(&SegmentKind::UpdateNotice));
+        assert_eq!(cached_update(&cfg), None);
+    }
+
     #[test]
     fn render_with_empty_home_does_not_panic() {
         let input = InputData::default();
