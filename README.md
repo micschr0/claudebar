@@ -119,7 +119,7 @@ Colors shift as usage crosses **50%** and **80%**:
 
 All segments. Four are off by default (dev-context, burn, clock, update-notice):
 
-<img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock">
+<img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock, update notice">
 
 ## Configure
 
