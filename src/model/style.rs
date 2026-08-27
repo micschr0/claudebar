@@ -73,4 +73,7 @@ pub struct Style {
     pub bar_fill: char,
     /// Empty bar cell.
     pub bar_empty: char,
+    /// Quarter-step bar glyphs (index 0 = empty cell, 4 = full cell). `None`
+    /// selects the binary fill/empty bar; `Some` selects the dot-meter bar.
+    pub bar_dots: Option<[char; 5]>,
 }

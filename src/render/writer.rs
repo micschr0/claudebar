@@ -120,6 +120,17 @@ impl<'a> SegmentWriter<'a> {
     /// Append a progress bar, using the style's bar characters, the theme's
     /// track color, and the given fill color.
     fn bar(&mut self, pct: u32, width: u8, fill: Color) {
+        if let Some(levels) = self.style.bar_dots {
+            crate::render::bar::write_bar_dots(
+                &mut self.buf,
+                pct,
+                width,
+                fill,
+                self.theme.bar_track,
+                levels,
+            );
+            return;
+        }
         write_bar(
             &mut self.buf,
             pct,

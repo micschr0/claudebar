@@ -12,6 +12,7 @@ pub const NAMES: &[&str] = &[
     "minimal",
     "unicode",
     "ascii",
+    "dots",
 ];
 
 /// powerline style.
@@ -21,6 +22,7 @@ pub const POWERLINE: Style = Style {
     icons: true,
     bar_fill: '\u{2501}',
     bar_empty: '\u{254c}',
+    bar_dots: None,
     glyphs: GlyphSet {
         branch: "\u{e0a0}",
         ahead: "\u{2191}",
@@ -54,6 +56,7 @@ pub const LEAN: Style = Style {
     icons: true,
     bar_fill: '\u{2501}',
     bar_empty: '\u{254c}',
+    bar_dots: None,
     glyphs: POWERLINE.glyphs,
 };
 
@@ -64,6 +67,7 @@ pub const PLAIN: Style = Style {
     icons: false,
     bar_fill: '#',
     bar_empty: '-',
+    bar_dots: None,
     glyphs: GlyphSet {
         branch: "",
         ahead: "^",
@@ -97,6 +101,7 @@ pub const ROUNDED: Style = Style {
     icons: true,
     bar_fill: '\u{2501}',
     bar_empty: '\u{254c}',
+    bar_dots: None,
     glyphs: POWERLINE.glyphs,
 };
 
@@ -107,6 +112,7 @@ pub const MINIMAL: Style = Style {
     icons: false,
     bar_fill: '\u{2501}',
     bar_empty: '\u{254c}',
+    bar_dots: None,
     glyphs: POWERLINE.glyphs,
 };
 
@@ -117,6 +123,7 @@ pub const UNICODE: Style = Style {
     icons: true,
     bar_fill: '█',
     bar_empty: '░',
+    bar_dots: None,
     glyphs: GlyphSet {
         branch: "⎇",
         ahead: "↑",
@@ -150,6 +157,7 @@ pub const ASCII: Style = Style {
     icons: false,
     bar_fill: '#',
     bar_empty: '-',
+    bar_dots: None,
     glyphs: GlyphSet {
         branch: "",
         ahead: "^",
@@ -176,11 +184,24 @@ pub const ASCII: Style = Style {
     },
 };
 
+/// dots style — powerline decoration with quarter-step dot-meter bars.
+pub const DOTS: Style = Style {
+    separator: "\u{e0b1}",
+    window_gap: "\u{b7}",
+    icons: true,
+    bar_fill: '\u{2501}',
+    bar_empty: '\u{254c}',
+    bar_dots: Some(['\u{25cb}', '\u{25d4}', '\u{25d1}', '\u{25d5}', '\u{25cf}']),
+    glyphs: POWERLINE.glyphs,
+};
+
 /// Resolve a style by name. Unknown names fall back to Powerline.
 #[must_use]
 pub fn get(name: &str) -> Style {
     match name {
         "lean" => LEAN,
+        "rounded" => ROUNDED,
+        "dots" => DOTS,
         "plain" => PLAIN,
         "minimal" => MINIMAL,
         "unicode" => UNICODE,
@@ -193,9 +214,23 @@ pub fn get(name: &str) -> Style {
 mod tests {
     use super::*;
     #[test]
-    fn all_known_names_resolve() {
-        for n in NAMES {
-            let _ = get(n);
+    fn every_name_resolves_to_its_own_style() {
+        let expected = [
+            ("powerline", POWERLINE),
+            ("lean", LEAN),
+            ("plain", PLAIN),
+            ("rounded", ROUNDED),
+            ("minimal", MINIMAL),
+            ("unicode", UNICODE),
+            ("ascii", ASCII),
+            ("dots", DOTS),
+        ];
+        assert_eq!(expected.len(), NAMES.len(), "NAMES and the table disagree");
+        for (name, want) in expected {
+            let got = get(name);
+            assert_eq!(got.separator, want.separator, "{name}: separator");
+            assert_eq!(got.bar_fill, want.bar_fill, "{name}: bar_fill");
+            assert_eq!(got.bar_dots, want.bar_dots, "{name}: bar_dots");
         }
     }
     #[test]
