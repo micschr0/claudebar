@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:59fcf34708fdfd7870ac96907e443590702988b37eaf3a9bbed30c6d9c935e1e",
+  "claims": [
+    {
+      "id": "claim_5d972441787d4ee5aed849c8b1908548",
+      "statement": "Every numeric field in the parsed session JSON is wrapped in Coerce, a forgiving deserializer mirroring jq's `tonumber? // <default>`: a wrong-typed or unparseable value degrades that one field to None instead of aborting the whole parse.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L1-L16",
+          "version": "repo-lines-v1:sha256:4105fd1b2e0a7ae625780d169ce5092432ab9a31e4eb8e9f4ab28529b9232e3e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMjA1YTNlNmQzYmU5MTE1NzFjYWUyM2Y0OTNkM2RmMGM3MGFiMzQ3NzBlODY5MDA1ZTdiNGMwNjhkOTU4ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMjczYjA3MzgxMjIxMzY4OWU1MmZjZGY2ZTVjMzMzMWY5NjUwODIyNjIzODk1NDEzMTczOGM2Y2IwODdlMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5MDQ3OTc0MjhhMDgxMzEzOWRhNmFmMmQ0MTFkODdjNWZmOWU0MjI3ODk1YjJjMGU0M2EzNGFmOTI3MGM1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_537806e882ad4acca758dd73732ee7ec",
+      "statement": "InputData::parse runs serde_json::from_str(s).unwrap_or_default(), so even fully invalid JSON returns InputData::default() and the render path always produces a line.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L147-L153",
+          "version": "repo-lines-v1:sha256:42531db528c65bd535237aeaf632a6767ba78c12f1d0c6c610ef03114205fdba:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjFlYWI2YTQ4MjQyYzZjMTE0MzI3YWY2Y2FhYjliZjU1ZGQ5N2IxNTg4MDg5MWZiNWE3MDQ5Yzc4YzE4ZTk3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWRmMThlYmQ0YTBmNDJjZTExMTUxZWMzMjJmN2YxODMyNjk3MzA3NWIxMjQyZDgzZGU2MDgyZWU4ZDc1NDhhYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTFhMWNjMmRjMGVmNDNkMTU5ZmMzYjZmYWExY2ZkYzFkMGVkN2ZkNjI1YjE0MmMwNTkwYWIyNDA0YjVjYTQyMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_cfc2864e888649149b0878dbeb704adf",
+      "statement": "main.rs reads the Claude Code stdout JSON from stdin into a String and calls InputData::parse exactly once before rendering the line via render_line.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L94-L107",
+          "version": "repo-lines-v1:sha256:07aa8a4222b57b7e53c64df4f4a7ea9450f6b95053e8277e4eb68c5331e472d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhZmVkMjc0YWE2NjQ2MjAzNGZkYWQyYzQ5OWFhNzE5MzNiMDEzNjM4YzNhN2I3MWIwOTk3OTA0YjA4OWJkOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MDljNTgzMmIyOTNlNWZmMzIwNjFkNjg5NzAyYTU5YzYzZGMxZTRhYmFkZmFjNTkwZTIyMzBiODAxMzAyMzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyMGIwY2Y1ZjJkYzZlZjllMDQ3MTMyZjUxZTY0ZWVlMDg1ZjZkMzUyMTExOGQ4ODg3ZWJkNjJiZThkZGNmNjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjMTM2Mzk5YzFmOGRhMTRiNmM0MmI2MGNhMGE5OWQ0ZDljOTBiMzc1YmIyZTk5MzNlZjk1OTk2MjdlY2MzMzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e25401eb2a5e4b04845887fefe0c15ea",
+      "statement": "InputData is a flat aggregate of optional subgroups (cwd, context_window, rate_limits, model, effort, pr, worktree, workspace, agent, cost, output_style); every field is #[serde(default)] and independently absent.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L22-L47",
+          "version": "repo-lines-v1:sha256:d4c19aee7bc8294f1d1b7fabf364558128aa712fbc45c751e0077be70544541b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3ZjI5NzFhYjQwN2UwNzViMmQxYzJhOGViYTUxODFhMDIzMWY4MTk3NGJmMzIzMzI3NTJiNWQzNzM4MDllYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwOWNiNzRlM2UyY2FkNjczOGY1NzBjZGQ1NTIzNGU3MjVkNTNhYjU4MzgzZGMyODI3Zjc0ODFmNWYzZmNjYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzMDRiZWZiNGZiYjk3MTBlZWE2OGE0OGZkMzM2ZjU5NmZiYzVjMGFkMTY2ODE2ZTFlYjlhZWQ5NDRlY2RiZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0e3f7baa6a9548fca80317f9ff11f404",
+      "statement": "The model module re-exports InputData as the crate-wide contract that every segment, theme, and style is written against, owning no I/O and no rendering.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/mod.rs#L1-L12",
+          "version": "repo-lines-v1:sha256:f386877e814708babf2154be822dc700ca108378a18a86b59e36bb5db8d31e0f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMTM4MDk0Nzk1NDIyOGUxYTFkNjNjNGRkNGVlNmIwM2I3YTlkNDU0MTRiMjRiZTNlYmEyYTBlMTZhZDQ0ZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1ZmE2MWZiMmQyNWI2YTQ0NTUzM2IzMTk5ZWE4YzVkODc0MmQzMjFiMjdjZTNmMWE5MGY1ZWYxYTI3ZDAyZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4Yzc2ZDgzOWMzNmY2NGEzODBlMjk3MWVjNzA5NjA2OTUxMDM1Njk2ZDFkZmJjYTJjZGUzNTM3NDUyNGI4YTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7c96c1d949064a34994ea7480e546a59",
+      "statement": "Coerce's Deserialize visitor routes numbers and numeric strings through FromJsonNumber, treats null and absent as None, and returns None for bools, sequences, and maps so any other JSON type degrades instead of erroring.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L277-L331",
+          "version": "repo-lines-v1:sha256:16eb907fa29d438fbc902d6c5e261d464e758c28846c606bc4af0eb7350b8ed4:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0OWYwZGVkZWFiOTE5ODBiYzVlODY2YTUxZGUzYzVhZGU0Y2ZkZjBhYTNlYjQ5NmZmOWE4Y2MzODc0MDE2M2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0edc0500304e4e6583092cb6e21f916f",
+      "statement": "Coerce exposes or_default() returning T::default() when absent or coerced, and get() returning the raw Option<T>; consumers choose per field (context totals with or_default, percentage with get).",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L181-L195",
+          "version": "repo-lines-v1:sha256:42b8fb220f37f3f510f80f16bed7272e55391a748fe402ecb274eae231d1f227:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MDNhZjVmYmMxYTMwMjViNjRiMTk1Mzk4M2E0MTFmNTMwZTNjNzM3NjYyNTdjYzZjZWFjMGUwMGUzZDhhNTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhYTNjMzMwMWVmYTNmMmI2YzczNDNjMzYzMDU4MGMxZGViMzkwNWE5N2JjODNiNDk4MGM4MmY4MTI3YzMxYTMifQ"
+        },
+        {
+          "resource": "repo://src/segment/context.rs#L29-L53",
+          "version": "repo-lines-v1:sha256:9cde1784051e905df8073259dd7eb7ee81c5db62abeed41c4a898f882a50b8a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5NGMyYzdiY2M2ZDVhMzVlYWJhOTFhOTFjYzA3ZTJiMWJhNWViMzAzZjM1ZmZkMzBlYjc1Yzg3NGYyMDM1OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxZDU2NTNhNmExMjcwN2U0Njg0NzhkZGNhMjkwMzkzZGZkMzY5MDkzMjUyODA4MmE5YzYwNTFhZDdmYzZjZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3MTJlNzg0YjMxYzNhY2RhZTIxN2M1Y2MwOWM5OTM4YjUzZGUzNDA0NzFjYWZhNjRkMWMwMDMxYjNmZjFhNGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_12e57ca35e5a44bd8e04709daf93ea7c",
+      "statement": "FromJsonNumber is implemented only for u64, i64, and f64 and performs range-checked f64-to-integer conversion that rejects values at or above 2^64 / 2^63, because MAX as f64 rounds up to those exact powers of two.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L197-L259",
+          "version": "repo-lines-v1:sha256:91bec3542a8df1cc1610c3fc0f8412290423c1c1dee898472cbeaca16c33e75a:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMjZhZjNlYjQ3MTFkMzJiNzI4NjJhZjEzNjMyNWZjOWU5YmZmYmMzNzU2NjkwZmVhYTJhNDYwNTA5ZjFhYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4MTYzMmE1MTM5ZTk0NmM0NjE4MDcxOGMwNjI5YWQxOTE5YjY3ZDJmMzgyZDVkNzZlOWQ1NGM3YTlkZDlkMmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8932d183d89a4bb8affc64d244889930",
+      "statement": "Unit tests cover the numeric boundaries: out-of-range strings, null, wrong types, negative i64 to u64, rejection at 2^64 and 2^63, and acceptance of the largest f64 strictly below 2^64.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L341-L477",
+          "version": "repo-lines-v1:sha256:9ec8df63e3f6c0650d8d587764ad4f70d93fd82542c2da8d8e3a23cf6c61585f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MmI1ZWRmNTk0OWNmZWE2NzgyMmNmNjkxMTMyMzYzZDY4ZDZmMWUxNjlmNWUwZDRmN2MxNGU1ZmExZTZkNGU1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ODkzZjQwZTM3ODFlYjg5NmM4MmQwNDZhMDgwNjdhMTFlMzVjZGYyZjFkZmFmMjZmZWE5MGI4ZGI2Njc2NDEzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1MjdjZjM0NDk2ODViOWFlYWQyMDg4NzNhZTExNGJjMGU4MWY0M2MzN2Y4NjZmYTA5NDgwZjdhODE5ZmE4Yzg2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_de28a61a0c6941ecbc1188c0b750c42f",
+      "statement": "used_percentage on ContextWindow and both rate-limit Window types is plain Coerce<f64> with no upper-bound coercion, so percentages can legitimately exceed 100 when over the limit; display logic clamps to 0..=999 only for rendering.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L49-L76",
+          "version": "repo-lines-v1:sha256:601b20bc167588566e66d5ce58c50d5f70c44b25959f4da15ea39dd06098b0a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MjZjNjUzOGRhOWEzMTg0M2JhNWExMjU2NzMzZThiY2NjMmU5M2U1ODdmMmRkMDdiNDkzYzYxNWYzZWM4YTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzNGZhN2I0YTQwZTc5ZmZiZDUyY2I1ZmM0ODNjZGQ5OTRiYTljOGFiMjM3NzVmMmRhMDU5NzcwMmU3MTcxMTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3OGY3ZTE1NmI4YTY0MWRiZmYyYmUwNWI0ZTY3N2MwODQ2MWJlZjI5OGZmOWNiOGFmMjVlZTc0MDhlNTI2NjYifQ"
+        },
+        {
+          "resource": "repo://src/segment/context.rs#L34-L48",
+          "version": "repo-lines-v1:sha256:92334571f709cf9d629959d0f290d34d8e4177478253f83484a6f52fdf84fe69:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhYzhjMDg1Yzg3MGMxYjJkODI2ZDIzMmUwOWY5NWRmMWViOGQxYzRiZjA4MDlkYjg2YWU4YmFmMTgyYThiNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4ZjMwODEwZjg3NTdiZGU0MTkyYmFhNmQ3OGVkYjkzNWZhYTNlMGYwZTk3NDU0MDFjNzUyNjUwMGJmYmI4MmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlYTVmYjY4YjQxODRhMzAyZjFkYzkyNjk5MzhiMDgwZGFiMTZjNDg2OTg5MDI1MzZmMjI3MmE2MTRjMDJkMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3MjM4NTZkNjA4OGM0ZmNkNGVkODZjMjBiZTlhMGVhNzg0MGVlZGJlZWRiYTU4MWFkMWFhYTJiNDYzNTAzOTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cb947bc6456d492d92784e235909f63d",
+      "statement": "The rate-limit segment clamps percentages into 0..=999, rejecting a leaked epoch timestamp while still allowing over-limit values, and colors the weekly window by crit threshold only when above weekly_show_at.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L37-L46",
+          "version": "repo-lines-v1:sha256:6cc083b41e49bb4b16789cbfa21243b7c64e990c61774911019ea5edf80005bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkMWQ5NzMyY2YwZGY1NzQwNWVlODY5NzVhNDJhOTMyYzA1ZmQ3MmZlMDE1YmQ2ZjBmMmI3YTYwOTBlMzg4NzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhYmZmNzE4Yjg2ZDkwMTYyNDUwODBlMGMxM2VlMTY0MmRlMDQ1ZjI4MTdhMjZiMWRjYzg2ZTMwZDE0NzQ5YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlNjU3ZTFmYjg5MTJjZjQ4OGQyNWVjMzJiNjBkOTJiZTgwYjYyNDQyZjI1NWEwMTZiYTE3NDUxYTdlZTdlOGYifQ"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L62-L93",
+          "version": "repo-lines-v1:sha256:082301b64d2f1cdc73462a7f4cab2abae7a2ca3580ad759f300a3f4309a6f05d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3ZWM2OGEyNGIzZmFhODU0Zjg4N2IwNjZiNDg3MjIxYjVlOGUyNDBhYTg4MzVjMjhhYjY2OGRhZDc4MWFhZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjYWRmN2MzYTc1MDYzYTFhZDQyNjQ0N2VhMDZlMDI5YTlmNWM0OWZkNWY3YjEyM2Q1MDBkNThjMTJkOTEwMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2M2ZkYjdiZDA4MTMzZGI2YjViZmVhNTgwMmJhNTQxNjJmYzM1MzlhYzcxZGMxYjE3YjllYzIzMjRjZTYyOWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_95ebe988973847648d1ea5c8618875e4",
+      "statement": "Window.resets_at is parsed through Coerce<i64> and interpreted as Unix epoch seconds, consumed by the reset-countdown logic against the injected now.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L68-L76",
+          "version": "repo-lines-v1:sha256:1ef9181ecb14add0624100fc0ae3a3879411d34454672964c457751b1cee7b9b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzkyNmM2NTM4ZGE5YTMxODQzYmE1YTEyNTY3MzNlOGJjY2MyZTkzZTU4N2YyZGQwN2I0OTNjNjE1ZjNlYzhhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDBkODNhYzE5NWRiNjIyZmVhNWFkZTFmZjE0M2MyY2NmNzIyNmZhZjQ2Y2UyMjE2NDM3YzQ2MjA0YTE0MjJhOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjc4ZjdlMTU2YjhhNjQxZGJmZjJiZTA1YjRlNjc3YzA4NDYxYmVmMjk4ZmY5Y2I4YWYyNWVlNzQwOGU1MjY2NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e08f95ac08144c29884c7bbf4efff2ce",
+      "statement": "InputData::worktree_name() tries worktree.name first and falls back to workspace.git_worktree when the primary worktree object is absent; the dev-context segment is its sole consumer.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L155-L166",
+          "version": "repo-lines-v1:sha256:d6ca06197b9f00197e14e61ad7d58114d74eac04de9142b9e155beef498b046c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiZGMxMmQwZWQ3ZDNjYWZhOWZmZmEzYzA4YmMwNGZlN2ZkMzhiNjU3ZTYxMGYxYmI3NDE5ZDQ4ZTk4NTY3MGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1NDEwYjFjYjU2OGVmMmY1ODFkNWIxODk3ZDZmNmU3NWE1YjM1OGY5ODVmZmVjYmEzODU5ZWFmMzA5MDY1NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJkYjZhNGU5MTFlZDYzMTdmNzYyYjQyNTJjYTAyODIzZjk5Zjc4YzE1NjczNjMzY2Q5OTBmNGUzMDYzZTZjZjkifQ"
+        },
+        {
+          "resource": "repo://src/segment/dev_context.rs#L27-L30",
+          "version": "repo-lines-v1:sha256:462e63f25b09a60b55f1a4f7caee570b55962f4d7da6a0fbd30e1b95c15ad9e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjYzZWM2MjNjOGU4NWNmMzljZDQ5MDQyMTMwZjA4NWQ0MzU4ZWE4NmQ0NGVjZDU2MmUzNTA2MWQ3NzA2NTVjNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDlkOWY5MGFjZDFiYzk3NmE5NDgzYWZmYmYzZDIwYWM4NDdhZThhNzJmOGMxMDBlOGI2MjE1ZGU5ZWRiNzc5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTFiNGU1NDM4NWRhOTZkNzk5OThmYWQ0Njk2YWQyNjA2MDI4NTlhZThiYWYyNDhjZTJmZmUyODQxZmU4ZGY4NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_625134f85027429489a4978f39e805e0",
+      "statement": "The render_golden golden_lines test globs every fixtures/*.json under the default config with a fixed clock and $HOME, asserting deterministic snapshots and proving no raw ESC leaks from host strings.",
+      "evidence": [
+        {
+          "resource": "repo://tests/render_golden.rs#L1-L36",
+          "version": "repo-lines-v1:sha256:957ea3c73bf607cec79293c31617c0f6164a6cc739c8a0af5b56bcd4e9bbe272:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5MGU0ZjM0YjQ0NGQxNDI1Zjk5N2Q2NmNmNzgyMzgzOTllYmJkY2E3ODhmMmMwNGJjZDlkODQyOTY4ZGUzMTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4ZjlmNGE5ZGNiODgzZDY0YTc4NTg5YmY0NTY2N2U4NzUxMDllYjE4YmMwNDUxZDljYjc4N2NiYmY1NjcxZDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b413fd03755448cac8eadbaa36f6168",
+      "statement": "The injection.json fixture places ESC/BEL/CR/LF into host-controlled strings, and the injection_no_control_byte_leak test asserts no such byte survives after stripping the renderer's own SGR runs.",
+      "evidence": [
+        {
+          "resource": "repo://tests/render_golden.rs#L75-L118",
+          "version": "repo-lines-v1:sha256:9909509cc6cedda52cbb2f915f30d46822670849f06ea98a0d37e4c19dba42bb:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkMjM5M2IzNTVhYWZjNzdhZTM5YTY5ZWIxYjBlZWFiZDg4M2EwZDNiYjA3MDE4MmM0NzQ0MmZjYTcyZTMwNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhZTU0MTY1YmQyODQ0YzRhNzQ4Yjc0YTAzYjZjM2E4Y2Q0ZDdiODVhMzM3ODRjNDA1ZTUxYjU2Njc3YmFjMzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f734493ec3f142d1bb8876eb3eb5bb09",
+      "statement": "typical.json is the well-formed baseline used by golden_matrix's 16-theme x 2-style matrix and by the smoke and setup-preview commands.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L466-L477",
+          "version": "repo-lines-v1:sha256:2f666c75fe784be3d5696bc13974387e9bc7d690f717a785bf1fdd6e5378b807:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkYzdmMjdkODRiZmIxNzVmNmIwNzIwOGY2YmMwZjU1YTJkNzYxNmUzNjVlZWZjODE1YzlmMWRhYzFkNTc3NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNjMxNWFkYzFlMzlhMDM1OTcxYzA1YTFhNThkYzYyZjU5MjA0MmIzMmNjZWVjYzYyYjIxMzY5MGY4YTQ3OTYifQ"
+        },
+        {
+          "resource": "repo://tests/render_golden.rs#L59-L73",
+          "version": "repo-lines-v1:sha256:c675304df07103cfa8d7f82d94a9f32f4fa13217796b38402f53a3ce892e85e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmZjRhM2UzZDdiYzIxYzEyYzhlMzIxMGQ0YjU2NmU4NTkyY2Y1NzgyNzY4NjZhNjY3NDdmNWM3NTE3MmY5MzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiMTBkMjRjZjM1ZTQ4OGI0YjQzOTIwNmZmNjY3M2U4ODljY2VkNDI3ZWE5NjJhYjc1YjM0ZDlmOGJmZjZjZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMzJmNzE2ZTJhYmE5YTIwMzAzMjIwOTI5NjVkOWY2ZDIwM2UxYmZhZDhmYTQ0ZTExMGFlN2JhZGI5ODRlNWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d3c9b5f5c9da4b0e82a453cd582cd3fb",
+      "statement": "bad_types.json exercises wrong-typed numerics (a coercible string, a bool that degrades, an unparseable string percentage) to prove each bad field degrades independently while the rest of the line still renders.",
+      "evidence": [
+        {
+          "resource": "repo://fixtures/bad_types.json",
+          "version": "repo-file-v1:sha256:1f633a232ba0048c31412ee6fee54b3dd9105399988dd5a1e1a84e1fe66a20e5"
+        }
+      ]
+    },
+    {
+      "id": "claim_2bb88da077b94c0ab292b7568988c6b2",
+      "statement": "The TUI preview cycles six fixtures (typical, over-limit 5h, no git, no effort, dev context, weekly window) so its preview is byte-identical to what the hook would emit for that input.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/sample.rs#L14-L41",
+          "version": "repo-lines-v1:sha256:64aa02c970e436dbaa536bec1cf27ffee2e736c3743e5e524217f025bbe8fbff:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZjY3NWQwOTY1ZGI1YzhlZGRkMGUxMzhhZGM3ZTZjZmM5ODNlYTU2YjQ1NDU3YWZlODgyYTRmZDc0MDVlYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxYTg1MGZmNjJmZThlYzNmOWMxNTliNDFjYWU2YTY2MWVjNzEwMzU3NWMxMGFiNmY0YTE3OTZmYWJlY2UwOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_541b1128f34c45fd91fefe284e65f0a5",
+      "statement": "CostInfo.total_duration_ms is a Coerce<u64> field in src/model/input.rs parsed as the forgivable session wall-clock duration in milliseconds, so a missing or wrong-typed value degrades to None under the same forgiving contract as the other Coerce-backed numbers.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L135-L137",
+          "version": "repo-lines-v1:sha256:9da8d12a78a70b5430b814d790ce293eaa9296260840530a688808eb89c1d891:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDAzMzU2ZjdjYTVlOWNmNjM1NmRmN2ExYzcyOWVkMjJiMzVjMTk3OTJkMDYxMDdiODAxMjRjMDE5MDczM2E5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzE1NWQ3YThlNTZiMWViNzRkODA4OTYzNzk2MGI2MzIyOTlmYWU1ODJlNDE3OGY2ZTAwYTZmOTJiZGIzYjlkNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTI2OGY0MTc5YmI5YTg4ZTcwM2I2ZjhiNmEyYmY4ZGQwODI5YjBjMWUzZmUwNDVhNmQ4N2U0NTMxMzg5ZjhjNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGM3NTM2MTAwZmY0OTgzYTY3NDI5OTU5NmI1MWI5MWY0MDRlM2Q5MmZiMjkzZDJmZGFhNGQxNjk3NzZjYTY2MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f3070e4315464a2b870432833f3c43d2",
+      "statement": "The Duration segment reads ctx.input.cost.total_duration_ms.0 and returns false (emits nothing) when the duration is absent or zero, otherwise formatting it as h/m/s (e.g. `⧖ 47m`, `⧖ 1h02m`, `⧖ 42s`).",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/duration.rs#L10-L24",
+          "version": "repo-lines-v1:sha256:af96dbb45deb9ee236df78353273bc8dabbeb9952c6628ff7a6787c673a2f12d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYTI0MTVhMjYxMzE2NWJmZWZhZTZlMTM1NDViMDEyM2YyZjRhZTVkMmQ4NmRmODcxZmU0N2ZjMjFkNzliYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzZWUwYTVmMDNhOGQ3NGIzNDVjNmQ5MWFkZDA2YTUwYzJmNzBhOGMyOGRiMTRmNDBkNDA3Nzg5MWNkZmI2MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwYmE0M2NhZDkxZDNhMGEzY2MwNzI1ZDU0M2NlMmI1ODE1N2ZmODNmYzQ2ZGYwM2E2ZTdmMTY1MDEwODRiOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwNDYyNGFkYjk0MWU2NmVlYWFiMDQ0ZWE0MDRlMTMxNjU3ZGQ1OWQzMmFjNmJhZjdkZTZjYWQ2MjA0Y2ZhZDEifQ"
+        },
+        {
+          "resource": "repo://src/segment/duration.rs#L27-L43",
+          "version": "repo-lines-v1:sha256:e46a2b6d5cf19eacc93241c3581bf0e4eec5eb215ab3d14ebed7e0e1fc67ccb0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MDJkNmNmNmVlMWIyMjg3ZjZmNDllNTMxZWU2ZTE1M2MxZDA4YzI5ZjEzMjQ5ZWUyYWI3M2JhM2Y0ZTg2NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYjhmNDJlODBjNTUzY2Y2YjMzNmU5YmIzY2Y4MDI4ZjYwNjkxNjcyMjBmMmU2OTkwYzIyNzdjMTUzZWJjYzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-27T14:08:42.273Z"
+  }
+}

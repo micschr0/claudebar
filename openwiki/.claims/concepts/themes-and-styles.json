@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:427d4752a087aae9ffe4fc37af1f6cebf984bf5e90f6e99b6f4c82f7758dbc0f",
+  "claims": [
+    {
+      "id": "claim_65999dbbdd0042dfa29f2ef3ded51f9f",
+      "statement": "Color is a 256-color ANSI palette index (u8) rendered as the SGR foreground sequence \\x1b[38;5;<n>m; palette.rs also exports RESET (\\x1b[0m) that ends every colored run.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/palette.rs#L8-L34",
+          "version": "repo-lines-v1:sha256:019b8b5b967be6a126f08d68b2ffebcbf44e79bb4d16b517e6bc37e3060b1fe6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NDIyODhhNDkxOTA0ZmZmYTc5ZWFhODFlNjU5NzhmYmExZGQ5NjlkNTgxODQ4MzJjMDUzZGRjMjQ0NTM1YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYzM1MDM5ZWY4YjMxOTFmODg1NDgyNzZlMmUxMDlhZWJjNTBmOGYyNjdkZWVkMjZlMmJiMDFiZjc1ODhlODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzODE3YmM3M2E3MTc3MDE5YzkzMjQ2YzU1NjFhYjI0ZmU3YjdhM2ZiZGM2MjdmMmYyZWRlYTc3NWI5OGUxNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMmU1ZDEwYjM2NjU5YmNlNGI5YzYyNTY2Nzk0M2JlZDQ2Njc5ODdlNzEwYTFiNzEyNjMwYmUwZGI1OWEwNTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ec7804b049b4d4db95da8c42c65c62f",
+      "statement": "Color::fg allocates a throwaway String while Color::write_fg pushes the SGR sequence directly into a caller's buffer; all render paths (SegmentWriter, composer separator, bar::write_bar) use write_fg to avoid that allocation on the render hot path.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/palette.rs#L12-L31",
+          "version": "repo-lines-v1:sha256:68e52033585fda76ae94924cdee0b2856e9962526555bf55f71e265fdcaf92bf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4M2ZjYzUyMDVjMmM3YWQzMjM4NDRjZjkzNjJjZGFhM2JjM2I2NjE2MmExZGQ3ODJiNWM0ODI3MTJjMzY2MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjOGI4YmNmYWExNjMxZmRhNjJlOWM3MDU3MTJiYmU0NmM1NjQzOTAxZDMxZDQ4OGJkYTIyOGViZGYzZjgxMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiOWQ2ODkzMTlkZDhlZGE2Y2I0MmQxMDBmNWRhNTdhOTBlMzBiOTllMDRkZmY1YjAyNGNiZjlhMTQ1ZTg4MTgifQ"
+        },
+        {
+          "resource": "repo://src/render/bar.rs#L33-L41",
+          "version": "repo-lines-v1:sha256:7d0f8fc925d3db5ab2fcb7640a5927ea07483ee735d1955309a1b66401093359:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzlkYjc2ZmQ0NWJjMWY3NjI2MzlhM2Y0MjkyNDEzY2NmYzBhZmI0OTczNzQxMzZmMTFhNDVmNWYzOWM4Yjk1OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTdjMWQzYWY1MDBlNTRkZDg0ZjcwYTEyZDBjY2MyOGU4ODU0N2MyM2JkYWFlYWY1MjA2MzAxZjcyODgzMmIwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2Y4MmZhNzEwYmVhMWUwNTNiNDZhMWYxOTFkNWJjNjE1ZjRjNjVmZDc5MGUzZGZhZDU0OTgxMDFlNWMzNjQxMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTUyMTYwNGIzNWZjNDBhZjAwY2JhNGVlYTJmZDVlMmMzYWYxODYzYjM5MTE4NWQ3YmY0YmIwOWU3MmQwYzhiMyJ9"
+        },
+        {
+          "resource": "repo://src/render/writer.rs#L46-L50",
+          "version": "repo-lines-v1:sha256:16666b1d66337c0a3d2075fb52156e748ddc60907635a300663a6dd3ac1ee4ff:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTFhYWFlNzA1YjYzMzBiNTY5ZDY3N2RiNzFiNGY0MTYxZDczMDZlZTRiZGYxNGQ4ZGQyODM2NzIyN2IxYmNiMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWNlN2JmMjE2ZTU5ZDhlYjljNDE0YzRiNjZiYjQyNzdiYmI1ZDRhOGM5YmE1NmNmODViODQ4YWZjOTgwMDBhMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmIxMWNiNWRhNTQzOWIwNDkzNzJiN2UzMWYxOTJhMTVlNzM3N2ZhZmI4NGY0M2Y4ZjEzYWEzYzg1YTdlMTkyYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6634a4c89a784edcae7d2a0d19e46061",
+      "statement": "A Theme is a fixed struct of named Color slots (one per semantic role such as dir, git_branch, bar_ok, separator, dim), not a map; adding a slot is a compile error in every theme that omits it, so a theme can never silently miss a color.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/palette.rs#L36-L85",
+          "version": "repo-lines-v1:sha256:12f9e0fed43af029112e72bf7d53382e6dbf87664f4498066ab2601c4b0857f8:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwMzkyOWY4NGQ3ZDgzZjVmNzYyNzVjZjZjZDc1MDQ5YTU3MWM0MWVkNDc0ZTcxN2NjNzI3ZmFkM2U4MjY5MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwN2M0NTJmMTc2YWZjMTJjMmE5YWVjZTgwOTM3Y2MzMzE4MmQ0MjY3OTA0ZTgwYmRiYTdmODQ3MDA0MjA4NmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_347af53ea78a47338bf782945881c5b6",
+      "statement": "The project slot conventionally falls back to dir and the stash slot to git_branch in themes that predate those slots, implemented by setting the same Color index as the fallback slot.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/palette.rs#L68-L72",
+          "version": "repo-lines-v1:sha256:fa01489e3e64954a26185aba535f71f5b58f453480a4e86625a015616cf4017e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NjMmM2NmI5YTdhYTdhNDBmMDkxZmVhNGY3MzhiMmYzZDlmZmRiMTRlOWMyN2U4MDg5ZjRhNTgwZGU4NjRjNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGE2MGJlYzY0NGQzNTNjMGI5NDY1MzNjY2YyZWI3NGJmYzBjMmFhMzUzYTExNmEzMjI0NmMyM2QzODM0ZjNkOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjQ1YmU5MDYwMDU3ZTYxM2FlMWZmOGY1Njg2ZTc4YTMzODZjZDM1MGI1YTZhZmZjODg3MjZiZmIzN2Y3NzA3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzNhMmE2ZmFjNWIwZDFjNWViYWVmN2ZlN2MwNzUzNWIxMTZiMDIxZDVlMDhjODJmMzUwODY2MGFlYWVkZGFkMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_840b34f60c414785a01d0b1b1ffa8fa8",
+      "statement": "All 16 built-in themes live in src/themes/mod.rs as pub const values with no per-theme modules; themes::get resolves by name and unknown names fall back to TOKYO_NIGHT (tokyo-night is the default theme, also set in Config::default()).",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L160-L168",
+          "version": "repo-lines-v1:sha256:ac353ae358026fbcac85b5122f9a97b79c30e04bc04b6de44053a8ddf46a111c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjMxZWIxZjc1ZTc2NmJjMDc5Y2MwOTdjOTkxMzVkZmFjN2Y2OGE3MGMxYmVhNDI3Njk3MDk2YWYyNDJhY2EwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGYyMDZlMGY5NjM0MzU0YjkxZjI1MGQ4OWNiMGEyMzQ5ZDQzNjdmMjhkNGY5ODMxYjIzMWQ2NTU1YWIwN2ExZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjhiYmFhMTE4OGNhMjBjN2M5ZjdlOWFiZDNjNzJiMzE0NzU4OTlmMDU1ODZmZWViZDc2YTIwZGY4MTM2ZTc3MSJ9"
+        },
+        {
+          "resource": "repo://src/themes/mod.rs#L1-L24",
+          "version": "repo-lines-v1:sha256:c9db7f9b3f72f40e2bda2d31fb5a84c3067cbd7b2c905495a26abc960aa842e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkMGJmM2M0YTI4M2VlMTRmYWNmMjEyYWY1Y2U0Zjg1OGFhOGY4MjZjMWMyODBiYzk3MDM1OWYzZDY0N2JjYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYzFkMzlkMzI1N2Q1ZjAxN2VlNmFjOGNjNDJkYjRkNDUwZjMyYTliOTU3YTg3ZmMxNWNlMDE1ZjY1Y2Y3ODAifQ"
+        },
+        {
+          "resource": "repo://src/themes/mod.rs#L458-L479",
+          "version": "repo-lines-v1:sha256:a73a4e684ab88f06437ded5628dd23ee164c19dc9446e8a36b18af952237f8b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1Njk1Y2YwMDEyY2JkNzNiNDg2NDdjZDAzNWZkYjQ5MWViYTE5ZGRiMmQ4NzRlNzJkZmRjZDY2MmEzMjYwOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhMmI1ZjNkOGE4NjNlYmZhYjQwMDkzODAxNDAyMzEyMDZjMDNhYWVhNDg0MmMwZmNkZDllMzg5Y2RhYzE1ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_494812c16b444e1382257fe790e5b750",
+      "statement": "themes::NAMES is the public display-order list of built-in theme names; the TUI config editor builds theme pickers and a swatch cache indexed by NAMES position (reordering NAMES or changing Theme fields requires updating the swatch code).",
+      "evidence": [
+        {
+          "resource": "repo://src/themes/mod.rs#L6-L24",
+          "version": "repo-lines-v1:sha256:4035c0bb9fbc80b7d5ddb848d86a1b7a38a38f282e5489282cdc4e33fce1bb5b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlMDU3MTBiYzAwYTE5ZGZmNzMwY2RjM2Y4MjE1NjEzYWJiYzIzMTUxYzhlMjIzNTA4ZjBlNWJkMDZhY2Y2YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2NTdjMjFjODk5ZDgwMDIwZjQ4ZWQ1MmEzZDE5ZjBjOWJiMTVmNThhYzk3YmI3ZmM2NTY4MTlmM2YzMDVjYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYzFkMzlkMzI1N2Q1ZjAxN2VlNmFjOGNjNDJkYjRkNDUwZjMyYTliOTU3YTg3ZmMxNWNlMDE1ZjY1Y2Y3ODAifQ"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L109-L125",
+          "version": "repo-lines-v1:sha256:a8f3716c8e0daa172e3d59501e68a92892987e0273fb47d3319965f2007e51a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwZTExMTAxZTQ5ZDMwOThhYTEzZjQ0ZTBkZDZhYTQwODY5ZTQ0Mjk1MGFkMzY0NmU1OTZhY2NiY2VkODlkYjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYzY0NGM4OTA5NTY1YTMzNDJkOGIxMGQ0ZTg0NWZkNDRkZDljNWFkOGY5YzZkNDZkNTAxMThlMmM0OWMzN2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYmVjOTdjM2Q2ZjBhZDU5OWVhNjJiZTNiZGRjODc0ZjIyZmEyN2Y5NDY4Y2Y5ZjI5YWE1OTQ0YWFjN2ZjMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiODgwMGM4Y2FiZGUyNTE0ZjAyZGM5MWMwYjc4YWZhN2Y0MjBjYzdmOTdlMGIyMTljNGJkYTNmZmE2ZmE0ODMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_504f4d2e06774e70990e16fc17641875",
+      "statement": "A unit test enforces that for every built-in theme the three bar fill colors bar_ok, bar_warn, and bar_crit are pairwise distinct, so the warn/crit bands always remain visually distinguishable.",
+      "evidence": [
+        {
+          "resource": "repo://src/themes/mod.rs#L495-L502",
+          "version": "repo-lines-v1:sha256:2086ef73eece13d16c7293163882f9815809d73cbd991aa8317039159556672e:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTM5M2ZhZWVhZWFiOGRmZjhiNjRjMGNlMzYyYzUzOTJkMjg5NzkzZGQ3Zjg3ZjYwZTkwMTg5NWYzYWY5Mjk1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTcwZjQ0YjU4N2JlMjg1N2E4ZWYxZGVhMTAyM2JiMDQ5N2U3NWRlMzRkYzM4NjljN2QxZDYzNjA4ZTE2ZGVhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c47ab75e472b4bb8923dfce9c75eb498",
+      "statement": "A Style is pure data carrying separator glyph, window_gap glyph, icons flag, a GlyphSet of per-segment glyphs, and bar_fill/bar_empty chars; segments never branch on the style, they only read these fields through the writer.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/style.rs#L1-L75",
+          "version": "repo-lines-v1:sha256:5c15c44b47e5bead1a8da3ba30b5559d48a596343e20dbd86884d05aa44d4543:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ODhmYzE3NGQ2N2ExNzg0OTYwMDQxM2FkYmIxOWZjMDAxNjY3NDNlZGVhZjQ3MjNkZmE1NDEwOTg2MGU4NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTlmYmI3Y2UxMTIzNDQ3YzkyMWUyM2RjZjdjMGI1ZjNlYjUxMTFiNGViMDYwZDc5NTM1NDNjMjFlOTk2ZmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_494cfb2302664ea9a21c0f81933aa8c8",
+      "statement": "GlyphSet stores each per-segment glyph as &'static str (not char) because rich styles use Nerd Font PUA / multi-byte glyphs while ASCII fallbacks use ASCII characters.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/style.rs#L7-L55",
+          "version": "repo-lines-v1:sha256:185b0b02e0df92a9a84bc3e20e8f203cc477e944b28581d55f2d6faa88faa806:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiNTVhYTAzZmY0MjAzNWIyMjJlMTEyNDY1ZmI3MTk2ZjE5YjliNGZjYjNlOTRmNmU5Y2Q1YmExMWYwNzM3YTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzYjVjZDljMDViM2I2MGM5MGE0ZjNhMjU2MDNiMzE0NzBjZTI2MWU3NDIwZjc2MmMyMWJkODY2Mjg2MDYzMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2MThmNWE3OTlhNGFiY2QwYTIyYzJjMzlmM2I0NGU0Yzc4ZmU3M2UyNjRhMmQwY2JjMGMwN2I0Njg4YmU2ODYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_33ee3f3ced294a26bcaf04043c9d2522",
+      "statement": "All 7 built-in styles (powerline default, lean, plain, rounded, minimal, unicode, ascii) live in src/styles/mod.rs as pub const values with no per-style modules; styles::get resolves by name and unknown names fall back to POWERLINE.",
+      "evidence": [
+        {
+          "resource": "repo://src/styles/mod.rs#L1-L15",
+          "version": "repo-lines-v1:sha256:4522583541d20cfd5a2be90e150a7b16084d6e2ad51742795dd7d0538bf675dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYWZlNjNlMjg1M2NiM2JjYzNhMTVlY2ZkODBmYWQ5MDQxYzlmMDQ3M2E0NTBhMTk3NWM2MDI2MjlhNzY1NjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxODQxODM3ZTI0NDJmY2I2NzJmMGRjYTFjODU0NzcyODlhMjZhZThlNmNmOWQzZWU4NDEwMjkwOTc2NmQ1YTAifQ"
+        },
+        {
+          "resource": "repo://src/styles/mod.rs#L179-L190",
+          "version": "repo-lines-v1:sha256:cfb71924c97d546cdb180f291c3023087804b8d293d8f94b840932738389af10:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlOThjMmQxMzkxN2YzODAwNTQwNDM5NjFkYzE1NjQ0ZmZlMTJjNDhmMzExM2EyMWFiZmViNzMwZjAyOTY0YjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9a29eca10a8a48a689e7fa734a9854c4",
+      "statement": "lean, rounded, and minimal styles reuse POWERLINE.glyphs; the icons flag (not the glyph table) is what suppresses glyphs, so minimal renders powerline glyphs but icons=false drops them without any per-segment branching.",
+      "evidence": [
+        {
+          "resource": "repo://src/styles/mod.rs#L50-L58",
+          "version": "repo-lines-v1:sha256:d2aa8b4e120098e5792cc35050caf505da53863daa7d92855815ba3eafa831a0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2ZhYzQ1ZTRjYzVkZjhiNjQ3ZmUxY2RkZTVjNjU3OGUzMGU3Y2Y0YThkZmQ4N2RjYzk3ZTEzODU0ODI1ZGU2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGEyNDNlNDQxZDA4MWE0YjViZDBlMDMxNmEzN2ZjNDc1ZjE2ZGE3YmI5OTJlMjkyNDYwMjJkMzBiMzAyN2U5NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzQ3NmI1MWY4YzI5ZTU5YWFiNGZlMDI3MTFlMmMzODg2NTRiNTdkZDY3OThlNjQxMTI4ZjEzZGZiOGJmYWEwYyJ9"
+        },
+        {
+          "resource": "repo://src/styles/mod.rs#L93-L111",
+          "version": "repo-lines-v1:sha256:6c5effc35f4fcfa25a0891b6d87c53fbca7c2f002aec02d08cd29c7fd4fd33d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyMDcxMWJkNDhiNGFjZDZkYjA5ZGNmNzJkOTc4OTlhZmI5MTY1YjlkZGNiMGNlMmU4N2E1MGIwM2M4ZGZjOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3YTg1NzE2OTI5N2QxZDcwMGMyN2ZiZGUyM2I0ZTg0MGI5NzBiYjk1MDNkY2UzNDY0OTdhYjAyMDFlNGMxODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_56ac0fd0bcb943e98d9a70640a20fada",
+      "statement": "The composer's inter-segment separator paints the style's separator glyph in theme.separator with a space on each side (a segment boundary), while SegmentWriter::window_gap paints the style's window_gap glyph in the lighter theme.dim color as an intra-segment join between related windows inside one segment.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/style.rs#L60-L67",
+          "version": "repo-lines-v1:sha256:f88a1d69fd4e70b37e33d75d4b216c3b45db7f0efc74828a5d3c45bf0d5dade4:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWNjMDY5MzM2YTg4ZGEzNmIyNTUzNGEyODRiZWQzOTRmMDUzZDRmYmZmYmYzYjU5N2M5OTA0ZGFhOTMzYmM3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMyMzM2YTI4ZjM4ODRlMjBlNzZmNDdjMmFjNzE5ZmM0NzFhNjE3MDZhMDFlODFjZDFlZmM3MGE2MjBjNGU4MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM2ZGFlZjVkMzZlZDljZWI0ZjZlNzYyYzI3ZjU3MWM0NjI1MDRkZDgxNjUzOGFmNjAyMDUxNDRiYjBhZmVhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU4YjliOWI0MjAyMTA5MTFlNjUxMTQ2OGVmZjRiMmZjZWU1OTYzNjU1ZDBjMzM5NDY3NTEwMGM4ZDhjODllNCJ9"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L191-L202",
+          "version": "repo-lines-v1:sha256:f58d10d13677f501081b08fa63004d91faac57646c4a56f5fb37912e85444072:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1OTkxNzVhZWMyNTllOWI3MWFlZDg2MzliMTliN2I3ZTg3MzhlMWY0OWQyYjIxZWYwYWY3NzRhM2M2YzMzZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5OGZjZDliYThlNjFmMTU4NTQ3MGU5MDkyMDFiN2NiMzMxNThiZTQ5NmE3NGM2NzFjZDdiN2I2NTY0YTQ1NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/render/writer.rs#L144-L154",
+          "version": "repo-lines-v1:sha256:dd9838e8de797c398ce8c61d0aad93c56d1ee8dce954af03a336d9263699eded:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjN2U4MTk2ZmE5YmY1MGYwYzRkMTM2ZWJkZmNiOTJlZTUxNzIzZWU0Y2FhMzMwNDZjNGFlMjlmMWM1MTgxZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkM2YzMDcwM2I1ZjBjYjcyZGRkNDQwZjNhNWZiYmJjZWNmMDFmMmE2MmQ3NWI1YzQ4NTM3OWU4NWYxOTAzYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4MWRjNjA4MTI4OGRlNTg2ODBhMmE1MWExM2UxZjFmNWQ0MmQ2MDZmMTEyZTY5OTEwYTU0MTgyODE2MjM0NGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_26276e6e48e14bac8894efe20cbf21c7",
+      "statement": "render_line and TUI preview resolve theme and style once via themes::get and styles::get, thread them through RenderCtx into each segment, and SegmentWriter centralizes all color/glyph emission (no segment embeds a raw color or decides icon rendering).",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L22-L31",
+          "version": "repo-lines-v1:sha256:1b8bf48fcd993614f3ed12a42d5410d4f10c59dd02efc0bda3f4a417b836c51d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMzljZTRlYmFjZWUyYTU1OGI1ZGY1N2NkYTZkMGYzMTk1Yjc0ZDI5Mjc1ZjMyMWFhODY0ZjcwMzQ1ZGZmYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMDEyNGMyMmI4NDVmMTY2MmRmZjlkZGZmMDM1NWI4ZDQxNmRjODBkYzYyZTgxZTgwNzFkYTg4NDYwZTIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViZWIzY2U5YmU2NTBhMDQ4ZTE5NTBjNjBmNjBkNmYyMWIxMmM0N2YwYjc5YzIyZDMwZjI1MTAzZjcyNjA5NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyYWMyZDY4NjdmN2U0MWNiNTJiOTVlZDg2OTY5MGIwOTdiZDgwMTc5NjkxMmE0YTI4OTQzY2M2YjUwNjY2OTcifQ"
+        },
+        {
+          "resource": "repo://src/render/writer.rs#L84-L102",
+          "version": "repo-lines-v1:sha256:691f953c078f6141293d123f03a6b95663019d5033977e9057dee6c48f28bc18:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmODliY2U1YTMxY2M1NmE3MTY4OGE1NzNhMDExYzQ1YWZjNTdlNDBhNDZmZGY4NThmYjg4OWVjNDI4YTZjYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0MjI4NWVlYjhjNTc2NjkxZTkxMWZmODVmNzQyZjcwYjk5YmUzYzFjZWNmZDE3MTgwN2M1Y2M3MDNjYjY3OWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyMjcxNDBiOTExZjgxMTdhZDdiYjExMWM4YWEyM2U0OWMwMzczMTZjMDEyMDc3NjM5ZDE1ODc3OGExNjQzMTIifQ"
+        },
+        {
+          "resource": "repo://src/segment/mod.rs#L27-L39",
+          "version": "repo-lines-v1:sha256:cacef3f66af6d2cb6df29b56704d92ff49c577125a359f3fbf516b3fb595a591:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZjg3ODRjNWMzM2JiMDQyNDFhZjlhNjc0MTQwMzBkYjkxMzhhNDYzMTVjNzQwMjJiYjM5NGYzNjk5ODNiMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNTVhNzI1ZWNjMWZlOTcwY2M5YmFhYWVmODU3MGUxNWU4MjdkYjA4YTZmODE4YjMxMjA5ZGI1M2MwYWQ4NDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4Mzg5ODVhZjA1NjM5NDBmNjI2MDM4NjRhYWZjNjUwMmY4ZjczNjQyNGIzMjkyYjYxOGI0ZTExMzdjMDE0ODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_364c4632e44244f088b21ebe148d1a1c",
+      "statement": "The float readout renders each float_segments entry with the ASCII style and strips ANSI afterwards, so the float file's plain text is independent of the user's configured theme/style.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/float.rs#L38-L45",
+          "version": "repo-lines-v1:sha256:82d72b28592e36d5f68a7ce71660747618cc44ac2352f9c6cd145baaff385452:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjEwOWJmNzU4MjRmZWYzOTAxYzMwNWI3Mzc3YjZlNThhMWYxYWViMDdiNWM4ZDQ0ZmM3ZmMzMTIyNGM5MTgwMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg2NjVkZWYwZjVhZDBjODhiZDQ0MzU2YTMxMDY1OGQ1NTI2NmU3YTAxYzcyODVlNDI1OTgyYjFkYjI1YTAzOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDA4MGU1YWU2YjFhNDUzYmM2NGVmM2E4MWI3ZGU2N2FmMGM2ODJkMjk4ZWZmYWRjYzQ4MTY1NWJjNmRiZDNjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzFkYmVlYjE1ZjFlMmY2Mzg4MmY2YWE5YWZmYjdmMDY5M2MxNTE3MmYwMjIyZjc3MWFmZjg3YzczMjMyZDlhMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1c368beb93614837b03184cd863e4bc9",
+      "statement": "Config.theme and Config.style are String fields defaulting to tokyo-night and powerline; a missing config file yields Config::default(), and unknown CLI theme/style names warn and fall back to the defaults via the same registry fallback arms.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L68-L79",
+          "version": "repo-lines-v1:sha256:2fa659f824a973c19d120fedccbc4e426b91f2b67ce71df8dd7ce0adf109fb58:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3OGZiYjFlY2NkMjQ4Y2YwMzdmZWYxMDg0YTIyNDg2YTI0NWNlNDE4ODI4M2JkYzk0OGVlNjE4YzUyNzMzNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5NzUwM2I3ZDJiYmFjZGRkMWI4MjYwY2E1YjU0MzFhMzM2OWRiMzU1ZjZhYzVkZjE5OGYyODJjY2I2NThlZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1N2FlY2E4MmNlZDJhYzRjZWJmZGQ1M2MwNTA2NWM2ZDMwZGMwODI1ZjI5MGEwMjk4ZTA0NjJhNDBlZDUzNzQifQ"
+        },
+        {
+          "resource": "repo://src/model/config.rs#L151-L168",
+          "version": "repo-lines-v1:sha256:ef0bffee22a0bdf462fd6fbd6bb558c3e82ab2fa309cc144a0271c29f6ed44a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NWU3NDNiZDVhZWVjYzE3OTE1YjM2NTMxNmQ1ODY3Yzk4MTk1MTIzYjIxMTE5YmI4N2NiMjQwNzg0MmJkZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4YmJhYTExODhjYTIwYzdjOWY3ZTlhYmQzYzcyYjMxNDc1ODk5ZjA1NTg2ZmVlYmQ3NmEyMGRmODEzNmU3NzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_422feb511b3d4fc3b67afadc869d446b",
+      "statement": "CONTRIBUTING-themes.md at the repo root is the canonical theme-contribution path: clone a src/themes/<name>.rs template, pick a Color(n) xterm-256 index (0-255) nearest to each hex color, and make the three one-line registrations in src/themes/mod.rs (declare the module, add the name to NAMES, add a match arm to get), then preview across styles and open a PR.",
+      "evidence": [
+        {
+          "resource": "repo://CONTRIBUTING-themes.md#L15-L93",
+          "version": "repo-lines-v1:sha256:287cff5ad87fedba2f739d6786e1679dca3e46175ca05f4143bacc096617ec05:eyJzZWxlY3RlZExpbmVDb3VudCI6NzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1Zjc1MTgzOGVlY2YwOTViOWY2YjNhZjgwNWNiOWJlNzM5NTg5MzgxOWMxYTA5YzhhOWUyY2M0MGFkNWYxYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNjExMmMwZTgxMTExNDZmY2ExM2UxOTUxZGUwZjlkMmRmNTkwNzMwNjM0MGFjODBiMzhkOGNjZmQzYjVkNjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMwN2ZlM2I2NGM1ZGU0MGU4ZjZmMzgwMTU0NzU0OWRmN2FhMTgxM2NkOTY1NTkwNTE2MGNkZDdhNzQ2MGU5ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxNjcyMmFlYmJlMmYxZjQxYzk1ODVjYTQwZjExN2YwNTc5NmNlODQ2ODUyYzdjMjA0MDY5ZjcwODA5YTQ1ODQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-27T14:08:42.273Z"
+  }
+}

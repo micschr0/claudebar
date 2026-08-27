@@ -2,6 +2,7 @@
 type: "Reference"
 title: "Architecture overview"
 openwiki_generated: true
+generated: {by: "openwiki/0.4.0", at: "2026-08-26T22:48:34.063Z"}
 ---
 
 # Architecture overview
@@ -67,7 +68,8 @@ configurations.
 
 ## Data flow (render subcommand)
 
-```mermaid
+<!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: an unescaped angle bracket inside a label breaks rendering; rephrase the label. -->
+```text
 sequenceDiagram
     participant CC as Claude Code
     participant CB as claudebar

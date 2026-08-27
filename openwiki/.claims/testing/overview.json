@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7c04dcb0326bd41fd705aeaf616cc19d39206137ec8aa6715cd0c76625284fde",
+  "claims": [
+    {
+      "id": "claim_1b1c742efda3469cbb815b33d71def93",
+      "statement": "claudebar's test strategy is layered: Rust unit tests in each module, CLI integration tests over dispatch, deterministic insta golden snapshots over fixtures/, bats suites for install.sh and statusline-command.sh, and CI jobs (rust.yml, security.yml, verify-install.yml, benchmark.yml) that run the whole stack on push/PR.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/rust.yml#L22-L66",
+          "version": "repo-lines-v1:sha256:1f40f2ace55a90d740082a4ec41bbaefc385a515adda4902eca25f89a6f7f456:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5YWEwM2MyMDI3ZmUyZjYxNjQxYWQ0YTliNmM4M2NiMmYyZjA3OTc2ZWYwZWVhZjZlNWMxMDM2MjU3MzE1ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmMWQ3MGQ3MmJhZDIzMWQ0M2M1NzVhY2VmNjk0NjU4MGU0MzljODc5Nzk0ZWQyZWExZjRhNDAzNDAyNDUxNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3M2E0N2M1MDM3M2M0MGQ1NmVhMTYxYjYxMWY5ODk4MjMyMzU4Y2Q5ZjUyYTk1NTlkOGJhNjFmODA1OTJhNDcifQ"
+        },
+        {
+          "resource": "repo://tests/install.bats#L1-L5",
+          "version": "repo-lines-v1:sha256:b762bfd88d11c5d763c512256a9c148741421393451a726d24eebd64706d69a6:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2MwMjNjYmM5MTFjZjc3NDExYjc5YjM5NDQ0MzhmMmUxMTE0NWIyNjYxYjk0NzI0ODFkOWI3YWE4YmRkZGRkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVmNmQ1MTFlMTIzMGUyMWU0ZWZkM2ZhODgwNDAwYmNkMDNhZjY4YzlmMjk3YTI3Y2NiMjAwMDQ2MDM4NzBlZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGIxMGZkZjQwYmIzYjdlOTQ5NTY4NmNmZjUzNTVjODM0MmU4ODMxOGFmNzIwMWU0MGY3Mjk1NTM2ZmU0ZTE0NiJ9"
+        },
+        {
+          "resource": "repo://tests/render_golden.rs#L1-L9",
+          "version": "repo-lines-v1:sha256:09ed0ce4321f955a873807a430b73ea57d845fa04ac53d76fc6de7370397cb60:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjkwZTRmMzRiNDQ0ZDE0MjVmOTk3ZDY2Y2Y3ODIzODM5OWViYmRjYTc4OGYyYzA0YmNkOWQ4NDI5NjhkZTMxNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ4NjM2ZDg1YjBhNjFlOTA4N2EyNzRhMTk3NWRjMTA3MThjY2QxNTExYWFmYTMyYTRiYmE2NDY5NWNjNjU1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTkzNjVlYThiNTVjODJiODkyYThjZWVkNTI2N2M3YjNmNDg2OTViNzJmMmU4MGVhNjJhN2U3YTkzMmNhZTMzYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e78c587821dd4be09e446fdf039db262",
+      "statement": "Every Rust module carries a #[cfg(test)] mod tests block exercising its pure-logic surface, including parsers in src/model/, segment formatters in src/segment/, the render pipeline in src/render/, theme/style tables, sanitization in src/sanitize.rs, and config/feature logic.",
+      "evidence": [
+        {
+          "resource": "repo://CONTRIBUTING.md#L64-L67",
+          "version": "repo-lines-v1:sha256:6f3711414c0c166b11cd6a7bca10693da9aeead58d2a67798fbf1e21d13725a0:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJmOWM3ODA4NThhOGIxYWUxMTM3MDIxODk1NjgwMDAxOTA3NzVjYmEwNDA2YjgyMmJkZjZmODJlZTI5OGMyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2NlNzRlMWZmMzRmMmExMDE1YWUwMTUzMzQ2MTZhNzg4MDU5MTk4ZjhkZWM0YWIzZTFkYTk3MTg3OGFhODdiYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWQyZjk3MmIxM2JjOTQ4ODA2ZDA5YTFlOWQ1ZmQyMjQ0ZmU4ZmYwNDhiMTEwZDk0MmU3NzU4NDQ1MjU1NDkwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTdmYzQ1Mjg3ZjcwYmI1NWNkNTA0ZjUxYWE1ODIxOGVhNTBjNzkwZGU4NmFjNGEzZmE3MDlhN2QzODg3YmZmZCJ9"
+        },
+        {
+          "resource": "repo://src/model/input.rs#L333-L333",
+          "version": "repo-lines-v1:sha256:25cf5fc23f2a6d23c3ea51e72f5e896c7555fbaa05cd5b1ea182bf9618a8e81b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVjZjVmYzIzZjJhNmQyM2MzZWE1MWU3MmY1ZTg5NmM3NTU1ZmJhYTA1Y2Q1YjFlYTE4MmJmOTYxOGE4ZTgxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVjZjVmYzIzZjJhNmQyM2MzZWE1MWU3MmY1ZTg5NmM3NTU1ZmJhYTA1Y2Q1YjFlYTE4MmJmOTYxOGE4ZTgxYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTllNzYzNTVjZjExOTk0ODBjM2Y5OTgzNmIxNDg2Yzg0MWQ4OTFmYWFkOTA0YzYwOGUwOTMwMjJkMzc1N2FlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDllYzNiM2ZjOWNlZGYwODIwNGJjYzRhZTBhNWYxMzBjOGQ4MTNiODE1NDRlZDQ0ZWFhYmNhMDg4MTM5ODYzNiJ9"
+        },
+        {
+          "resource": "repo://src/sanitize.rs#L136-L136",
+          "version": "repo-lines-v1:sha256:25cf5fc23f2a6d23c3ea51e72f5e896c7555fbaa05cd5b1ea182bf9618a8e81b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVjZjVmYzIzZjJhNmQyM2MzZWE1MWU3MmY1ZTg5NmM3NTU1ZmJhYTA1Y2Q1YjFlYTE4MmJmOTYxOGE4ZTgxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVjZjVmYzIzZjJhNmQyM2MzZWE1MWU3MmY1ZTg5NmM3NTU1ZmJhYTA1Y2Q1YjFlYTE4MmJmOTYxOGE4ZTgxYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRmYjJjNjRmMWI4ZjM0MjVkYWJhZmIzMmJjMzA4ZWU2Yjg4OTM0NWI5ZDllMzI2ZDUyNTBiNmExNDU0M2Y2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDllYzNiM2ZjOWNlZGYwODIwNGJjYzRhZTBhNWYxMzBjOGQ4MTNiODE1NDRlZDQ0ZWFhYmNhMDg4MTM5ODYzNiJ9"
+        },
+        {
+          "resource": "repo://src/segment/git.rs#L207-L207",
+          "version": "repo-lines-v1:sha256:25cf5fc23f2a6d23c3ea51e72f5e896c7555fbaa05cd5b1ea182bf9618a8e81b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVjZjVmYzIzZjJhNmQyM2MzZWE1MWU3MmY1ZTg5NmM3NTU1ZmJhYTA1Y2Q1YjFlYTE4MmJmOTYxOGE4ZTgxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVjZjVmYzIzZjJhNmQyM2MzZWE1MWU3MmY1ZTg5NmM3NTU1ZmJhYTA1Y2Q1YjFlYTE4MmJmOTYxOGE4ZTgxYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTllNzYzNTVjZjExOTk0ODBjM2Y5OTgzNmIxNDg2Yzg0MWQ4OTFmYWFkOTA0YzYwOGUwOTMwMjJkMzc1N2FlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDhkNWQzNzlhZWNiMjEzZDBmZTdkZmI1ZWE5MzUwM2IyNWRkMTcwY2MyM2ZkMjEwYmRmN2YxZGRhZDYzMGFjMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d91fb46c92d447bfa7e1f48bd68d8cb6",
+      "statement": "The TUI drawing shell (src/tui/mod.rs, src/tui/ui.rs, src/tui/preview.rs) intentionally sits at 0% coverage because it depends on ratatui terminal primitives needing a TestBackend harness; in contrast, src/tui/app.rs is kept free of ratatui draw calls and now carries real #[cfg(test)] tests (save_clears_dirty, reset_restores_defaults_and_cursors, toggle/reorder/threshold-cycle) that run under --all-features.",
+      "evidence": [
+        {
+          "resource": "repo://CONTRIBUTING.md#L55-L62",
+          "version": "repo-lines-v1:sha256:be713f85d3a4f9c99a261eb72bf30b544fd8a2fabb8db91fff37a5c7e4d8e6d3:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWM2MzM0YWI3MWM4OWZkMjlhZTNmNjRlMTNjOWRjYWUxNDQ2YTEyNmQzM2NhZDM2OTVjMDc5NGRlYmE2YzRhZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjkxMTlhZDAzZmE5ODI3N2I2ZmUzMzM4NWJjNTA5ZGQ2ZmEyZTZkODljOTI0ZTFiYWVjMTgyZjRjMWQwNTljYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODY5NWZiNWI2OTExZWEyM2NmMThlNWE0YmM1M2FlMmYyZTNmYTQ4NjhlOGE3MmRjZjVhNjFhZDNlZTNjOGRkNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDY0MTU1N2Y5YTA1MzUzYzlmYjQ2NTYyYWM1OGUwMTNiYzVhZjJkNGZiZGFhMDVkZDIzNTFkYjExOTMzM2MzOCJ9"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L1-L3",
+          "version": "repo-lines-v1:sha256:83635bcf421f23f5afab38dfe37611d85b54e5d6d18c16be0c23bd0a85a0005c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWEwZmE4ZTJhNmRlNjJjNjJmMjQzOTM1MDg5Nzc4ODA0Yzg5M2ZlNWY0MjBlNjM3OTBhNzFkNmM4OThhY2RmNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjg4NGI5ODFiMGE5N2RiYjUzMTZlMDE4OTVlZWIyNDhkN2Y3ODA5NDIwZmFjYTIzNmJlZGMyYWQ2ODI1MDZjNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGU5NjJmM2NkNzE3MmE4NmExZDRkYTcyMTliODBiNzU0NjE4ZjUxZmQ3ZDE0MGM3ODc3M2MxMjBjOTA2OTFkNyJ9"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L540-L546",
+          "version": "repo-lines-v1:sha256:04f2b7ede198524d5a419f1418a431c920556ddcfeb373c0d4b1aa98039c11ec:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVjZjVmYzIzZjJhNmQyM2MzZWE1MWU3MmY1ZTg5NmM3NTU1ZmJhYTA1Y2Q1YjFlYTE4MmJmOTYxOGE4ZTgxYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGRhZDYzMTRkYzQ2MzIyM2MyMWYyOWZlNGYzOGY5ODFmMzI4ZmI0NmNlNTJhMWYyMDY4NjhjNGFlNjZlZWQxZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTllNzYzNTVjZjExOTk0ODBjM2Y5OTgzNmIxNDg2Yzg0MWQ4OTFmYWFkOTA0YzYwOGUwOTMwMjJkMzc1N2FlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmRjNTkxMGExYjAxMWU0MzkxNWI3NGRhMzQyNzZhZWNlMWQwNGQ3ODI3ZmRkYmU2YjIyYjliMjE0NWIzYTU3OCJ9"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L661-L686",
+          "version": "repo-lines-v1:sha256:d6b092186fad360f8f2ffc6180ea537dbd6d3383d6de238af3e87aba7d829a85:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlYWFjM2NhNzJiNGZhZGY5MjAyNzA0Njg4ZDEwODE3MjhkNzM5MTMzMDVjYjYyYTEyNzdiZDk2MmJhN2I0ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiMDQzM2Y5MGY3NTJkYTk1MjUzNWM5ZTU4ZTc0ZTFiZTJmMTk4YmZlMGU2ZDk4NDQ5NmU1MjA0OTJmNDI4OTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1ba45fb12d344a0a8df32b8e60241216",
+      "statement": "tests/cli_main_dispatch.rs spawns the real claudebar binary via env!(\"CARGO_BIN_EXE_claudebar\") and asserts exit codes and stdout/stderr for each subcommand (render, init, list/--list-segments, sync, doctor, completions, help, version, config); tests/cli_smoke.rs pipes fixture data into render and asserts exit-0 plus non-empty output.",
+      "evidence": [
+        {
+          "resource": "repo://tests/cli_main_dispatch.rs#L1-L13",
+          "version": "repo-lines-v1:sha256:f872fd6b7fec8beee771ef8c9f9647d49808dd6bd0857cd9744e1c1099ce0ed9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1ZWVjNTc1YWM1NzE4MmU2NDQ2OTAyYzU5ZjMwOGJjNjczYTA0NTRkYzExMGZlNTM4ODRlM2RhMDU0NzIwOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhMDg0MDg5ZGI0NWY3ZGM0MzRlNzUzNzcyZGIxMWJmOGY4YTllM2JmMGVjMDI2MjE2OGQ2NjI1YmFiYjZjYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMzI3NTZkOTdhNmRlYTczNDAxN2E2Mjk2NGE3ZGVlYzM1NGM4MWY0ZGUwYWE1YWU0OGE5NzdiOGI2ZDVjNDkifQ"
+        },
+        {
+          "resource": "repo://tests/cli_main_dispatch.rs#L34-L67",
+          "version": "repo-lines-v1:sha256:e0a2a63585ad0ed737525d43b1a1d67cf97e9a8a1fa6c02af4a0227249e0cdcc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxOGE2NWJkNGQ1OGMyZGY4NmNiZmEwODQxN2ZhMWEyZTFmNDhhODcwZWMzNjc0NjNlZDFjMWFmOWI0ZWUxOGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyZGJkZDZhODNhZTFjMDI4YTEwOGQ3MGI3NzkzODM3YzlhZDY2MmM1NWJkNTgzN2U0YWU1NDU3OTk0MDA5NDAifQ"
+        },
+        {
+          "resource": "repo://tests/cli_smoke.rs#L7-L46",
+          "version": "repo-lines-v1:sha256:d50c45d9ee4318753a63787bed7643dc2c28132c7f87ca9772047c5e6066c784:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxZmUyMzU1MTNjNDcwNjNlMzg1MDQ0YjE2YWNjNmUwNmVlMzhjYWMyODQ5ZDU3NGU0NjBjNDZiZGU1MzUwMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjZTEzOWE4ZjMzYmU3ZjM2ZGI2ZWMyNjJkMTg4ZmFlYTRlM2ViN2VlZTY5ZmYwM2MyZWJmYmRiODRjNTdmNmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b015b51821f8472a8139f13f465069ea",
+      "statement": "A pre-existing clap debug-assertion bug (conflicting --segments long flag) was fixed in src/cli.rs by renaming the List-subcommand flag to --list-segments so the dispatch tests run cleanly with exit code 0 in debug builds.",
+      "evidence": [
+        {
+          "resource": "repo://tests/cli_main_dispatch.rs#L10-L13",
+          "version": "repo-lines-v1:sha256:765939f271380aaa273197a9fc222cb642aebd24a28dedba8dc681ba0fe85a1b:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWVmMGNiMWFjZmEzM2Y4NmE5MWJkMDhkMWIyYzc4YTVjNDU2OGM2ODhkM2FjZDUzZTA0ODlkYmYxZWRhMDUwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEwODQwODlkYjQ1ZjdkYzQzNGU3NTM3NzJkYjExYmY4ZjhhOWUzYmYwZWMwMjYyMTY4ZDY2MjViYWJiNmNhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzU0OTdmMmI2ZTgxMjQxYzE2ODExY2Q5MTA1Y2EwZGVkZmRmNmM4N2QxZjc1NGZjZDA2MWUwMzgzOGNmOTFmNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGUzMjc1NmQ5N2E2ZGVhNzM0MDE3YTYyOTY0YTdkZWVjMzU0YzgxZjRkZTBhYTVhZTQ4YTk3N2I4YjZkNWM0OSJ9"
+        },
+        {
+          "resource": "repo://tests/cli_main_dispatch.rs#L186-L220",
+          "version": "repo-lines-v1:sha256:92ded5ee7539a810cfa53e5cf84b74f8c06eaf5fad35ec1687b844739272179f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0YWIyZTI2ZTAxNjM1ZDExN2Q5NDg5MTJjNmRiODcxNWQ3YjM1ZTYyZjExNjcyMmQ5NzA3MjE5MmIwM2FkNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViNzgzZmJlNjBhOGNiNTk3M2QzZjBlMTE0OWI3OWU2NzdhNDNhOWQ3ZTdjZGFiOTlhMTczZGFhN2YwNmUzMjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7d348692732a4ee4bd3146fb34d04a84",
+      "statement": "render_golden.rs golden_lines renders every fixtures/*.json with the default config, a fixed clock (FIXED_NOW=1_899_990_000, just before far-future resets_at epochs so countdowns are present) and a fixed $HOME=/home/me, then replaces ESC bytes with \\e and insta snapshots each full line for deterministic output.",
+      "evidence": [
+        {
+          "resource": "repo://tests/render_golden.rs#L15-L36",
+          "version": "repo-lines-v1:sha256:1e0471f39b3c5fe216d48a1bbd6f1f2095b99c88ac677e08c61909fc979efea8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNTA4OTlhYTBhZGJlOGJkYzg1NTQxYTcwZjk4NmUwM2U2ZjE3NmJkOWVkYTYzMzI4NThlNmM2ODRiZDc5NDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiMjZlYTM2ZjNlMDgxM2MzZTJkMWQxOGZjYzFlMDI5YTUwOGI4NjVlMjg4MTc5OTNiZjU4OTk2MGI0ZDAxOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4ZjlmNGE5ZGNiODgzZDY0YTc4NTg5YmY0NTY2N2U4NzUxMDllYjE4YmMwNDUxZDljYjc4N2NiYmY1NjcxZDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_272b9881e73b4c099a9d0ed96b6277e0",
+      "statement": "The golden_matrix test renders fixtures/typical.json across every theme × {ascii, powerline} (16×2=32 snapshots) under {name}__{style} suffixes so they do not collide with the golden_lines glob outputs.",
+      "evidence": [
+        {
+          "resource": "repo://tests/render_golden.rs#L53-L73",
+          "version": "repo-lines-v1:sha256:72288b8eae4f514f79891c246428ce0b1da9acc5164c23bb6b2c0ed27e67f2c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNGI2ZDRlODI1Nzc3NzVhOWI0MGQ3ODdlMGY1NDNjZWFlNzhkZmU5ZjQ2ODMyMmY2OTU0MGUyYzFhMmViNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiMjFmYWYxZDhlMzA5OGI0NTEzZTg3NmJiY2IwMjA2MGVkOTE0OWU2YmU2MzBkNzBiNzM4NDcyODE3MTI1MjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMzJmNzE2ZTJhYmE5YTIwMzAzMjIwOTI5NjVkOWY2ZDIwM2UxYmZhZDhmYTQ0ZTExMGFlN2JhZGI5ODRlNWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ad01164605ac4b1fbaa9617fa84cbcc5",
+      "statement": "Fixture cwd values point at non-existent paths, so the git subprocess fails and no git segment appears, keeping golden snapshots independent of the checkout's own git state.",
+      "evidence": [
+        {
+          "resource": "repo://tests/render_golden.rs#L53-L57",
+          "version": "repo-lines-v1:sha256:686ba518efde93f5347df87c9a553aa0eda57aa7c49e7de0b2e6b7fe7fcc75c6:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTE0YjZkNGU4MjU3Nzc3NWE5YjQwZDc4N2UwZjU0M2NlYWU3OGRmZTlmNDY4MzIyZjY5NTQwZTJjMWEyZWI1NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjA3YzJkYjdkZDFlYjAyYTU2ZDQ4ZmQxYjY5MzQzODViNjJkMWE5YjlkODUzYzgwNWExZWVlNjcwNTNlMmI1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmIyMWZhZjFkOGUzMDk4YjQ1MTNlODc2YmJjYjAyMDYwZWQ5MTQ5ZTZiZTYzMGQ3MGI3Mzg0NzI4MTcxMjUyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTA4N2FkY2U4OTE0OWQ4OTllMGMzMzZkOTA1YmE0MzhiMzgyYmNkZjM0YWUxZWNhMzVhMjY2MDBhZjg0NTg5MCJ9"
+        },
+        {
+          "resource": "repo://tests/render_golden.rs#L7-L9",
+          "version": "repo-lines-v1:sha256:6fbc7af509eccc38a85931eddeea4b502c075b0bdb831ef693e7b38e25bba5e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmU3YzY2MjI3N2Q5ODczNWFjYzA2NjFiY2UyMDBjYWRlMGYwZmIwMDRjOTczMTdiNGJiZWJiNDhkOTM3YWEwNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ4NjM2ZDg1YjBhNjFlOTA4N2EyNzRhMTk3NWRjMTA3MThjY2QxNTExYWFmYTMyYTRiYmE2NDY5NWNjNjU1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM0ZWM4ZWUwNzY3YTFkNDRmNjg2MjE1YWU0NDQ4Y2IyMjYxNzY3ZjBkMDIzNThkZGQyNzU3OWU5OGQzMDMyOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTkzNjVlYThiNTVjODJiODkyYThjZWVkNTI2N2M3YjNmNDg2OTViNzJmMmU4MGVhNjJhN2U3YTkzMmNhZTMzYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_32445ca31dc342d898dd22482ffec660",
+      "statement": "injection_no_control_byte_leak renders fixtures/injection.json (cwd/model carrying ESC/BEL/CR/LF), strips only the renderer's own SGR runs, and asserts no host-supplied control byte remains, anchoring the sanitize::strip_control contract.",
+      "evidence": [
+        {
+          "resource": "repo://src/sanitize.rs#L4-L12",
+          "version": "repo-lines-v1:sha256:5c355e67f2fcbe7f55e33afd6a40012bf43d59eef35a963a203ee25ce3c5d11e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI4NTg5YWE4MTkyZTdhN2I5ZWRlYjYyYjM3NjE2MTBkZDY3ZGFlYmFlNzAwMjg4YjVlZjExM2UwZjU3YzBiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDg1MDkyMThlNGRkODVlOTM2MDBhOTBkZjhhZDJmNWM2ZmIyOTkwMzI3YmUxNzNkMWEzZGQ0Y2Y5MmI4ZmJjYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjg3OWUxZjE5NjkwNDRjZjQyMTVjY2RmNzZiNjk3MDQ1YjYzZTM1MDE0YTM5MGUzNjY5YmQ4OWE5OGMwMGU4NCJ9"
+        },
+        {
+          "resource": "repo://tests/render_golden.rs#L81-L118",
+          "version": "repo-lines-v1:sha256:17afc891704e5c9f36892bb97f0252e89d554f004e8bc2e0c405da23317c6a30:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1NjBhZTlkY2JkNWE4ZDVkYjI4YTNjNmQxODllMTVkODliNDM5MzgwYmIxYjE0NGM1ZGFmODIzMGViZmE4MGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhZTU0MTY1YmQyODQ0YzRhNzQ4Yjc0YTAzYjZjM2E4Y2Q0ZDdiODVhMzM3ODRjNDA1ZTUxYjU2Njc3YmFjMzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_18dd8e3205494978b94fbd02e8c8e85e",
+      "statement": "Snapshots live in tests/snapshots/ and are updated with 'cargo insta review' or INSTA_UPDATE=always cargo test (the Taskfile 'snapshots' target); in CI, INSTA_UPDATE: no is set so cargo test fails rather than silently rewriting snapshots.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/rust.yml#L60-L66",
+          "version": "repo-lines-v1:sha256:30485dfb7eadccea635916be03dc0cc045ae5158db946790e95146f071d08627:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2IwNzg0OGE0MzY2NjU2YjJiYTYxOTdiZTAyYjkyMDgxNDU0NmY5ZDlhZDBiNTMzOWU0YzI2YTJjOTQ2NTExNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjlhYTAzYzIwMjdmZTJmNjE2NDFhZDRhOWI2YzgzY2IyZjJmMDc5NzZlZjBlZWFmNmU1YzEwMzYyNTczMTVmMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGIwY2M4OTFjNmQ5Njk4NjNjZmUxYThjZWEyMzhlOTE4NjZmYmQ0ZGE2YjE2MWZhZjYxZGMwMmM4OGM1ODljYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODczYTQ3YzUwMzczYzQwZDU2ZWExNjFiNjExZjk4OTgyMzIzNThjZDlmNTJhOTU1OWQ4YmE2MWY4MDU5MmE0NyJ9"
+        },
+        {
+          "resource": "repo://Taskfile.yml#L20-L24",
+          "version": "repo-lines-v1:sha256:af882a48f3292d10bda2edf7baf33f2a7a2b708549429e11320255be73d995fc:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDcyZWUzZTkwZGEyYzkyZmVmN2E0YmNlYjZiMTA4MDJjOTNhYzIxMDEwYTA2NjY0ODcwNzNkMDJjNzg4ZjAzYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2RkMTQ1N2U4ODQzYWU0Mzc5ZDQyZjcyZTc3MWI1Mjc0NmI5ZmZlYzEwNDJmNGExMTBlMmZlM2Q2ZjM3MzQ3MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjAwOTI2NmJiMjM3ZGJlZmEwYzkxOTRmYTUzNWM1ZjY1MTA1YjUxZjE2OWMyNzkxOGNkNWI1MzgxYzFiNzQ4MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDljYjEyMzkyNTYwMzEyZDc0MDk2M2UxODU5MWE1MGJmY2VmZTQxZGI3ZDQ1MDdlZWFjNDljNGIyN2QzMzQ4YyJ9"
+        },
+        {
+          "resource": "repo://tests/render_golden.rs#L5-L5",
+          "version": "repo-lines-v1:sha256:9c59cc146b4060069cc19da84845ebc48b1397322095101d434cd01ed6d40ee6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWM1OWNjMTQ2YjQwNjAwNjljYzE5ZGE4NDg0NWViYzQ4YjEzOTczMjIwOTUxMDFkNDM0Y2QwMWVkNmQ0MGVlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWM1OWNjMTQ2YjQwNjAwNjljYzE5ZGE4NDg0NWViYzQ4YjEzOTczMjIwOTUxMDFkNDM0Y2QwMWVkNmQ0MGVlNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWUzYmE2YzFhZDNiNmRmZWQ0OWRhZmQzZDJkMDY1NTMwNjQ2ZjdiMGI0ZDgyOGU5ODYyZmFhMWY3Nzk4ZmQzMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2QyODdlYzQyMjUxZmQ2ZWZmZmRlY2M2MzI3MGIyMmFjMDE1MzhjYzIxNDQ4MDk1M2QxODUzNWEzZTllMTgyOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d661d6ae0045488486f8d6af4e3c736f",
+      "statement": "install.sh guards its entry point (main runs only when executed, not sourced, via the BASH_SOURCE check), so tests/install.bats sources it directly and exercises individual functions side-effect free; the networked happy path is covered by verify-install.yml.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/verify-install.yml#L1-L5",
+          "version": "repo-lines-v1:sha256:489b8f705d3925b1c8e0e35e310961fd11496387e658d4b74ea59b826632ec21:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWZkNzYxNDFhMDQ1YmI4ZWNkNTAzYjMwNGEzOTYyMzQzMGIxOGI3OGQ2ZjllMzEzYWZiZGUyMDExYWJiZTYxMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjMyZTI1NGUwMDNkZGIzNjhmNTFhYzc1ODQxNzdiN2FjZGJiZmNhNDNhNzIwYmZlYjJhNjUxZjFlMWM0MGM0NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTI4MWEzNTU0NGJmNTU5YjYyYjI1YzMwYWIwNmMyZTZlMDA0NzdhNTRmYTg5ZTI1Mzg1ZTdjMDQ5NGVjOTFiNSJ9"
+        },
+        {
+          "resource": "repo://install.sh#L382-L384",
+          "version": "repo-lines-v1:sha256:cfd837745304b585f33d603074e9be7ff67521ade816349b3082f2d8f119f543:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWM0NGJiODA2ZmNkODMxZDQxMTI0NTA4MTdhYWM3NTcxZDNkOTYzN2M4Mjg1NzE2NTI5Mjg5NDIxODZiOTc0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc2OWQyMzdjZDQyMGI5ZDM4Yjk4MWEwYTRmNjc3MDE5MGE0YTgzZGNhMWZlNTZjNGY1YmExZTJjYmMwZWY3NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjI2ZGIxNTljMDcwZTFjZTgwMTQ1OWRlYzBmMjBmYWMyYmFjYWQ4ZGIyNTljYmFkMzRiNDg0YzkyZjkwYmIyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://tests/install.bats#L7-L23",
+          "version": "repo-lines-v1:sha256:b747b30632762be2eb080fd717f5492854268f71760a2df09bfddb96149d037f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMDcxZTk4MDM2NjQwNTc3MjZkNzU2MmFlYmRlMjE3YTJjZjM4MjRkNThjMWM1MzI1NDdmZjEwZjAzYWU0MzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4NTM5MGI5N2UxNjg1YmFhMGYwY2UxYWY3ZjQxNjgxMTk3YjE5MGVkZThmYTc3YjZmNTQ0OThiMzlkOWNjMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5NjdiMWVkYzVkMzIwMDc2NTdjYzU2NzU3ODAzOTFkZmU5ZTE2ZjliZmQyODdlNWQxZDNiMzg1YTJkNWIzY2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0bf3f25ac23f4ef1b56c7d4a62ca2271",
+      "statement": "tests/install.bats exercises detect_target (override and OS→triple mapping), release-JSON parsing (release_tag, find_asset_url), require_github_host (rejecting non-GitHub/plain-http/lookalike), verify_checksum (text/binary modes, tampered, missing entry), verify_attestation (always non-fatal), archive safety (traversal rejection), and install_from_source guards.",
+      "evidence": [
+        {
+          "resource": "repo://tests/install.bats#L101-L130",
+          "version": "repo-lines-v1:sha256:d5b0f4d0352233701a6a5ef45959e41f750b8895815538d1c2acad529b908b44:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExNWEwOGU5ZjcyODA0ZDVkYjBkOWM1NjEzY2IwN2EzOTlmNmEyMzkwZWJlYTYxNDAxOGFkYjU1NTY0YWJlN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1Yzg4OWE2NGI0YmNkYzFkMmYwMWIzMWRlZmY4YzE1NjM0YWUyMmI1Nzc5ZDZhOWI3ZjRjZjQzOGQzZDRiNDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmZGEzMTE4MjI4ZTA0NzAyN2RiYmUwNjc2YzY1N2Q3MjY5YjI1ODRlYWU2ZGY0MGE0NDEzMmRiZmMwNGYxNzYifQ"
+        },
+        {
+          "resource": "repo://tests/install.bats#L137-L233",
+          "version": "repo-lines-v1:sha256:38596eebd4d9faaef1b4b01d7f192d14df5aae951ef5b685644b36a7def720cd:eyJzZWxlY3RlZExpbmVDb3VudCI6OTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkNDA0NGZlM2YyOTRhZTgyMTUzZTUzZTdmOTgyZjhmMTg2NTM5YmJiMGEwZDhhN2UzM2QzZDNmMzI1OTE0ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZTk1Yjg4NzE3MzBmMDU4M2VhYmIyMzU0Y2Q2YTFlMTEyNzQ0MjE2NjcxNTdhMTI2NTYwMzQyNmYzNWZiYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkYWUxNzEzMzJmYmE4MzBmMWE4ODVmNzk3Yjc0ZTA3NTRjZDQxNjMyYzMwYjg4NDgwMTRmNmRhMTk4NjZmYjYifQ"
+        },
+        {
+          "resource": "repo://tests/install.bats#L27-L51",
+          "version": "repo-lines-v1:sha256:91da67480998fbbb4a9cf459e927549649fa669547469ed25c423606c435c50e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4ZjllMjc1Njk0MmFlM2JmN2RjZmY3ODhiMzI1NGE0NWUwNzczNGVmM2ZiYWZjMDQ1ZGYzMGQxMDk2ZWVkNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5NjdiMWVkYzVkMzIwMDc2NTdjYzU2NzU3ODAzOTFkZmU5ZTE2ZjliZmQyODdlNWQxZDNiMzg1YTJkNWIzY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1MDIzMDY3YTQ2ZTBjYWIwZGI0YmUzZjAwMWY0ZWNjZjhlMGJlYTlmODMzZDBiNGRmZWM0YjRiZDgyOGExY2MifQ"
+        },
+        {
+          "resource": "repo://tests/install.bats#L78-L97",
+          "version": "repo-lines-v1:sha256:c427ec0ad49ad849c5b63ae426c5470a1b18fb73b134b6035176e2a4f94000cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0ZTg5ZWI2ZTI3NjI2MTcwOGE0ZWI1OTlhZjJiMGU3ZTNiNjBlNWMwOTcxZTgwOWVmMThmNTA2Mzc5ZjdiZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlNTc4ZTRkMjE4Nzg1ODNhMzYxNmI0NjBmYjU4MWE5YjYyZWZiNTIyMjI4ZjZkMjkwYTVlZDMyOWY1MmVlYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1Yzg4OWE2NGI0YmNkYzFkMmYwMWIzMWRlZmY4YzE1NjM0YWUyMmI1Nzc5ZDZhOWI3ZjRjZjQzOGQzZDRiNDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_13eac64f760142dda36144d6aeb208cb",
+      "statement": "verify_attestation is always non-fatal by design (status 0 on every branch — gh missing, too old, unauthenticated, verification failed, or success), so a regression returning 1 cannot be masked by the SHA256 gate.",
+      "evidence": [
+        {
+          "resource": "repo://tests/install.bats#L132-L194",
+          "version": "repo-lines-v1:sha256:398afdba63eed74fc109826a1ca5de77c1f85169629dd87281a8bb1fecce8352:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmMjUxNmJlNzExNmMyNzljZTIwNWZmOGM5YzRjZTc5MjhhNWViOGFkOTI0YjkwNDE0Y2U3OGViNTE1NmE3NjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmMjM4NGJjMjkwZTM1NjNjZDQ2NDdmMzFhYmZiYjllZWI5ZDk4NTk0NTI2OTQ2ZDQwOWRlM2UwMDllZWNiM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1ZDRjODRlOTE5YWU5ZDU5OGIzMWIwNjJiZjM5MGE4NDJhNDA0MDYxMzJlYjhmZWViYjZhN2MwYzA3Nzg3ZmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4a8cd5fdcddd4f099615d9413cd64bc8",
+      "statement": "verify-install.yml runs install.sh end-to-end in a clean $HOME with cargo/rustc stripped from PATH (so a broken prebuilt download cannot be silently masked by falling through to cargo build), including piped-stdin execution matching the documented curl|bash usage.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/verify-install.yml#L31-L67",
+          "version": "repo-lines-v1:sha256:cb9fc34a59bc7ec331aa3ce9fe8d44403245db088b51c06d5d6e7649b66aba9c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxZTljZThlNjNkNjE5ZDYwY2FlZGY5OGNhMzMwNTNiZDJhMDUxNmZkNmZjYmQ5NDEzMDk0ZDEyZGRhZTIxOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNTU5NzljZTczMDIwMzNlNmIyZmQ3ZDg4ZjUzN2EzYjhlMDkxZWEzMDVjODExZmZhMTI3NGJmNTc2NGVhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU3N2ZjZWQxMjlmZmVhNWE0OWRkNzFmNjVjZjhlMmY2MjJlYWM1MmZmODZjMTY5MGZlYjhmNGJiYjcxMGVlOGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmZjBiZjk3Njg0MjY2YjEwZjFiNjU4MGMxY2ZlZDJkZTIxYTc3MjI3M2I4YTJjOTgyNDYyODRiOTQyZmYwYzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bb335b926e61477ca866495be941d2ab",
+      "statement": "tests/statusline.bats smoke-tests statusline-command.sh against fixtures (empty, typical, over-100% context, 5h/weekly rate-limit, effort, injection, no-git) and adds edge cases (malformed JSON, empty stdin, wrong-typed fields), skipping when jq is not installed; the injection test proves ESC bytes were stripped by checking the script never emits 16-color codes.",
+      "evidence": [
+        {
+          "resource": "repo://tests/statusline.bats#L1-L11",
+          "version": "repo-lines-v1:sha256:131bfbded7c3f11c305b7f911124e5ef7a24d933e05a50fc7a2d7d13b015c764:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjMDIzY2JjOTExY2Y3NzQxMWI3OWIzOTQ0NDM4ZjJlMTExNDViMjY2MWI5NDcyNDgxZDliN2FhOGJkZGRkZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0NTM2NGYzOGUzNmVlYzE1NTc0OTJiNWU4MmI2ZmM4ZGQ0YzczYTI3MTU0NmYwM2Q5MWZhY2RhZTljNjRmZTcifQ"
+        },
+        {
+          "resource": "repo://tests/statusline.bats#L17-L66",
+          "version": "repo-lines-v1:sha256:155e7e204f7e4799f51875f8169362476761af8d77fcad99fa60ccd93a40ea2f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNmNkNTY5YmRhZTlhMjI5M2QwYWZjMjJiY2I2NTAyM2I2YmM5MmNlM2IzZmJkZjg3ZjJiZjE2MGFmMjgxNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1ZGI4YmQyMjM3NjkyOTI5NTA3OWY5N2IxNTI4ZWIxOWUxMzAwN2NmNTQ0NTJmMWI4MTFkMGMwYjI0YzdjODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2ODY2NDViOTZjMDgzNmUxOGIyZTM0YWNkNzNmMjRlNzQxNGQwMzI4ZGM1MTg0OTE2NTJjNmQ0OTlmMTU2MzEifQ"
+        },
+        {
+          "resource": "repo://tests/statusline.bats#L52-L60",
+          "version": "repo-lines-v1:sha256:a48f491e4e0c4b7c2c2b65f5423700461e9d145d6425115ab4259c1a507d632b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTBmYTEzNDg3YWY3MjRiZDVlYTE4MjliZGJkY2YzMGJiYTdhNjY0YzFhN2RjMmM3MWNjZWU2YTJiMmM5NWI3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2MzZTBkY2U5YmRkYmJhZDQzMzhkNDllODU0ZjViYzcxNGE4OTQ5Njc3NDgyNzhlY2Y3YzU5NTliOWMwODQ3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGY4MWM1ZjdmYTllODQ3MzM4ZWMyYTE2ZjQ5YWQxYzk2OGQ3OGFmNWI1MzdmNDZhNzdjOTc0YjYyYWZmY2EzOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_074a98bddc804b3d828795de18f835d2",
+      "statement": "tests/scripts.bats syntax-checks scripts/benchmark.sh, gen-gallery.sh, and gen_terminal_gifs.sh and asserts gen-gallery.sh's fail-fast guards (missing binary, no themes parsed); benchmark.sh runtime and gen_terminal_gifs.sh runtime are intentionally not exercised there.",
+      "evidence": [
+        {
+          "resource": "repo://tests/scripts.bats#L1-L40",
+          "version": "repo-lines-v1:sha256:fdc8936509a11c11c022c047d2b7f1f88c253e4b48c7a06bd806880a57c0e84e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjMDIzY2JjOTExY2Y3NzQxMWI3OWIzOTQ0NDM4ZjJlMTExNDViMjY2MWI5NDcyNDgxZDliN2FhOGJkZGRkZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MjYwNTllMDAxZTYyOThiN2ZhNDM2YjE3NmNhZWI2N2NlOWQ0NzU0YzM0MTJiNzM4MTNiMmE4MGE2MzQwYmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_64ac12875d714212880f0093c69a56ed",
+      "statement": "tests/demo_repos.bats asserts the deterministic git-state contract produced by scripts/make_demo_repos.sh (per-repo branch, ahead/behind, modified/untracked tallies), running the idempotent script once in setup_file and asserting states hold on re-run.",
+      "evidence": [
+        {
+          "resource": "repo://tests/demo_repos.bats#L1-L27",
+          "version": "repo-lines-v1:sha256:29973a24b6e726e84a68d5e41fd410173aa6e738bc6847212eec733e33c66248:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjMDIzY2JjOTExY2Y3NzQxMWI3OWIzOTQ0NDM4ZjJlMTExNDViMjY2MWI5NDcyNDgxZDliN2FhOGJkZGRkZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkMjMxMmEwNDZkYTgyZmUyZmQ3YTMxYjdlMTI4MTQ0NDA4MjZhYWJmZGVmNDIxZmY0ODQ3YWM4ZmFiODY0NjgifQ"
+        },
+        {
+          "resource": "repo://tests/demo_repos.bats#L67-L71",
+          "version": "repo-lines-v1:sha256:aec015403cdd6cdac27646f55a946d2b7af9d1290b2483b5e4f9f1030244a93e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzE4ZWYxOTA3MDM4MWU5OWIyYmJjMTkxZWJjMWVmNDQyMDcwOWI5YjUyYTNiZjliOTJhM2RjY2JkM2VjNjQyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWNlMDY4N2VmOTc5MjY5NjA2MTAxNjVhNjg4ODhkZDcwMjEzMThlNmQ5OTNiNWY5NGZlOTg3OWU1MmRhNWRhNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_cc0dbeefd3054ae7ab661ad51dc6d4c9",
+      "statement": "rust.yml (Ubuntu, stable, mold) enforces with --locked: cargo fmt --check, clippy -D warnings for both --all-features and --no-default-features (render-only), and cargo test for both feature configurations.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/rust.yml#L49-L66",
+          "version": "repo-lines-v1:sha256:9cd6b3d8e66b879d464a7d78db924f48a19d690266b99d6f1b02c5971e41d87d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyMDc2NGRlNWNjYTUxNzk0NmUyNjZmMDViYWEzYmE1YmM3NjEwNTY4ZGFhMjk4ZTlhNmI2Y2IyMzA1MzIyZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5YWEwM2MyMDI3ZmUyZjYxNjQxYWQ0YTliNmM4M2NiMmYyZjA3OTc2ZWYwZWVhZjZlNWMxMDM2MjU3MzE1ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwNzZiMmJiNGRiYjJjOTlkMDBiODQzMDE5Yjg4NzViMTllZWZkZjgyMzUxZTAyYTc5NWVjMTNjYjA5YThiMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3M2E0N2M1MDM3M2M0MGQ1NmVhMTYxYjYxMWY5ODk4MjMyMzU4Y2Q5ZjUyYTk1NTlkOGJhNjFmODA1OTJhNDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_aa46de19edab4c669ce73f8446fa48c2",
+      "statement": "The tui feature gates ratatui/crossterm/ansi-to-tui (and the whole src/tui/ module in src/lib.rs); a --no-default-features build is render-only, verified by the clippy and cargo test runs with --no-default-features in CI.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/rust.yml#L55-L56",
+          "version": "repo-lines-v1:sha256:75f8b4852bb24b926c35791224d30f16881b093fc8cb0803aee6d0e4d394bec9:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWM1NjBlZTkxYjQzNTQzZDRkYjBkNDhiMDVkMDE3YjM1ZmVhNmNjY2FiYjk3YmE5ZjYyYmExMmQ2MWZjMDgxNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTI5ZDA4MjQzN2RmOTM4Mzc5NDg5MTdkMmRlYWRlMmNiNzJjMmFmZTZmMjJjYTk2MDMxOTFhODFjOTQ3NTkzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTgwMDhjN2I0NzAzYTc0NDNlNDI2OTk2ODM3OTBkMDFiM2NmNmJmZDM0M2Y1NTU5NzM0Y2Y4YWQ0YTlmZWQxMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGIwY2M4OTFjNmQ5Njk4NjNjZmUxYThjZWEyMzhlOTE4NjZmYmQ0ZGE2YjE2MWZhZjYxZGMwMmM4OGM1ODljYiJ9"
+        },
+        {
+          "resource": "repo://Cargo.toml#L18-L22",
+          "version": "repo-lines-v1:sha256:a5070158f35a5139346ba39ba164d3fb4ef0907698f0161b4d457a254c7eafa5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjZmNmMxYzczZTQ2ODViNmY1NTc5MmFlNTM5MjU1M2ZmNzlkM2NjMDY3YjBiNzRlMDY4Njk4ZjZiMmM3NmI4MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODk0ZDdiMTk2MjVmNWUwNGM3NmYzZGFmOThjOTVjNTc4ZjdiZWRjMTFhNzdiN2QzZmIzNGZjYzhkOTJhNzhjMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOThlMWVmZWI4MDMyMmNmNDA2MTY4NDdmYmNlMDJiZGM5MDg5NGEzNjBjYmMwMjVkYzMxNmFkZmUwODU5NzBkOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWY3MmNlYWE0NDA5NWEyNzczNmFkOGQ5N2FiMDlkNTdmMDE1OTNlMGI2NGU0Mjc4NzU3YTg2ZTVjZTkyODdmNiJ9"
+        },
+        {
+          "resource": "repo://src/lib.rs#L48-L49",
+          "version": "repo-lines-v1:sha256:e7799876f6ba4c732a704ac825a94ac80509b97e8678e637c75c5dffed550f35:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjllN2MyNTRkNGU1YzVjYjYxZjVjNmExZTM2NGM5OTczMzQwMjJiNDZjYmIxYTI4ZTEyMzU4ODIzNzVlMDJjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ5ODU4NWU3ZjBiZTBkNzcyMjZhYTc5NzgyNWIyMGY2MzQxMThhZTYwODdiZmEzMWUwMzI4NWYzMGY4YmI1OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTllYTg0NmQxZTg0OTViYWRjZTJmZDM2OWZjODRjMzE3NDQxYmY1ODdlZTQyOGJkMzlkZjI1ZDk3NGRiNDNjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGUwMjYwMTgxYzQ2ODkzMjZmYWM3Mzg4YWQ4ZTg4M2Y0M2E1YjM5MDgxMmRmNmUwZWE2N2M4NmNmNmIxYmEzMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8321bbd1eb3d49dc8cef6bcbc06060f7",
+      "statement": "CI runs cargo llvm-cov (--all-features) to produce lcov.info and an HTML report, posts per-PR coverage annotations via covrs; the baseline is ~74% and PRs must not regress the total by more than 1 percentage point without a note.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/rust.yml#L81-L99",
+          "version": "repo-lines-v1:sha256:c6651d93a5fbd4174bc0a86325354ea1f60412fd1a5b78a06664d23aae11e298:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1ZjZhNmUzMDQ4ZTFjMDE1NWZiOTFjZWMyZWQ4MTg0ZmNhYTY1ZWYxNjMyNTgyMDcyY2EzMjE4NmZmMDg0ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3MTU4YWU2ZjEzMDg4ZWRjNzIwYTI1MDk5NjYwYWUxZjdmZGQ2ZDAxMmMzNDA4OTJhYzg4M2EyY2VjY2I3NmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkM2ZjZGE2YzI0ODk0NDE2YTA2N2M2ZTZjMWE5ZmE2YTRjOWQ2ZThjNGZmYjhlYzRjMjliN2Y2ZjQ5MTQ0NWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkYmQ3MjVlZmY1ODIzMjZlZjhkMzU3YTJmMWVmMTY5OGRkODk2ZTYzNzAzYTVkYjlkMDYwZWFhMGFmNzRiMGIifQ"
+        },
+        {
+          "resource": "repo://CONTRIBUTING.md#L19-L53",
+          "version": "repo-lines-v1:sha256:29f6fbced240649e20da59540d9bef42fff35556237bcb45d0267e9e7967dc2f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxZjQzZDRiOTIzMGMyNzE3ZTFkMDYwZGE2ZWE4NjkxM2IyZWNlMTJmOGQyM2YzMzg1ZjE5MGRjZTc2Y2FhNGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3OWE4NmM5ZGVjODE5N2U5OGNjMzNmZjE3ZjIzOGFhMWExNWRmMTZiYTdhNjgyNTQ2NWUyMGZmNjVkYzQwZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3NDcxNDM4OWRkNTJmNDg5YzU1ZDVkMWY1YjcwZjQ1NDkzNjQxMjkzYTU5YmI3NjA0MzFlNWNiYWM3NmY5MmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiYWM5NWFmMDBhNmU1MjUwYjE0NjUxODIwMWIxODc3MDZhYWViYzI2MDgzYWMzZmU3MjQ3OWY5NTc3YTRkZDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5835b1ce7439407bb0c510e8263dc8fc",
+      "statement": "security.yml adds ShellCheck, actionlint, the bats suite, semgrep (trailofbits rules over shell scripts), cargo audit, gitleaks, and zizmor; benchmark.yml runs the performance SLO via scripts/benchmark.sh and uploads a report artifact.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/benchmark.yml#L26-L45",
+          "version": "repo-lines-v1:sha256:42869cf0b6ff5bbe4a6e838a94676d48638c8bda4ccb05bd5141f74665e7e3ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkMzJhYzIwODBhMTM0NWM2NDY4ZDBlMGUwOWE0OTMyMDE1MTc2NzQzZjkyYTUyNTM1NWNmZGZkNTg5N2NmZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmMWQ3MGQ3MmJhZDIzMWQ0M2M1NzVhY2VmNjk0NjU4MGU0MzljODc5Nzk0ZWQyZWExZjRhNDAzNDAyNDUxNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/security.yml#L17-L101",
+          "version": "repo-lines-v1:sha256:f1c455ca0d3fe4d4bd94aa1f137227e79a4ad32a9900309c8b1cc60f1a8ee4f9:eyJzZWxlY3RlZExpbmVDb3VudCI6ODUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExZjU0ZmY1MTA2ZTFmMmIxNWVkODI1MGFlNzM0M2MzYzQ0NDE1NmRjZjU1NGFiNzNiYzBlZjc3NjAxMGQ3OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2MjQwYmJiMDFiNzQ5NmI4ODc3NzA1ZTk1MTk1YmQwZjVjZTRlYWNmMjIxM2I3NmNhZWZmNGExZGViZjI4ODciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhNGViZjk4NjFlNjgzOTk5ZjhiYmJkZjljM2RlZDc2YWFmOGY4NDc2YTc2OTNlMjYzNGQ1ZjU2ZGJhOGQ2MWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0MzU3MGFkNWM1M2VjMjE4ZjRkYjM1YjNhMDlmMmUyNmU4MzhkMmExMzlmNGY2ZGIwNjM5MzAzYjM5YWQ2YzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bf8e3de1ccd1465bb8ca3ffeea47eda0",
+      "statement": "git_unavailable_returns_false in src/segment/git.rs mocks an empty PATH via raw env mutation (restoring it afterward) and asserts Git.render returns false — the safe, no-panic fallback when the git subprocess cannot spawn — complementing the parse-status unit tests that never invoke a subprocess.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/git.rs#L297-L335",
+          "version": "repo-lines-v1:sha256:0ecf40592574423e07c0ea62ee54c51ed4e2b72ba178557561c67eca93a0f00d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1NjM0YWU4N2Q4NjU4ZjdlOGZhMDJmMmJiZGUwNGQwNzU1OWRlNWY0NTFlOWM1ZGY2NDYyN2IwYWRiNWIwOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljZDE3ZGM1ZDQxNWUzY2ZiZTA2MGZmMzlmMTFlMDExNjI3ZmIzOGFjYmM5NTVhNDk4OWMzZWJlYzBiZTQ1YzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_374ae49362534b69a21f100b55005918",
+      "statement": "save_clears_dirty verifies that App::save writes the config to save_path and only clears the dirty flag (synchronizes saved_config) after a successful write, while reset_restores_defaults_and_cursors verifies that App::reset restores Config::default(), rebuilds the list, and clears dirty.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/app.rs#L208-L228",
+          "version": "repo-lines-v1:sha256:266324b11990f1138bf319e78d9f6e86cf36b2f6e90750fd31be48f889f77419:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2Y2IxMzRiNTE5NjAyNTVhZTUwODcwYmJkYTliNGY5NGU1MGVlNjE0ZjhkZDQ1NjJjMmJkN2Y0NGIwMmExNzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlY2NiODZmZmNkMTBkOGU4OGNhZDc1MjEyN2I1MzdkNjk3OTZkYTI0OWI2YzA0YzgyNmQ4MjYxY2E0ZGU0MjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwZTQ1YTI1ZmYxNTk5YmFiMDA4YzZjZDgzYTgyNmVhNTk2YjBmYTk1MzY5MzU0ZTk0NTk4NTU5YTIyMTRiNDMifQ"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L661-L686",
+          "version": "repo-lines-v1:sha256:d6b092186fad360f8f2ffc6180ea537dbd6d3383d6de238af3e87aba7d829a85:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlYWFjM2NhNzJiNGZhZGY5MjAyNzA0Njg4ZDEwODE3MjhkNzM5MTMzMDVjYjYyYTEyNzdiZDk2MmJhN2I0ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiMDQzM2Y5MGY3NTJkYTk1MjUzNWM5ZTU4ZTc0ZTFiZTJmMTk4YmZlMGU2ZDk4NDQ5NmU1MjA0OTJmNDI4OTcifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-27T14:08:42.273Z"
+  }
+}

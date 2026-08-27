@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:918ded069cb6deebc8fd8d97985b309ce5a235ddfa0f767c1da64d65a7f6cf1e",
+  "claims": [
+    {
+      "id": "claim_6b277f077bd746b3911c9a709d64d376",
+      "statement": "claudebar treats ANSI/OSC escape-injection as a terminal-injection surface: host-provided strings (cwd, git branch, model display name) are stripped of the terminal-control bytes ESC, BEL, CR, and LF before they enter the rendered statusline, in both the Rust render path and the bash fallback.",
+      "evidence": [
+        {
+          "resource": "repo://src/sanitize.rs#L4-L12",
+          "version": "repo-lines-v1:sha256:5c355e67f2fcbe7f55e33afd6a40012bf43d59eef35a963a203ee25ce3c5d11e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI4NTg5YWE4MTkyZTdhN2I5ZWRlYjYyYjM3NjE2MTBkZDY3ZGFlYmFlNzAwMjg4YjVlZjExM2UwZjU3YzBiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDg1MDkyMThlNGRkODVlOTM2MDBhOTBkZjhhZDJmNWM2ZmIyOTkwMzI3YmUxNzNkMWEzZGQ0Y2Y5MmI4ZmJjYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjg3OWUxZjE5NjkwNDRjZjQyMTVjY2RmNzZiNjk3MDQ1YjYzZTM1MDE0YTM5MGUzNjY5YmQ4OWE5OGMwMGU4NCJ9"
+        },
+        {
+          "resource": "repo://statusline-command.sh#L16-L18",
+          "version": "repo-lines-v1:sha256:0d861d47543b6a19ac24b11476588e573be63b6a228bc66f7b32d897b19656f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODA5NmE4Mzc2ZWIyOTliNzJiZjg2OTJiYjc2Yzk4YjgxN2NiNmNiMGVlOGJkNjk1NWQ4YWI1ZjQxOGFlOGZjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI2MDVmYWFhOGU3ZjY5M2QxYzAxNDZmNTIwNjYxZTFhMGJlMjlkZjZiN2FiZDg2YjM1YmZmNjVmZGIzMzBiOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTRmMjljNGZkNDFmYjgyYmI1YzY5ZDA2NDdjMmMwOTRkZDI0OWUxOTM5ZjA0ZTkzZTNiNGMwNDEzZDYxNTUwYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGU5MjYwZGNlYjlhZjI4MDZkMWFjMzhhMGVlY2ZmMzUyMTNmOTMyZjI2NWY0MTkzYzk3MjVlNWRjYzQ4ZTIxMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_bcdfbd0bdcfd4ed5b5410d2f9f92276f",
+      "statement": "sanitize::strip_control is a pure string transform that filters out exactly the four bytes ESC (\\x1b), BEL (\\x07), CR (\\r), and LF (\\n); it filters per Rust char so it is safe on multi-byte UTF-8 and never splits a codepoint.",
+      "evidence": [
+        {
+          "resource": "repo://src/sanitize.rs#L7-L12",
+          "version": "repo-lines-v1:sha256:9546505994a2169b1858dccd165449aca817c91cbb42c2368cb815e09b0e9c63:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTM1NWM1MGM0ZjFjYmY0ZTM1MDg1Zjk5Zjc0Nzc2YjE0YmIzZDY4ODVmODI0NzM1YmRjYWZlM2Y1MDIwNTgwNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2YxOWNjM2IzMjA0YTVlYjgzN2I2ZDc1ODc3NGViMWQ2MDBmYjQ2NjhlOTM2NjYwMjI1Zjk5M2I4NjI3NmE5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjg3OWUxZjE5NjkwNDRjZjQyMTVjY2RmNzZiNjk3MDQ1YjYzZTM1MDE0YTM5MGUzNjY5YmQ4OWE5OGMwMGU4NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_79697c9420fe41f4bec40e40b53c4881",
+      "statement": "Sanitization happens at render time per segment, not at parse time: InputData::parse is a plain serde_json deserialize with no sanitization, so raw host strings flow through the parsed model unmodified and are only made safe when a segment calls strip_control on the value it is about to emit.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/input.rs#L147-L153",
+          "version": "repo-lines-v1:sha256:42531db528c65bd535237aeaf632a6767ba78c12f1d0c6c610ef03114205fdba:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjFlYWI2YTQ4MjQyYzZjMTE0MzI3YWY2Y2FhYjliZjU1ZGQ5N2IxNTg4MDg5MWZiNWE3MDQ5Yzc4YzE4ZTk3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWRmMThlYmQ0YTBmNDJjZTExMTUxZWMzMjJmN2YxODMyNjk3MzA3NWIxMjQyZDgzZGU2MDgyZWU4ZDc1NDhhYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTFhMWNjMmRjMGVmNDNkMTU5ZmMzYjZmYWExY2ZkYzFkMGVkN2ZkNjI1YjE0MmMwNTkwYWIyNDA0YjVjYTQyMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ab0d86ce77345f3ba07f63e2fa57a09",
+      "statement": "The directory segment sanitizes cwd via abbreviate_path, which calls strip_control on its result; the git, model, and dev-context segments each call strip_control on the specific host-provided strings they emit (branch name; display_name and effort.level; worktree name, agent.name and pr.review_state).",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/dev_context.rs#L25-L39",
+          "version": "repo-lines-v1:sha256:02539675a8ef6421136f8dc6bbe8ad64430f876f8d7cd975d5557b2bbfa98e61:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmYzdiOWIzZmUxNTJjY2Q3ZjM4OGI4NGM2ZDIzZjUyYzdiZmI4NDQ1MmQ4YTliZWJmNDk5MjQwMTc1ZTAwNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMGNiMTY2NjVhNzZhYWM5YjA1ODBlMWE1ZDBhZTdkNWMzMjVlNjlhNGUxNTdlNTU5NTI0Yjg5MWMyOGE2M2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlZmE2N2NkYWJmN2I0ODkxNDM3Zjk5NDNlODRiMjY3MzAzMjFkNDcwNGFhYzU0YWViNjM4MGE1MWMwNTg2MGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhMjlmNWNiMDcwODMxMTI5YmQwOWFkMmMwZjRmYTc3OWE1MmViODk2NGVkZTQ0ZTY2MGViMmE0MGQ0ODVlMWUifQ"
+        },
+        {
+          "resource": "repo://src/segment/directory.rs#L6-L27",
+          "version": "repo-lines-v1:sha256:ed07c340299811f0af8e242088fd23522152fa319a788c3d48d43e11f9f6d9fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0M2YyOGRmZWJmNjA2ZDZkNWVjNjg2NmEzNjZhMWE4NzRiNTBiOWRhNzAwZTliNTdmYzU1ODViOGIzMDgyNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1MTliNDRjZWZiMTkwYjJmYzFiZGU2NDYwN2FmM2M5MjQ1ODZmZmIzNjY2OTBkOWJlMGVjYjgxZmQ2OTFlZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        },
+        {
+          "resource": "repo://src/segment/git.rs#L19-L20",
+          "version": "repo-lines-v1:sha256:a438618fea23e1121bb56bcea75d6c5cf58259820d44d9b565e48afd977f4bf7:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzljNWY3NjllMDQ3NzhiNzk5NzAzNDY1NWVhYzMxZDA3OTM4NDA4M2M5Yzk1NzY4NmUyODVlMTc0ZWUzNzkwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWNjYjQyODgyNjZlNDZlNWI1ZGM1MzVhZmE2MGYzNmM5OGE1NzlmYzZmMzE3MDEwMGU3NWNmZTc1OTkxZTBjYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjMxNzk4NjdlZmZlZTM4NDRkYjlkZTgyNDE0NmM4NzYxMzc2MWJhMDZkNTBiNGY5YjAxMWVmZGZhZGEyNjMwZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTlmMTBjYmU0NjNkNGNlYjcxOTliY2M5ZWNmMWJlOWE1MmQ0MjI5NjA4ZGYzZmU1ZmJkNDQyYWFhYjFmNDI5OSJ9"
+        },
+        {
+          "resource": "repo://src/segment/model.rs#L27-L41",
+          "version": "repo-lines-v1:sha256:92b3c63124c7268e05a22fd708b52b86446c047c47b7bf27e19cb21ad39c72a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllZjkyYjY5N2E1ZGVkMzViYWNjNzIxZWVkMjI4YjE0NGMxMDU0YzUzMGQyNjM4YTUwMWNkMzYzYzk2ZTM1MGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMGNiMTY2NjVhNzZhYWM5YjA1ODBlMWE1ZDBhZTdkNWMzMjVlNjlhNGUxNTdlNTU5NTI0Yjg5MWMyOGE2M2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllZmU3NGIyMjI4YjRmZWY4YTU5MjI1ODQxMmYzMDYxN2EzODk3YjVmYzExNTE4MGJjMGM3YjE1NjNjMzI5ZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYyZWI1MjA0M2YzMWZiOGFjYTcxZTVhYzdlZjI1OTc3YmQ3ZTI5ZGVkOGMwY2YyZTJiZmU0NjNhYWI1ZmNjZDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c0361b1deb4466588135246765fc77e",
+      "statement": "The git branch name is the primary injection surface because it is sourced from subprocess output (git status --branch --porcelain); parse_status runs the branch through strip_control and returns None if the result is empty, so a fully-stripped branch hides the segment rather than emitting a blank or detached line.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/git.rs#L266-L271",
+          "version": "repo-lines-v1:sha256:6c0525ca081cce2325bfe44f20830b2606f1a6d58f0e000ecfde29d2f92b0ed8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTIwOTIwODNiM2QyMjFhOWQ5MDYwYjIwMjAwYzIyZjBkNjYxN2RiZjI4YjIwNzNhY2Y2MjdhNjkxOTEyODk5MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDE2Yjg4ZTljYzY4YzA0Zjg4YTg5MTZiZDAyMjRmNGFlOGEyMWNmN2I0OGIyOTJlOTNlN2MzYTQ3YmM3ZjQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/segment/git.rs#L47-L69",
+          "version": "repo-lines-v1:sha256:805041c7df8b40335aaa810d5d2450a9bec52b135df7253a9314b32707645bff:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhZGYzMGM0OTdlOGQzNjc3YjBjZDAwNDNkMjI2ZTQ0OWJhZTc2ZjE0MjhiODFjMjU3YjIzMTdkOTdkN2Q4OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmNjhkM2NkM2MwNGU5ODI5NjliMDYxNDljNzBkMjgyZGU3OWIwOTYyYmI1YmEzYjEwOWM3MzhiZjcxZjVmOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMTY4ZDZhMDgwMTYwYmExOTE2N2VlMzIwOWZiMjhhYWZlNmIyMTU4OWYyNDA2ZDk2ZDQyN2NkNjA3MTg2ZmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_429ae9f8e26e4975b8e1c48df8a08149",
+      "statement": "SegmentWriter::colored emits text verbatim into the output buffer and documents that callers must pre-sanitize host-provided strings with strip_control; the defense is a caller contract rather than a second filter inside the writer.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/writer.rs#L43-L50",
+          "version": "repo-lines-v1:sha256:a34a40701550484d0c2239a98619c1866db4074b10994e1d21de983ff2604cb9:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWJmNmUzZTE0ZjFkMjk3OTM4YzEwYjhkOTk5NmRlZWYzMzRkMGU1NGIzOTVlMTMxMWU0YjVlMjRkNjkyYmJiMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmRiYThkMDJlMzBjN2Q5OTdjZjg3ZmMxNzk4MTM1NjJjZjMyZjRkMWU5NjUwOTVhNjhhNmViNmZiYjk5NTM4MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmIxMWNiNWRhNTQzOWIwNDkzNzJiN2UzMWYxOTJhMTVlNzM3N2ZhZmI4NGY0M2Y4ZjEzYWEzYzg1YTdlMTkyYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1bb0ec3b5ae14679877c15b3262aa122",
+      "statement": "The end-to-end guarantee is pinned by fixtures/injection.json (whose cwd and model.display_name carry ESC, BEL, CR, and LF) and the injection_no_control_byte_leak test, which renders the fixture through the full pipeline, strips only the renderer's own SGR runs, and asserts the residue contains no ESC/BEL/CR/LF.",
+      "evidence": [
+        {
+          "resource": "repo://fixtures/injection.json",
+          "version": "repo-file-v1:sha256:4167177475ab04598d052b1de9279bcb91f18f55bcdc8bcc535aa9d325d13610"
+        },
+        {
+          "resource": "repo://tests/render_golden.rs#L75-L118",
+          "version": "repo-lines-v1:sha256:9909509cc6cedda52cbb2f915f30d46822670849f06ea98a0d37e4c19dba42bb:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkMjM5M2IzNTVhYWZjNzdhZTM5YTY5ZWIxYjBlZWFiZDg4M2EwZDNiYjA3MDE4MmM0NzQ0MmZjYTcyZTMwNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhZTU0MTY1YmQyODQ0YzRhNzQ4Yjc0YTAzYjZjM2E4Y2Q0ZDdiODVhMzM3ODRjNDA1ZTUxYjU2Njc3YmFjMzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fa9f71823da44080b01251bc6b582fab",
+      "statement": "Per-segment unit tests independently anchor the sanitizer: strips_control_bytes_from_branch in git, strips_injection_bytes in directory and model verify no injected ESC byte leaks beyond the renderer's own SGR codes.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/directory.rs#L64-L69",
+          "version": "repo-lines-v1:sha256:76e9f98f3ff41f04a1f3097c2de16dd9bf9af827335046767779105d13ae3110:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGJmNTM2OTEyMzNjNmQ2OWQzN2ExNTkyYTMyMTRhNzFjZWI4NmI0ZTliODAwNTYzNGU4MzFiZjYzYTAyZDRiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTAwZGIwNDBmMjkwOWJmOTc4ZmYwYTk1NmE1NWU4M2M2NTM0MThkZTZiYjY4ZjgwNDFkYTk3NmY4ZDNkMjI3MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/segment/git.rs#L267-L271",
+          "version": "repo-lines-v1:sha256:3806a8564e5685eb4247dfa7d28b614251e3195d7e6a2915ba679b1b8251602f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJiNWVkZjU5NDljZmVhNjc4MjJjZjY5MTEzMjM2M2Q2OGQ2ZjFlMTY5ZjVlMGQ0ZjdjMTRlNWZhMWU2ZDRlNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTM1MWNiYmFjZjc5NjdmMmQ1MzdmNGJkZWExN2ZkZjFmOWQ0YTBiODBhMmJhNGFmZTE0MmRjMDk4YTRmNGRhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDE2Yjg4ZTljYzY4YzA0Zjg4YTg5MTZiZDAyMjRmNGFlOGEyMWNmN2I0OGIyOTJlOTNlN2MzYTQ3YmM3ZjQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/segment/model.rs#L154-L162",
+          "version": "repo-lines-v1:sha256:82e0e9baa19e049f6052be79225ad359b2979e81d595384b5f9fa4ac1b97c28a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJiNWVkZjU5NDljZmVhNjc4MjJjZjY5MTEzMjM2M2Q2OGQ2ZjFlMTY5ZjVlMGQ0ZjdjMTRlNWZhMWU2ZDRlNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjJkODI4YTAzN2FjMWM4MTUzNWIxZDU1MDA4MzIzMjNiZmJiODY2YTNhM2Y4N2U3YTY4YzEzYTJiYWU1NmZmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fe1649015b3142009365ba2665e3a5e6",
+      "statement": "statusline-command.sh defines the strip set once as CTRL=$'\\e\\a\\r\\n' and applies it with ${var//[$CTRL]/} to the directory path, git branch, model name, and effort level; install.sh follows the same printf discipline by keeping host values as %s arguments to a constant format string.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L13-L15",
+          "version": "repo-lines-v1:sha256:5d0bae5390186fc2185fa6f7a331998a41d91d0b2e0b56822a24947cc587bc41:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTdkYzk3NDkyOGUyMmUxNzIzYzY5NzNmZWFmNTNjZGY4MGUyMGEzYTI4MjkxNjY4ZTM3YjYzZWNlZGYxYjkxYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzFjYzk1MmI3N2VjZGE5ZWMwMmE4NDEwNGMwNmE5YjdiMGUzZjIzZTMyNzMyZDRmMjA2ZTQ1NjFhYjg3OTQ5MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDU1MmU1YjUyMTUzZGUzOGU2NDJiNmU0YjdkM2FiNTg5M2NmM2ZmYWVlMGY2Mjc1ZTM3NThhMmRhYWIxZWQ0MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjgzMjI2Njk5MGIxZWQxY2U0NWFjOTk4NDEzZWRiYTdiNjY0NDQ0ODllNzMwZjQ4NWJjNTdiZTNiNDlmODI1OCJ9"
+        },
+        {
+          "resource": "repo://statusline-command.sh#L115-L115",
+          "version": "repo-lines-v1:sha256:34a7c489bd8c545a90ab227e3c0d5d3d5a52148925c92b99f327fb4d3963d680:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRhN2M0ODliZDhjNTQ1YTkwYWIyMjdlM2MwZDVkM2Q1YTUyMTQ4OTI1YzkyYjk5ZjMyN2ZiNGQzOTYzZDY4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRhN2M0ODliZDhjNTQ1YTkwYWIyMjdlM2MwZDVkM2Q1YTUyMTQ4OTI1YzkyYjk5ZjMyN2ZiNGQzOTYzZDY4MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWIyOTA2YzYyYmVkN2VkOTYzYTU0MmFkN2U2ZTY2YjYyMzNmOTU2ZjZiZDgwYTEzOTM4ZWRmMzdmMGVlZGE5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjY1OTk1ZThlNjRlNTFmZjZiZThkMjdlMzU1NmQ4MTU1MTkyODY3ZWU5NDE5NGI4MzI5ZmRkYzVjMTU1MTkzMiJ9"
+        },
+        {
+          "resource": "repo://statusline-command.sh#L136-L136",
+          "version": "repo-lines-v1:sha256:e6ae1102b2549a4906317a56316551495c06657fb5e580643eccb3d3ba15a733:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZhZTExMDJiMjU0OWE0OTA2MzE3YTU2MzE2NTUxNDk1YzA2NjU3ZmI1ZTU4MDY0M2VjY2IzZDNiYTE1YTczMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZhZTExMDJiMjU0OWE0OTA2MzE3YTU2MzE2NTUxNDk1YzA2NjU3ZmI1ZTU4MDY0M2VjY2IzZDNiYTE1YTczMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGY4NGJlOWI3MmZlMDQ5YWVjNmI4M2EwY2Q5MTRmNTZkY2MwOGI4NDRiMzdiNDgwMWFkM2YwMzhlZWEyOGM5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjgxY2Q0YmExMWUwMWQ2YzU0MDFlOTBkN2FkZmRlYmI3MjY5MDFmNDQ0YzVmMjllYjgyNzkwZThlNDA1MDAyYyJ9"
+        },
+        {
+          "resource": "repo://statusline-command.sh#L16-L18",
+          "version": "repo-lines-v1:sha256:0d861d47543b6a19ac24b11476588e573be63b6a228bc66f7b32d897b19656f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODA5NmE4Mzc2ZWIyOTliNzJiZjg2OTJiYjc2Yzk4YjgxN2NiNmNiMGVlOGJkNjk1NWQ4YWI1ZjQxOGFlOGZjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI2MDVmYWFhOGU3ZjY5M2QxYzAxNDZmNTIwNjYxZTFhMGJlMjlkZjZiN2FiZDg2YjM1YmZmNjVmZGIzMzBiOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTRmMjljNGZkNDFmYjgyYmI1YzY5ZDA2NDdjMmMwOTRkZDI0OWUxOTM5ZjA0ZTkzZTNiNGMwNDEzZDYxNTUwYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGU5MjYwZGNlYjlhZjI4MDZkMWFjMzhhMGVlY2ZmMzUyMTNmOTMyZjI2NWY0MTkzYzk3MjVlNWRjYzQ4ZTIxMiJ9"
+        },
+        {
+          "resource": "repo://statusline-command.sh#L256-L257",
+          "version": "repo-lines-v1:sha256:2dc8dab56378002f69bfecc06bfe7081f2d9d5625a735b74f1220bc98ff2649a:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjQ5OTY3YzUwMmQzYTU1ZjY1ZjExNjk1NDA1YzEyZmI3YmVjNzc3MzU0NjRkODVkNzIwMDFkYTkzMjEzYjc3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGRjMmNmZjk3Y2EyNTY3YWI0YTM1M2Q5OWM4MTBjM2Y2YjBjMmJjNWIxNDBmNmViNTE1MzBkOTE4NDZkYTk0ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzc4MWVlN2ZkMTcxN2U5MTMxNDQ1MmNhYWY4ODc4ZTA1YzUxYzhjZGM2OGFkMTFlZmI0MWJlM2Q0MjE1MGUyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWMzM2I0YjBkNTE5NzlkY2M1MzM5YjMzYjA0ODQ4YzFiOGRiZjcyNWQ0OTlkYjljYmZkYzViOGFlYjMwMTZlNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5dcdd2d62ccd49f78cb8d51f7b7a13c0",
+      "statement": "statusline-command.sh's SC2059 suppression documents that ANSI color constants deliberately reside in the printf format string while every host-provided value is passed as a %s/%d argument, making the pattern an intentional safe choice rather than a format-string defect.",
+      "evidence": [
+        {
+          "resource": "repo://statusline-command.sh#L5-L8",
+          "version": "repo-lines-v1:sha256:061cb54f2ddbdbe20e9ae77c2a4498f4b5e6d8bd730460d86fc5b04c9664b356:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzg5MTNhZDA2Nzg1ZjViZDFmMTVhZmUxNDZmNzBkZjk4ZTVmNmY0MGJjZDYwODE3NWExNThkNDU2MTA4ZTkyZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU4MWQ5NGI3MmMzNGFkNmNmNGEyZGMyZmMyN2U2ZmRlMmZiZGQwYjdlM2IxNzU4NGEzZWNiNmUwNWVlZGE1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjc0ZWMyM2EyYTM4Mjk1MDcxNzVkYWQ1YjExMzk3MGE1NjcwNTY2MjUzNmNhZjk5OWQ5ZmZjYmQ0N2UwNmE5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2I5MzVmZWYwYzA2ZGM4NTJjNDFlY2RlZjMxNmVkZWIwMjA0YTIxNmEwMDJlMzg2MGYzYWZiMDkyY2MzN2U0ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1c943f733cbb4edd8684f217abe8a9c4",
+      "statement": "src/sanitize.rs is the single home of pure, no-I/O, no-color helpers shared by hardening and display formatting: strip_control, fish-style abbreviate_path (which collapses $HOME to ~ and calls strip_control), fmt_tokens (k/M scaling with round-half-up and k→M carry, never past M), and fmt_reset (adaptive reset countdown relative to an injected now, returning None for absent/past resets).",
+      "evidence": [
+        {
+          "resource": "repo://src/sanitize.rs#L1-L2",
+          "version": "repo-lines-v1:sha256:b31efbc53aee2f13980bb37c20270d442ffa7f48a8b190ecb371e09402c80542:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTEyOGZiNDdkMTQ5ZDk0ZTQzM2YwMTcxYTQzOGE0YjQ5ODIyMWI0NDk2MDkxY2ViYWUyNDRmZWM5MzJkZDA5NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGZkMzdmYzQ0YWEwYWNiZjgxZmY4YjczYmY0NTkxNzFmYzhiYzAxOWNmNzJiMjcwYjY4OTRiZDFjNDFkMjRjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzcyYTIzMTQ1ZTA4MTY0OGE2OWY5MzQ5MTIzNWI2MTgzZGRmMWIyYTFhYmQyZjYwOGE1ZjYyODVkNTllYTMwYSJ9"
+        },
+        {
+          "resource": "repo://src/sanitize.rs#L14-L65",
+          "version": "repo-lines-v1:sha256:d3acdbb9b57a8d8336e3c64b0701678d115be844d67b8ffd8fca071d2ac6d7a5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1ODFiYzg3NTI1NzlhNGQ1NjJjOWU0Njg1NDQxM2FhOGY5ZjNhMTk2MWVhNTU5YWM1MGQ0ZjFhN2FjYTA1OGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4ODU5MjEwZWJjYjEyY2Y2OGM2MTYyMjJmYzU2MGMxZjY4ZTJmYTMxZjYzMDQ5M2RmODA5NTg4ODdkNTdhZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxNmRhM2QxZjljZGY1OGU0NjA5MWViZWU5Y2U5YjEzMGFkNGRjYWJkYzdkNzE4Y2RmMjcwNTY5MDQ4NDkzZWQifQ"
+        },
+        {
+          "resource": "repo://src/sanitize.rs#L67-L134",
+          "version": "repo-lines-v1:sha256:0ebf87eaef32311922845fb1c27f623880cd8170af2854d95d4782957f3a09f8:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxNWQyMjVmYmMxYzNiMTlhNzZlMmQxOTRkOGE2NmM4ZjA0M2UwYzFhNTc4N2IxNGE4MDk5OTk5MDk4ZmM5MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhNDg0YWU4MDhmMDQzODgzZTJiZTUwNGEwMjhlYTYwZmEyOTY4NDVmMDZiYTFkMjU5ZjUwZGYzOTQxMjcyYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-26T22:48:34.063Z"
+  }
+}

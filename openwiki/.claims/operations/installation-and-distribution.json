@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:c0274d80ed9b2acb43720b25d5c207c9644240f29c4265f6b82f004cff2b7d5e",
+  "claims": [
+    {
+      "id": "claim_f1174c62139a4146a3533c8e3f416333",
+      "statement": "cargo-dist (pinned to 0.32.0 in [workspace.metadata.dist]) is the build engine: it emits the four target archives, a SHA256 checksum file, and the Homebrew formulae, with release.yml (dist-generated) building, releasing, provenance-signing, and publishing to the micschr0/homebrew-tap tap.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L1-L47",
+          "version": "repo-lines-v1:sha256:d27859d8505b1b4ff33e3d2f10ad36bbc5c2ed374caf122c9c663b9829e20c9b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwNGJiNGEwMmY1YzI3MzYxMWIwNzAzNGMzODcwMTFiZmEyMjIzZmVkYjk4MzU2ODg5M2ZjN2MxN2QxM2U2NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyZjUzOTc3NmQyZDc2NzdkZWVjY2U4MDhkNjZmNjZhMzJjNzA3NjVhYTRmNDIxNzA0ODhhNjE0MTFiNThiZGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhMWEyMzliZmM1YmQ2NGE5MTkwYmY0YjJmMmQ1ZGUyMzYxOTcwYThhZGI2ODQ5MzU1OTlmYjYwMmZiNGY0M2MifQ"
+        },
+        {
+          "resource": "repo://Cargo.toml#L54-L90",
+          "version": "repo-lines-v1:sha256:fbd29be1bd17c7706d9ed03e0a5f6b6f7ea5aa0fbd4150b085026574a2ec8c49:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2OTZjODRiMjZiMWYzNDdhZGQ5YmI5ZTI4OGY5MzliYWZmYTdiMjM2ZWQwYjA0MDNhZmNkODAxMGQwZDQyNTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkOTM1MmFjMWViNzAwM2ViYmEyN2YwMDAwY2VlMTRmM2NhNjEwZDAwZWE1YWIzMjdlMWUzNjJlZmViYzVhMTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlMmU4NzllNjhmNDY5NmFjNDkyODFmZmYwODk1MWFlNzhlOWViMWVhOTNmYzgxZTE3Y2E4OTJkNjkzMmVlYzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkMmI3MjM5NmMwODFiN2I5YmRmOWRlY2ZmMDllZDRlOGM1MDU0OGZjYTc1ZWNhYWVmNjNiYWIwYmU1OTVhMDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a91f755017a4584b2843e7f0a363dc7",
+      "statement": "The four dist targets are listed explicitly (x86_64-unknown-linux-musl, aarch64-unknown-linux-musl, x86_64-apple-darwin, aarch64-apple-darwin) because musl is not in cargo-dist's default suite.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L58-L64",
+          "version": "repo-lines-v1:sha256:ef5774f7379d94a581d33365cc3b3153617e849d2c292a06069254635c2cd33c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzQxOTc5ODgzOWNmN2E0ODZjNzZkNGUyZmE5NjVkYzdmMDc4YTFiM2U3ZjY5MTI1ZTEyMzI0MDVmNmQwOTdmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjk0MTZlMDlmNzhiYTMxNmMwMzI1NjgyMTNiODU1ZWU3NTZlNDE1NjVkOTE4ZjA5NTE5YzgxZmQ2MjBmNDA2MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Q5ZjM1MjYyMzJmZGY4Zjk5ZTJkMjc1YmRhOGU4NzY4YTYwODk2MzZmYTI0OTVhNjUzOGZmNDQyNDY1ZDZjNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2I3MjA0ZjdiNGQxM2RhMmY0YjBhMzAxMWVkOTI5ZjkyNzYzNDgwNDgxZjM4OWIyMzkyNzE4NjYzMGMzNDRjNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c94da5c69add4f389bf3f1114bfdea0c",
+      "statement": "[workspace.metadata.dist] sets installers to ['homebrew'] only — install.sh (repo root) is the documented curl|sh path and is not built by cargo-dist — and pins unix-archive to .tar.gz (over dist's .tar.xz default) to preserve the release-URL contract that install.sh and npm expect.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L65-L82",
+          "version": "repo-lines-v1:sha256:d5aceaaafbe48c873d33644772a12f86610137cd7f21ec9e41047ecd90b360f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMjNiYWQ1NjdmM2U4Yjc0Y2I5NDRhNGQ1ZTQ0Yzc4MDdmZjc0MDY3OGRlNDljYjQwODc0YWZlNTJhZDYwYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwYjZmNDFiNTFhZmU4ZWYwMWY0N2M4OGZlZWE1M2Y5OWI5ODk5YzYzOTgyNzJjNTg2ZjhhZWI2NjdmMTc1NzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyMDhkNDdkNzcyOWE3YzFiZmIzZmRhYjk2ZDE2ZGFlZDM0ZWM1NmNmMDU5YTg3MDQzOGI2ZmMzZGUwY2JkMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5MTY0N2MyMjEwNjdlMmQ0NDU2MGEwZmE2ZDBkODU0MWRjYmE1MDNjM2M0YWFjMjVjZDQ1MTRmNDY4NzM4M2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_062a333a2f124d1888470b67e7fc0f8b",
+      "statement": "The publish-prereleases=true dist flag lets the Homebrew job publish a prerelease tag into the @beta formula; without it the job's if: condition short-circuits prereleases.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L304-L305",
+          "version": "repo-lines-v1:sha256:c289efcb9129bfcb55051e48e6e985540ecb98d248045bca6914ec73e401225c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJmNGRkMTUyMzVlMTRiYjk1ZTAyMjQ3Nzc1YzQzYTE0NTkzODc1Yzc0YzE2YWY4MjI1N2VhODdkOWE2MjM0OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwODdjZDIwOTVmNjg0MWEwM2RkNDU5ZTkxYjVhMjNmMmVlZjY1ZGJhNjc0YjJiNmQ1YzVmMGYwNDkwNmIxNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmU4ZTc1ZWExYTM3ZDU0Y2Y4NzIyMjFiOTA2OTViYmY5ZmU3Yzc0MTg0MmVlOTA0ODlmOTU5ZTNkZjBjZDIxNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWJiNTkwOGNmMDczMzFlYzZkMjQyN2MzNGZhOTljZmQ3ZGJiOGIxMmMxOGMzYmU5ZTBiOGU0ZWZhOTM2NDI0OCJ9"
+        },
+        {
+          "resource": "repo://Cargo.toml#L65-L68",
+          "version": "repo-lines-v1:sha256:480382706bf4c3dc5cdefd9adc42c5e337d312101bd2e297906102588aee0753:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAyM2JhZDU2N2YzZThiNzRjYjk0NGE0ZDVlNDRjNzgwN2ZmNzQwNjc4ZGU0OWNiNDA4NzRhZmU1MmFkNjBjNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjRhOGJhNTViMzc5Mjk0ZTliMTU3ZjRiODJlZWZjY2Q3MTdkMTNhNDU0NTQ1ODVkYTY0MTYzNGVkMDI1ZGQwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDIwOGQ0N2Q3NzI5YTdjMWJmYjNmZGFiOTZkMTZkYWVkMzRlYzU2Y2YwNTlhODcwNDM4YjZmYzNkZTBjYmQzMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmRiYjEwNzRjMzZjOTFkMmE0NDgzYTU0MzdiZDFlNTJhNDQ0ZWI5YTIxNTQ2NWY3NGNlYjI1OThkZGJiMDhhMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_60ad7192581c46ff9a3a9e1809768f89",
+      "statement": "The ARM macOS build is pinned to the macos-14 runner via [workspace.metadata.dist.github-custom-runners]; the Intel macOS and Linux-musl builders use their defaults.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L92-L96",
+          "version": "repo-lines-v1:sha256:9eaf0da0d3264956254674fc8a688b6cdd250ab3eb2c28f6e3fb2bcc88423f52:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjEyZTk2ZjZlNjA1NTE1NTdiNTYxMGNiMmU2YmRiMTAwMTJhMjgyNmY4MDE5OWYyYmUyOGI3OGViYWNlMWEzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTY0MTAxMmE3OGNiYjEwZGE0NTQwYWJmZDIzYzAwNDRhZGQ1ODgyNjk1Yzg4MmM2YTMwYzM2YzQ0YmZkYjg4ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTRjOTgwN2ZkYzViY2IzYTk4YzFmMzAzYmFjNTY5Njk4Y2NmZjZjMTBjYmU2YmM5MjJiZDg5YzQxYzY1NDBmNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8064d656208347758e6f9223395209eb",
+      "statement": "install.sh is invoked as the documented curl | sh path but is also sourceable for tests: its guarded entry point (the BASH_SOURCE[0] hook calling main only when executed) means sourcing defines functions without running the installer, enabling bats tests to exercise individual functions directly.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L1-L6",
+          "version": "repo-lines-v1:sha256:f0b71684b404b84e14478a77a0e1d24ef7d60801ce9a69c1d51e4e0430330d84:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWQ5NWZjMDRhODBjOTUyZjQ5Y2U0MTg4NjI3YzUzYjBmYmU4YzQ0MDQxYjk1MmQ1OTJhY2QxZGU5OTg2MTQ2NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODhmYzYzMzY2N2QwMzAwNzMxYmRkODQ0NzJkYzQyNGUxZjljNjQxNzVlYTJiYWRiNjY2NDcyZDkxYWViNGVmYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQyZjA4YzI4YjZhMjM5NWYzY2UyMjJkNzNmN2NiMWUzODdlMzdiYTlhYzQ5M2ZlNmNiMGM2MGI5NGJhMjYyZiJ9"
+        },
+        {
+          "resource": "repo://install.sh#L382-L384",
+          "version": "repo-lines-v1:sha256:cfd837745304b585f33d603074e9be7ff67521ade816349b3082f2d8f119f543:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWM0NGJiODA2ZmNkODMxZDQxMTI0NTA4MTdhYWM3NTcxZDNkOTYzN2M4Mjg1NzE2NTI5Mjg5NDIxODZiOTc0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc2OWQyMzdjZDQyMGI5ZDM4Yjk4MWEwYTRmNjc3MDE5MGE0YTgzZGNhMWZlNTZjNGY1YmExZTJjYmMwZWY3NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjI2ZGIxNTljMDcwZTFjZTgwMTQ1OWRlYzBmMjBmYWMyYmFjYWQ4ZGIyNTljYmFkMzRiNDg0YzkyZjkwYmIyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://tests/install.bats#L1-L12",
+          "version": "repo-lines-v1:sha256:fd883ef27058c0ea226b53ce705f18330d59893accdc8f8d06a7bea2d20801b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjMDIzY2JjOTExY2Y3NzQxMWI3OWIzOTQ0NDM4ZjJlMTExNDViMjY2MWI5NDcyNDgxZDliN2FhOGJkZGRkZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI5NzQ5NDMxOWE5MDc2NmY5MWJmZDJjNDE2ZTZmZmI2ZWU3YjM3YTg5NzliMzlkNzIwMGNmOWMyNjhlOTNiZDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a138ee160c8a4a019028629cc0a67b21",
+      "statement": "CLAUDEBAR_CHANNEL selects the release: stable (default) hits /releases/latest while beta hits /releases and takes entry [0] (newest prerelease); any other value is a fatal error.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L8-L17",
+          "version": "repo-lines-v1:sha256:4100af4c649c8708e67d228daa2c1c6a7c2620c0d770b883ffa0a0c770a7943e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjMDQ0MTk2YWVkMjI1M2JmOTI3ODRhYzAwNWY5MmRiNzJkNzM5ODhiYzMxOTYyYWRlMDJlZGMyZjI4NjAxMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0YTJiZWNmZjhhZmIzNGRiMjYwZGFiYzk2OTE1ZmZlY2ZkZTg0ODkyOTU0MWM2MTkzZGU2ZDE2NGMyMWU4ZGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzMzc1YjI2MmU4MzQyMGRiYjUwNDY1Mzk5ODNkNGUyYjI3N2Y2Zjg5MjcyMGUwY2FlNjQzZDcwNjNiOGQ4MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NmUyYTQzMDcxMTVlMzQ4MjMzNDM5ZDQ1YzU1ODhjM2U1MzI3MTEyODhiYjYwZDY0YzE5YjRlYTI3MTBmMDgifQ"
+        },
+        {
+          "resource": "repo://install.sh#L82-L93",
+          "version": "repo-lines-v1:sha256:d6f42eaa3495a24c04df20acd5c66dee59584792ac1f357856dac1624909a496:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlNDFhN2YwOTE4Mjg4M2UwZDllMzdlN2Y3YWQ5ZjY5NTQwNDdlYTJjMTM0ODJjYmFmMThlNmYxM2I0NjlhOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMmRkMzYxMzAwNzc1Zjc3Y2RlNGU0NzViNGM1MzJhNWIzOGMyNTY1NjAxZDViMWE0Y2U2OTQ4YzA0ODYwYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5YzY4ZmJjODk4NDgyYzhkY2RmMTAyNGM0YTZjNTkyM2I0YWYzNGE2MTcyN2RjOWZiZWIwNjc5ZjdhM2JhNzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_af2ebeb5a147488e86d962c98bd858ec",
+      "statement": "CLAUDEBAR_TARGET overrides target-triple detection in install.sh, and target detection maps uname -s / uname -m to the four dist triples, returning nothing for unsupported arches (which routes to the source-build fallback).",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L61-L80",
+          "version": "repo-lines-v1:sha256:c7f7bc00b3559493b08363c3f62622d95456fd78099ac0683bd5f40c5f8c9e98:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzMGE4YzBlOWM5ZDUyYTY0ZTU4NDRmZTMzODYyY2E0ZTk0MTc2NDQ3ZWUyMWRkYjY5NTliYTNkYTA5Yzg3YjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMmRkMzYxMzAwNzc1Zjc3Y2RlNGU0NzViNGM1MzJhNWIzOGMyNTY1NjAxZDViMWE0Y2U2OTQ4YzA0ODYwYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2YThlNjRkZGQzNDNkMzQzYWIyNWUxZTU3MGNiYWZlOWZjOTIxYzdmNWU5YjkwYmYxNGM1YzVjODQ2ZmE2NzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_aa05d4549fa94b7790315597395bc1c6",
+      "statement": "All install.sh downloads go through curl_https, which pins --proto '=https' --tlsv1.2 so a redirect or MITM cannot downgrade the connection.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L23-L24",
+          "version": "repo-lines-v1:sha256:4d13fb6a171783ee9c883d72ad3d6be163961818d84a605148ebacdbdad06ad3:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmE4YjRiNjA1NzgzM2E4OGE4MzI4M2RjZDU1OWM2NjMwZDUzMzI1MTE0YzA3YWE3ZTI4ZWMyYWQxNGYzNThjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDZhZmU2MmVmZGFlYTQ0ZTFmMTY1ODgxOWQyZmQ0MWZhODBkMjdkODEyNTdmNDBmYTIwZmUzNWMzZWJjM2NhMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDhjOGFmMDg0ZmUzNGVhOTE3YWY0NDFkNWZmNWMxMzBjN2QzNTg4ZTZkZGE4MjU3NmFkNmRkOGYxYzRkNmIwZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWFkODBhNTJhYzI1YzRlOWU0NmRmNzgxZjUyZWJjNWYxMjk0MWNiMjgyOTZkOTFkODRhOWFlNmZjMjkwNDgwNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_77c470bab9e1491b90aa84c4db0fe216",
+      "statement": "install.sh's dependency check requires git, curl, and jq; curl and jq are mandatory for the prebuilt download while git only matters for the git segment, and each missing dependency prints an install hint.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L26-L52",
+          "version": "repo-lines-v1:sha256:605d77cdcbfb8dc0d98cfd202c3a0a313d5f1e7cb0224086b4b483a042ef458c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwOGVkMmMxNTJkZDBhYmUzM2Y4NDU4ZjdlNTg5MWRkMmMzOWUzYjg5OWNkNzY0ODk4M2Y3NDI0YzZlN2MwYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmOGIyYjQ2OGI5YTc2MDZiM2JlOTRlOTBiZTRlYTcxZTAwYWU2MWM4M2QxMDlhZjlkNzMwMTM1NDE2YzQ4ZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzMzQ2NWIyOTgxNDNjYzcxZDUxYzk0NzkwNDMzODE2ZjM4Y2QyZWI1OGUyODYwNDUzNDU3YjhkYzQ3MzU5MTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e4e8ddab66945e3a003d782dcc0bf07",
+      "statement": "install.sh treats a SHA256 checksum mismatch as fatal (exit 1): the archive hash is compared against the sha256.sum release entry, accepting both 'hash name' and 'hash *name' formats, and a missing entry also aborts.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L119-L146",
+          "version": "repo-lines-v1:sha256:91e1e9fca14aa1346f37444c4d54547df8be4534250b0494ec7bafdaca54c888:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwODg2ZGU5NDYwMTQyOWQ2ZjhjYzdjYWE3NjkxOGY0NzYwZTg5NGU0ZWFkMjk4Y2ZiOGVhM2Y4ZmYzODFkMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMmRkMzYxMzAwNzc1Zjc3Y2RlNGU0NzViNGM1MzJhNWIzOGMyNTY1NjAxZDViMWE0Y2U2OTQ4YzA0ODYwYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxMTE5MjRkYTIyNzBmZjcwN2YxYTcwOGQwZTQ0OTk5NTQxOTg4YzFjYmIyZjIxOTQ2MDBjYThmMzY4Y2Q2OWYifQ"
+        },
+        {
+          "resource": "repo://install.sh#L240-L241",
+          "version": "repo-lines-v1:sha256:9783b8ad875a9ddd79752152e63880e1e1175211d0c964474110e0764fbf32ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODg1ZTcxZDU4MWZlMDA0NzRmYWFlZTgyZmI3MTMwZTVlNGNmZWY5N2RhNTQ3Nzg5ZWMzMGIyYjE4MjQ2YjIyNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDI3NGI2YmFhNjVhN2JlOTcwMmZmYjIxOGFjN2YwMzlmOTgzY2E3OWM0NDI2ODhiMmNkZGU2NTg0YzdmN2U0NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzRiMDQwMTAxNzA4YTU0ZGRhYzIwMGYxZGZjZDM4OGIxYmU1Yzk1MWU2NjdjMjlkYjZkZTBmZTA2NjEzNjc2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTBlMzIxNWFjZWZmZjllM2NiYWNlNGRlZDFlNDliZDBlZjAyOWYzMGNjNDg2MjBjOTAzNjBhNzkyYTMxZmUwNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0a6791126ebf40d5840c373909fcf441",
+      "statement": "Build-provenance verification in install.sh is advisory, never fatal: verify_attestation runs gh attestation verify with --signer-workflow micschr0/claudebar/.github/workflows/release.yml to scope trust to the release workflow, and skips (reports skipped) when gh is absent, predates the attestation subcommand, or is unauthenticated, warning only on a verification failure.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L148-L178",
+          "version": "repo-lines-v1:sha256:07474b4b1a5d8dadffef57a8bcfe28a8ca11e1fc1f58a04122ec4079b54cbf41:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlOTNhMzI4ZDQ1MGU5NWE2MzI3MjRiOTI0ODg5MDkwZmIyMWE3NmJhMzJmNDE4NWQzYTcxMGJjZGJlOGZmOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4NWJmZTBhNzI0M2QxOWQ4NGViM2Y1NjY1YjI4Y2MxNzBlM2NiNDQ3YTJkNWM2YmZlNzFhYTE4OTFiODMxZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwODMzMTAyYTdmMTA1Yzk3YmRjM2IxMmJmMDNhMmJjOGNkMmEzNjc1Y2IyYzMyN2QyNGY2MTFlMDRmNWFjOWQifQ"
+        },
+        {
+          "resource": "repo://tests/install.bats#L132-L194",
+          "version": "repo-lines-v1:sha256:398afdba63eed74fc109826a1ca5de77c1f85169629dd87281a8bb1fecce8352:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmMjUxNmJlNzExNmMyNzljZTIwNWZmOGM5YzRjZTc5MjhhNWViOGFkOTI0YjkwNDE0Y2U3OGViNTE1NmE3NjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmMjM4NGJjMjkwZTM1NjNjZDQ2NDdmMzFhYmZiYjllZWI5ZDk4NTk0NTI2OTQ2ZDQwOWRlM2UwMDllZWNiM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1ZDRjODRlOTE5YWU5ZDU5OGIzMWIwNjJiZjM5MGE4NDJhNDA0MDYxMzJlYjhmZWViYjZhN2MwYzA3Nzg3ZmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_291b5b6c880c4a1b90fa88523ec48dd0",
+      "statement": "install.sh's --signer-workflow choice matters because --repo alone would only prove the attestation belongs to this repo, not that release.yml signed it.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L148-L152",
+          "version": "repo-lines-v1:sha256:667504940c7a3fe484b675fc447da804079c00e315c14d364d807adb1eaaf174:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmU5M2EzMjhkNDUwZTk1YTYzMjcyNGI5MjQ4ODkwOTBmYjIxYTc2YmEzMmY0MTg1ZDNhNzEwYmNkYmU4ZmY5ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjkwMGRlYWM2YWNkMGU3MmE3NzI1ZmE2MDNiYzcxNjA5MGNiN2NhYmYzMmQyYTZiZjRmZTBlZDc5ZTRkZDc0NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTg1YmZlMGE3MjQzZDE5ZDg0ZWIzZjU2NjViMjhjYzE3MGUzY2I0NDdhMmQ1YzZiZmU3MWFhMTg5MWI4MzFlNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGNjNzQ5MWU4YTBmNDQ1YjYyZmY3YjI2ZDcyNjQ5MjIwNzgxOTViMTMwYTQ2MDJmNmM1MDhhMjhmNzBhMmUxZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_44e3ac9176184ce2a9b7e9299107a108",
+      "statement": "Download URLs come from the GitHub API response, which install.sh otherwise trusts blindly, so require_github_host rejects anything not hosted on https://github.com (fatal), applied to both the archive and checksum URLs.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L107-L117",
+          "version": "repo-lines-v1:sha256:c3919a738a4217cafda5d09c3fdd76ca5bb15b67c23751a3c9961c32382043eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMTEyOGQ1NDY3N2Q1MWVhZDczZjk2ZmZlMWUyZjZiOTk2NzczZTBlNjUwNTVhYjRkYmE4NDgwZGE3N2EyNGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2ODc4OGUwOWJhMmVhNTJjNDQzMzdiMTY4ZTllYzJmNzc1NWViYThjY2VkYjcyZDRlNDUxN2ZhYjcyZGQxODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0MGM5OWNmNzIwYTZhN2NlODY3MjcwY2U2N2MyODc5ZmE1NDk3NDY0MzRkYjhjMTg3MTVmZDY2YzJmM2I2ODUifQ"
+        },
+        {
+          "resource": "repo://install.sh#L230-L231",
+          "version": "repo-lines-v1:sha256:89c9b7cb896ea21f351d20dbc4d839c0b88b498eb50fcd8f47f9dfc3a5a50ee2:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTQyZWI4ZTQxMmEyZDljM2I1ZWRkMGE3NmYyYWUyYjlhZmMyZjVjNzVlNDRlOGRlZTllNjhjMDFhZDhlMDhiNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBjZDA5YjE1ZDM3NmY2MjNiMWY1MzcwZDM1MDVjZjczNzU1MDgwNjc5MDczNDg2ZTgwYWFlMGI2N2MyNjkwMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzRiMDQwMTAxNzA4YTU0ZGRhYzIwMGYxZGZjZDM4OGIxYmU1Yzk1MWU2NjdjMjlkYjZkZTBmZTA2NjEzNjc2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDgxOTczODVhYjk0Njk0MWRmZGEzNTBmNmFjZmZlZmM4MzNlODVhNzM0NmFlZGZiZDllZjE3YmM5NTAzZDA2NiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d4463eb9e1ec44cd8f421ccd2f84b094",
+      "statement": "install.sh rejects archives containing '..' path components or absolute paths before extraction, and extracts with tar --no-same-owner --strip-components=1 (no-same-owner works around gVisor returning ENOSYS when tar creates a directory then opens files in it).",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L180-L192",
+          "version": "repo-lines-v1:sha256:100b7e727a5a6def8356fd3a12da522ce677d9cb3b65fa613d7c93af2a82edab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4MDEzZjk2Y2Y2MTdkNjdkZjJmNzM1NjgzYWQ4NmZiMTA2NGJlZjQzZjczZmExMjU4OWViYWFlYmJhNWNhZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI2MTQzYjg5ZWViZjBjOTkxZWQ2NzM5MzVmNWVkMjRmZDI3YmYxNTY5ZDRmNmRhMWMwYWU3NDExNGY2ZDUxNWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1ZTdmMGEyMDBiOWNkZDliZTdlMDBjYzVjNWJlOGFjNThmZTJkYzFjNzEzOGEzYzIwYWVjOTJlN2RhNjllOGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8d645c2cb75c405dabdd051056d02417",
+      "statement": "install.sh main tries a Tier 1 prebuilt download then falls back to Tier 2 cargo build: a checksum mismatch, a missing checksum entry, or an untrusted host is fatal, while any other recoverable failure (no release, no asset, no checksum file, download failure) falls through to install_from_source, which requires cargo, a Cargo.toml, and a nearby source dir.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L205-L270",
+          "version": "repo-lines-v1:sha256:4b88126cfaeeae5fa81a6b90e6117e4fd1f7134f42f1430a0674c247482d8087:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhYjZhMjVlOTAxZmRiNWNjOGQ0MzcwMjEzNWFmZmI0ZTk2MjA2ZDQ4ZmZjMzJjNTI4ZjNjN2Q3NGYwNzVlOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzZTE5NTE4MWZjOTZlODU1OTVlNjI5YzIyNjNmOGUwZmJlZmVlZWZmMDcxOTNiOTk2NDA1YmJjM2U2MzkxNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1OGVhY2NhN2UxZGFkMzJlZTNiN2RkOWUwN2Q0MWQ3YjgzNWZiN2IzM2Y0OTU3MDNiZjc2YWEyMWUxZTA2NzIifQ"
+        },
+        {
+          "resource": "repo://install.sh#L329-L364",
+          "version": "repo-lines-v1:sha256:1182f5b884b54f7d80223aff65b4c86daa32db11c659a612eff2ad7d612548ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExZTI5MjY5NDdhYWE1ZmNjYzUwMjhhMDg5NDg1Y2MzYTNmNTkxMmNhYzNmNGRjYzdiMDZmZWMwNzcyY2UyMjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1ZmM5MGZmOGE0NDE0YzU0NDFkMGY2NzdjNWNiZmRhMzhiNDc0ZTUxYmZkNTU5YTU1NTlkZTBmODc3MDU1MjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkNzJiZDkxNDQwMzA4ZTgzYjg1ZWE0MmRiMTEyYjNkNThkY2IyZjg1NGZhYTBjNDIwOGYyZDkwZWY5YjVmZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwMjM4NjFkZWQ3ZmNkZmQ2ODFjOGIwZWYwYjBjMTJlNTBiMzg1MWE2NTk0OGMzODI2ZTIwNjI1ZGEyNThiODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5a2b18a19159435ea8633b5e16e450c8",
+      "statement": "After a successful install, install.sh runs '<BIN_DEST> setup --yes --force --binary-path <BIN_DEST>' (skipped when CLAUDEBAR_SKIP_SETUP is set), then links a symlink onto PATH preferring the first writable canonical bin dir and defaulting to ~/.local/bin, and reports whether a Nerd Font is detected.",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L272-L327",
+          "version": "repo-lines-v1:sha256:5272ac65c5b59c408159ed7eee7376269087e652db8d45eb4928cb9095457fff:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNjhiMjQyZDdiZDEzNTMxYTUwMDg5YmE1NjVjZTY4MGExZjdmNWUxYzFlMzE0MTU4ODE0YzI3Y2E0NzdiZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3OTg2YzAwZGU4OWNiYTJkN2RjNWI2NGIxMjBkOTNiYzZjNWFiYzhkYjFmODI4ZjQ0M2JiNGJkODBmMjViZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYyYjQ3OWI5ZWMwMDA0ZDk2ZGYzZTVmNjk2M2M1ZjY5MTZhNDA3NWM0OGU5Yjk4Y2E0MzVhZWI1ZDUzNGNlYTUifQ"
+        },
+        {
+          "resource": "repo://install.sh#L366-L377",
+          "version": "repo-lines-v1:sha256:d26b22faa11c7c65e100a5c768300c712798ba2ff6ca5cac389983b99a719543:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViMGU4NTJhNzUyNGQ1YmMxYjNjZDEzZWYzNTI3NWJiMzAzZjFiODI4MTU5NjQ1NjI4ZWIyNjBkODQ3YWM0ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMTM3MmFiY2RiYmI4ZGY4NmI2MTFkMmRjYmZkZDc1MjhjNTNlZDU3YWVhZmQwOTZlZThhZGIwMzQ0M2NjM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZjFkOTViMTFmNzgxYjJjZTFmNjVjMWMwZTdjYzFmODRjMDgwYjA0OTNiNzdjZDUxOWFmNGFlYThiNjI1NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyYTliNDYzOWQzMzc4NGI2NWM3MDNhYmM3OTg4Y2ZmYzcyYmE2ZTM1ZDgzMTc3ZWJiNmEyNGQxMGRjMzY2YmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c86e32ce7d0b4792a6dc2fb7994ceaaa",
+      "statement": "The npm main package @micschr0/claudebar is a thin launcher: it declares bin claudebar -> ./bin/claudebar.js and four platform optionalDependencies, and bin/claudebar.js maps process.platform+arch to the matching platform package, resolves its binary via require.resolve, and spawnSyncs it with forwarded argv, exiting 1 on unsupported platforms or a missing platform binary.",
+      "evidence": [
+        {
+          "resource": "repo://npm/main/bin/claudebar.js#L1-L33",
+          "version": "repo-lines-v1:sha256:f8335def61ae2686c816ddd9e82c14e800ce7285543409768d20af3d8781a7ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1OWM0Nzg3MmI3MWYxMjU4OTk0Mjg5MjQ2NGU3NjRjMGRiMzUwYzIwYjcyMjI4NjQ1NjE1Y2MzNmUwYTA3MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5ZjM1ZDg5YjkyMDg3ODhjYTE5MmE3ZDIzMzUxMDBjMzRmOTExMmI4MmY4ZjkyNjE5ZGE3NzY5NmE0YzI3N2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://npm/main/package.json#L1-L19",
+          "version": "repo-lines-v1:sha256:e7c6f29c7132c40037801d66430de73982ec95386d24800c4cb1fde3d37ca8b1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3MTQ5NzcxNDhmYmE3N2FkZjhiNDk3YzI3Y2JiYTBlNmFhYWNlN2M5YTIxOWEyOWM3MmExYzNlM2E1ZTBlNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmMTBjNGU5MmM0OWZiMmEyNjU5ZjVjMWJjNmQ3M2UzODYxOWI1M2Y3NTA4ZGI2OTMyNWQwY2M4Y2M5ZmE4YmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9a6b331730e14bb09e24d693d09ad048",
+      "statement": "Each @micschr0/claudebar-<platform> package is a package.json with os/cpu constraints and a single claudebar native binary; npm/pnpm select the matching one via optionalDependencies plus os/cpu, requiring no Node runtime or postinstall download.",
+      "evidence": [
+        {
+          "resource": "repo://npm/platforms/darwin-arm64/package.json#L1-L20",
+          "version": "repo-lines-v1:sha256:0c34f44645f2c9cf70bb72bbb50b9664e051d0da89328ef74e10a417d52e26eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://npm/platforms/linux-x64-musl/package.json#L1-L20",
+          "version": "repo-lines-v1:sha256:c69e255af5222612ff9680383710a0e405d3ee203f89a04365e8ad8b7049e549:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_71a24f9e461643a1bcfe6270cf01ce3d",
+      "statement": "npm-release.yml runs after a GitHub Release is published, downloads the already-attested claudebar-*.tar.gz assets via gh release download, extracts them, copies the npm/main and npm/platforms templates, sed-substitutes the 0.0.0 placeholder with the release tag, copies each binary into its platform package (mapping dist target to platform dir), smoke-tests the wrapper, then publishes the four platform packages and the main package to the public registry.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/npm-release.yml#L1-L109",
+          "version": "repo-lines-v1:sha256:ce4e9dd66dc96b019b1e0e96be029d1e161c3f09e165267097efbbdc0ee4cb94:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MWM3NDdlYmNmMDI2NzE0OWRiZjc5ZTdiNjBjZDZhNjAzMWIxYzU0OTcxNmU3ZGY5MTNlNDk4YTY0YWViZDU5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiNmJkYzg2YmYzNWIwNzI1YjkwZmVkMjYwODI1ZDA0MTAzMTRjMjhiOTY3ZWM1NWE4OWZmN2JiODA3MWNlODdkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_936c946977df4d2682c500aacff04252",
+      "statement": "The npm/pnpm packages ship the already-attested release binaries unchanged and carry no npm registry provenance, since the package would otherwise attest the repackaging workflow rather than the build; the provenance install.sh checks is the release.yml attestation on the binaries themselves.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/npm-release.yml#L1-L5",
+          "version": "repo-lines-v1:sha256:40f60987e191e2ca0d50b218914740378276249cd548afed515aca47fd312c58:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTFjNzQ3ZWJjZjAyNjcxNDlkYmY3OWU3YjYwY2Q2YTYwMzFiMWM1NDk3MTZlN2RmOTEzZTQ5OGE2NGFlYmQ1OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjc5OGI0ZGM4ZGQ1YzRmZjRjZTI5MWQ1NDNhMGYzYTcxNGRmMmQ2ZmY5MjAxYzI5Zjk4NDczY2E4YTQ0Y2NkYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjkxMTYzMjJjNGM2NzMxNzYzOWQ2MmI0OTJhOGVhOGZkMDc1ZTAxMzQ4NDMwY2E3MDllZTgxZjVhZmY2OTMxMyJ9"
+        },
+        {
+          "resource": "repo://README.md#L64-L77",
+          "version": "repo-lines-v1:sha256:a97b3187d3bc75e1f993c7bff01916f9110d16874e2753894974b937f478b7ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyMTcyOTQwOTA4NjZmYzQ0N2QxNDA3M2RiN2FiZWVmMzIzN2M4NWU5ODhiYTViNDQ0Mjc0ZmQ1NTVlY2QyZjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmNDZkNmRhZGQzOTY3OGYwODNiMzg0ZTdjZjcwYjIxMjljZWFkNjI2MjM3M2FiMjMwMDZmMDc4NGY0Mzg3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyNTJhYzc2ODQyMjcyMjYzZDNhYjAwNzg2OWQ1MDY1MmMxNzJmMjY0ZjI4NzA4YWZhZWUwOWMyOTNjY2NiNzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8bf85ef1bfe747a6b338208f9deb414d",
+      "statement": "release.yml's custom-homebrew-app-token job (reapplied after 'dist generate') commits stable releases to Formula/claudebar.rb and rewrites prereleases into Formula/claudebar-beta.rb: it strips the bottle block, renames the class to ClaudebarBeta (a @ suffix is not a legal Ruby constant), aborts if the rename substitution count is not exactly 1, and load-tests the formula through brew info so class/filename mismatches fail at publish time.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L298-L409",
+          "version": "repo-lines-v1:sha256:255c7001a29e13789513560e1c84e9a753a84cbc830d0ba041f3e721070b4179:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1Y2U0YmUwMjQwYTU3ZWIzODNjNGZhYzNmOGZlZGQ1OWI5NDUyYzgzZDVjMDJmYmZmMjY5NTMxYmNhNmZmMTg2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzODEzMzNkZjY2ZDU5NWM2MjIzNzQxMmU3ZDE2MDdiNWNmYjAxMTQ3ZjBmM2E5ZGI3YjdhYzRlNzI5YzQzZDIzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxYWNiMmMyMzEzOTg1MjljOTQ0MmE2MDUxYjk0MGRkZmIwZGE0NGFhNTFkMzc4NmE4ZjkyOTEwZDEzZWM1NmM0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkZjMwN2ExYTczNTM2MDEwNjc2MWFiMzRhMzg5ZTc2NGNiZGM3YjkyNWI2OGU3MDM5MTdiN2MxOTk1MDkwMTA2In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_7cfb2a44aacd4fa7a119490ae1a10bd7",
+      "statement": "Stable and beta Homebrew formulae never share a commit, so brew upgrade cannot bounce stable users onto beta; users install micschr0/tap/claudebar (stable) or micschr0/tap/claudebar-beta (prerelease).",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/release.yml#L298-L298",
+          "version": "repo-lines-v1:sha256:5ce4be0240a57eb383c4fac3f8fedd59b9452c83d5c02fbff269531bca6ff186:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWNlNGJlMDI0MGE1N2ViMzgzYzRmYWMzZjhmZWRkNTliOTQ1MmM4M2Q1YzAyZmJmZjI2OTUzMWJjYTZmZjE4NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWNlNGJlMDI0MGE1N2ViMzgzYzRmYWMzZjhmZWRkNTliOTQ1MmM4M2Q1YzAyZmJmZjI2OTUzMWJjYTZmZjE4NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWFjYjJjMjMxMzk4NTI5Yzk0NDJhNjA1MWI5NDBkZGZiMGRhNDRhYTUxZDM3ODZhOGY5MjkxMGQxM2VjNTZjNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGNkNzFjYjAzNWQ4OTI5OWMwMzVkNjc5YzdkMTE4YWY4NzBlNmEwNjgwMTA3NjUzNGYxNWU3ZDBlNWYyNmM3MCJ9"
+        },
+        {
+          "resource": "repo://README.md#L89-L107",
+          "version": "repo-lines-v1:sha256:2fea1847425333f5b2583e51d3afb33897653e6cc0c90afbe01bd51f2241f15c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkMjQ1YTYzNjQ5NzY2MGFjYWEwNWMyYWIzOTRhM2MyZWYzMDY5M2U4OGVkZGFlYjRjNTRhNjNmMTIzNmMyYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2MTFhNjE0MWU2MmJmZWEyMTQxODc0Y2E0ZDQxODBjYTNmZTliOGEwZjJkNTYxNDE3OWIwNDc4ODVlMzU5M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5OGMxNzNkZTE3MDY0NWQ4YzEwN2NlNTk5OWFkZDZmYmM3MmQzZDRmMGM3ZWJkNTNhMTY1ZDFmOTRiYTAxMmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_53d7064d5ebb4b5aac5cd6047aaa8d04",
+      "statement": "The CalVer tag (YYYY.M.D[-beta.N]) is the single source of truth shared by Cargo.toml, the GitHub Release, the Homebrew formula version, and the npm package version.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/npm-release.yml#L37-L47",
+          "version": "repo-lines-v1:sha256:fda42509f55fda30d9e93b6f558e8384e54be08edb5e83d4bb92181a75e0dbbc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiNzdhNWQ5YzgxY2I2YzU4YjhjMjc0YWNhNjQwMzBhZDRlMmU4MjlkNTQzODVkNDFiYzZmOTEzMTlkYmY2MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxZDg0YTIxMTUzMWUzN2UwZWU0N2RmNTYyOGIxM2MyNjE3MzdjMDRkNjFkZGRlOTYzODA4MWYyMjUwYjg5OWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4NzAxZDExYTQzM2JiZjVmZmNhZjE3ZWY0YjMxZWQyNmU0ZWU1Yjg1OTFjZjI1OWI5OThiNWM5MDIzNzE0NDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyYjg4YTZlYWUyOTM0NWY2YmJiNjFhZTZlNWMzY2ZlNTAyYjBjZDE5YjU0MDkzNTM5YzNjNzdlZGZjMTI3YjAifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/release-prep.yml#L1-L26",
+          "version": "repo-lines-v1:sha256:dd2bb30cd0e4795fd7b0565b2c1be06f4ed0da91ad2b2ed54daa4b7991df0263:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0NGVhNmNiNzE3YzVkOGM5NWJkOGQxZDY3MmYwM2VlYmViNjJlMGIyNDQxYWFkOTE4MjUzODlhMmUyZDY0ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0YWZlMjRkYWYzNGQxYjVjZjgzZmNhYTNmNTZhYTRjMTA3YzA1ODAzOWM4NTdiY2I2ZDUxNmQ2MjE5NDdmMDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExMmRkYjEwYzFkMWMzODNkMzhkYWM1NWExMzVjNzg2NjMyZmVmMGIyYzVlYThlY2M2YmNiOGQ3NjdlNzA2NzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e6fbecbe558d475480b82bbfe803aaa7",
+      "statement": "tests/install.bats sources install.sh and unit-tests the pure functions: detect_target (override and uname mapping), release JSON parsing, require_github_host, verify_checksum, verify_attestation (asserting every skip/fail branch always returns 0 because it is non-fatal by design), archive safety, and install_from_source guards.",
+      "evidence": [
+        {
+          "resource": "repo://tests/install.bats#L1-L248",
+          "version": "repo-lines-v1:sha256:d641add2db71a379e5029babbed025c679463b077d6d970d56f4428b85d722b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQ4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3YzAyM2NiYzkxMWNmNzc0MTFiNzliMzk0NDQzOGYyZTExMTQ1YjI2NjFiOTQ3MjQ4MWQ5YjdhYThiZGRkZGQ0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_27930cbe968b4d2dab76297ce19643b8",
+      "statement": "verify-install.yml is the end-to-end network test: it runs install.sh piped via stdin (matching documented curl|bash and catching unbound-variable bugs that only surface without a source file) in a clean HOME with cargo stripped from PATH so a broken prebuilt download cannot be masked by the cargo build fallback, asserts the binary is executable, and smoke-runs --version and render where the arch matches (CLAUDEBAR_TARGET forces the desired asset).",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/verify-install.yml#L1-L107",
+          "version": "repo-lines-v1:sha256:47775f40f92a94fffb94482f702d3ab6aefef1775b797f5dbd2844d0da6415e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmQ3NjE0MWEwNDViYjhlY2Q1MDNiMzA0YTM5NjIzNDMwYjE4Yjc4ZDZmOWUzMTNhZmJkZTIwMTFhYmJlNjEwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzOTEwNjAzNDBjMDhmMWIyNmJjZmNiYjJiMzVjMWE3YjVlMTNiNzEzYTZhMzdlM2JjMzMxYTJkMmI5MjM4ODdhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_badf15cd51a74994b94d8f9eda1c1c18",
+      "statement": "install.sh computes the archive SHA256 with sha256_of, which prefers sha256sum on GNU/Linux and falls back to shasum -a 256 on macOS; verify_checksum parses the sums file accepting both 'hash  name' and 'hash *name' sha256sum output formats, treating the SHA256 comparison as the mandatory fatal gate (a mismatch or missing entry exits 1).",
+      "evidence": [
+        {
+          "resource": "repo://install.sh#L119-L146",
+          "version": "repo-lines-v1:sha256:91e1e9fca14aa1346f37444c4d54547df8be4534250b0494ec7bafdaca54c888:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwODg2ZGU5NDYwMTQyOWQ2ZjhjYzdjYWE3NjkxOGY0NzYwZTg5NGU0ZWFkMjk4Y2ZiOGVhM2Y4ZmYzODFkMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMmRkMzYxMzAwNzc1Zjc3Y2RlNGU0NzViNGM1MzJhNWIzOGMyNTY1NjAxZDViMWE0Y2U2OTQ4YzA0ODYwYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxMTE5MjRkYTIyNzBmZjcwN2YxYTcwOGQwZTQ0OTk5NTQxOTg4YzFjYmIyZjIxOTQ2MDBjYThmMzY4Y2Q2OWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c2a551c829d9422595acb582ba71e367",
+      "statement": "SECURITY.md is the authoritative threat-model and release-verification document for these install channels: it specifies the manual gh attestation verify --signer-workflow command matching install.sh, confirms the SHA256 checksum is the mandatory integrity gate across channels (provenance is advisory), and notes provenance does not apply to Homebrew third-party-tap installs, which are limited to the formula's SHA256.",
+      "evidence": [
+        {
+          "resource": "repo://SECURITY.md#L29-L50",
+          "version": "repo-lines-v1:sha256:13e2c20fed1e4bca7202f75f357aaed4f04e54b988479ce8c9b2198eef3581ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzZWJiNjdmNjExZWM0YmYxMGI5NzA3ZDIzYTFkNGQwMDY5ZjdkYmMzZjc5ZDYwZWE4ZjVkZTQ2OGIwZjBhYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0NzIxOTcxNGIxNzYwNDEzZWJiYzgxZmU0M2FmYzZhYjE4NGJjMTk1MjhlYjJhODllZjUyYmQ1NWY3YzMyMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MmM3ZTkzOTNlNDBjZTBhNmYzZGQ1ZjVmMWQxMDc3YTVhNzk5N2ExMzFmYWExZGI2NWNkMDVjZjQzMmE4MTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-27T14:08:42.273Z"
+  }
+}
