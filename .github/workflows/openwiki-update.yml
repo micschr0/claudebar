@@ -12,8 +12,24 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
     steps:
+      # The secrets context is not readable from a job-level `if:`, so the guard
+      # has to be a step that later steps key off. Without it every scheduled run
+      # goes red on a repo that has no key configured.
+      - name: Check for OpenRouter API key
+        id: guard
+        run: |
+          if [ -z "${OPENROUTER_API_KEY}" ]; then
+            echo "OPENROUTER_API_KEY is not set - skipping the OpenWiki update." >> "${GITHUB_STEP_SUMMARY}"
+            echo "enabled=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "enabled=true" >> "${GITHUB_OUTPUT}"
+          fi
+
       - name: Check out repository
+        if: steps.guard.outputs.enabled == 'true'
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           # Full history so `openwiki code --update` can diff HEAD against the
@@ -22,22 +38,25 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node.js
+        if: steps.guard.outputs.enabled == 'true'
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
 
       - name: Install OpenWiki
+        if: steps.guard.outputs.enabled == 'true'
         # mermaid + jsdom are optional; they add high-fidelity validation of Mermaid diagrams. Remove if your wiki has none.
-        run: npm install --global openwiki@0.3.3 mermaid@11.16.0 jsdom@29.1.1
+        run: npm install --global openwiki@0.4.0 mermaid@11.16.0 jsdom@29.1.1
 
       - name: Run OpenWiki
+        if: steps.guard.outputs.enabled == 'true'
         run: openwiki code --update --print
         env:
           OPENWIKI_PROVIDER: openrouter
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENWIKI_MODEL_ID: "deepseek/deepseek-v4-flash-0731"
 
       - name: Create OpenWiki update pull request
+        if: steps.guard.outputs.enabled == 'true'
         uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
         with:
           add-paths: |
