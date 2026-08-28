@@ -15,9 +15,11 @@ impl Segment for UpdateNotice {
         let Some(version) = ctx.update else {
             return false;
         };
+        // `icon()` is a no-op in icon-less styles, which would leave a bare
+        // version number with nothing marking it as an update. The git segment
+        // already emits its ahead/behind glyphs this way, ungated.
         out.colored_with(ctx.theme.ahead, |w| {
-            w.icon(ctx.style.glyphs.ahead);
-            w.raw_fmt(format_args!("{version}"));
+            w.raw_fmt(format_args!("{} {version}", ctx.style.glyphs.ahead));
         });
         true
     }
@@ -60,6 +62,49 @@ mod tests {
         let v = Version::parse("2026.8.20").unwrap();
         let out = render(Some(&v)).expect("emitted");
         assert!(out.contains("2026.8.20"), "{out}");
+    }
+
+    /// Renders the badge in `style`, stripped of color, so the test sees the
+    /// glyphs a user would.
+    fn render_styled(style_name: &str) -> String {
+        let input = InputData::default();
+        let cfg = Config {
+            segments: vec![SegmentKind::UpdateNotice],
+            style: style_name.to_string(),
+            ..Default::default()
+        };
+        let theme = themes::get(&cfg.theme);
+        let style = styles::get(&cfg.style);
+        let v = Version::parse("2026.8.20").unwrap();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &cfg.thresholds,
+            now: 0,
+            home: None,
+            tz_offset_seconds: 0,
+            update: Some(&v),
+        };
+        let mut w = SegmentWriter::new(&theme, &style);
+        assert!(UpdateNotice.render(&ctx, &mut w), "{style_name}: no output");
+        crate::render::strip_ansi(w.as_str())
+    }
+
+    #[test]
+    fn every_style_marks_the_version_as_an_update() {
+        for name in crate::styles::NAMES {
+            let style = styles::get(name);
+            let out = render_styled(name);
+            // Icon-less styles (plain, ascii, minimal) must still show the
+            // marker — a naked "2026.8.20" says nothing to the user.
+            assert!(
+                out.contains(style.glyphs.ahead),
+                "{name}: badge is missing the '{}' marker, got: {out:?}",
+                style.glyphs.ahead
+            );
+            assert!(out.contains("2026.8.20"), "{name}: {out:?}");
+        }
     }
 
     #[test]
