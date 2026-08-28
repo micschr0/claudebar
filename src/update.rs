@@ -281,6 +281,11 @@ fn parse_cache(raw: &str) -> Option<CachedCheck> {
 
 /// Whether a background check is due: no cache at all, or one older than
 /// [`REFRESH_INTERVAL`].
+///
+/// `saturating_sub` is here for overflow, not for sign: an extreme `checked_at`
+/// would otherwise panic on subtraction in debug builds. A stamp in the future
+/// yields a negative age, which is simply never greater than the interval — so
+/// clock skew suppresses checks until wall-clock time catches up.
 fn is_refresh_due(cache: Option<&CachedCheck>, now: i64) -> bool {
     match cache {
         Some(c) => now.saturating_sub(c.checked_at) > REFRESH_INTERVAL,
@@ -303,6 +308,11 @@ pub fn refresh_in_background(now: i64) {
     if !is_refresh_due(cached.as_ref(), now) {
         return;
     }
+    // Resolve the child before claiming the slot: a stamp written for a spawn
+    // that never happens burns a full day of backoff with no check performed.
+    let Ok(exe) = std::env::current_exe() else {
+        return;
+    };
     // Claim the slot before the child starts its network call. `curl` waits up
     // to 15s, and until the child writes, every further render would see the
     // same stale cache and spawn a check of its own. Re-stamping keeps the
@@ -310,9 +320,6 @@ pub fn refresh_in_background(now: i64) {
     if !write_cache_at(&path, now, cached.and_then(|c| c.latest).as_ref()) {
         return;
     }
-    let Ok(exe) = std::env::current_exe() else {
-        return;
-    };
     let _ = Command::new(exe)
         .args(["update", "--check"])
         .stdin(Stdio::null())
@@ -449,7 +456,8 @@ mod tests {
             Some(&stamped(now - REFRESH_INTERVAL - 1)),
             now
         ));
-        // A stamp from the future must not spin: saturating_sub keeps it at 0.
+        // A stamp from the future yields a negative age (not 0 — `saturating_sub`
+        // saturates at `i64::MIN`), which is never past the interval, so no spin.
         assert!(!is_refresh_due(Some(&stamped(now + 10_000)), now));
     }
 
