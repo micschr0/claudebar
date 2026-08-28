@@ -8,7 +8,7 @@
 //! - Emits sub-elements separated by a single space:
 //!   1. Worktree: icon (worktree glyph, dim) + name in dim.
 //!   2. PR: icon (pull_request glyph, dim) + `#<n>` in `git_branch` color +
-//!      optional review-state indicator (✓ ok, ✗ crit, ◦/· dim).
+//!      optional review-state indicator (style's review_ok/review_fail, ◦/· dim).
 //!   3. Agent: icon (agent glyph, dim) + name in `effort_max` color.
 
 use crate::render::SegmentWriter;
@@ -58,8 +58,10 @@ impl Segment for DevContext {
             out.colored(theme.git_branch, &format!("#{num}"));
             let pr_state = ctx.input.pr.review_state.as_deref().map(strip_control);
             match pr_state.as_deref() {
-                Some("approved") => out.colored(theme.bar_ok, " \u{2713}"),
-                Some("changes_requested") => out.colored(theme.bar_crit, " \u{2717}"),
+                Some("approved") => out.colored(theme.bar_ok, &format!(" {}", glyphs.review_ok)),
+                Some("changes_requested") => {
+                    out.colored(theme.bar_crit, &format!(" {}", glyphs.review_fail));
+                }
                 Some("commented") => out.colored(theme.dim, " \u{25e6}"),
                 Some("pending") => out.colored(theme.dim, " \u{b7}"),
                 _ => {}
@@ -108,7 +110,8 @@ mod tests {
     fn dev_context_requested_changes() {
         let out = render_dev_ctx(Some("changes_requested"));
         assert!(out.contains("#42"), "#42 missing: {out:?}");
-        assert!(out.contains('\u{2717}'), "✗ missing: {out:?}");
+        let fail = styles::get("powerline").glyphs.review_fail;
+        assert!(out.contains(fail), "review_fail missing: {out:?}");
     }
 
     /// PR #42 with review_state "commented" → renders ◦ indicator.
@@ -134,8 +137,8 @@ mod tests {
         assert!(out.contains("#42"), "#42 missing: {out:?}");
         // No ✓, ✗, ◦, or · — just the PR number with no state indicator.
         assert!(
-            !out.contains('\u{2713}')
-                && !out.contains('\u{2717}')
+            !out.contains(styles::get("powerline").glyphs.review_ok)
+                && !out.contains(styles::get("powerline").glyphs.review_fail)
                 && !out.contains('\u{25e6}')
                 && !out.contains('\u{b7}'),
             "unexpected review indicator in nil review: {out:?}"
@@ -146,7 +149,8 @@ mod tests {
     fn dev_context_approved() {
         let out = render_dev_ctx(Some("approved"));
         assert!(out.contains("#42"), "#42 missing: {out:?}");
-        assert!(out.contains('\u{2713}'), "✓ missing: {out:?}");
+        let ok = styles::get("powerline").glyphs.review_ok;
+        assert!(out.contains(ok), "review_ok missing: {out:?}");
     }
 
     /// PR #42 with review_state "unknown" → no review indicator emitted.
@@ -156,8 +160,8 @@ mod tests {
         assert!(out.contains("#42"), "#42 missing: {out:?}");
         // No ✓, ✗, ◦, or · for unknown states.
         assert!(
-            !out.contains('\u{2713}')
-                && !out.contains('\u{2717}')
+            !out.contains(styles::get("powerline").glyphs.review_ok)
+                && !out.contains(styles::get("powerline").glyphs.review_fail)
                 && !out.contains('\u{25e6}')
                 && !out.contains('\u{b7}'),
             "unexpected review indicator in unknown review: {out:?}"
