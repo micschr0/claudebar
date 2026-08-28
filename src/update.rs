@@ -293,19 +293,21 @@ fn is_refresh_due(cache: Option<&CachedCheck>, now: i64) -> bool {
     }
 }
 
-/// Spawn a detached `claudebar update --check` when the cache is missing or
+/// Spawn a detached `claudebar update --check` when `cached` is missing or
 /// older than [`REFRESH_INTERVAL`].
+///
+/// Takes the cache the caller has already read — the render path needs the same
+/// value to draw the badge, and reading the file twice per render is waste.
 ///
 /// The caller never waits on the child and never sees its output — the render
 /// returns immediately and the cache is updated whenever the child finishes.
 /// Without a usable cache path, or when the cache cannot be written, there is
 /// no way to rate-limit, so nothing is spawned at all.
-pub fn refresh_in_background(now: i64) {
+pub fn refresh_in_background(now: i64, cached: Option<&CachedCheck>) {
     let Some(path) = cache_path() else {
         return;
     };
-    let cached = read_cache_at(&path);
-    if !is_refresh_due(cached.as_ref(), now) {
+    if !is_refresh_due(cached, now) {
         return;
     }
     // Resolve the child before claiming the slot: a stamp written for a spawn
@@ -317,7 +319,7 @@ pub fn refresh_in_background(now: i64) {
     // to 15s, and until the child writes, every further render would see the
     // same stale cache and spawn a check of its own. Re-stamping keeps the
     // version already known so the badge survives the claim.
-    if !write_cache_at(&path, now, cached.and_then(|c| c.latest).as_ref()) {
+    if !write_cache_at(&path, now, cached.and_then(|c| c.latest.as_ref())) {
         return;
     }
     let _ = Command::new(exe)

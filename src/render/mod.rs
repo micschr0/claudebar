@@ -24,12 +24,27 @@ pub fn render_line(input: &InputData, cfg: &Config, now: i64) -> String {
     let style = styles::get(&cfg.style);
     let home = std::env::var("HOME").ok();
     let tz_offset = clock::detect_tz_offset();
-    if cfg.segments.contains(&SegmentKind::UpdateNotice) {
-        // Keeps the badge current without the render ever blocking on the
-        // network: a detached child does the check, at most once a day.
-        crate::update::refresh_in_background(now);
-    }
-    let line = render_with(input, cfg, &theme, &style, now, home.as_deref(), tz_offset);
+    // One cache read feeds both jobs it has: deciding whether a background
+    // check is due, and rendering the badge. Keeps the badge current without
+    // the render ever blocking on the network — a detached child does the
+    // check, at most once a day.
+    let newer = if cfg.segments.contains(&SegmentKind::UpdateNotice) {
+        let cached = crate::update::read_cache();
+        crate::update::refresh_in_background(now, cached.as_ref());
+        newer_than(cached.and_then(|c| c.latest), env!("CARGO_PKG_VERSION"))
+    } else {
+        None
+    };
+    let line = render_ctx(
+        input,
+        cfg,
+        &theme,
+        &style,
+        now,
+        home.as_deref(),
+        tz_offset,
+        newer.as_ref(),
+    );
     if cfg.thresholds.float {
         float::emit_float(input, cfg, now, home.as_deref());
     }
@@ -49,8 +64,34 @@ pub fn render_with(
     tz_offset_seconds: i32,
 ) -> String {
     let newer = cached_update(cfg);
+    render_ctx(
+        input,
+        cfg,
+        theme,
+        style,
+        now,
+        home,
+        tz_offset_seconds,
+        newer.as_ref(),
+    )
+}
+
+/// Build the [`RenderCtx`] and lay it out. Split from [`render_with`] so
+/// [`render_line`] can supply an update version it has already resolved
+/// instead of paying for a second cache read.
+#[allow(clippy::too_many_arguments)]
+fn render_ctx(
+    input: &InputData,
+    cfg: &Config,
+    theme: &Theme,
+    style: &Style,
+    now: i64,
+    home: Option<&str>,
+    tz_offset_seconds: i32,
+    update: Option<&crate::update::Version>,
+) -> String {
     let ctx = RenderCtx {
-        update: newer.as_ref(),
+        update,
         input,
         theme,
         style,
