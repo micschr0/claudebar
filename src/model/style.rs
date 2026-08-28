@@ -42,8 +42,6 @@ pub struct GlyphSet {
     pub review_fail: &'static str,
     /// Sub-agent / dev-context icon.
     pub agent: &'static str,
-    /// Project/repo icon (`⎔`).
-    pub project: &'static str,
     /// Stash icon.
     pub stash: &'static str,
     /// Lines removed icon (lines added uses plain +).

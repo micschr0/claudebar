@@ -66,8 +66,6 @@ pub struct Theme {
     pub reset: Color,
     /// Model display name.
     pub model: Color,
-    /// Project/repo-root name (falls back to `dir` in themes that predate this slot).
-    pub project: Color,
     /// Stash count (falls back to `git_branch` in themes that predate this slot).
     pub stash: Color,
     /// Lines added/removed background.
