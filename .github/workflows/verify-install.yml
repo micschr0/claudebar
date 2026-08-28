@@ -23,6 +23,8 @@ jobs:
       matrix:
         target: [x86_64-unknown-linux-musl, aarch64-unknown-linux-musl]
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -30,6 +32,7 @@ jobs:
 
       - name: Run install.sh in a clean HOME (no cargo — forces Tier 1)
         env:
+          GH_TOKEN: ${{ github.token }}
           CLAUDEBAR_TARGET: ${{ matrix.target }}
           CLAUDEBAR_SKIP_SETUP: ${{ matrix.target == 'aarch64-unknown-linux-musl' && '1' || '' }}
           TARGET: ${{ matrix.target }}
@@ -73,12 +76,16 @@ jobs:
       matrix:
         os: [macos-15-intel, macos-15]
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Run install.sh in a clean HOME (no cargo — forces Tier 1)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           export HOME="$RUNNER_TEMP/verify-home"
           mkdir -p "$HOME"
