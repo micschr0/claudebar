@@ -175,11 +175,16 @@ claudebar update
 ```
 
 Add the `update-notice` segment to see the result inline, as an "↑ 2026.8.20"
-badge on the statusline. It is off by default: enabling it opts into one
-background check per day, run by a detached child process that writes a small
-cache next to your config file. The statusline itself only reads that cache and
-never waits for the check. With the segment disabled, nothing is fetched and no
-cache is written.
+badge on the statusline. It is off by default and stays that way — `claudebar
+sync`, which adds segments introduced by newer versions, deliberately skips this
+one and only tells you it exists. Add it to `segments` yourself to enable it.
+
+Enabling it opts into a background check, started at most once every 24 hours by
+a detached child process that writes a small cache next to your config file. The
+statusline itself only reads that cache and never waits for the check. With the
+segment disabled the render path does no network or cache I/O at all; an
+explicit `claudebar update` still writes the cache, since that is you asking for
+a check.
 
 Exit codes: `0` = up to date, `1` = check failed (e.g. no network), `2` = update
 available. In `set -e` shells or `&&`-chains, where exit `2` reads as an error,
