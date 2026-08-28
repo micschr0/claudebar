@@ -17,6 +17,7 @@ pub mod limit_sync;
 pub mod lines;
 pub mod model;
 pub mod rate_limits;
+pub mod update_notice;
 
 use crate::model::{InputData, SegmentKind, Style, Theme, Thresholds};
 use crate::render::SegmentWriter;
@@ -36,6 +37,10 @@ pub struct RenderCtx<'a> {
     /// Local timezone offset in seconds east of UTC.
     /// 0 = UTC (fallback when detection fails, or TUI preview).
     pub tz_offset_seconds: i32,
+    /// A cached release newer than this binary, when the `update-notice`
+    /// segment is enabled. Read once per render in `render::render_with`,
+    /// never inside a segment.
+    pub update: Option<&'a crate::update::Version>,
 }
 
 /// A renderable status segment.
@@ -62,6 +67,38 @@ impl SegmentKind {
             SegmentKind::Lines => &lines::Lines,
             SegmentKind::Duration => &duration::Duration,
             SegmentKind::Burn => &burn::Burn,
+            SegmentKind::UpdateNotice => &update_notice::UpdateNotice,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{styles, themes};
+
+    /// Every `SegmentKind` must resolve to an implementation and survive a
+    /// render against empty input — a new variant that is never wired up, or
+    /// one that panics on missing data, fails here.
+    #[test]
+    fn every_kind_resolves_and_renders_empty_input() {
+        let input = InputData::default();
+        let theme = themes::get("tokyo-night");
+        let style = styles::get("powerline");
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 0,
+            home: None,
+            tz_offset_seconds: 0,
+            update: None,
+        };
+        for &kind in &SegmentKind::ALL {
+            let mut w = SegmentWriter::new(&theme, &style);
+            let _ = kind.as_segment().render(&ctx, &mut w);
         }
     }
 }

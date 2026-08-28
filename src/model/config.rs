@@ -27,11 +27,12 @@ pub enum SegmentKind {
     Lines,
     Duration,
     Burn,
+    UpdateNotice,
 }
 
 impl SegmentKind {
     /// All segments in canonical order.
-    pub const ALL: [SegmentKind; 11] = [
+    pub const ALL: [SegmentKind; 12] = [
         SegmentKind::Directory,
         SegmentKind::Git,
         SegmentKind::Model,
@@ -43,6 +44,7 @@ impl SegmentKind {
         SegmentKind::Duration,
         SegmentKind::Burn,
         SegmentKind::Clock,
+        SegmentKind::UpdateNotice,
     ];
 
     pub const DEFAULT: [SegmentKind; 8] = [
@@ -71,6 +73,7 @@ impl SegmentKind {
             SegmentKind::Lines => "Lines",
             SegmentKind::Duration => "Duration",
             SegmentKind::Burn => "Burn",
+            SegmentKind::UpdateNotice => "Update Notice",
         }
     }
 

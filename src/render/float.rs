@@ -51,6 +51,9 @@ fn render_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>) -
         now,
         home,
         tz_offset_seconds: 0,
+        // The float readout is a plain-text mirror of the session state; an
+        // update badge belongs on the status line only.
+        update: None,
     };
 
     let mut parts: Vec<String> = Vec::with_capacity(SegmentKind::ALL.len());
@@ -127,7 +130,7 @@ fn resolve_path(path: &str, home: Option<&str>) -> Option<PathBuf> {
 /// # Errors
 ///
 /// Returns the underlying [`std::io::Error`]; the caller treats it as best-effort.
-fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
+pub(crate) fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
     let parent = path.parent().unwrap_or_else(|| Path::new("."));
     std::fs::create_dir_all(parent)?;
     let name = path

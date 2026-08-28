@@ -319,6 +319,7 @@ mod tests {
             now: 0,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut out = SegmentWriter::new(&theme, &style);
 
@@ -349,6 +350,7 @@ mod tests {
             now: 0,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut out = SegmentWriter::new(&theme, &style);
         assert!(!Git.render(&ctx, &mut out));
@@ -372,6 +374,7 @@ mod tests {
             now: 0,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut out = SegmentWriter::new(&theme, &style);
         assert!(!Git.render(&ctx, &mut out));
@@ -446,6 +449,7 @@ mod tests {
             now: 0,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut out = SegmentWriter::new(&theme, &style);
         let rendered = Git.render(&ctx, &mut out);
@@ -479,6 +483,7 @@ mod tests {
             now: 0,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut out = SegmentWriter::new(&theme, &style);
         assert!(!Git.render(&ctx, &mut out), "expected false for non-repo");

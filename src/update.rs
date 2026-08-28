@@ -18,7 +18,8 @@
 
 use serde::Deserialize;
 use std::cmp::Ordering;
-use std::process::Command;
+use std::path::{Path, PathBuf};
+use std::process::{Command, Stdio};
 use thiserror::Error;
 
 /// Which release channel to compare against. The install path by default
@@ -214,6 +215,121 @@ pub fn fetch_latest() -> Result<Latest, UpdateError> {
     })
 }
 
+/// A day between background update checks.
+const REFRESH_INTERVAL: i64 = 86_400;
+
+/// The last update check's outcome, as persisted for the render path.
+#[derive(Debug, Clone)]
+pub struct CachedCheck {
+    /// When a check was last started, epoch seconds — stamped before the
+    /// network call and again when it finishes, so an offline machine retries
+    /// daily instead of on every render.
+    pub checked_at: i64,
+    /// The newest stable release, if the check succeeded.
+    pub latest: Option<Version>,
+}
+
+/// Where the update-check cache lives — beside the config file, so XDG
+/// resolution stays in exactly one place.
+#[must_use]
+pub fn cache_path() -> Option<PathBuf> {
+    Some(crate::model::Config::default_path()?.with_file_name("update-check.json"))
+}
+
+/// Persist an update check. Best-effort: any failure is silently dropped, and
+/// `latest = None` records a failed check so the retry interval still applies.
+pub fn write_cache(checked_at: i64, latest: Option<&Version>) {
+    if let Some(path) = cache_path() {
+        let _ = write_cache_at(&path, checked_at, latest);
+    }
+}
+
+/// Returns whether the cache actually landed on disk. That is the one failure
+/// the caller has to react to: an unwritable config directory means the daily
+/// backoff can never be recorded.
+fn write_cache_at(path: &Path, checked_at: i64, latest: Option<&Version>) -> bool {
+    let body = serde_json::json!({
+        "checked_at": checked_at,
+        "latest": latest.map(ToString::to_string),
+    });
+    // Reuses the float readout's writer: a torn read here reads as "no cache",
+    // which would spawn a redundant check on the next render.
+    crate::render::float::write_atomic(path, &body.to_string()).is_ok()
+}
+
+/// Read the cache. Missing, unreadable, or malformed all yield `None`, the
+/// same degrade-silently contract as `InputData::parse`.
+#[must_use]
+pub fn read_cache() -> Option<CachedCheck> {
+    read_cache_at(&cache_path()?)
+}
+
+fn read_cache_at(path: &Path) -> Option<CachedCheck> {
+    parse_cache(&std::fs::read_to_string(path).ok()?)
+}
+
+fn parse_cache(raw: &str) -> Option<CachedCheck> {
+    let v: serde_json::Value = serde_json::from_str(raw).ok()?;
+    Some(CachedCheck {
+        checked_at: v.get("checked_at")?.as_i64()?,
+        latest: v
+            .get("latest")
+            .and_then(serde_json::Value::as_str)
+            .and_then(Version::parse),
+    })
+}
+
+/// Whether a background check is due: no cache at all, or one older than
+/// [`REFRESH_INTERVAL`].
+///
+/// `saturating_sub` is here for overflow, not for sign: an extreme `checked_at`
+/// would otherwise panic on subtraction in debug builds. A stamp in the future
+/// yields a negative age, which is simply never greater than the interval — so
+/// clock skew suppresses checks until wall-clock time catches up.
+fn is_refresh_due(cache: Option<&CachedCheck>, now: i64) -> bool {
+    match cache {
+        Some(c) => now.saturating_sub(c.checked_at) > REFRESH_INTERVAL,
+        None => true,
+    }
+}
+
+/// Spawn a detached `claudebar update --check` when `cached` is missing or
+/// older than [`REFRESH_INTERVAL`].
+///
+/// Takes the cache the caller has already read — the render path needs the same
+/// value to draw the badge, and reading the file twice per render is waste.
+///
+/// The caller never waits on the child and never sees its output — the render
+/// returns immediately and the cache is updated whenever the child finishes.
+/// Without a usable cache path, or when the cache cannot be written, there is
+/// no way to rate-limit, so nothing is spawned at all.
+pub fn refresh_in_background(now: i64, cached: Option<&CachedCheck>) {
+    let Some(path) = cache_path() else {
+        return;
+    };
+    if !is_refresh_due(cached, now) {
+        return;
+    }
+    // Resolve the child before claiming the slot: a stamp written for a spawn
+    // that never happens burns a full day of backoff with no check performed.
+    let Ok(exe) = std::env::current_exe() else {
+        return;
+    };
+    // Claim the slot before the child starts its network call. `curl` waits up
+    // to 15s, and until the child writes, every further render would see the
+    // same stale cache and spawn a check of its own. Re-stamping keeps the
+    // version already known so the badge survives the claim.
+    if !write_cache_at(&path, now, cached.and_then(|c| c.latest.as_ref())) {
+        return;
+    }
+    let _ = Command::new(exe)
+        .args(["update", "--check"])
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn();
+}
+
 /// The outcome of comparing the installed version against the latest release.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Recommendation {
@@ -257,6 +373,116 @@ mod tests {
 
     fn v(s: &str) -> Version {
         Version::parse(s).unwrap()
+    }
+
+    /// Unique temp path; nanos + pid keep parallel test runs from colliding.
+    /// No `tempfile` crate — `insta` is the only dev-dependency.
+    fn unique_temp_path() -> PathBuf {
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or(0);
+        std::env::temp_dir().join(format!(
+            "claudebar-update-test-{}-{}/update-check.json",
+            std::process::id(),
+            nanos
+        ))
+    }
+
+    #[test]
+    fn cache_file_roundtrip() {
+        let path = unique_temp_path();
+
+        // Nothing written yet: reading degrades to None rather than erroring.
+        assert!(read_cache_at(&path).is_none());
+
+        // A successful check. The parent directory does not exist yet either.
+        assert!(write_cache_at(&path, 1_700_000_000, Some(&v("2026.8.20"))));
+        let got = read_cache_at(&path).expect("cache readable");
+        assert_eq!(got.checked_at, 1_700_000_000);
+        assert_eq!(got.latest, Some(v("2026.8.20")));
+
+        // A failed check overwrites it: stamped, but nothing to show.
+        assert!(write_cache_at(&path, 1_700_000_100, None));
+        let got = read_cache_at(&path).expect("cache readable");
+        assert_eq!(got.checked_at, 1_700_000_100);
+        assert_eq!(got.latest, None);
+
+        let _ = std::fs::remove_dir_all(path.parent().unwrap());
+    }
+
+    #[test]
+    fn cache_file_with_garbage_is_none() {
+        let path = unique_temp_path();
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(&path, "not json").unwrap();
+        assert!(read_cache_at(&path).is_none());
+        let _ = std::fs::remove_dir_all(path.parent().unwrap());
+    }
+
+    #[test]
+    fn unwritable_cache_path_reports_failure() {
+        // A regular file where the cache's parent directory should be: nothing
+        // can be created under it, on any platform and as any user.
+        let blocker = unique_temp_path();
+        std::fs::create_dir_all(blocker.parent().unwrap()).unwrap();
+        std::fs::write(&blocker, "not a directory").unwrap();
+
+        let path = blocker.join("update-check.json");
+        assert!(
+            !write_cache_at(&path, 1_700_000_000, Some(&v("2026.8.20"))),
+            "an unwritable path must report failure, not swallow it"
+        );
+        // Failing closed matters because the caller uses this to decide whether
+        // spawning a check can ever be rate-limited.
+        assert!(read_cache_at(&path).is_none());
+
+        let _ = std::fs::remove_dir_all(blocker.parent().unwrap());
+    }
+
+    #[test]
+    fn refresh_is_due_without_a_cache() {
+        assert!(is_refresh_due(None, 0));
+    }
+
+    #[test]
+    fn refresh_backs_off_for_a_day() {
+        let stamped = |at| CachedCheck {
+            checked_at: at,
+            latest: None,
+        };
+        let now = 1_700_000_000;
+        assert!(!is_refresh_due(Some(&stamped(now)), now));
+        assert!(!is_refresh_due(Some(&stamped(now - REFRESH_INTERVAL)), now));
+        assert!(is_refresh_due(
+            Some(&stamped(now - REFRESH_INTERVAL - 1)),
+            now
+        ));
+        // A stamp from the future yields a negative age (not 0 — `saturating_sub`
+        // saturates at `i64::MIN`), which is never past the interval, so no spin.
+        assert!(!is_refresh_due(Some(&stamped(now + 10_000)), now));
+    }
+
+    #[test]
+    fn cache_roundtrip_and_garbage() {
+        let good = parse_cache(r#"{"checked_at":42,"latest":"2026.8.20"}"#).unwrap();
+        assert_eq!(good.checked_at, 42);
+        assert_eq!(good.latest, Some(v("2026.8.20")));
+
+        // A failed check: stamped, but nothing to show.
+        let failed = parse_cache(r#"{"checked_at":42,"latest":null}"#).unwrap();
+        assert_eq!(failed.latest, None);
+
+        // Malformed, wrong types, missing stamp, unparseable version.
+        assert!(parse_cache("{").is_none());
+        assert!(parse_cache(r#"{"checked_at":"soon"}"#).is_none());
+        assert!(parse_cache(r#"{"latest":"2026.8.20"}"#).is_none());
+        assert_eq!(
+            parse_cache(r#"{"checked_at":42,"latest":"nope"}"#)
+                .unwrap()
+                .latest,
+            None
+        );
     }
 
     #[test]

@@ -593,6 +593,7 @@ body { background: #0d1117; display: flex; justify-content: center; }
 # Demo sample cache for the burn segment: without seeded samples it renders
 # its "warming" state (a meaningless dim `↗ …`). Seeded via _seed_burn_cache().
 _BURN_DEMO_TSV = "/tmp/claudebar-burn-demo.tsv"
+_UPDATE_DEMO_CFG = "/tmp/claudebar-demo-config"
 
 # All 11 segments (SegmentKind::ALL), each tagged with its row in the
 # "justified flow" layout — width-homogeneous rows (2/2/2/5) so every row's
@@ -618,6 +619,8 @@ _PILLS = [
     ("burn",        "Burn Rate", {"extra_env": {"CLAUDEBAR_BURN_FILE": _BURN_DEMO_TSV}}, 4),
     ("duration",    "Session Duration", {}, 4),
     ("clock",       "Clock", {}, 4),
+    ("update-notice", "Update Notice",
+     {"extra_env": {"XDG_CONFIG_HOME": _UPDATE_DEMO_CFG}}, 4),
 ]
 
 
@@ -631,6 +634,16 @@ def _seed_burn_cache(pct_now, rl_reset, target_eta):
     with open(_BURN_DEMO_TSV, "w") as f:
         for t in range(now - 600, now + 1, 60):
             f.write(f"{t}\t{pct_now - slope * (now - t):.3f}\t{now + rl_reset}\n")
+
+
+def _seed_update_cache(version="2026.9.3"):
+    """Write an update-check cache the update-notice pill can read. The stamp is
+    in the future so the render path treats the check as fresh and spawns no
+    background refresh while screenshots are being taken."""
+    d = os.path.join(_UPDATE_DEMO_CFG, "claudebar")
+    os.makedirs(d, exist_ok=True)
+    with open(os.path.join(d, "update-check.json"), "w") as f:
+        f.write('{"checked_at":%d,"latest":"%s"}' % (int(time.time()) + 86400, version))
 
 
 def _render_pills(entries, base_args):
@@ -652,7 +665,7 @@ def _render_pills(entries, base_args):
 
 
 def render_segment_pills():
-    """Render each of the 11 segments individually as a small pill-shaped
+    """Render each of the 12 segments individually as a small pill-shaped
     card, laid out in 4 width-homogeneous rows (2/2/2/5) that each flex to
     fill the container edge-to-edge — no default/optional grouping or
     divider. Uses critical-state data for varied bar fills and git state."""
@@ -660,6 +673,7 @@ def render_segment_pills():
     # ETA 7000s (~1h56m) > 1.2 × the 2700s reset → green, concrete projection.
     _seed_burn_cache(critical_args["rl_5h_pct"], critical_args["rl_5h_reset"],
                      target_eta=7000)
+    _seed_update_cache()
 
     rows = {}
     for seg_name, label, overrides, row in _PILLS:

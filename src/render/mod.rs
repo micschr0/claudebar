@@ -11,7 +11,7 @@ pub mod writer;
 pub use float::strip_ansi;
 pub use writer::SegmentWriter;
 
-use crate::model::{Config, InputData, RESET, Style, Theme};
+use crate::model::{Config, InputData, RESET, SegmentKind, Style, Theme};
 use crate::segment::RenderCtx;
 use crate::segment::clock;
 use crate::{styles, themes};
@@ -24,7 +24,27 @@ pub fn render_line(input: &InputData, cfg: &Config, now: i64) -> String {
     let style = styles::get(&cfg.style);
     let home = std::env::var("HOME").ok();
     let tz_offset = clock::detect_tz_offset();
-    let line = render_with(input, cfg, &theme, &style, now, home.as_deref(), tz_offset);
+    // One cache read feeds both jobs it has: deciding whether a background
+    // check is due, and rendering the badge. Keeps the badge current without
+    // the render ever blocking on the network — a detached child does the
+    // check, at most once a day.
+    let newer = if cfg.segments.contains(&SegmentKind::UpdateNotice) {
+        let cached = crate::update::read_cache();
+        crate::update::refresh_in_background(now, cached.as_ref());
+        newer_than(cached.and_then(|c| c.latest), env!("CARGO_PKG_VERSION"))
+    } else {
+        None
+    };
+    let line = render_ctx(
+        input,
+        cfg,
+        &theme,
+        &style,
+        now,
+        home.as_deref(),
+        tz_offset,
+        newer.as_ref(),
+    );
     if cfg.thresholds.float {
         float::emit_float(input, cfg, now, home.as_deref());
     }
@@ -43,7 +63,35 @@ pub fn render_with(
     home: Option<&str>,
     tz_offset_seconds: i32,
 ) -> String {
+    let newer = cached_update(cfg);
+    render_ctx(
+        input,
+        cfg,
+        theme,
+        style,
+        now,
+        home,
+        tz_offset_seconds,
+        newer.as_ref(),
+    )
+}
+
+/// Build the [`RenderCtx`] and lay it out. Split from [`render_with`] so
+/// [`render_line`] can supply an update version it has already resolved
+/// instead of paying for a second cache read.
+#[allow(clippy::too_many_arguments)]
+fn render_ctx(
+    input: &InputData,
+    cfg: &Config,
+    theme: &Theme,
+    style: &Style,
+    now: i64,
+    home: Option<&str>,
+    tz_offset_seconds: i32,
+    update: Option<&crate::update::Version>,
+) -> String {
     let ctx = RenderCtx {
+        update,
         input,
         theme,
         style,
@@ -58,6 +106,28 @@ pub fn render_with(
     } else {
         render_fixed(&ctx, cfg, theme, style)
     }
+}
+
+/// The cached release newer than this binary, or `None` — including whenever
+/// the `update-notice` segment is disabled, which is what keeps the cache read
+/// off everyone else's render path.
+fn cached_update(cfg: &Config) -> Option<crate::update::Version> {
+    if !cfg.segments.contains(&SegmentKind::UpdateNotice) {
+        return None;
+    }
+    newer_than(
+        crate::update::read_cache()?.latest,
+        env!("CARGO_PKG_VERSION"),
+    )
+}
+
+/// The cached release, kept only when it is strictly newer than `installed`.
+fn newer_than(
+    latest: Option<crate::update::Version>,
+    installed: &str,
+) -> Option<crate::update::Version> {
+    let installed = crate::update::Version::parse(installed)?;
+    latest.filter(|latest| *latest > installed)
 }
 
 /// Fixed layout: a single line, segments joined by separators. The original
@@ -289,6 +359,30 @@ mod tests {
             None => unsafe { std::env::remove_var("COLUMNS") },
         }
     }
+    #[test]
+    fn newer_than_only_keeps_a_strictly_newer_release() {
+        let ver = |s: &str| crate::update::Version::parse(s).unwrap();
+
+        assert_eq!(
+            newer_than(Some(ver("2026.8.20")), "2026.7.21"),
+            Some(ver("2026.8.20"))
+        );
+        // Same version, and an older cache, must not badge.
+        assert_eq!(newer_than(Some(ver("2026.7.21")), "2026.7.21"), None);
+        assert_eq!(newer_than(Some(ver("2026.6.1")), "2026.7.21"), None);
+        // A failed check has nothing to compare.
+        assert_eq!(newer_than(None, "2026.7.21"), None);
+        // An unparseable installed version degrades instead of badging.
+        assert_eq!(newer_than(Some(ver("2026.8.20")), "not-a-version"), None);
+    }
+
+    #[test]
+    fn cached_update_is_none_when_the_segment_is_disabled() {
+        let cfg = Config::default();
+        assert!(!cfg.segments.contains(&SegmentKind::UpdateNotice));
+        assert_eq!(cached_update(&cfg), None);
+    }
+
     #[test]
     fn render_with_empty_home_does_not_panic() {
         let input = InputData::default();

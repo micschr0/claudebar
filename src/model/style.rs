@@ -36,10 +36,12 @@ pub struct GlyphSet {
     pub worktree: &'static str,
     /// Pull-request icon.
     pub pull_request: &'static str,
-    /// Sub-agent / dev-context icon (`⚙`).
+    /// PR review approved marker.
+    pub review_ok: &'static str,
+    /// PR review changes-requested marker.
+    pub review_fail: &'static str,
+    /// Sub-agent / dev-context icon.
     pub agent: &'static str,
-    /// Project/repo icon (`⎔`).
-    pub project: &'static str,
     /// Stash icon.
     pub stash: &'static str,
     /// Lines removed icon (lines added uses plain +).
@@ -73,4 +75,7 @@ pub struct Style {
     pub bar_fill: char,
     /// Empty bar cell.
     pub bar_empty: char,
+    /// Quarter-step bar glyphs (index 0 = empty cell, 4 = full cell). `None`
+    /// selects the binary fill/empty bar; `Some` selects the dot-meter bar.
+    pub bar_dots: Option<[char; 5]>,
 }

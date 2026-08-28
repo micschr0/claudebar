@@ -521,6 +521,9 @@ pub(crate) fn segment_help(kind: SegmentKind) -> &'static str {
         SegmentKind::Duration => "Duration — session wall-clock duration",
         SegmentKind::Burn => "Burn — cumulative session cost",
         SegmentKind::Clock => "Clock — current time (12h/24h, configurable seconds)",
+        SegmentKind::UpdateNotice => {
+            "Update Notice — badge when a newer release exists (checks once a day)"
+        }
     }
 }
 
@@ -539,6 +542,20 @@ fn threshold_help(field: ThresholdField) -> &'static str {
 
 #[cfg(test)]
 mod tests {
+
+    /// Every `SegmentKind` needs a help line — a new variant added without one
+    /// would otherwise ship an empty description in the configurator.
+    #[test]
+    fn every_segment_kind_has_help_text() {
+        for &kind in &SegmentKind::ALL {
+            let help = segment_help(kind);
+            assert!(!help.is_empty(), "{kind:?}: empty help");
+            assert!(
+                help.contains(kind.label()),
+                "{kind:?}: help should name the segment"
+            );
+        }
+    }
     use super::*;
 
     #[test]

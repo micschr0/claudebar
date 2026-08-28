@@ -293,6 +293,7 @@ mod tests {
             now: epoch,
             home: None,
             tz_offset_seconds: offset_seconds,
+            update: None,
         };
         let mut w = SegmentWriter::new(&theme, &style);
         if Clock.render(&ctx, &mut w) {
@@ -345,6 +346,7 @@ mod tests {
             now: -1,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut w = SegmentWriter::new(&theme, &style);
         assert!(!Clock.render(&ctx, &mut w));
@@ -372,6 +374,7 @@ mod tests {
             now: 0,
             home: None,
             tz_offset_seconds: 0,
+            update: None,
         };
         let mut w = SegmentWriter::new(&theme, &style);
         assert!(!Clock.render(&ctx, &mut w));

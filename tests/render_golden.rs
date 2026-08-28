@@ -72,6 +72,18 @@ fn golden_matrix() {
     }
 }
 
+/// The `dots` style is covered by neither `golden_lines` (default style only)
+/// nor `golden_matrix` (ascii + powerline), so it gets one explicit snapshot.
+#[test]
+fn golden_dots_style() {
+    let json = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/fixtures/typical.json"
+    ))
+    .unwrap();
+    insta::assert_snapshot!(render_combo(&json, &Config::default().theme, "dots"));
+}
+
 /// CR-15: prove no host-supplied control byte leaks end-to-end. Render
 /// `fixtures/injection.json` (its `cwd` and `model.display_name` carry ESC/BEL/
 /// CR/LF), strip only the renderer's own SGR runs (`\x1b[...m`), then assert the

@@ -418,8 +418,16 @@ fn run_sync(cli: &Cli) -> ExitCode {
     // Find segments present in ALL but absent from the user's segments list.
     // Insert each at its canonical position relative to its neighbors in ALL.
     let mut added: Vec<&str> = Vec::with_capacity(SegmentKind::ALL.len());
+    let mut skipped_opt_in = false;
     for (canonical_pos, &kind) in SegmentKind::ALL.iter().enumerate() {
         if cfg.segments.contains(&kind) {
+            continue;
+        }
+        // Every other segment is pure formatting of data the render already
+        // has. This one spawns a daily network check, so it stays opt-in —
+        // `sync` reports it instead of enabling it.
+        if kind == SegmentKind::UpdateNotice {
+            skipped_opt_in = true;
             continue;
         }
         // Find the best insertion point: after the last ALL-segment that is already
@@ -445,6 +453,7 @@ fn run_sync(cli: &Cli) -> ExitCode {
 
     if added.is_empty() {
         println!("claudebar: config is up to date, no segments added.");
+        print_opt_in_notice(skipped_opt_in);
         return ExitCode::SUCCESS;
     }
 
@@ -454,12 +463,23 @@ fn run_sync(cli: &Cli) -> ExitCode {
                 println!("claudebar: added segment '{label}'");
             }
             println!("claudebar: config updated: {}", path.display());
+            print_opt_in_notice(skipped_opt_in);
             ExitCode::SUCCESS
         }
         Err(e) => {
             eprintln!("claudebar: {e}");
             ExitCode::FAILURE
         }
+    }
+}
+
+/// Tell the user about the one segment `sync` deliberately does not add.
+fn print_opt_in_notice(skipped: bool) {
+    if skipped {
+        println!(
+            "claudebar: 'update-notice' is available but not added — it opts into \
+             one background update check per day. Add it to `segments` to enable it."
+        );
     }
 }
 
@@ -609,9 +629,21 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
         }
     };
 
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_secs() as i64)
+        .unwrap_or(0);
+
     let latest = match claudebar::update::fetch_latest() {
         Ok(l) => l,
         Err(e) => {
+            // Stamp the failed attempt so a background refresh backs off for a
+            // day instead of retrying on every render — but keep whatever
+            // version is already cached. Dropping it here would blank the
+            // badge on every machine that happens to be offline when the
+            // daily refresh fires.
+            let known = claudebar::update::read_cache().and_then(|c| c.latest);
+            claudebar::update::write_cache(now, known.as_ref());
             eprintln!("claudebar: {e}");
             eprintln!("claudebar: ensure `curl` is installed and you are online.");
             eprintln!(
@@ -620,6 +652,12 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
             return ExitCode::FAILURE;
         }
     };
+
+    // The cache always records the newest *stable* release, independent of the
+    // channel this invocation reported on. With no stable release at all there
+    // is nothing to record — caching `overall` here would badge stable-channel
+    // users toward a prerelease.
+    claudebar::update::write_cache(now, latest.stable.as_ref());
 
     println!("claudebar {installed} ({channel} channel)");
     match claudebar::update::recommend(&installed, &latest, channel) {

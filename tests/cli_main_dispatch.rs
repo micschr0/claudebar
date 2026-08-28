@@ -259,6 +259,40 @@ style = "unicode""#;
     let _ = fs::remove_file(&path);
 }
 
+#[test]
+fn main_sync_leaves_update_notice_opt_in() {
+    let path = unique_temp_path("sync-opt-in");
+    let _ = fs::remove_file(&path);
+    fs::write(&path, br#"segments = ["directory", "git"]"#).expect("failed to write test config");
+
+    let output = bin()
+        .arg("sync")
+        .arg("--config")
+        .arg(&path)
+        .output()
+        .expect("failed to run claudebar sync");
+    assert_eq!(output.status.code(), Some(0));
+
+    let synced = fs::read_to_string(&path).expect("config readable after sync");
+    // Every other new segment is pure formatting and gets added as usual...
+    assert!(
+        synced.contains("clock") && synced.contains("burn"),
+        "sync should still add ordinary new segments, got: {synced}"
+    );
+    // ...but the one that spawns a daily network check stays opt-in.
+    assert!(
+        !synced.contains("update-notice"),
+        "sync must not enable the background update check, got: {synced}"
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("update-notice"),
+        "sync should mention the segment it skipped, got: {stdout}"
+    );
+
+    let _ = fs::remove_file(&path);
+}
+
 // -- doctor test ------------------------------------------------------------
 
 #[test]

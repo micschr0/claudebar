@@ -12,6 +12,7 @@ pub const NAMES: &[&str] = &[
     "minimal",
     "unicode",
     "ascii",
+    "dots",
 ];
 
 /// powerline style.
@@ -21,6 +22,7 @@ pub const POWERLINE: Style = Style {
     icons: true,
     bar_fill: '\u{2501}',
     bar_empty: '\u{254c}',
+    bar_dots: None,
     glyphs: GlyphSet {
         branch: "\u{e0a0}",
         ahead: "\u{2191}",
@@ -36,9 +38,10 @@ pub const POWERLINE: Style = Style {
         effort: "\u{f0e7}",
         worktree: "\u{f126}",
         pull_request: "\u{f407}",
-        agent: "\u{2699}",
-        project: "\u{2394}",
-        stash: "\u{2691}",
+        review_ok: "\u{f00c}",
+        review_fail: "\u{f00d}",
+        agent: "\u{f013}",
+        stash: "\u{f187}",
         lines: "\u{2013}",
         cost: "$",
         duration: "\u{f2f2}",
@@ -54,6 +57,7 @@ pub const LEAN: Style = Style {
     icons: true,
     bar_fill: '\u{2501}',
     bar_empty: '\u{254c}',
+    bar_dots: None,
     glyphs: POWERLINE.glyphs,
 };
 
@@ -64,6 +68,7 @@ pub const PLAIN: Style = Style {
     icons: false,
     bar_fill: '#',
     bar_empty: '-',
+    bar_dots: None,
     glyphs: GlyphSet {
         branch: "",
         ahead: "^",
@@ -79,8 +84,9 @@ pub const PLAIN: Style = Style {
         effort: "*",
         worktree: "+",
         pull_request: "#",
+        review_ok: "+",
+        review_fail: "x",
         agent: "&",
-        project: "P",
         stash: "s",
         lines: "-",
         cost: "$",
@@ -97,6 +103,7 @@ pub const ROUNDED: Style = Style {
     icons: true,
     bar_fill: '\u{2501}',
     bar_empty: '\u{254c}',
+    bar_dots: None,
     glyphs: POWERLINE.glyphs,
 };
 
@@ -107,7 +114,14 @@ pub const MINIMAL: Style = Style {
     icons: false,
     bar_fill: '\u{2501}',
     bar_empty: '\u{254c}',
-    glyphs: POWERLINE.glyphs,
+    bar_dots: None,
+    // Icons-off style: everything else comes from POWERLINE, but the review
+    // markers bypass `SegmentWriter::icon`, so they must not be Nerd Font PUA.
+    glyphs: GlyphSet {
+        review_ok: "\u{221a}",
+        review_fail: "\u{d7}",
+        ..POWERLINE.glyphs
+    },
 };
 
 /// unicode style.
@@ -117,27 +131,29 @@ pub const UNICODE: Style = Style {
     icons: true,
     bar_fill: '█',
     bar_empty: '░',
+    bar_dots: None,
     glyphs: GlyphSet {
-        branch: "⎇",
+        branch: "↷",
         ahead: "↑",
         behind: "↓",
         modified: "±",
         untracked: "?",
         context: "◉",
-        token: "⬡",
+        token: "◇",
         clock: "◷",
         weekly: "◈",
         reset: "↺",
         model: "▪",
         effort: "⚡",
-        worktree: "⑂",
+        worktree: "↳",
         pull_request: "⇐",
-        agent: "⚙",
-        project: "⎔",
-        stash: "⚑",
+        review_ok: "√",
+        review_fail: "×",
+        agent: "⊚",
+        stash: "▩",
         lines: "–",
         cost: "$",
-        duration: "⏱",
+        duration: "◴",
         time: "◷",
         burn: "↗",
     },
@@ -150,6 +166,7 @@ pub const ASCII: Style = Style {
     icons: false,
     bar_fill: '#',
     bar_empty: '-',
+    bar_dots: None,
     glyphs: GlyphSet {
         branch: "",
         ahead: "^",
@@ -165,8 +182,9 @@ pub const ASCII: Style = Style {
         effort: "*",
         worktree: ">",
         pull_request: "#",
+        review_ok: "+",
+        review_fail: "x",
         agent: "&",
-        project: "P",
         stash: "s",
         lines: "-",
         cost: "$",
@@ -176,11 +194,24 @@ pub const ASCII: Style = Style {
     },
 };
 
+/// dots style — powerline decoration with quarter-step dot-meter bars.
+pub const DOTS: Style = Style {
+    separator: "\u{e0b1}",
+    window_gap: "\u{b7}",
+    icons: true,
+    bar_fill: '\u{2501}',
+    bar_empty: '\u{254c}',
+    bar_dots: Some(['\u{25cb}', '\u{25d4}', '\u{25d1}', '\u{25d5}', '\u{25cf}']),
+    glyphs: POWERLINE.glyphs,
+};
+
 /// Resolve a style by name. Unknown names fall back to Powerline.
 #[must_use]
 pub fn get(name: &str) -> Style {
     match name {
         "lean" => LEAN,
+        "rounded" => ROUNDED,
+        "dots" => DOTS,
         "plain" => PLAIN,
         "minimal" => MINIMAL,
         "unicode" => UNICODE,
@@ -193,9 +224,23 @@ pub fn get(name: &str) -> Style {
 mod tests {
     use super::*;
     #[test]
-    fn all_known_names_resolve() {
-        for n in NAMES {
-            let _ = get(n);
+    fn every_name_resolves_to_its_own_style() {
+        let expected = [
+            ("powerline", POWERLINE),
+            ("lean", LEAN),
+            ("plain", PLAIN),
+            ("rounded", ROUNDED),
+            ("minimal", MINIMAL),
+            ("unicode", UNICODE),
+            ("ascii", ASCII),
+            ("dots", DOTS),
+        ];
+        assert_eq!(expected.len(), NAMES.len(), "NAMES and the table disagree");
+        for (name, want) in expected {
+            let got = get(name);
+            assert_eq!(got.separator, want.separator, "{name}: separator");
+            assert_eq!(got.bar_fill, want.bar_fill, "{name}: bar_fill");
+            assert_eq!(got.bar_dots, want.bar_dots, "{name}: bar_dots");
         }
     }
     #[test]
