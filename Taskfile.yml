@@ -36,10 +36,11 @@ tasks:
     cmd: cargo llvm-cov --locked --all-features --lcov --output-path lcov.info
 
   lint:
-    desc: Clippy + shellcheck + actionlint + gitleaks + zizmor
+    desc: Clippy + shellcheck + ruff + actionlint + gitleaks + zizmor
     cmds:
       - cargo clippy -- -D warnings
       - shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
+      - ruff check scripts/
       - actionlint .github/workflows/*.yml
       - zizmor .github/workflows/*.yml
       - gitleaks detect -v

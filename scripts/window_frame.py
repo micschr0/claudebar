@@ -12,6 +12,7 @@ Output format follows the extension:
 --no-hold keeps every frame's own duration (use for a seamless spinner loop);
 without it the final content frame is held briefly (nicer for step-through demos).
 """
+import os
 import sys
 from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageFilter
 
