@@ -1,28 +1,32 @@
 ---
 type: concept
 title: "Update command and release channels"
-description: "The manual `claudebar update` command: how it compares the installed CalVer version against the GitHub releases API in a channel-aware way, its documented exit codes, and why the render hot path deliberately never touches the network."
-tags: [update, releases, channels, calver, semver, exit-codes, curl, github-api]
+description: "The manual `claudebar update` command: how it compares the installed CalVer version against the GitHub releases API in a channel-aware way, its documented exit codes, and the daily background refresh cache that keeps the update-notice segment's render path offline."
+tags: [update, releases, channels, calver, semver, exit-codes, curl, github-api, cache, update-notice]
 verified:
   - by: openwiki/0.4.0
-    at: 2026-08-26T22:48:34.063Z
+    at: 2026-08-29T00:17:43.706Z
 sources:
   - id: openwiki-source-c38906bbfa9e9c69417b11b5
     resource: repo://src/cli.rs
   - id: openwiki-source-b55a21a31ede1b56cd31a6a6
     resource: repo://src/main.rs
+  - id: openwiki-source-1d33473d874a4090bb6026e0
+    resource: repo://src/render/mod.rs
+  - id: openwiki-source-5d948000f74b098b1187bdc9
+    resource: repo://src/segment/update_notice.rs
   - id: openwiki-source-0ecba5538b5fd9860f10332f
     resource: repo://src/update.rs
-generated: {by: "openwiki/0.4.0", at: "2026-08-26T22:48:34.063Z"}
+generated: {by: "openwiki/0.4.0", at: "2026-08-29T00:17:43.706Z"}
 ---
 
 # Update command and release channels
 
 claudebar ships a manual, user-triggered update check (`claudebar update`) rather
-than any background or implicit network activity. The command is implemented in
-`src/update.rs` (version model + release fetch + comparison) with the CLI wiring
-and exit-code handling in `src/main.rs`, and its subcommand declaration in
-`src/cli.rs`.
+than any implicit network activity during normal rendering. The command is
+implemented in `src/update.rs` (version model + release fetch + comparison +
+cache) with the CLI wiring and exit-code handling in `src/main.rs`, and its
+subcommand declaration in `src/cli.rs`.
 
 ## Design intent: the render hot path stays offline
 
@@ -32,6 +36,10 @@ explicit command with its own exit codes so a script or a user can find out
 whether a newer release exists and how to install it. The CLI subcommand
 documentation repeats this — it is "a manual, offline-friendly check" that never
 runs during normal rendering.
+
+The same principle governs the `update-notice` segment: the render path may read
+a cached result, but it never performs a network call itself — a detached child
+process does that in the background, at most once a day (see below).
 
 ## Version source and channel model
 
@@ -63,24 +71,25 @@ The documented, script-usable convention:
 When a check fails, `fetch_latest` surfaces a message and `run_update` prints a
 hint ("ensure `curl` is installed and you are online") plus a usage link, then
 returns `ExitCode::FAILURE` (1). When an update is available and `--check` is not
-set, it returns `ExitCode::from(2)`.
+set, it returns `ExitCode::from(2)`; the `--check` path always returns success.
 
 ## Control flow
 
 <!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: a semicolon inside a label breaks rendering; rephrase the label. -->
+<!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: an unescaped angle bracket inside a label breaks rendering; rephrase the label. -->
 ```text
 flowchart TD
-    A["run_update(check, channel)"] --> B["parse CARGO_PKG_VERSION"]
+    A["run_update check channel"] --> B["parse CARGO_PKG_VERSION"]
     B --> C{"installed parses?"}
-    C -- no --> D["error: unknown installed version; exit 1"]
-    C -- yes --> E["fetch_latest() via curl"]
-    E --> F{"fetch/parse ok?"}
-    F -- no --> G["print hint + usage link; exit 1"]
-    F -- yes --> H["recommend(installed, latest, channel)"]
-    H --> I{current >= target?}
-    I -- yes --> J["print up-to-date; exit 0"]
-    I -- no --> K["print Update available: version"]
-    K --> L{--check set?}
+    C -- no --> D["error unknown installed version, exit 1"]
+    C -- yes --> E["fetch_latest via curl"]
+    E --> F{"fetch parse ok?"}
+    F -- no --> G["print hint plus usage link, exit 1"]
+    F -- yes --> H["recommend installed latest channel"]
+    H --> I{"current >= target?"}
+    I -- yes --> J["print up-to-date, exit 0"]
+    I -- no --> K["print update available version"]
+    K --> L{"check set?"}
     L -- yes --> M["exit 0"]
     L -- no --> N["exit 2"]
 ```
@@ -159,3 +168,67 @@ the latest {channel} release." or "Update available: {version} (stable|prereleas
 plus the latest stable release as context and an installation link. For a
 prerelease it adds a note that staying on the stable channel avoids prereleases.
 The recommended install target is the GitHub installation page.
+
+## Background refresh: the update-notice cache
+
+So the statusline can show "a newer release exists" without ever blocking on the
+network, `claudebar update` writes a small JSON cache that the `update-notice`
+segment later reads. The cache lives at `update-check.json` beside the config
+file (so XDG resolution stays in one place) and is written atomically through the
+float readout's `write_atomic`; a torn read degrades to "no cache".
+
+`run_update` maintains the cache on both outcomes:
+
+- On success, the cache records `latest.stable` — **always the newest stable
+  release, independent of the channel this invocation reported on**. Caching
+  `overall` here would badge stable-channel users toward a prerelease; when no
+  stable release exists at all, nothing is recorded.
+- On a failed fetch, `run_update` still stamps the cache with the current time
+  and the already-cached newest version (`write_cache` with the known version).
+  That backoff means a background refresh retries a day later rather than on
+  every render — and dropping the cached version would blank the badge on every
+  machine that happens to be offline when the daily refresh fires.
+
+```mermaid
+flowchart TD
+    A["render_line"] --> B{"update-notice enabled?"}
+    B -- no --> C["no cache read, no network"]
+    B -- yes --> D["read cache"]
+    D --> E{"refresh due?"}
+    E -- no --> F["draw badge from cache, return"]
+    E -- yes --> G["stamp cache with known version"]
+    G --> H["spawn detached update --check"]
+    H --> I["return immediately, never blocks"]
+```
+
+Caption: how the `update-notice` segment stays offline — the render reads the
+cache and, when a daily refresh is due, spawns a detached child to do the network
+check, then returns without waiting.
+
+`render_line` drives this: when the `update-notice` segment is enabled it reads
+the cache once, calls `update::refresh_in_background`, and renders from the value
+it already has — a single cache read feeds both jobs, so the badge stays current
+without the render ever blocking on the network.
+
+`refresh_in_background` is the gate:
+
+- A check is due only when there is no cache, or the cache is older than a day
+  (`REFRESH_INTERVAL` = 86400 s). A stamp in the future yields a negative age
+  that never exceeds the interval, so clock skew suppresses checks until wall
+  time catches up.
+- Before spawning, it **claims the rate-limit slot** by re-stamping the cache
+  (keeping the already-known version), so the badge survives the claim and a
+  15-second `curl` doesn't let every later render spawn its own check. The child
+  is the current binary invoked as `update --check`, with stdin/stdout/stderr
+  nulled, and the caller never waits on it or sees its output.
+- If there is no usable cache path, or the cache cannot be written, nothing is
+  spawned at all — without a writable cache there is no way to rate-limit, so a
+  daily check is safer than a per-render one.
+
+The `update-notice` segment itself is a pure formatter: it shows `↑ {version}`
+when the cached newest release is strictly newer than the running binary, and
+renders nothing when `ctx.update` is `None`, so it does no I/O of its own.
+
+Because it is the one segment that spawns a daily network check, `update-notice`
+is **opt-in**: the `sync` command reports it instead of enabling it, keeping a
+network-touching segment out of anyone's config unless they explicitly ask.

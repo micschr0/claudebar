@@ -5,7 +5,7 @@ description: "How the rate-limits segment renders Claude Code's 5-hour and 7-day
 tags: [rate-limits, segment, thresholds, sync, cache, statusline]
 verified:
   - by: openwiki/0.4.0
-    at: 2026-08-26T22:48:34.063Z
+    at: 2026-08-29T00:17:43.706Z
 sources:
   - id: openwiki-source-c5edfb46b7c4acb766451a37
     resource: repo://src/model/config.rs

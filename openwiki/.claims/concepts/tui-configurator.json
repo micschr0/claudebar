@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:99a97793c948e05466164d2ec2b3a86a501bb0528c9d10ea6d0bf043a3807739",
+  "pageVersion": "sha256:f748cb869fba2a47e65f1014b55ce2e7cbf2ede828c0a11148d64272e168f79e",
   "claims": [
     {
       "id": "claim_3827ce00321c48dcaad19bfd300ff383",
@@ -25,8 +25,8 @@
           "version": "repo-lines-v1:sha256:32da7a85c3b2d57a2948313832dfea5b815bd83e025258489c79ced779ce3ff4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWMzNzcwNWNkN2VhZjIwNzgzM2MyOTUyMzBiM2IzYzZmNTEyNTVmZTdlNWY2NTRjOTQ2ZjM2MjU2MjliMjZkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzAzNGIxMzJjZWUyYjc5MDEyZGY0ZGUwMTQxNjkwNjA4YTY4MTc3M2UzOTI2ZWZiMzQwYjI0ZmUxMGQ0MzU0NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWI5ZDVlODlmMzUxZDFlYjk5YzFkODA5ZGE2ZjMxYzY1Yjk1OTQ4NWZiNzE5MDE0MWJmYjVmMDYwZjQ1NzRkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWM1ZDZhZDM1MDhiZTMxYTM4ZTZiZjEyOWVmMDY4Yjk5ZmEwZGI4YWQyMzg1ZTA4Y2I1ZDJkMzE1NGQzOWVhMCJ9"
         },
         {
-          "resource": "repo://src/render/mod.rs#L1-L32",
-          "version": "repo-lines-v1:sha256:42694f27dc853a6ec631a6ab0b29430c7187eea6951315732388fe1fa02371e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiODIxZGRkNGUyNDc0MTAwZDJlZTE0OTc4MjRjZmQ2NzVkMjg4NjkzNDFmYTEyMWYyMjdkNGRkMTFhNDI3ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmYmZiYWYwOGZkOWFmZjc1NzM4ZGQzZWY4MWNlMGEyMmEwZDg5YTRjMWEyYjZlZDdhYzEwMGQ4MDQ0MWU1ZDcifQ"
+          "resource": "repo://src/render/mod.rs#L1-L52",
+          "version": "repo-lines-v1:sha256:55f6cf6d9237d840e326daf4ec773919ea4aa2d86b48f874d59e6457c647825a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiODIxZGRkNGUyNDc0MTAwZDJlZTE0OTc4MjRjZmQ2NzVkMjg4NjkzNDFmYTEyMWYyMjdkNGRkMTFhNDI3ODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmYmZiYWYwOGZkOWFmZjc1NzM4ZGQzZWY4MWNlMGEyMmEwZDg5YTRjMWEyYjZlZDdhYzEwMGQ4MDQ0MWU1ZDcifQ"
         }
       ]
     },
@@ -76,15 +76,15 @@
     },
     {
       "id": "claim_476843e039904c1e821f4b1df3c0f00e",
-      "statement": "The live preview renders through the exact same render path as the hook: preview::render resolves the theme and style from the edited config and calls render_with with a fixed FIXED_NOW epoch and fixed /home/me home prefix for determinism, then converts the resulting ANSI string into a ratatui Text via ansi_to_tui::IntoText, so there is structurally no second render path for the preview to diverge on.",
+      "statement": "The live preview renders through the exact same render path as the hook: preview::render resolves the theme and style from the edited config and calls render_with with a fixed FIXED_NOW epoch, fixed /home/me home prefix, and a zero timezone offset for determinism, then converts the resulting ANSI string into a ratatui Text via ansi_to_tui::IntoText, so there is structurally no second render path for the preview to diverge on.",
       "evidence": [
         {
           "resource": "repo://src/lib.rs#L3-L6",
           "version": "repo-lines-v1:sha256:6de52041c6d166b638fa5aebe398279514d798202f1aca5a9edfd9026666dfcc:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjA2NTczN2UwNzFmOWZiY2RmNTRiOGFkMzhlNjZlNGI2ZjFmOWZhMWMwMWVkNmFmOWQ5NjY0ZDIyMmE5NjQwMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzAzOGQ2YWYyZTBjYTEzNTAwOWQ4OTBmNDQxZWJjZjNjYTAwZmU4MGU4OTc0ZWJmMmNlZGUwZTVlMGNhY2ZiOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGIyYzBiNmNlOTEzODdhMmZjNmM5MTk2ZWFlYzI4YzkxN2QwYmY1Njc1ZTY2MjdhNzJhNDFlOTliZWNmODIxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWEwMWM4ZmNhMGVjZjIyNTBmOTYxNzNkMjEyNmE5OTEwNTM0ZmMwZWZjYzNhZDBhODVkZGRiODAwOGZhMDRjNiJ9"
         },
         {
-          "resource": "repo://src/render/mod.rs#L34-L61",
-          "version": "repo-lines-v1:sha256:d150f4e27c23dd47cc1f232373f693240dd569cea9082fd73ee61c28cb0af5b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5NjMxOGUxODYzZmFlZDdiNmVhMDY0OTdkYTYxODVmNjg1ZTVhZGUwNzNjNzk2MDAwMGM4YmRhZGVjMWUzZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1ZmY3OTVhYmFlYTJjYmIyMTMyYzA0YzM4MjIyNmUyNmI5YzliNGJjNDg4ZWQwOGFiNjYwYTRjYmZiNjRmOGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkifQ"
+          "resource": "repo://src/render/mod.rs#L57-L81",
+          "version": "repo-lines-v1:sha256:55c8492d7e7ebfed846bb4ef2eed722440fdf7d34a637786caeb8cb0547f54b7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNzE4Mjk3YTczYWE4ZTZjN2NmODM2YWRiZjI4MTUzNWRiNTQzZDk5NTllOTg0Zjk0M2JkZWRmZjY5ZWJlZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MDIzOWU3MTc5M2NmZGVjOGFjNzExZTEzMzliZGYzY2U2MjEwNTVjYWYxMGQxOGUxYjJmNzlmNWUwMjQ1MGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkZjgwMjEwN2NiMDk4YzhmNWJjNDMwYjllNWI1OGZhMzU4N2NmM2RlNDM5ZWUyMDIwYjcyYmZkZDg5YTljMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjMWFkYTQ5ZmRmZTA2ZjYzMmY5NWE2YWFhNTNmYTZkOWQyNjI3ZGE4OWVmNzQ3MTI4YTYxOTA3YWIwNDMyZGEifQ"
         },
         {
           "resource": "repo://src/tui/preview.rs#L12-L33",
@@ -119,10 +119,84 @@
           "version": "repo-lines-v1:sha256:83635bcf421f23f5afab38dfe37611d85b54e5d6d18c16be0c23bd0a85a0005c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWEwZmE4ZTJhNmRlNjJjNjJmMjQzOTM1MDg5Nzc4ODA0Yzg5M2ZlNWY0MjBlNjM3OTBhNzFkNmM4OThhY2RmNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjg4NGI5ODFiMGE5N2RiYjUzMTZlMDE4OTVlZWIyNDhkN2Y3ODA5NDIwZmFjYTIzNmJlZGMyYWQ2ODI1MDZjNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGU5NjJmM2NkNzE3MmE4NmExZDRkYTcyMTliODBiNzU0NjE4ZjUxZmQ3ZDE0MGM3ODc3M2MxMjBjOTA2OTFkNyJ9"
         }
       ]
+    },
+    {
+      "id": "claim_b050e5ed2d1245cea573127ebdef2bf0",
+      "statement": "The threshold editing surface in the Thresholds section is driven by the ThresholdField enum with exactly six variants — Warn, Crit, WeeklyShowAt, BarWidth, ClockMode, Layout — matching detail_len()'s return of 6 for that section; each variant has help text produced by threshold_help and shown in the status line. Numeric fields are nudged via nudge_threshold with mutual clamping (warn < crit ≤ 99, bar_width clamped 2–20), while ClockMode/Layout are enum-cycled via cycle_threshold_enum (auto→12h→24h→off and fixed→auto).",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/app.rs#L24-L33",
+          "version": "repo-lines-v1:sha256:8dd93c425ef5bbaf2aab4d7a0feaa02ff6343e81910a52618b071d411ec49603:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1NGFiYWQyYWZlNGZkZDljNTEwZmE1OWUxY2ZmNzQxNjg1MTBjNTU1NjI2Yzg4MzE0NzI2MzViNzA5ODU1ZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMmQ4Njk1MmMyYzQ4YzliYjRkOWNhMjc1MmI2OTM4ZDY4ZDJmMjhhMjNlZTM0OWI4MjdhMzk4ZDI5MDRkMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5MmI4YjRlZjY1MWZiMDkxOWJiMjUxN2JiMWU4MjlmOTMwYTFkM2Q4YjJlOGNhZjZiNzhmMGNkYzFjODliOTUifQ"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L288-L334",
+          "version": "repo-lines-v1:sha256:166e7f5155e937baac5c3303ff0ed81ad1bf3f0ba78ff2962464d5f4d91abe5c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMDBmZWFmOTNiOTU0OWU1OWU0OTdjODY4YThhMzRlNjEwNDZjMWExMDA0ZjA3ZTJhZjEyMmZiMzYyOGIwNTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwNDg1ZWViNjI2MmJmMjZiYjQyNDk4NThiMzZlODVmOGUwNDVlNDdiYTc2MGEwMDcxOGVhYTIxZjU1MzY1MWUifQ"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L498-L507",
+          "version": "repo-lines-v1:sha256:9c01061493b809cac24f8e0123f1e3c30a2878e1fa0914d215b9e873eabc6163:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMTM5OWRmMmZhNGE0MWE5YjA0YzE2Y2MwZWM4NzQyYzkyMGNjZGQ0ZTYzNGJhMDMwMTA3NjgwMmY3OWM0M2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0OWEzZGMwZDg4NDQ3ZThkZDc3Y2UwOTcyN2I0NDU3Yzk5MDVmNjgxOTZlMmNjMjE5YzdmYjNmZTYwNTEwYzcifQ"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L530-L541",
+          "version": "repo-lines-v1:sha256:57138d80063f1552822867b4bc0ac43838c3a7c458726166224c9ff75e219218:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3NjgwNGU1OGIzZDAxM2Y4ZmQzOTMzZTk1ODc3ZWYzYTI1ODhhNGZlN2IyODg4ZmM1ZTRkZmJkOGZlMWUzMjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_47d9473ddb9e45379377adc0606ba6a5",
+      "statement": "A test invariant, every_segment_kind_has_help_text, iterates every SegmentKind variant in SegmentKind::ALL (12 segments, not just the 8 in DEFAULT) and asserts that segment_help returns a non-empty string containing that segment's label() — guaranteeing that a newly added SegmentKind variant ships with a help line rather than an empty description in the configurator.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L33-L49",
+          "version": "repo-lines-v1:sha256:7711e52ac7b1ffe86c9322fb2170c5678e6cdf69456fea8d436b8e5ca7a6ca02:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNWEzNjJhZTgzMGU4YTU2ZGMwNGJhMWE5YWYwZjE1MjY3ZGRkNjQzNTBmZjFkYThiM2MyYWRiYjlmYmY4NGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1MzdkYWQwMDA5NzdhMDkxNTRhNzIwNWFlOTZlYTEzYzZlYzE1MDVjODVjODhjMGEwZTA2MDE5NzUxZGQ4MDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmNDhjOGNmYzQ1NWZmNTAyYWM3MDg5MWYyNTQxOWQ4YjIwNmVlNTI3YWZhMjBiODM4M2VjMDQyMWNiMTU4MWQifQ"
+        },
+        {
+          "resource": "repo://src/tui/app.rs#L546-L558",
+          "version": "repo-lines-v1:sha256:c0ea97f64ef5fd695dcac69bcfcf7d9a1178475f8e47ed70065d9968793609ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlOWFmYWM3YjY1MDA5OWJlYmYzMGU5M2VmOTM3MTlmMzFlNTM3OWY2NGMxOGQ4Y2JkMjA3NjQxODFlODc5MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlMmFiMjk4NDhhZGY2OTA0YjI3YWIwNDdkNmVmOWRmYzFjZTBhMWM2ODZjODc2NjVjYzA0ODA3ZThmOTk3ZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiZTk5NjVjZTRhMzJmOTdmOWYzM2M1NTM4Y2VmOWQxNDY3OGIxNDRkODg4NWQ2NjI5OGE2ZGUyYzg4NzU2ZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_34f879cee252437fae02a18698d60a67",
+      "statement": "preview::render uses fixed deterministic inputs so the preview cannot vary across renders: it injects FIXED_NOW (an epoch-seconds constant of 1_899_990_000) as `now`, PREVIEW_HOME=\"/home/me\" as the home prefix (for fish-style directory abbreviation), and a zero timezone offset (always UTC).",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/preview.rs#L12-L33",
+          "version": "repo-lines-v1:sha256:6da5667d14a839367b5e19ca9b3570407513eed29f8197e7c3cd382699c495ea:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZWE0OGMxOGRmZjg2ZjAzZTM5YzhjNmYwZDQxODg0YThjYTJhOThlYzVjZjFiYjAzYTA5NTQzZmQxMTU0NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkYjZjNDBkYmE0ZDkzMjE5ZDMyYzVlNTRjNzEzNzczNTVmMGQyNzU3MzBiYjc0YzMzODE5MjdjNTZmM2MzYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7d03a5ef96b4fd58d63fe22122e87ab",
+      "statement": "The event loop draws each iteration and polls input with a 200 ms timeout so the frame refreshes even with no input; key events are dispatched only on KeyEventKind::Press, and handle_key is strictly prioritized: help overlay consumes all input, then pending-reset, then pending-quit, then reorder mode, then normal dispatch.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/mod.rs#L72-L97",
+          "version": "repo-lines-v1:sha256:40fcf08369287561616f29a8251232b5dad39d278a504e5a8992b5f015a17fd2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0YThiOGYxZDBiN2ZjZjRkMTA5MTAxYmQ1YjNjYzhiZWRmZGNkY2EwNWIyOTQyN2UxMTAxMGIxNmIyNjcyYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyYjFlNGNmYTJlMWVlOWYyMWNjNGU1NDdhNTBiNDgzNmY0MzZmMzkwOWYwMWQxMjE1Y2Y2YzA3NTVlYTE3ZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiYzBkMjEzOGQ4YWRmNzQ1YTg1MDJlNmQ0MzdhZDlkMDdiZTg4MGQzMGY2OGUyNjkzNzViMDA3YWZjYWRkMzEifQ"
+        },
+        {
+          "resource": "repo://src/tui/mod.rs#L99-L134",
+          "version": "repo-lines-v1:sha256:e095b17ca11cf7bd59c31f5ff5cb4a5ed11b1b8bdedf23c5400ae04fb66544f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhNDdkZDEwMTUwOTAwOGVjOGQwNTYyNzFmMThiYWNiMzFiNmNkZTFiYjY1NjY4NDcyNzcwZGFhMjA2NjE0MzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxOWUwODQzNDI1YTk4ZTY4NzVkY2JiMjA2MThkNmY4NmY1MDJmYjllNmQxOGJiN2RiZWFkMDUyOGVjNmE3NmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4c95e39f1472413e88b97548e222f126",
+      "statement": "In reorder mode (entered with m on an enabled segment and left with m/Enter/Esc), j/k/Up/Down drive move_segment to swap the focused enabled segment with its neighbor; boundary and out-of-range moves are no-ops, and the list is rebuilt so cursor follows the moved segment.",
+      "evidence": [
+        {
+          "resource": "repo://src/tui/app.rs#L485-L496",
+          "version": "repo-lines-v1:sha256:371157fb07063327e2c1620d7794c5b213e4da146bd8ebbf2b2c76b941022829:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3YzM1MDQ0ZjA1NjZkNTdmZGM1MjI2MDJhYTI1M2U4MDM5MGMwYjRjMGY0NDUyM2QzZWVhMWUyMGY5ZDU1MzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxZDg5MzgyNjc0YzdlY2NjY2MwNjVhODNkY2JhODNmZWJmODFiMmFmN2Q0NGUzODVmYWI1MDcwZDYzYzk0OTkifQ"
+        },
+        {
+          "resource": "repo://src/tui/mod.rs#L221-L258",
+          "version": "repo-lines-v1:sha256:6338118bef3a52b67a54626780107f2d3445daafbcda29628eacd223d4878cf2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjYTU5MzgwYjg2YWY4NGEzMTBiYjVkNTJjNjZhYTExZmM3YjIzODJjYTFjOWQwZTczODM3Mzg3MzA3YmE2MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxZWE3OWUwNzQ4ZTE5ZTU3ODQ3YWZmZmViZGUzZWQzMzQ0NmNlZWNjMzQzMTZjMGViMTE0ZGYyNWZmN2YxNjYifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.0",
-    "at": "2026-08-26T22:48:34.063Z"
+    "at": "2026-08-29T00:17:43.706Z"
   }
 }

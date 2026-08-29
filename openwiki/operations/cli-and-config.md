@@ -3,9 +3,6 @@ type: concept
 title: "CLI surface and TOML config"
 description: "The full claudebar command-line surface — every subcommand, the shared --config/--theme/--style/--segments render overrides and their field-by-field merge, and the config.toml schema (segments, theme, style, thresholds, layout) — so users and maintainers know the operational surface."
 tags: [cli, config, toml, subcommands, thresholds, render-overrides, clap]
-verified:
-  - by: openwiki/0.4.0
-    at: 2026-08-26T22:48:34.063Z
 sources:
   - id: openwiki-source-c38906bbfa9e9c69417b11b5
     resource: repo://src/cli.rs
@@ -19,7 +16,12 @@ sources:
     resource: repo://src/render/mod.rs
   - id: openwiki-source-0ecba5538b5fd9860f10332f
     resource: repo://src/update.rs
-generated: {by: "openwiki/0.4.0", at: "2026-08-26T22:48:34.063Z"}
+  - id: openwiki-source-794a8a61d981f5bedfb57b2d
+    resource: repo://tests/cli_main_dispatch.rs
+generated: {by: "openwiki/0.4.0", at: "2026-08-29T00:17:43.706Z"}
+verified:
+  - by: openwiki/0.4.0
+    at: 2026-08-29T00:17:43.706Z
 ---
 
 # CLI surface and TOML config
@@ -113,7 +115,10 @@ the default `SegmentKind::DEFAULT` set with `[default]`.
 `sync` loads the existing config and inserts every segment present in
 `SegmentKind::ALL` but absent from the user's `segments` list at its canonical
 position relative to its `ALL`-order neighbors, preserving the user's overall
-ordering. With no config file present it reports there is nothing to sync.
+ordering. With no config file present it reports there is nothing to sync. One
+segment is deliberately **not** backfilled: `update-notice` spawns a daily
+background network check, so `sync` skips it as opt-in and prints a notice
+explaining how to enable it (guarded by `main_sync_leaves_update_notice_opt_in`).
 
 ### `smoke` — deterministic install check
 
@@ -237,7 +242,8 @@ Defaults (`src/model/config.rs`):
 The `render_line` entrypoint applies these: the float readout is emitted as a
 best-effort side effect whenever `float` is true (a write failure can never
 break the status line), and the `layout` value selects fixed vs auto wrapping
-in `render_with`.
+in the shared `render_ctx` layout step used by both `render_line` and
+`render_with`.
 
 ### Error semantics: `render` vs the rest
 
@@ -275,5 +281,7 @@ and surfaces `ConfigError::Io` (parent dir / write) and `ConfigError::Parse`
 - `src/main.rs` — `default_config_with_font_check` picks `unicode` when no
   Nerd Font is detected.
 - `tests/cli_main_dispatch.rs` — spawns the binary and asserts exit codes and
-  stdout/stderr for `render`, `init`, `list`, `sync`, and the rest.
+  stdout/stderr for `render`, `init`, `list`, `sync`, and the rest, including
+  that `sync` adds ordinary segments while leaving `update-notice` off
+  (`main_sync_leaves_update_notice_opt_in`).
 - `tests/cli_smoke.rs` — the stdin → stdout render contract.

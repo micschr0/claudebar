@@ -3,9 +3,6 @@ type: Architecture
 title: "Render pipeline: session JSON to ANSI status line"
 description: "The single render hot path shared by the statusline hook and the TUI preview — parse stdin JSON into InputData, resolve Config, resolve theme/style, then compose segments into one ANSI status line via render_line."
 tags: [render, ansi, segments, layout, statusline, composition]
-verified:
-  - by: openwiki/0.4.0
-    at: 2026-08-27T14:08:42.273Z
 sources:
   - id: openwiki-source-ed8bf05e307c6278442542c2
     resource: repo://src/lib.rs
@@ -31,13 +28,20 @@ sources:
     resource: repo://src/segment/mod.rs
   - id: openwiki-source-d4594996ae77710bcd28b71f
     resource: repo://src/segment/rate_limits.rs
+  - id: openwiki-source-5d948000f74b098b1187bdc9
+    resource: repo://src/segment/update_notice.rs
   - id: openwiki-source-c5d0aaf913f55a00eb2e5796
     resource: repo://src/styles/mod.rs
   - id: openwiki-source-079dcbc1bf8b946f21372942
     resource: repo://src/themes/mod.rs
   - id: openwiki-source-f1010f412e64365e722e378c
     resource: repo://src/tui/preview.rs
-generated: {by: "openwiki/0.4.0", at: "2026-08-27T14:08:42.273Z"}
+  - id: openwiki-source-0ecba5538b5fd9860f10332f
+    resource: repo://src/update.rs
+generated: {by: "openwiki/0.4.0", at: "2026-08-29T00:17:43.706Z"}
+verified:
+  - by: openwiki/0.4.0
+    at: 2026-08-29T00:17:43.706Z
 ---
 
 # Render pipeline: session JSON to ANSI status line
@@ -63,6 +67,7 @@ flowchart TD
   H --> I
   I --> J["hook prints line / preview shows Text"]
   E -. "cfg.thresholds.float" .-> K["float::emit_float (best-effort side file)"]
+  E -. "update-notice enabled" .-> L["read cache → refresh_in_background (detached check)"]
 ```
 
 Caption: The end-to-end render hot path from session JSON stdin to the single
@@ -78,13 +83,14 @@ pub fn render_with(input, cfg, theme: &Theme, style: &Style,
 
 - **`render_line`** (`src/render/mod.rs`) is the hook/CLI-facing entrypoint. It
   resolves the theme and style through `themes::get(&cfg.theme)` and
-  `styles::get(&cfg.style)`, reads `$HOME`, detects the local timezone offset,
-  and delegates to `render_with`. It also triggers the optional float readout
-  when `cfg.thresholds.float` is set.
+  `styles::get(&cfg.style)`, reads `$HOME`, detects the local timezone offset via
+  `clock::detect_tz_offset()`, and delegates to the shared `render_ctx` path. It
+  also triggers the optional float readout when `cfg.thresholds.float` is set.
 - **`render_with`** is the lower-level seam the TUI preview and tests call with
   already-resolved theme/style and deterministic `now`/`home`, so those callers
-  never re-derive ambient state. It builds the `RenderCtx` and dispatches to
-  `render_auto` or `render_fixed` based on `cfg.thresholds.layout`.
+  never re-derive ambient state. Both entrypoints funnel into the shared
+  `render_ctx`, which builds the `RenderCtx` and dispatches to `render_auto` or
+  `render_fixed` based on `cfg.thresholds.layout`.
 
 `main.rs` drives `render_line` in three places: the primary `render` path
 (reads stdin, parses `InputData`, resolves config, prints the line), the
@@ -94,9 +100,10 @@ calls `render_with` directly, passing a fixed `FIXED_NOW` epoch and a fixed
 
 ## Determinism and the no-I/O rule
 
-The render hot path must **not** touch the network, the filesystem (except the
-opt-in rate-limit sync cache described below), or the environment except
-`$HOME` and timezone detection. That rule is enforced structurally:
+The render hot path must **not** touch the network, and its only filesystem or
+environment access beyond `$HOME` and timezone detection is two segment-gated,
+degrade-silently cache reads — the opt-in rate-limit sync cache and the
+`update-notice` cache. That rule is enforced structurally:
 
 - `now` (epoch seconds for reset countdowns), `home` (for `~` path
   abbreviation), and `tz_offset_seconds` are **injected** into `RenderCtx`;
@@ -119,9 +126,28 @@ The one deliberate exception is **rate-limit sync** (`segment/limit_sync.rs`):
 when `cfg.thresholds.limit_sync` is enabled, the RateLimits segment records each
 render's `(reset, pct)` snapshot into an atomic per-window directory under the
 cache dir and reads back the highest-seen value across sessions. This is the
-only filesystem access on the render path, it is explicitly opt-in, and all its
-I/O errors are swallowed so a cache failure can never break rendering
+**only** filesystem access on the render path; it is explicitly opt-in, and all
+its I/O errors are swallowed so a cache failure can never break rendering
 (`src/segment/rate_limits.rs`).
+
+## Update-notice path
+
+When the `update-notice` segment is present in `cfg.segments`, `render_line`
+performs one cache read that feeds two jobs: deciding whether a background check
+is due, and rendering the badge. It calls `update::refresh_in_background(now,
+cached)`, which spawns a detached `claudebar update --check` child **at most once
+a day** (or when no cache exists); the render never blocks on the network — the
+child writes the cache asynchronously. `render_line` then compares the cached
+`latest` release against `CARGO_PKG_VERSION` via `newer_than` (kept only when
+strictly newer) and passes the resulting `update: Option<&Version>` into
+`RenderCtx` (`src/render/mod.rs`).
+
+`render_with` funnels through the shared `render_ctx` path, which calls
+`cached_update(cfg)` — a read confined to the `update-notice` segment, so the
+cache read stays off every other render path. Inside `RenderCtx`/segments the
+network is never touched: the `update-notice` segment (`src/segment/update_notice.rs`)
+is a pure formatter that renders `↑ <version>` only when `ctx.update` is `Some`,
+emitting nothing otherwise.
 
 ## Resolving theme and style
 
@@ -224,10 +250,12 @@ to measure segments and separator widths before deciding where to wrap.
 ## Invariants
 
 - **One rendering code path.** `render_line` (hook/CLI) and `render_with`
-  (preview/tests) share the same composition; there is no second path.
-- **No director I/O in segments.** Rendering is deterministic because `now`,
+  (preview/tests) share the same composition via `render_ctx`; there is no
+  second path.
+- **No direct I/O in segments.** Rendering is deterministic because `now`,
   `home`, and `tz_offset_seconds` are injected; the only filesystem touch is
-  the opt-in rate-limit sync cache.
+  the opt-in rate-limit sync cache, and the network is never touched (the
+  update check is a detached child).
 - **Composer owns separators.** Segments never emit separators and never know
   their neighbors; empty segments are dropped with their separators.
 - **No raw host escapes.** Host strings pass through `strip_control` before
@@ -252,5 +280,8 @@ to measure segments and separator widths before deciding where to wrap.
 - `tests/render_golden.rs` renders every fixture under the default config with
   a fixed clock and `$HOME` to pin exact ANSI output (instant golden
   snapshots), asserting no stray ESC leaks from host strings.
+- `src/render/mod.rs` also pins `newer_than` (kept only when strictly newer,
+  `None` for same/older/unparseable) and `cached_update` (`None` when the
+  `update-notice` segment is disabled), guarding the update-badge path.
 - `src/segment/rate_limits.rs` verifies the sync cache shows the highest-seen
   percentage across sessions when `limit_sync` is enabled.

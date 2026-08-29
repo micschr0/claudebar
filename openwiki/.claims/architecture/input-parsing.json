@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:59fcf34708fdfd7870ac96907e443590702988b37eaf3a9bbed30c6d9c935e1e",
+  "pageVersion": "sha256:dddbd0c9a6c174f26d31fa4ba24ac10da80a735a464cae44a1d7dc7a23740e2e",
   "claims": [
     {
       "id": "claim_5d972441787d4ee5aed849c8b1908548",
@@ -173,12 +173,12 @@
       "statement": "typical.json is the well-formed baseline used by golden_matrix's 16-theme x 2-style matrix and by the smoke and setup-preview commands.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L466-L477",
+          "resource": "repo://src/main.rs#L486-L497",
           "version": "repo-lines-v1:sha256:2f666c75fe784be3d5696bc13974387e9bc7d690f717a785bf1fdd6e5378b807:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkYzdmMjdkODRiZmIxNzVmNmIwNzIwOGY2YmMwZjU1YTJkNzYxNmUzNjVlZWZjODE1YzlmMWRhYzFkNTc3NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNjMxNWFkYzFlMzlhMDM1OTcxYzA1YTFhNThkYzYyZjU5MjA0MmIzMmNjZWVjYzYyYjIxMzY5MGY4YTQ3OTYifQ"
         },
         {
           "resource": "repo://tests/render_golden.rs#L59-L73",
-          "version": "repo-lines-v1:sha256:c675304df07103cfa8d7f82d94a9f32f4fa13217796b38402f53a3ce892e85e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmZjRhM2UzZDdiYzIxYzEyYzhlMzIxMGQ0YjU2NmU4NTkyY2Y1NzgyNzY4NjZhNjY3NDdmNWM3NTE3MmY5MzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiMTBkMjRjZjM1ZTQ4OGI0YjQzOTIwNmZmNjY3M2U4ODljY2VkNDI3ZWE5NjJhYjc1YjM0ZDlmOGJmZjZjZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMzJmNzE2ZTJhYmE5YTIwMzAzMjIwOTI5NjVkOWY2ZDIwM2UxYmZhZDhmYTQ0ZTExMGFlN2JhZGI5ODRlNWEifQ"
+          "version": "repo-lines-v1:sha256:c675304df07103cfa8d7f82d94a9f32f4fa13217796b38402f53a3ce892e85e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmZjRhM2UzZDdiYzIxYzEyYzhlMzIxMGQ0YjU2NmU4NTkyY2Y1NzgyNzY4NjZhNjY3NDdmNWM3NTE3MmY5MzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiMTBkMjRjZjM1ZTQ4OGI0YjQzOTIwNmZmNjY3M2U4ODljY2VkNDI3ZWE5NjJhYjc1YjM0ZDlmOGJmZjZjZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlZjRiYzNiY2U2N2UwNGI1ZWY5ZGIzNTU2M2Q3YWFkYTczNjJhMTA2MzQ0MDVhYWNhMDcyZmRjNmFlNDlhMTEifQ"
         }
       ]
     },
@@ -225,10 +225,38 @@
           "version": "repo-lines-v1:sha256:e46a2b6d5cf19eacc93241c3581bf0e4eec5eb215ab3d14ebed7e0e1fc67ccb0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MDJkNmNmNmVlMWIyMjg3ZjZmNDllNTMxZWU2ZTE1M2MxZDA4YzI5ZjEzMjQ5ZWUyYWI3M2JhM2Y0ZTg2NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYjhmNDJlODBjNTUzY2Y2YjMzNmU5YmIzY2Y4MDI4ZjYwNjkxNjcyMjBmMmU2OTkwYzIyNzdjMTUzZWJjYzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
         }
       ]
+    },
+    {
+      "id": "claim_d278aac9ac744692a4f5cde851841580",
+      "statement": "The render pipeline has a single composition entry point, render_line, shared by the hook and the TUI preview, with no second rendering code path.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L1-L4",
+          "version": "repo-lines-v1:sha256:dc566641947085dbcb137419c0cc01de78918f575fe88b90fed485f8b517471b:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmI4MjFkZGQ0ZTI0NzQxMDBkMmVlMTQ5NzgyNGNmZDY3NWQyODg2OTM0MWZhMTIxZjIyN2Q0ZGQxMWE0Mjc4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzYxOGI0NTNlMDZlNTMyODM1MmJjNzE1OTc5NDQyNzA3NDRjNGFjNDAwMzRhOGFkNTg0M2UzZjE4ZmQ3N2JlMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGY2ZWNlNTFiMTYxZmUxZTVjNjZlYTUzNDBhNjE1ODk3YzFlMzI5YzYyNzdiNDM2MjUxNmRmZTQ1MTYyZTYyMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0c4b2665eaa4bef8f146b33dc301987",
+      "statement": "Host-provided strings (cwd, git branch, model.display_name, effort.level, worktree/PR/agent names) are sanitized at render time through crate::sanitize::strip_control, which removes ESC/BEL/CR/LF to block ANSI/OSC escape injection; SegmentWriter emits text verbatim and requires callers to pre-sanitize.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/writer.rs#L43-L50",
+          "version": "repo-lines-v1:sha256:a34a40701550484d0c2239a98619c1866db4074b10994e1d21de983ff2604cb9:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWJmNmUzZTE0ZjFkMjk3OTM4YzEwYjhkOTk5NmRlZWYzMzRkMGU1NGIzOTVlMTMxMWU0YjVlMjRkNjkyYmJiMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmRiYThkMDJlMzBjN2Q5OTdjZjg3ZmMxNzk4MTM1NjJjZjMyZjRkMWU5NjUwOTVhNjhhNmViNmZiYjk5NTM4MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmIxMWNiNWRhNTQzOWIwNDkzNzJiN2UzMWYxOTJhMTVlNzM3N2ZhZmI4NGY0M2Y4ZjEzYWEzYzg1YTdlMTkyYSJ9"
+        },
+        {
+          "resource": "repo://src/sanitize.rs#L4-L12",
+          "version": "repo-lines-v1:sha256:5c355e67f2fcbe7f55e33afd6a40012bf43d59eef35a963a203ee25ce3c5d11e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI4NTg5YWE4MTkyZTdhN2I5ZWRlYjYyYjM3NjE2MTBkZDY3ZGFlYmFlNzAwMjg4YjVlZjExM2UwZjU3YzBiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDg1MDkyMThlNGRkODVlOTM2MDBhOTBkZjhhZDJmNWM2ZmIyOTkwMzI3YmUxNzNkMWEzZGQ0Y2Y5MmI4ZmJjYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjg3OWUxZjE5NjkwNDRjZjQyMTVjY2RmNzZiNjk3MDQ1YjYzZTM1MDE0YTM5MGUzNjY5YmQ4OWE5OGMwMGU4NCJ9"
+        },
+        {
+          "resource": "repo://src/segment/model.rs#L26-L41",
+          "version": "repo-lines-v1:sha256:3eabf0da317fa225b5f205b821ee8d8fc674277c15a0648efb5491dc887fd5c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwYjNiNTgyOWVhYWRhNDUxNmM3YWM2NWVlOTQ5NDIyODNlNjBlOGY5ODQ4YmI4ODE2Zjc5MGY3MDRlZDYzM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMGNiMTY2NjVhNzZhYWM5YjA1ODBlMWE1ZDBhZTdkNWMzMjVlNjlhNGUxNTdlNTU5NTI0Yjg5MWMyOGE2M2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0ZjU4MWFjZjFmODA5OTMxNDUyZjkyOWEyMzZmZWJhNTA4MjdiMWQ3YTA4YTY2MDMyMDFlY2RmOGI1NzQwYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYyZWI1MjA0M2YzMWZiOGFjYTcxZTVhYzdlZjI1OTc3YmQ3ZTI5ZGVkOGMwY2YyZTJiZmU0NjNhYWI1ZmNjZDMifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.0",
-    "at": "2026-08-27T14:08:42.273Z"
+    "at": "2026-08-29T00:17:43.706Z"
   }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:8359a4f7f51ac46a6a6240a81d640d37b6bc466bfb40b692c11395b4a67afc2d",
+  "pageVersion": "sha256:50d0b74691f257bb4439ad19bc8b2b5b61d6d15e9c025e9d340e8f5aabc8ea55",
   "claims": [
     {
       "id": "claim_fce3354879fe41fdb6fcedbc211e32e9",
@@ -22,21 +22,21 @@
     },
     {
       "id": "claim_1dcfa749115848259fb856e37ba507a2",
-      "statement": "render_line resolves the theme and style via themes::get and styles::get, reads $HOME, detects the timezone offset, delegates to render_with, and additionally triggers the optional float readout when cfg.thresholds.float is set.",
+      "statement": "render_line is the hook/CLI entrypoint: it resolves the theme and style via themes::get and styles::get, reads $HOME, detects the timezone offset via clock::detect_tz_offset, supplies the update cache to the shared render_ctx path, and triggers the optional float readout when cfg.thresholds.float is set.",
       "evidence": [
         {
-          "resource": "repo://src/render/mod.rs#L22-L32",
-          "version": "repo-lines-v1:sha256:fd3711de3544deeb73cd10f6a6d95a8524cb270bb45635ebb42f63558fd8e2bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMzljZTRlYmFjZWUyYTU1OGI1ZGY1N2NkYTZkMGYzMTk1Yjc0ZDI5Mjc1ZjMyMWFhODY0ZjcwMzQ1ZGZmYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViZWIzY2U5YmU2NTBhMDQ4ZTE5NTBjNjBmNjBkNmYyMWIxMmM0N2YwYjc5YzIyZDMwZjI1MTAzZjcyNjA5NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmYmZiYWYwOGZkOWFmZjc1NzM4ZGQzZWY4MWNlMGEyMmEwZDg5YTRjMWEyYjZlZDdhYzEwMGQ4MDQ0MWU1ZDcifQ"
+          "resource": "repo://src/render/mod.rs#L22-L52",
+          "version": "repo-lines-v1:sha256:1f54ef9560a218111a912c5d0c8c04a767b8497627e91171173f11f9555d4077:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMzljZTRlYmFjZWUyYTU1OGI1ZGY1N2NkYTZkMGYzMTk1Yjc0ZDI5Mjc1ZjMyMWFhODY0ZjcwMzQ1ZGZmYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViZWIzY2U5YmU2NTBhMDQ4ZTE5NTBjNjBmNjBkNmYyMWIxMmM0N2YwYjc5YzIyZDMwZjI1MTAzZjcyNjA5NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmYmZiYWYwOGZkOWFmZjc1NzM4ZGQzZWY4MWNlMGEyMmEwZDg5YTRjMWEyYjZlZDdhYzEwMGQ4MDQ0MWU1ZDcifQ"
         }
       ]
     },
     {
       "id": "claim_542f700630fd4e91944ed6ec147b1803",
-      "statement": "render_with is the lower-level entry that takes already-resolved theme, style, now, home, and tz_offset_seconds directly; the TUI preview and tests call it with deterministic values, and it dispatches between render_auto and render_fixed based on cfg.thresholds.layout.",
+      "statement": "render_with is the lower-level entry that takes already-resolved theme, style, now, home, and tz_offset_seconds directly; the TUI preview and tests call it with deterministic values. Both render_line and render_with funnel into the shared render_ctx, which builds the RenderCtx and dispatches between render_auto and render_fixed based on cfg.thresholds.layout.",
       "evidence": [
         {
-          "resource": "repo://src/render/mod.rs#L37-L61",
-          "version": "repo-lines-v1:sha256:1eddd4838bcb733a22375ab1e4391107cbc0a906926eec2b236ee08e35f696c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNzE4Mjk3YTczYWE4ZTZjN2NmODM2YWRiZjI4MTUzNWRiNTQzZDk5NTllOTg0Zjk0M2JkZWRmZjY5ZWJlZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkZjgwMjEwN2NiMDk4YzhmNWJjNDMwYjllNWI1OGZhMzU4N2NmM2RlNDM5ZWUyMDIwYjcyYmZkZDg5YTljMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkifQ"
+          "resource": "repo://src/render/mod.rs#L57-L109",
+          "version": "repo-lines-v1:sha256:e30b4e80449df4095ba0ab42532d0b24f9362b259c72069fb051e14c6994182e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNzE4Mjk3YTczYWE4ZTZjN2NmODM2YWRiZjI4MTUzNWRiNTQzZDk5NTllOTg0Zjk0M2JkZWRmZjY5ZWJlZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkZjgwMjEwN2NiMDk4YzhmNWJjNDMwYjllNWI1OGZhMzU4N2NmM2RlNDM5ZWUyMDIwYjcyYmZkZDg5YTljMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4ZmQxZGRhNzJjYmY2NTY2ODNhNTA4YzAyNTFjMjVkZDc1YjkwNTVmNTE4MjM0YzllMjAyNzU1MDU2MTM2NzkifQ"
         },
         {
           "resource": "repo://src/tui/preview.rs#L19-L32",
@@ -46,25 +46,33 @@
     },
     {
       "id": "claim_d42213f35f574f359fad8d51926a2c6d",
-      "statement": "RenderCtx carries injected now, home, and tz_offset_seconds so segments never read the system clock or $HOME themselves; this injection keeps rendering deterministic and makes golden snapshots and the preview stable.",
+      "statement": "RenderCtx carries injected now, home, and tz_offset_seconds, plus the segment-gated update version, so segments never read the system clock, $HOME, or the network themselves; this injection keeps rendering deterministic and makes golden snapshots and the preview stable.",
       "evidence": [
         {
-          "resource": "repo://src/segment/mod.rs#L24-L39",
-          "version": "repo-lines-v1:sha256:a94bbb91035cd90c173819525b1d86c3658dc607ee3b68a46e39ef085b326c07:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDg5ZGRjNTRhZDI3YzJjMWUxNjVjNWRlZGYwMmI1YTU2YWQxY2U0Yzg4MzJkMTQyNGQyYjgwZDJhZDA1NDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyYjE4OWEwMDJlODk0YThkM2Q1ZDYwNzdiMWNhMDVkNTZlNDkwOGIwYzVhMGQwNWU1MzBiMTViODg5NzcyYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4Mzg5ODVhZjA1NjM5NDBmNjI2MDM4NjRhYWZjNjUwMmY4ZjczNjQyNGIzMjkyYjYxOGI0ZTExMzdjMDE0ODgifQ"
+          "resource": "repo://src/segment/mod.rs#L28-L44",
+          "version": "repo-lines-v1:sha256:47db31f12d979799feb5ad2d8c375e9f352d530196c5f6d92d28d44837be1fb3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZjg3ODRjNWMzM2JiMDQyNDFhZjlhNjc0MTQwMzBkYjkxMzhhNDYzMTVjNzQwMjJiYjM5NGYzNjk5ODNiMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNTVhNzI1ZWNjMWZlOTcwY2M5YmFhYWVmODU3MGUxNWU4MjdkYjA4YTZmODE4YjMxMjA5ZGI1M2MwYWQ4NDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4Mzg5ODVhZjA1NjM5NDBmNjI2MDM4NjRhYWZjNjUwMmY4ZjczNjQyNGIzMjkyYjYxOGI0ZTExMzdjMDE0ODgifQ"
         }
       ]
     },
     {
       "id": "claim_d1d6d5a350a646b8aba5f2c696047cac",
-      "statement": "The render hot path must not touch the network, filesystem, or environment except $HOME and timezone detection; the single deliberate exception is the opt-in rate-limit sync cache whose I/O errors are all swallowed so they can never break rendering.",
+      "statement": "The render hot path must not touch the network; its only filesystem I/O beyond $HOME and timezone detection is two segment-gated, degrade-silently cache reads: the opt-in rate-limit sync high-water cache and the update-notice cache. The network update check runs in a detached child, and all cache I/O errors are swallowed so they can never break rendering.",
       "evidence": [
         {
-          "resource": "repo://src/segment/limit_sync.rs#L1-L36",
-          "version": "repo-lines-v1:sha256:a76fba8901a7e2bbda76f29f6d098bb26c1ba37e907cba110ecec087dbabc74c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxM2NhODlkNTUyYzUwNWI0OWEyMmJhODg3YTUwOGI3N2UyOTA1MTEzNDM2N2NkZjExZGUwMDA5Y2UwNmEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2YTQ0MzczMTUwOGRkZmQ4MzVmMDgxMTEyYzIyNDFhMDJjODBjODM2MmM1ZDQzYjNiNTRjMTI3MDViNTc0ZjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4MTgyN2RkZDYyOWQ2MmFmZTkwNjYwOWFmM2Y4NzkzY2ViNDc5MGIzZmQ1NGRiM2UyMjU0NWM0ZjI2NTM2MmQifQ"
+          "resource": "repo://src/render/mod.rs#L31-L37",
+          "version": "repo-lines-v1:sha256:e1d788dab60aaa13e4730189fd4ea6d8b3686dd2d693d3fe4f6f0079ead13a79:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2M2ZGI0ZjY5MjY5ZWVlYTM1MTY3MjA2MmNhZTBmYTQ2NjZjZGMxZjgyNTg3NjY3YWFiY2MwZWFhNjdjMGNlMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ5ZTEyNTQ2NDI1NTc2ZDNkZWFlOGM5YjlkYmYxMjhkNWQ2ZGRhZjVkN2ZlODU3OTM0OTI3ZGVmZmEzYjlkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGQwMWYzNjM4YmFhODRiNzJkMmVkOGYxZjk4NTNmNTE3MTA0OGExZmY4Yjc3ZDYxZDBmNWYzYzUwNTViZTkyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmNlNjVkNTQ5YzI5NzU0MTIwYjZmNDIyODhlMTg1MTUwMjQ2NTMwMzFmMzBmZjIwMWExZDdhNTE2YTcyNWQzZSJ9"
         },
         {
-          "resource": "repo://src/segment/rate_limits.rs#L98-L135",
-          "version": "repo-lines-v1:sha256:86bd1a445ba8ee4de280e6b3baa424eb2708d09aebf52fce260efe80d9330448:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1YWNhMzEyMzc0MjY4ODZhZTEwMmRiYTY3NGZlZWQ3OGEyYWMzYmQzYTYxMWQxYzM0NTlhM2Y5NzZlNGE0MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmY2M4NzcyYmMwMzU5NzE3NGFiNzQ1NGIzNTE0N2FmZjlkNGJhODc4ZDU5MWM0NDAxNzcyYjA4OGQwNjBhMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjNzllYjBkNTJjN2M5ZWJkZDUxYmM2NjViMDE1MjY2YzdjMWFiNTJlNWRjODI3OTkxYzBlYTAxMTdiNjA1MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzNjRmZWRkZWE1MzlhODcwMGNhYTc1MDYzODNkZTNiOTNlYjg5MTJjODI5YWY4MDY0Njk1ZjhjZmNmMjhjNmIifQ"
+          "resource": "repo://src/segment/limit_sync.rs#L1-L44",
+          "version": "repo-lines-v1:sha256:f0b3b5cf3b9ea938662fe5c4714b0b36bd3d6d741581c001e57e8c1aa89dcb4f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxM2NhODlkNTUyYzUwNWI0OWEyMmJhODg3YTUwOGI3N2UyOTA1MTEzNDM2N2NkZjExZGUwMDA5Y2UwNmEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMjkzY2NlMDA3MzE5YTBmOTI5OWI0YTc4ODNiOWQ3NmVhYjJlNzFhZjlhNDBiN2Q3Y2M1ZjViNWFhODMxYTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyYWM0OTYyOWUyMzBjNTc5NTI4ODRiMzhjNjA4YWM2OWQ1NDE4N2U1NjFkOTkzYzg2OTY0YzY2YjMxYWM3NzkifQ"
+        },
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L98-L140",
+          "version": "repo-lines-v1:sha256:6493246b89707ca54e6161a3efca4840319d584aec7452553b901eb04039f84e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1YWNhMzEyMzc0MjY4ODZhZTEwMmRiYTY3NGZlZWQ3OGEyYWMzYmQzYTYxMWQxYzM0NTlhM2Y5NzZlNGE0MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjNzllYjBkNTJjN2M5ZWJkZDUxYmM2NjViMDE1MjY2YzdjMWFiNTJlNWRjODI3OTkxYzBlYTAxMTdiNjA1MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5ODJhNWM3YmU5YWU0M2NhNTdhZjg3OTYxNjQwYjU5ZGNmZmVlNjE0NDk4MzYzZTMzOGE5ZTdjNGNiNGExODgifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L296-L331",
+          "version": "repo-lines-v1:sha256:70b13e8418820e3534bbbc8dd7d02b607a90cb80dddfe22c8b18493e3447ed03:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNGQ1NDY1ZTQ2MDIyMDBiOTQ5OTcxZmMxYTE5ZTkzOGFlOWViMWMwMWZmYmVjN2UwNzkwOWE4MjEyNDU4ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2YWFhNjcwNjRlMmYyNDEwN2JjZjRiY2UyOTFmMmQwYzgwYzUwMjZmMDc5NTdkY2NlNGVkODJjOTJkNDNhZTkifQ"
         }
       ]
     },
@@ -77,11 +85,11 @@
           "version": "repo-lines-v1:sha256:3d95be78783e12e978ff691a4ab74ea9b76c44323b8985bd5ba9fe4834d24447:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4M2ZjYzUyMDVjMmM3YWQzMjM4NDRjZjkzNjJjZGFhM2JjM2I2NjE2MmExZGQ3ODJiNWM0ODI3MTJjMzY2MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYzM1MDM5ZWY4YjMxOTFmODg1NDgyNzZlMmUxMDlhZWJjNTBmOGYyNjdkZWVkMjZlMmJiMDFiZjc1ODhlODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjOGI4YmNmYWExNjMxZmRhNjJlOWM3MDU3MTJiYmU0NmM1NjQzOTAxZDMxZDQ4OGJkYTIyOGViZGYzZjgxMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMmU1ZDEwYjM2NjU5YmNlNGI5YzYyNTY2Nzk0M2JlZDQ2Njc5ODdlNzEwYTFiNzEyNjMwYmUwZGI1OWEwNTAifQ"
         },
         {
-          "resource": "repo://src/styles/mod.rs#L179-L190",
-          "version": "repo-lines-v1:sha256:cfb71924c97d546cdb180f291c3023087804b8d293d8f94b840932738389af10:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlOThjMmQxMzkxN2YzODAwNTQwNDM5NjFkYzE1NjQ0ZmZlMTJjNDhmMzExM2EyMWFiZmViNzMwZjAyOTY0YjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+          "resource": "repo://src/styles/mod.rs#L208-L221",
+          "version": "repo-lines-v1:sha256:988aa84ef656b0cf894b5e524efe8a842719acf3ca0ef89ca7afe96ac041baf1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlOThjMmQxMzkxN2YzODAwNTQwNDM5NjFkYzE1NjQ0ZmZlMTJjNDhmMzExM2EyMWFiZmViNzMwZjAyOTY0YjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyZmNkNzNmMzIwODcyNGE1OWFkZDIwMTlmNTY0MGY1MDZkMzkxNDliZTNhMmI0M2Y0OTExMzI2N2I4YWZhZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         },
         {
-          "resource": "repo://src/themes/mod.rs#L458-L479",
+          "resource": "repo://src/themes/mod.rs#L442-L463",
           "version": "repo-lines-v1:sha256:a73a4e684ab88f06437ded5628dd23ee164c19dc9446e8a36b18af952237f8b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1Njk1Y2YwMDEyY2JkNzNiNDg2NDdjZDAzNWZkYjQ5MWViYTE5ZGRiMmQ4NzRlNzJkZmRjZDY2MmEzMjYwOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhMmI1ZjNkOGE4NjNlYmZhYjQwMDkzODAxNDAyMzEyMDZjMDNhYWVhNDg0MmMwZmNkZDllMzg5Y2RhYzE1ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
@@ -91,8 +99,8 @@
       "statement": "render_fixed iterates cfg.segments in order, renders each through its own SegmentWriter, and joins adjacent non-empty segments with the composer's separator to produce exactly one line; it is used whenever layout is not auto.",
       "evidence": [
         {
-          "resource": "repo://src/render/mod.rs#L63-L80",
-          "version": "repo-lines-v1:sha256:d16df8c7d181993807be1cea9e7ba134352b0e0207799b0a36194b6e1a72d9e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljNTZmNTQyYmI4Mjg0NThlOWQ1NzFlMjdlMmQ4OTI0YTQ2Yjc1ZmE1YWE1ZDMyMDVkOWM3YzdmZTc5NjFjZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM0ZjkxNmRlOWIxNTBjMmQ5ZWQwMTlhZjRkNGYzZmU1MGY5ZGFkN2FjNzVkYmRiNmM3ZmE2MjA1ZWIxM2Q3NjcifQ"
+          "resource": "repo://src/render/mod.rs#L135-L150",
+          "version": "repo-lines-v1:sha256:03bf7349e3f5cbfbf56f844a96f8913e73a7978a4f4a2991cb07e940fdbbce68:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNGYzYzkxOTJhZWMzZWJlYjhjN2E0NzA4NjMzZmU1Y2RhYzMzZTU5YTg0MjY0NTU0NzViZDg5Mjc5YTkzOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM0ZjkxNmRlOWIxNTBjMmQ5ZWQwMTlhZjRkNGYzZmU1MGY5ZGFkN2FjNzVkYmRiNmM3ZmE2MjA1ZWIxM2Q3NjcifQ"
         }
       ]
     },
@@ -101,12 +109,12 @@
       "statement": "render_auto renders each segment to its own owned string then greedily packs segments across up to max_lines lines so each line fits the terminal width minus wrap_margin; a terminal width of 0 disables wrapping and falls back to a single line, and terminal_width reads $COLUMNS first, then stty size, else 0.",
       "evidence": [
         {
-          "resource": "repo://src/render/mod.rs#L152-L175",
-          "version": "repo-lines-v1:sha256:7057ef3b66e5ca6329bdf60dfbe4626b337e2e1170cbfcbdda68de6974413d44:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2MGExY2I1MTk2MjBkZTk4YjQzNzk5Y2E1NDMyNDcxMzlkNzkxOWZiNjI4MWE1ZGUxMDhlZTE1YWRlNmQ4NmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmOGIyYTAyMGQ5OTY3MTJhNDA5MDRiMDM3MTk1ODkxNWE1NTk5NzEyMjRiYzk0M2MwMzdkNTMzYzI4YWU4M2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4NGYyMzdkOTBkZmY0OGMxZDQyNTZiMzI4NzZkYTgyOGFlYmY0M2Q0ZDc4MTdmZWU2Njc3Y2NjZGFhYzE1NjAifQ"
+          "resource": "repo://src/render/mod.rs#L157-L220",
+          "version": "repo-lines-v1:sha256:ce39ef62ba4c94f918ca0e5d3bca80cbb35e780d04fd87f6be433a2c41707fcf:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxZWU3ZjQ3ZDI4NjcyYmRhNzdhZmFmYjI0OWU5MjFhN2I4Nzk0YjVmOGMyMjM2Njg5ZDQyN2MwY2ZhODRmZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwZjIyYjZhNmY1MWJhN2U2ODVkMGM3NTYwNGI3ZTljYWFmZDc3MzRkNTY2Y2UzNDkzZTliNjdiNzVkNGJlOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5MWFlMTQ1MDU5YzFkZTViN2YwOGYyZmM2NTg0MzBjOGNkZTg3YmU3NzljNjQ1ZjQ2MmEwYzM0NDEzMWY3Y2UifQ"
         },
         {
-          "resource": "repo://src/render/mod.rs#L83-L150",
-          "version": "repo-lines-v1:sha256:cfbe7cb0f8135e6c07b1141fb2f2d8c7f42d2df9a5ab4ec2fed3749619c2fc6d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlZmE3NmM3NTdhNDljNWMwNDFiYzBmNjA5MjhjMmVlZWMxODNiY2QzODA3MDIxZTNjZDFjOTUwNjVjMTU2NDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1OWM0OTlmMzAzN2JkNDczOThkMTBiZjJjMzM2YzFlZDM2NWJmYmIzODkwMWI5YjBmZjgyM2MwZGIyOTI1MWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5MWFlMTQ1MDU5YzFkZTViN2YwOGYyZmM2NTg0MzBjOGNkZTg3YmU3NzljNjQ1ZjQ2MmEwYzM0NDEzMWY3Y2UifQ"
+          "resource": "repo://src/render/mod.rs#L223-L245",
+          "version": "repo-lines-v1:sha256:bf37a93570902b90b1a56bcd99fb9570c74373e8b214c4310d206356c7bb4aae:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2OGUyODIwNTg0ZGU5YzY5MTZmNmUyMDE3MGZlOTZhMDJlYmJmZWQ4YmIxN2NmMDVmM2NmNTNiYjA4ZmYxYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxY2VkZTQ0ZjE5MjYyYTBiYTg2YTk4NWIyNGM0Zjk1OGZiN2IyYzQ0ZWQ5ZTY5NGQzYThlYWFiMmQ1NTVmZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4NGYyMzdkOTBkZmY0OGMxZDQyNTZiMzI4NzZkYTgyOGFlYmY0M2Q0ZDc4MTdmZWU2Njc3Y2NjZGFhYzE1NjAifQ"
         }
       ]
     },
@@ -115,7 +123,7 @@
       "statement": "The composer owns separators: a separator (space + glyph in the theme's separator color + space, or a lone space for the lean empty separator) is placed only between adjacent non-empty segments, and empty segments are dropped with their separators so no dangling separator appears.",
       "evidence": [
         {
-          "resource": "repo://src/render/mod.rs#L188-L202",
+          "resource": "repo://src/render/mod.rs#L258-L272",
           "version": "repo-lines-v1:sha256:85cf396a2c473bad2852445cff3752b0eafbd5671684f48a66faea5f890daeb3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMmU1YTNkNDQzZmM5OWNlNzc0ZTg1MWEwMDg4ZmJkNzljNzdlMmQ5YjMzNDY1YTk3YjBhODMyYzU1MjQzYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         },
         {
@@ -147,7 +155,7 @@
       "statement": "SegmentWriter::colored_with maintains an active-color stack so a nested span that ends with a reset restores the enclosing span's color instead of leaving trailing text at the terminal default.",
       "evidence": [
         {
-          "resource": "repo://src/render/writer.rs#L169-L197",
+          "resource": "repo://src/render/writer.rs#L180-L208",
           "version": "repo-lines-v1:sha256:2b9ed06f1fc7008019cf33dcb67ada8f1f81eb186fa27bb5b87070e3937d21d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMjlhNDA1OTA4MDA3ZGIwOWM1MzMwOGNmZjgzNGZjZGQ3MmIyYTM1Y2YxMjRhNmZjNmFjOGI3YTcyMjk5OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2MjI2ZWEyZDExODkzNmYxYTdmYTMyOTk0MjcyMTY0MDYzN2Q5OTExNjU5YTVhMTMyMDYxMWIwMmUxMGJkYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         },
         {
@@ -161,8 +169,8 @@
       "statement": "write_bar builds a progress bar directly into the buffer (mirroring bash make_bar) with no allocation beyond the result, clamping the filled run to width, providing at least one filled cell whenever pct > 0, and painting fill and track with write_fg.",
       "evidence": [
         {
-          "resource": "repo://src/render/bar.rs#L1-L42",
-          "version": "repo-lines-v1:sha256:ee8c3bb55809be930675ba38e22bf2cbb28ea6cf67d35e4de5d6c6f9cba0ee2f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4YmUxODE1MjViODA0ZjU2YmFjNDc2MTY5NjBiNzA5MDdmNGNjYTQwNzBhMGNlZGU3OWNiOWFjMjI3ZmEzNTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+          "resource": "repo://src/render/bar.rs#L12-L42",
+          "version": "repo-lines-v1:sha256:e893746847da8f9acf9288103dec68f6c916f99de8e6aab441e735557aae6cc7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExMTg4MDVjYjg3NzNmMGE1MDI1N2E0MjliMTE0ZTAwNTc3ZjEwYzkyODRjOTUxZmFlYzZlNjM2NmU3MGMzY2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwYTlhZjlkMmNmNmZmZWM4YzUzN2U2MzYxODRkNzQ5ZmZhNDQ1YzU3NDU3NjFkY2MyMjJlMjJmMWRiZWM1MmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyYTcwOTQyNmUyZDg0MTcwZTA5MmMzMDY3YWM1ODYwYmIzMzFjMjlmZWNlNDMyYTg3ZDA0NmQ1MWMzZGIzYTkifQ"
         }
       ]
     },
@@ -181,16 +189,16 @@
       "statement": "The float readout reuses the exact same Segment implementations as the colored path (rendered with the ASCII style icons-off then stripped of ANSI), joined by float_sep and written atomically and best-effort to float_file with ~ expanded via home; any failure is silently swallowed so it never breaks rendering.",
       "evidence": [
         {
-          "resource": "repo://src/render/float.rs#L1-L13",
-          "version": "repo-lines-v1:sha256:9300ed15f272b9fd6a2fe8e00a97f9aace96d6ccf445bf236a94be6f12882949:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyMmY0ZjkxZDlkMTg4MjhmN2FmMWMyYjMyZWZhZGMwODBhZjFkNzhhZmI1ZTM1YjA5NzA2YTFiMGQ5OTIyOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5MDljNWJjNGZjMmU4ODI4OGRlODA1MTBhNTc0MTk2ODVlYWIzY2M0MDg5YTE0ZjNjODc2MGYzYmFkZWM3YjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzOWQ5OTkxMzVlZTkzNjAyMTFiNGY1ZDI2ZDE4OWI5OTQ2ZjhiYzM4MzI4M2ZjYzViYjhhZWMwNmFhMzNiMzcifQ"
+          "resource": "repo://src/render/float.rs#L1-L8",
+          "version": "repo-lines-v1:sha256:531f126f726e63ad50d494f50bf38d93681e5e3a6c187566f6ad522be9d8604f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTIyZjRmOTFkOWQxODgyOGY3YWYxYzJiMzJlZmFkYzA4MGFmMWQ3OGFmYjVlMzViMDk3MDZhMWIwZDk5MjI4ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFkYTU1MDViM2QyZTIyM2U1Y2RiYmYxZTVkMmE4ZmY3YjQyZmQ2Y2NlNjAyYjkzNWM0ZjBkNmI0MTY4NmU2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjdhN2MyY2I2MmY5NzQwOWQ4MmRlNThiYzdhOTBjNTM1ZDI4MjI3MmFlNTRkMTJjZWM2YjUzN2M4MjMzMGU5MiJ9"
         },
         {
-          "resource": "repo://src/render/float.rs#L126-L149",
-          "version": "repo-lines-v1:sha256:c2c6505fb24e7cc942f9812fd60465c9b1729dac675fb7db7fd1c0c0e39d03a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMWU4YjYyZTMzYmM0ODQxYzg2YTUyYmJmZDQyNGFlNDFlMGJiZWE4MjQyMmQxMGUwZDIwYjlmMzA1ZmI0MGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5ZDhmM2U0YjFjYzcwNjBlYjRiZmEwYWY4MDNlNTAyOWE2ODc3YjNkMjAyMmZiMWQ5Y2Q4YjJhYmUxYzgzYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+          "resource": "repo://src/render/float.rs#L133-L152",
+          "version": "repo-lines-v1:sha256:a40c980805f14f7c8f635af063d7cf1e3706726b635dab55e21d5651d1ad1018:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NDJhMmM1NTE5ZDAwNGQ0M2I5ZWIxNWE0OGQwODkxMWE5YTlmZDNlZTk4MDkzZWI3MTI5NjA1NjJjM2JhNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhOTMzODg1ZjliZGVkNDg3OWM2YWU3ZjE1OTFlNTQyM2QxZDk3ZGQxZDE3NWFkZjE4YzhhZWMyYmExZjkxNTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         },
         {
-          "resource": "repo://src/render/float.rs#L28-L68",
-          "version": "repo-lines-v1:sha256:4ac644de2a6522e5a0345e26bc5d41c5f2b9a50f1f618530f4d298ed8e037f87:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyNzdiZmI2NDYwZjM2ZjM1YWUzNWQwYWNmOTQ0ZmM5NTVlYWZiZTM1ZWE5MTI5YzI2ZTg5Y2U5YjhjNTQwZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YTEzZjBmMmY0NDk2Njk5NGMwOGIzMTQ3Y2ZkOWQyNjk1ZmEyZjRmYTdlZjY4NDgyOTdlMzIyYzU2NTMxODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1ZTc0ZThjMWZiYzc3NTBmMTU1OWFkZjI5NmVjMjJkM2NjZWY5ZDQ3MDAyMjYxMmYyMDU1MWI2Y2JhNWU4ZjEifQ"
+          "resource": "repo://src/render/float.rs#L41-L71",
+          "version": "repo-lines-v1:sha256:b28ba52a32a8f400460c4a969dbc0d44cb23a1807a8304b0bb3b081beb184a31:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4N2EwZDVjMjljZmU3M2YzMWM5MzY0M2MwNjZhZDE3YTNiNzU1YTBhM2UwOTAzMmJmYWNiMzFkNTIzZGE0ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1MmEwMDU3MzAyNDRmYzVhNjAwM2M2MTlhM2U2NDlkNTA2MTZhMmYwMWU1ZDk5YzhlMDcwOTYzMmM0YzRkZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1ZTc0ZThjMWZiYzc3NTBmMTU1OWFkZjI5NmVjMjJkM2NjZWY5ZDQ3MDAyMjYxMmYyMDU1MWI2Y2JhNWU4ZjEifQ"
         }
       ]
     },
@@ -199,18 +207,18 @@
       "statement": "width::visible_width computes visible terminal width of an ANSI string in pure Rust by stripping SGR escapes and counting codepoints as 1 column (2 for wide CJK/kana/Hangul/emoji, 0 for combining marks); it is used by the auto-layout path to measure segments and separators.",
       "evidence": [
         {
-          "resource": "repo://src/render/width.rs#L1-L47",
-          "version": "repo-lines-v1:sha256:3138eb65cbf5a326c75182cb4fc759cf123e54eda7d2209a4cc0f1fac95b5836:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4MGI5NDczZDA3YzQ0MmMyODQ5M2VmMGU3ZjQwNGUxOGVlNjY1YWFkZWFmMmFhOWE0ZTkwNDJlZmExMjVmMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0YTQ1NjI0YzAyYzgyYmU4MDI5MDAyZDFkMzZlNzA4M2U0OTAxMGJiNTZhNGM1MWI4NGIwOGRmN2IxNjIwYmIifQ"
+          "resource": "repo://src/render/width.rs#L16-L34",
+          "version": "repo-lines-v1:sha256:c8cff0fa57bf30761824a34241251bfc0f3b99e3d4636bd9cc5f48bc452ddf74:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZTUwZDVmODgxMTc0MGFjOGZlYmM2ODYxMWQ3OTgwOGNjNWFjNTAyNzFiYWQxZjVkZDdlODI0Y2FmMTE2NjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMTkyM2NmYzA4YWIxMTUzOWYwMDI5YmRlYzk5NDQzYmZkYzE2OTdkODZmMDc1ZDY3OTE0NDIzMDA0ZGNhMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjYTU5NDU2ZjExZTBmZjI0MzRlMmNiMDUxY2E3YjYyZjE1ZjI2NmRhYWU2Y2YzOTBkM2NmYzY2YTYzMDNkZjQifQ"
         }
       ]
     },
     {
       "id": "claim_cfa7211182fa42f29ad44c0b598f1ead",
-      "statement": "The timezone offset consumers are explicit and consistent: the clock segment (src/segment/clock.rs) converts the injected tz_offset_seconds to a time::UtcOffset via UtcOffset::from_whole_seconds and applies it to ctx.now when formatting the wall-clock time; render_line (src/render/mod.rs) injects the offset from clock::detect_tz_offset, which reads the system local offset once cached in a LazyLock and falls back to 0 (UTC); and the TUI preview / fixed-clock tests inject 0 (UTC) for determinism. The offset is never read from the ambient environment inside render_line's callers.",
+      "statement": "The timezone offset consumers are explicit and consistent: the clock segment converts the injected tz_offset_seconds to a time::UtcOffset via UtcOffset::from_whole_seconds and applies it to ctx.now when formatting the wall-clock time; render_line injects the offset from clock::detect_tz_offset, which reads the system local offset once cached in a LazyLock and falls back to 0 (UTC); and the TUI preview / fixed-clock tests inject 0 (UTC) for determinism. The offset is never read from the ambient environment inside render_line's callers.",
       "evidence": [
         {
-          "resource": "repo://src/render/mod.rs#L22-L27",
-          "version": "repo-lines-v1:sha256:66067788fb5ffabb93ef1427405d40eb21b758a4a2f72b44e34ab25e8c739217:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWQzOWNlNGViYWNlZTJhNTU4YjVkZjU3Y2RhNmQwZjMxOTViNzRkMjkyNzVmMzIxYWE4NjRmNzAzNDVkZmZhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjEzZTdlMzE3ZDhiZWZmODliYmU5NmZlOTliOTE1MWNhYWQ3MWVkYjIxZWRkMTgwMjc0OGI1ZjAzNTA1ZDYwZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWJlYjNjZTliZTY1MGEwNDhlMTk1MGM2MGY2MGQ2ZjIxYjEyYzQ3ZjBiNzljMjJkMzBmMjUxMDNmNzI2MDk0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmRiMjBhOWQ3ZDA3NDU3NjAwYTI3YzBjOWNhYzY1NmE0ZWYzMGE1M2QzOTZhNDYxMjg4NWVkYzQxOTgzNWEzYyJ9"
+          "resource": "repo://src/render/mod.rs#L23-L26",
+          "version": "repo-lines-v1:sha256:57aef1eefe67473d88b973cbdb54a49da3595792f0d1bb8f42089a117c8167b2:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjAzNDVkYzdhYzY1YjA1NzY5M2YzOWM1MzM2YTc2Y2IxNzRkNWM4YzA1NTUzNWMyOGJlZDM2ZDc4NGYxZDVhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGVhMzkyMzdlNGZjYjVkZTVkODZmOTNjNjk4OGM3MWI4MGJjYWFkODdlYzRhNDEzMjA1YzQ5NDQxZmI2ZGI0NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2I3ZjkxNjY3MmVhNzNmYzM1NWZjNDA5NzhmMDQxMGRhMjI1M2YwZDIzYzdjNjhhMWNkN2E4YTBiY2NlYmY1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjc0YzE4ZjVkZDI5YTQ5YmVmOWUxZWNiNjFmNWYxNTQ4MjI4ZjhlYzRiNmJkNzU5MDhlNGY5ZTQyMTNjNTUxZiJ9"
         },
         {
           "resource": "repo://src/segment/clock.rs#L100-L109",
@@ -225,10 +233,32 @@
           "version": "repo-lines-v1:sha256:eb6a4417f85ee5a5fea8fccf614f90a7b3ba7e4ecab71a50fd9aaaa451987ebb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxYzUwYmVjOTg2OGZjNjgwNTAzMjI2OTU0OWM3Mzg5NzM4ZjZjODM2NGM2NDA0NmEwMGQwMDA0YmVmNTg1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2MjljMjEwNTE5YzI2NDY1NDc0YWJjZTY2NDhiNDA5ZGIwNDgwMWI1Y2I3NTU1ZTZkODBhZDBjZGNjNWVmZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkOGU2NTM1MzUxZDFkZTdmNTJjZWE5NGM1MDZjZjgyOWU0NTNmN2JkYjkzZTc0ZmNiNjI4NDczMGNjZWQxYjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
+    },
+    {
+      "id": "claim_feb56c385525463e985cb61f6d84b4e2",
+      "statement": "render_line, when the update-notice segment is enabled, reads the update cache once and calls update::refresh_in_background, which spawns a detached `claudebar update --check` child at most once a day without blocking the render; the cached latest version (kept only when strictly newer than the installed CARGO_PKG_VERSION) is passed into RenderCtx as ctx.update. The update-notice segment is a pure formatter that renders an up-arrow badge only when ctx.update is Some, so segments never touch the network.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L114-L131",
+          "version": "repo-lines-v1:sha256:a427b0f7085853400d468211cc448b540028a626283c323f6aafe74372086f80:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4YmI3NTdmMzU2Y2JiNTVlNDc4MzRjMmU0MTBkYmE4ZjRmZDk0YThjYTE4OGQ3YmYzMGJlMzEzOGNlZjIxNGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwMTBkYmVmY2E1NmMwY2UyYjZlNDJkN2I4NGZhOTI3OWE3ZTM4YmRhY2M1OTY3NzEzYzczNWNmMjgxNjQxMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkifQ"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L31-L37",
+          "version": "repo-lines-v1:sha256:e1d788dab60aaa13e4730189fd4ea6d8b3686dd2d693d3fe4f6f0079ead13a79:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2M2ZGI0ZjY5MjY5ZWVlYTM1MTY3MjA2MmNhZTBmYTQ2NjZjZGMxZjgyNTg3NjY3YWFiY2MwZWFhNjdjMGNlMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ5ZTEyNTQ2NDI1NTc2ZDNkZWFlOGM5YjlkYmYxMjhkNWQ2ZGRhZjVkN2ZlODU3OTM0OTI3ZGVmZmEzYjlkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGQwMWYzNjM4YmFhODRiNzJkMmVkOGYxZjk4NTNmNTE3MTA0OGExZmY4Yjc3ZDYxZDBmNWYzYzUwNTViZTkyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmNlNjVkNTQ5YzI5NzU0MTIwYjZmNDIyODhlMTg1MTUwMjQ2NTMwMzFmMzBmZjIwMWExZDdhNTE2YTcyNWQzZSJ9"
+        },
+        {
+          "resource": "repo://src/segment/update_notice.rs#L13-L25",
+          "version": "repo-lines-v1:sha256:92c869fb9c5ce327c3ac5793fbcc816adf14e14c9b65b7091575ab2add54ad32:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjOWVjOTEwMWJkODc2MzFmZTZjZjAzYzMxMzIwYjBlOTJlNzU5Zjc1YWYzZGNmNjdmZGIwYjJkMDQwZjk4MmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMGMzNzdjNTM4MDFkMWVhMjEwNzZmNWRmMTJlOTQ2OTM4ZDI0MjFjMjkzZThlOWNkMjI3MWM2ZGJlZTRjZjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L296-L331",
+          "version": "repo-lines-v1:sha256:70b13e8418820e3534bbbc8dd7d02b607a90cb80dddfe22c8b18493e3447ed03:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNGQ1NDY1ZTQ2MDIyMDBiOTQ5OTcxZmMxYTE5ZTkzOGFlOWViMWMwMWZmYmVjN2UwNzkwOWE4MjEyNDU4ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2YWFhNjcwNjRlMmYyNDEwN2JjZjRiY2UyOTFmMmQwYzgwYzUwMjZmMDc5NTdkY2NlNGVkODJjOTJkNDNhZTkifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.0",
-    "at": "2026-08-27T14:08:42.273Z"
+    "at": "2026-08-29T00:17:43.706Z"
   }
 }

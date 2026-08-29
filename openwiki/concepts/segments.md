@@ -1,11 +1,8 @@
 ---
 type: concept
 title: "Segments: the composable statusline units"
-description: "How the 11 renderable statusline segments work — the Segment trait seam, the injected RenderCtx, the SegmentWriter emission API, SegmentKind enable/order semantics, and each segment's contract."
-tags: [segments, statusline, segment-trait, renderctx, segmentwriter, segmentkind, render]
-verified:
-  - by: openwiki/0.4.0
-    at: 2026-08-26T22:48:34.063Z
+description: "How the 12 renderable statusline segments work — the Segment trait seam, the injected RenderCtx, the SegmentWriter emission API, SegmentKind enable/order semantics, and each segment's contract."
+tags: [segments, statusline, segment-trait, renderctx, segmentwriter, segmentkind, render, update-notice]
 sources:
   - id: openwiki-source-c5edfb46b7c4acb766451a37
     resource: repo://src/model/config.rs
@@ -41,20 +38,23 @@ sources:
     resource: repo://src/segment/model.rs
   - id: openwiki-source-d4594996ae77710bcd28b71f
     resource: repo://src/segment/rate_limits.rs
-generated: {by: "openwiki/0.4.0", at: "2026-08-26T22:48:34.063Z"}
+  - id: openwiki-source-5d948000f74b098b1187bdc9
+    resource: repo://src/segment/update_notice.rs
+generated: {by: "openwiki/0.4.0", at: "2026-08-29T00:17:43.706Z"}
+verified:
+  - by: openwiki/0.4.0
+    at: 2026-08-29T00:17:43.706Z
 ---
 
 # Segments: the composable statusline units
 
 The statusline is composed from **segments** — small, self-contained units that
 each render one piece of Claude Code session state (directory, git branch, token
-usage, rate limits, cost, time, and so on). A segment implements the `Segment`
-<!-- openwiki: broken internal link [#renderctx] heading anchor "renderctx" does not exist in /openwiki/concepts/segments.md. Fix the href or restore the target, then delete this comment. -->
-trait, receives an injected [`RenderCtx`](#renderctx) and writes its colored
-<!-- openwiki: broken internal link [#segmentwriter] heading anchor "segmentwriter" does not exist in /openwiki/concepts/segments.md. Fix the href or restore the target, then delete this comment. -->
-spans into a [`SegmentWriter`](#segmentwriter). The process of building one
-status line from the enabled segments (choosing separators, layout, and the
-single render entrypoint) is documented in
+usage, rate limits, cost, time, a pending update, and so on). A segment
+implements the `Segment` trait, receives an injected `RenderCtx` and writes its
+colored spans into a `SegmentWriter`. The process of building one status line
+from the enabled segments (choosing separators, layout, and the single render
+entrypoint) is documented in
 [render-pipeline](/openwiki/architecture/render-pipeline.md); this page is the
 contract each segment must satisfy and how to add a new one.
 
@@ -72,7 +72,7 @@ pub trait Segment {
 ```
 
 Every segment is a **zero-sized struct**, resolved to a `&'static dyn Segment`
-via `SegmentKind::as_segment()` (a `match` over all 11 variants). A segment
+via `SegmentKind::as_segment()` (a `match` over all 12 variants). A segment
 never knows its neighbors, never emits a separator, and never embeds a raw
 ANSI/color code — it reads `ctx.theme` / `ctx.style` through the writer. This
 is what keeps segments independently testable and composable.
@@ -80,7 +80,9 @@ is what keeps segments independently testable and composable.
 ## `RenderCtx` — the injected context
 
 The `RenderCtx<'a>` bundle (`src/segment/mod.rs`) carries everything a segment
-is allowed to see:
+is allowed to see. **All ambient state is injected — never read from the
+environment inside a segment** — which is what makes rendering deterministic
+and testable:
 
 - `input: &InputData` — the parsed hook JSON (`cwd`, `context_window`,
   `rate_limits`, `cost`, `model`, `effort`, `pr`, `agent`, …).
@@ -91,13 +93,16 @@ is allowed to see:
 - `home: Option<&str>` — `$HOME`, for `~` path abbreviation.
 - `tz_offset_seconds: i32` — local timezone offset in seconds east of UTC
   (0 = UTC, the fallback when detection fails or for the TUI preview).
+- `update: Option<&Version>` — a cached release strictly newer than this binary,
+  only present when the `update-notice` segment is enabled; resolved **once per
+  render** in `render::render_with` / `render::render_line`, never inside a
+  segment.
 
-**`now`, `home`, and `tz_offset_seconds` are injected, never read from the
-ambient environment inside a segment.** Resolving them at the boundary (see
-[render-pipeline](/openwiki/architecture/render-pipeline.md)) is what makes
-rendering deterministic and testable. The clock is the one segment that reads
-locale/the system only *through* `tz_offset_seconds` and a `LazyLock`-cached
-12h/24h preference — it never shells out.
+`now`, `home`, `tz_offset_seconds`, and `update` are injected at the boundary
+(see [render-pipeline](/openwiki/architecture/render-pipeline.md)). The clock
+is the one segment that reads locale/the system only *through*
+`tz_offset_seconds` and a `LazyLock`-cached 12h/24h preference — it never
+shells out.
 
 ## `SegmentWriter` — the single emission point
 
@@ -125,12 +130,13 @@ passing to the writer; the writer emits them verbatim.
 
 `Vec<SegmentKind>` in `Config` (`src/model/config.rs`) encodes **both** which
 segments are enabled (presence) and their render order. The enum is serde
-kebab-case (`rate-limits`, `dev-context`), parsed back from a name via
-`SegmentKind::from_kebab`. Two canonical arrays exist:
+kebab-case (`rate-limits`, `dev-context`, `update-notice`), parsed back from a
+name via `SegmentKind::from_kebab` (which reuses serde's rename mapping). Two
+canonical arrays exist:
 
-- `SegmentKind::ALL` — all 11 segments in canonical order:
+- `SegmentKind::ALL` — all 12 segments in canonical order:
   `Directory, Git, Model, Context, RateLimits, DevContext, Cost, Lines,
-  Duration, Burn, Clock`.
+  Duration, Burn, Clock, UpdateNotice`.
 - `SegmentKind::DEFAULT` — the 8-segment default used by `Config::default`
   (and therefore by config-less operation): `Directory, Git, Model, Context,
   Lines, RateLimits, Cost, Duration`. It **deliberately differs** from `ALL`
@@ -153,7 +159,7 @@ layout path pre-collects only the non-empty segments before wrapping, so empty
 segments cost neither a line nor a separator. The `Segments never emit a
 separator` rule means a segment cannot invent a boundary of its own.
 
-## The 11 segments
+## The 12 segments
 
 Each segment below follows a documented contract that mirrors the original bash
 statusline block.
@@ -248,15 +254,6 @@ for modified files). Hides when both counts are zero or absent.
 `1h02m`) in `theme.duration`. Hides when zero or absent; sub-second durations
 render as `0s`.
 
-### Clock
-
-`src/segment/clock.rs`. Renders the current time in 12h or 24h from
-`ctx.now` + `ctx.tz_offset_seconds` — pure computation with the `time` crate, no
-subprocesses. Controlled by `th.clock_mode` (`auto`/`12h`/`24h`/`off`); in
-`auto` it consults a `LazyLock`-cached locale preference (`LC_TIME` → `LC_ALL`
-→ `LANG`, checked against a country table). `off` or a negative `now` returns
-`false`.
-
 ### Burn
 
 `src/segment/burn.rs`. Range-to-empty projection: on each render where burn is
@@ -269,6 +266,27 @@ samples yet, `↗ …`), `idle` (slope ≤ 0, `↗ ✓`), or `active`
 (`↗ {label} ⇢ {eta}`) colored red/yellow/green by urgency relative to the
 window reset. Samples are only recorded when the `resets_at` is within 6 hours
 (a plausibility guard against corrupt/sentinel snapshots).
+
+### Clock
+
+`src/segment/clock.rs`. Renders the current time in 12h or 24h from
+`ctx.now` + `ctx.tz_offset_seconds` — pure computation with the `time` crate, no
+subprocesses. Controlled by `th.clock_mode` (`auto`/`12h`/`24h`/`off`); in
+`auto` it consults a `LazyLock`-cached locale preference (`LC_TIME` → `LC_ALL`
+→ `LANG`, checked against a country table). `off` or a negative `now` returns
+`false`.
+
+### UpdateNotice
+
+`src/segment/update_notice.rs`. Renders a badge (`↑ 2026.8.20`) for a release
+newer than the running binary, using the `ahead` glyph in `theme.ahead`.
+It is a **pure formatter**: the update check and version comparison happen in
+`render_with` / `render_line`, and the segment itself does no I/O, showing
+nothing when `ctx.update` is `None`. It is the **only segment that touches the
+network** — `render_with` reads the update cache and (in `render_line`) spawns a
+detached background check, both **gated on the `update-notice` segment being
+enabled**, so a disabled segment keeps the cache read and network activity off
+every other render path.
 
 ## Cross-session rate-limit sync
 

@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1f542bc5aeadb5b79b74050b55be20a3c19a386be9a4be4993f8d5572bbd9484",
+  "pageVersion": "sha256:3fba4cbe48989593852d89482d794c6d9012cca82437c8f0655f25041611da66",
   "claims": [
     {
       "id": "claim_97d75d2ab718456cb48458f4b9a5aecb",
       "statement": "`claudebar update` documents and returns three exit codes: 0 for up to date (or, with --check, the check succeeded), 1 when the check could not run (network/parse error), and 2 when an update is available (only without --check).",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L597-L602",
-          "version": "repo-lines-v1:sha256:6cb71ebf5816e6139593c0925a4987ce8caa57e51b4350f304a75e196f3cedd8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFiYzFlZGY3MWJmOWNkNGFmMTE3YTEzNWU0OWJjMWJjOWI0NmJlMzkyYjQ3ZTRlZDI2NGY2YzQwNjViZmNmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmE3YWM0ZGM4OWU1YzU4NDEzNzhlNzY0ZGM1MTI2Nzc3OTBlMzYzZWU3NjRiMGUzY2EwYjg4NDgxM2IyZjkxOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMzNGUwNWUzZGRlMzBiMGRhZGZlYWI2NTdjMmQ3Zjc3MjIzNjBlMjU5OGIwOGJhZjkzYTg0OWY0MDYzZDY1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQxMTI5Nzg5ODk4N2M5YjdlYTMyOWYwMjc4NTUzMjdhMDJmMmU2NDg2YWRiNzgzNjI0YjNmNDU0Nzc1MzMwMCJ9"
+          "resource": "repo://src/main.rs#L617-L623",
+          "version": "repo-lines-v1:sha256:d4cdfef9fb385b29b89252c36aa04766581a7fc7ba66284b5c40cf4c85adcdb1:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFiYzFlZGY3MWJmOWNkNGFmMTE3YTEzNWU0OWJjMWJjOWI0NmJlMzkyYjQ3ZTRlZDI2NGY2YzQwNjViZmNmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDc5NWMwMGM5ZTZhODU2ODRmZWQ0YjlhNmQ2MzgzY2I3YjFkMjUwYzhhYjFmZjlhOTA3MGFlY2U4NjI2ODc4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMzNGUwNWUzZGRlMzBiMGRhZGZlYWI2NTdjMmQ3Zjc3MjIzNjBlMjU5OGIwOGJhZjkzYTg0OWY0MDYzZDY1ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDQwOTZiNzdiYTJhNTBiZWI1Mzg1YmVkMTZmMWM3ZGU0NmVmYTg0YjQ3ZGNlYmZjN2JlZTI1ZDY1MjZmMGIyNiJ9"
         },
         {
-          "resource": "repo://src/main.rs#L626-L655",
-          "version": "repo-lines-v1:sha256:0f2630b1e35bd95d23bcd4ad0919638371fa990be4188a3d4341dbd2a4572b14:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiNTMzODhiMmU4NzlmNjIzZDkxYzQzYWM4OTIzMDg1ZDNkMTkxMDViMDRkODZkM2JlMDhiNDk2ZTdmM2Q5YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1MDYxYzY3YmQ1MTAxYjZhMGFmZDIwNGUzOTJkN2M5Mjg5ZTg4YmM2NjAwOGYzMGYwY2EzZGJkMDJiZDUxYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0YTM2NWE5MGVjMTFlOTA0MzI3NTJjZjkzNzZlYzVlZDM2YjgwYmE1ZThlNjg1NGZjZjk4OTcwZDMwNDQ0NjkifQ"
+          "resource": "repo://src/main.rs#L637-L695",
+          "version": "repo-lines-v1:sha256:2e2c6e9f59ea3e6a247c977b576d70c661be99b1c9ea781c4fab6712cc409ffe:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3MjM5MTRlODkyMTk4MjdkYzA5OWU4MTA1N2I2ODY5YzkxZTBkOWUwNDA0NTVmNTVkODNkNjNkMzBlZjZiYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmNjc1MmQ4MjFkNDA1YzQwNzFiMmMyMmEwZWEzMjVhMGYwN2VmZDMzZTQ2ZjE1ZGFhNGJkYjIyNDU2OTk0M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1NGQzZDVmMmUyMWRkYWViNTY4YWM0NDQzOGExZWE0MGRkYzE2YzQzYWUyNjljYjRlZWNmY2VhM2IxOTU3ZjIifQ"
         },
         {
           "resource": "repo://src/update.rs#L14-L17",
@@ -25,8 +25,8 @@
       "statement": "The render hot path never touches the network; updating is an explicit `claudebar update` command, a deliberate design choice so the statusline hook stays offline and fast.",
       "evidence": [
         {
-          "resource": "repo://src/cli.rs#L144-L148",
-          "version": "repo-lines-v1:sha256:67aca1693ee6b90d13de3ed2aef69f858e2845259249b9d88a260c56eb4a815b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjQ0OTMzYmViZjc4YjE4YWQ2NzgyOTQzMzU2N2NjOTgxY2ViN2IzYWU4YjJlNGU2MDk2NGU5ZjA0NDgyMmY1NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmJmY2VjMTUzM2JiOTdlMDQ0MThlZGUzMmM0Mzc2NTIyNDAxNjE0OTg1N2Y4OTg1MzkwOTQwNzE3MzkzMzViMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWFkYzFmNTJjY2UyYTdkM2QwNGU3ZmRmOTA4ZmM2MjUxZjVjZjQ5MTg4ZWYwMGUzMDFhMjk5NGY2OTUwNGRhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTcxNWI5NGM5ZDRiZTBiYmRhMzQ3NjFiMTlmNWFiNGRiZTY0NTc5MGUzOTIxZjc2NzY5OTk0NmEwMTYxNjdlOSJ9"
+          "resource": "repo://src/cli.rs#L143-L148",
+          "version": "repo-lines-v1:sha256:0abca04697032cac025eeed964c55c280c6dd61fb7c8c8cf689eadbc3af5bcdc:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTg0Y2JlMzMwNGYzMjAzZWNmMzY5MWYxNjUzYjZlYzFmY2VmNDFmYjUyYzlmNzcyNDhkMGI0ZWFkMGYwNGNhYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmJmY2VjMTUzM2JiOTdlMDQ0MThlZGUzMmM0Mzc2NTIyNDAxNjE0OTg1N2Y4OTg1MzkwOTQwNzE3MzkzMzViMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2Q3ZGFjNDRhMTUyYWY5ODc4ZmRjODE3NTUyZGQ5YmI0NDU2NTY2NjNkMzY4NWUxZmNiYWI0ZGU3OWRkZjI4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTcxNWI5NGM5ZDRiZTBiYmRhMzQ3NjFiMTlmNWFiNGRiZTY0NTc5MGUzOTIxZjc2NzY5OTk0NmEwMTYxNjdlOSJ9"
         },
         {
           "resource": "repo://src/update.rs#L1-L5",
@@ -39,7 +39,7 @@
       "statement": "The version source for update checks is the GitHub releases API at releases?per_page=30, the same channel install.sh and the Homebrew tap publish to.",
       "evidence": [
         {
-          "resource": "repo://src/update.rs#L154-L154",
+          "resource": "repo://src/update.rs#L155-L155",
           "version": "repo-lines-v1:sha256:50df842c911c28b4b874f83ba9ba2f18148a2e4b88e40916189da86dc1a92d46:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTBkZjg0MmM5MTFjMjhiNGI4NzRmODNiYTliYTJmMTgxNDhhMmU0Yjg4ZTQwOTE2MTg5ZGE4NmRjMWE5MmQ0NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTBkZjg0MmM5MTFjMjhiNGI4NzRmODNiYTliYTJmMTgxNDhhMmU0Yjg4ZTQwOTE2MTg5ZGE4NmRjMWE5MmQ0NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjUyZmMxOWJmNjVmMjY5OGE5MjY4ZGU0ZDMzNmQ2Y2ExYTQ1ZWFkZDA4YmUwNzE5OGRkNDA3OGI5NGFlOWM0NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGEzMGM1ZThjZjkzMmVlYzJkYTJjODVhOWU5NDBjODFjNGQ0N2RmZDU2ZjU1ODU1ZTdjNDdiMDlhMmFkZWMzYSJ9"
         },
         {
@@ -57,12 +57,12 @@
           "version": "repo-lines-v1:sha256:848183fadad7e6e68dfcff99b5cdc6247f87bf7295c0b50e88aa31fdcda49cb3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTUwMTk0ZThmZTM5MzZkZDNlYTQ4Y2E3MTBjZmNjYTk4ZTVlYjU1ZTE0YzkyNGI4YWJhZDVkZjMyZDBlN2Y5NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWY1MDI4OThkZDQzZWI3N2FmNzMwYzQ2NWUwZWZmZjI1ZWY3NzNlNjIwZmNkZDMyMjQ2MTQ3MDA1OGM3Yzk1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODRmOTFiZTY5ZjNjYmY3NGQzYzc5Y2RiZDk0YzE3YTE1YmJhYjVmMzBhZDlhMTg4ZjA3ZDU5OGY2Nzc1OGM4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjc2YTU0NGNjMDIzZWQ0MDVlM2I5OGI4YTM1NDA5MGZhZDE2ZTllMThkNWVlOWY3YmE2YzNlNzAwNTMwMDlkMSJ9"
         },
         {
-          "resource": "repo://src/update.rs#L232-L252",
-          "version": "repo-lines-v1:sha256:f754ed2ac9bd1577a16cfb9c5500b698c55b5682d08d06f60eace9c2e252433c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNGMyNWFkYTM2Y2FkMjMxOTExNGE5ODA3MGY5MmQ0M2E0OGM3Y2ZhNDIxN2Q0MTA5ZjVjYzNlNzY0NzY3MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3NmE1NDRjYzAyM2VkNDA1ZTNiOThiOGEzNTQwOTBmYWQxNmU5ZTE4ZDVlZTlmN2JhNmMzZTcwMDUzMDA5ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+          "resource": "repo://src/update.rs#L25-L31",
+          "version": "repo-lines-v1:sha256:8f9d435d1096588490babcb31e405f92983d470465f5595c85a759d7a77e5584:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2VjMmQ3YzFkMmE4YzJmZDA3MGY0MTBkN2Q3YjAxOGY3YzdjNGJkMmRiNTI2MmJjODBiYTllYzFkMjNiM2RjOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2ZkMzQ4MzJlM2QzN2E4ZDRjM2E5NDcyNTBjZDRmYjNmNmY4ODhiNDBlMjMyZTg0ZTMxYWUxNGVmOWM5ZDg3YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2VkMjliZGQxNGZjMTAzMjNiMjczY2RmM2Q3ZGY3N2ZiYzljODk5NzkxYmQzYzkxNGQ5N2Y5YmZiOTM3NWU3OSJ9"
         },
         {
-          "resource": "repo://src/update.rs#L26-L30",
-          "version": "repo-lines-v1:sha256:d115a0049baee78ed5325f54c4486f630f706773e95df3fce8f866c1dfc81887:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI5MmNlYmM2OTJiNWRkZDExZTAyN2Q3MzNlNmYyYWQxNWQzNDEyMWZhZTliMjYxYTMzNzM0YWM5NzhkOGZhMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTA3MTQ0NTYyNjE5Y2E5NzQ1MzNjY2YyMTA2MTI2ODE2ZDkzNjU2NTZmN2YwMTk4YzFjMTJjYTQ5YWEyMmY4MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2VkMjliZGQxNGZjMTAzMjNiMjczY2RmM2Q3ZGY3N2ZiYzljODk5NzkxYmQzYzkxNGQ5N2Y5YmZiOTM3NWU3OSJ9"
+          "resource": "repo://src/update.rs#L348-L368",
+          "version": "repo-lines-v1:sha256:f754ed2ac9bd1577a16cfb9c5500b698c55b5682d08d06f60eace9c2e252433c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNGMyNWFkYTM2Y2FkMjMxOTExNGE5ODA3MGY5MmQ0M2E0OGM3Y2ZhNDIxN2Q0MTA5ZjVjYzNlNzY0NzY3MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3NmE1NDRjYzAyM2VkNDA1ZTNiOThiOGEzNTQwOTBmYWQxNmU5ZTE4ZDVlZTlmN2JhNmMzZTcwMDUzMDA5ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
     },
@@ -71,12 +71,12 @@
       "statement": "Versions are CalVer with an optional -beta.N prerelease suffix; Version::parse accepts exactly N.N.N with an optional prerelease and returns None for malformed tags, and ordering follows semver semantics where a release beats any prerelease within the same major.minor.patch and prereleases compare numerically by beta level.",
       "evidence": [
         {
-          "resource": "repo://src/update.rs#L100-L124",
-          "version": "repo-lines-v1:sha256:065c2b278eabcea39e298e08d537543b3fdf3870ed086b0ab1e7d6714f03f299:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3ODZjOGFmNDYzMWJjNmUxM2FmNDFmMmFlYzhmMmQ5NzdjOTA0MmI2NThhZDVlMjZjYTM2ZDU0ODE5OTY5NGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmOTIyNzE5Njk2YWYwODhmMDk1MTE4ZWFkN2M5OTAwMTdlM2ExM2ZjODM5NzA1ZmQyOWUwNTI1ZjczZDhhMWIifQ"
+          "resource": "repo://src/update.rs#L55-L83",
+          "version": "repo-lines-v1:sha256:b496baa5747cea7f286191dc045441cd37d54fe147db98097cb37ceb31d5e0e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyZDFhMjQwM2Y3ZGFmMWMwODUxMmJhNjcwOTM1NDk0OTM2MzRhNTJhNDczMmIxODJmY2Q3NjBjYjYxOTM4ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3MDkyMjc4NDZhYmY0MGFmNzNhNDNmZGRhZjc1ZTY0Y2IxZGQyNjM4ZTRjZWIxZTJiY2U1N2Y0MjcyOGU2NzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiNGVjMjViOWFlZDg5ZGQ0YWI3ODA4ZDQxYzg4ZWIyMmE5ZGI4OGJmNGZmMWUxY2ZjNjI5NzMzNWZmYjY1ZjkifQ"
         },
         {
-          "resource": "repo://src/update.rs#L41-L76",
-          "version": "repo-lines-v1:sha256:35abcd8b1e4c214cfec947b132fc375b60a8bf5a2439660be12dee8e6c26bb3d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3MWFlYjYzMTdmZTY2NjI4MWIxOTQ1OWRkNTczMWY2NzBlNzMyNzIzODgzODA5ZWI4NTEwZTAwZTBkNGM4YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhNzQ1MDdlM2ZiN2E3NDQ3ZmYxMDYzMTFiY2M0YjExZWFjZDIxYjhlYjJmZDBkZGNkMDc2MGNiMmNjMDUyNjcifQ"
+          "resource": "repo://src/update.rs#L95-L125",
+          "version": "repo-lines-v1:sha256:a175e24a8f5f592e6ce6d8189d93fc4cbd2cf8e16870a5bac45df02c8fa28bd6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNjVjZjI4N2EzMzFhNWNlOGRhOWVhOTg5MGZhOWI1NTFkY2I5MDUyZWNmZDdlNWMxNDJjNGI2YmVkNTRmYzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmOTIyNzE5Njk2YWYwODhmMDk1MTE4ZWFkN2M5OTAwMTdlM2ExM2ZjODM5NzA1ZmQyOWUwNTI1ZjczZDhhMWIifQ"
         }
       ]
     },
@@ -85,8 +85,8 @@
       "statement": "fetch_latest shells out to curl (with --fail --silent --show-error --location --max-time 15) rather than an HTTP dependency, since the render hot path never calls this code.",
       "evidence": [
         {
-          "resource": "repo://src/update.rs#L156-L179",
-          "version": "repo-lines-v1:sha256:81211e15ea9e409adc8db06e5a8e0c12dc6490cbc1923e6e169ecd4b6cd362f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZjA4MWEzYmI5MWQ1MTM1Mjg0ODhjNTk3ZWJhMmQ5MmYxYzVjMzMzMjQ0MWI4YjNlOWU1NTM4ZTQ5ZWMwODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmNzI3NzRiNGY3Y2NjY2YwOGRlYzM2ZGRmOGE4NjU2NGEyMTg2YTE3M2ViMThhNmM1NGE2OWUwYTEyNzEzZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkNjAzOThkYmEzNzY1MmFiNWU3N2JlZDVkMzJjOTVlZDJjMmVlM2I1MzNiMmY0NjczYjk4NTlmZjNlM2Y4YzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NzkzZTAzYTY3ODQ2NGJjMGQ4M2JjOGQwOGNkMGM1YTEzODcyMDZiYjM3MjAwNzc4ODFiMDgxMmRlNzBlMzAifQ"
+          "resource": "repo://src/update.rs#L168-L189",
+          "version": "repo-lines-v1:sha256:f260fa757c0e2432d1de2c8430fbc552ab715363f16477a5c534a430e268aa78:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzN2Q3YTc2YzZjNzAxMGQyMmEwNjhlMzhkMTljYzU5ZmE2NzZjNzIwMTFlYWEzZTBkMDZiMmExMDVkMmY2NzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU3YjMzOTkxMzg5YWZkNmU0YWU5OGVmMDI4ZDA1NjNjNWFlYzZkNDc2NjJlNDZhOWYyZTgxMWQ2NDQxNjcyMTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmYWJmYjg4YWU5ZDQwNzZiODI0NDliMjg0YmE4MDBlMDdhY2RjZDEzOGVjM2M3NDVlMmNjZGY1ZGJjYjMyZWMifQ"
         }
       ]
     },
@@ -95,12 +95,12 @@
       "statement": "fetch_latest returns UpdateError::Network when curl is unavailable, exits non-zero, or times out, and UpdateError::Parse when the response is not a JSON list of releases or contains no parseable CalVer tag.",
       "evidence": [
         {
-          "resource": "repo://src/update.rs#L143-L152",
+          "resource": "repo://src/update.rs#L144-L153",
           "version": "repo-lines-v1:sha256:155d6913b25027c8e13b9fb1d697f2c108e73ebd5169b425962046e3f73640a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiZWQ3OWJjY2QzZDRmNGNkZTY1MmU2YmFmZGYzODhmOWJmZGNhZWMxZWQ4MDAyZjU0YTM0OTcyOWUzZDFkZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmZjBkYmI3YTBhMzEzY2NkNzgzN2YzNjYxZDc2Y2FlNDFlNGFlMWNhODRhN2NiZWJhMmE0ODIxOGNlMGM2YjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNjAzOThkYmEzNzY1MmFiNWU3N2JlZDVkMzJjOTVlZDJjMmVlM2I1MzNiMmY0NjczYjk4NTlmZjNlM2Y4YzkifQ"
         },
         {
-          "resource": "repo://src/update.rs#L180-L203",
-          "version": "repo-lines-v1:sha256:cb9c4d31833af92a96dcb37ba8027151f27f8199dc04b24a0227662fc87bd295:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmM2N2ZmM2QzYzlkZmU4MTkzNzMyNjk1ZWE5MjRjY2EzZTdiYzFkZTI4ODIxZjVhZTU0NDllNWU3ZjNlYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjYTQxNTliNjM0MjJhNThmY2RhNmU2NTlkN2MxNTMxNzZkN2YzOTE1MTgwMmEyMGEzNzc3MWI1NjBkYjc2YWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjMzMxMWMyZGU1YzVkNmQ2YzkzY2JkZDNkNmIxZTRiNWU0OTYxZTlkNGU2N2E0NzM3YjZjMWI4OGJhY2Q2ZDgifQ"
+          "resource": "repo://src/update.rs#L191-L215",
+          "version": "repo-lines-v1:sha256:01fa4f4154391b6bae61b384e1954761a23784cbc115a0e250aff62aad7c897a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNzBlYmY2MWViN2IwNzljY2Y2YTA5OWNjYzc2MDAxZjllMmE3M2ZjYWE3MGVhMmE0NDM2NjRlZDY4NTFlMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0NzVlOTRhOTA0YWM0OWIzMTU0ZDQ2NzJhNjZlODYyOWI4NmRhYzc0ZTNlMjkzN2JlNjkyN2FlM2RhMTFjNTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwYjg3MDdlN2QxMTA1ZmI2Y2ZiZGI3MzcwMzkyYzJiOGUyMjMwMzc5NzZjNjZiZWI3NTQ3NjU5MThmZDVkYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ZDg3OWFmMzg4ZjlkNWQzZmQ2YmMzYjAxNTU0NGZlN2RkZDdiYzIzMzM2MTFmMmNhMWQ3Yjc4MzU5NGQ2MTcifQ"
         }
       ]
     },
@@ -113,8 +113,8 @@
           "version": "repo-lines-v1:sha256:b5292ce7416896aca9af87b55dbafdb88a533b047c927f74cf247df1b87303d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmMxNTAxMDE5ZjNlMzc1NmU5ZmNhNWUxOTNjZjQzNjQ5NDUwZTA3NjQzMTY2NzI4YmVkZjg1NzIxYWU5ODE2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTE4Yjk1MjJmYzhmZmQ0NzEwMGFhYTUxZmZlOGQyM2U1NWFhNjkxMzg2MjZmZjNlMDczZjg4MWVmODQyNTY4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTI2MzhjZWFhNGVlZGI0OTQ3YmU3ODQ2OGM3OTFiNWNlN2YyZDlhNjRlNWViMjViMTY4MzViOGE5MzU4Mzk5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODQ4MTgzZmFkYWQ3ZTZlNjhkZmNmZjk5YjVjZGM2MjQ3Zjg3YmY3Mjk1YzBiNTBlODhhYTMxZmRjZGE0OWNiMyJ9"
         },
         {
-          "resource": "repo://src/main.rs#L651-L655",
-          "version": "repo-lines-v1:sha256:a6ee4a309e028b96660f2754fe6a32066c9c2fa1354ac385b1cf98d9c4749107:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjljMmFhYjVmZDgwNDNlZGNkODg2ZWFkNmRhMjRiNTY5NTExMzlmNDM1N2UyYzg3NTJjNWQ3MzdjZTQzMWU2YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUyMmM0MmNkMTljNmQwM2Q4MDhjNDUyNzIwNTUyODI1YjdlYTFjNWI0OTFiMjE4NTExY2FjNzQxNWNmOWQ5YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2IxMzU0OWZhNzdjY2EwOTg4Yzc0ZTAzYWQwYTliZDIwM2FiMjUxNzM1NTVmMzhlMTNlMmU5ZmVhMmFkOWFlNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjRhMzY1YTkwZWMxMWU5MDQzMjc1MmNmOTM3NmVjNWVkMzZiODBiYTVlOGU2ODU0ZmNmOTg5NzBkMzA0NDQ2OSJ9"
+          "resource": "repo://src/main.rs#L689-L694",
+          "version": "repo-lines-v1:sha256:744deb0c4e88ec1547fab6d5261e7576ff74942dcbe550439a70b22e4b6cd795:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjljMmFhYjVmZDgwNDNlZGNkODg2ZWFkNmRhMjRiNTY5NTExMzlmNDM1N2UyYzg3NTJjNWQ3MzdjZTQzMWU2YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2IxMzU0OWZhNzdjY2EwOTg4Yzc0ZTAzYWQwYTliZDIwM2FiMjUxNzM1NTVmMzhlMTNlMmU5ZmVhMmFkOWFlNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTllNzYzNTVjZjExOTk0ODBjM2Y5OTgzNmIxNDg2Yzg0MWQ4OTFmYWFkOTA0YzYwOGUwOTMwMjJkMzc1N2FlZSJ9"
         }
       ]
     },
@@ -123,8 +123,8 @@
       "statement": "run_update parses the installed version from env!(CARGO_PKG_VERSION), prints the installed version and channel, and on an available update prints the version as stable or prerelease plus the latest stable release as context and an installation link, exiting 2 unless --check is set.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L603-L658",
-          "version": "repo-lines-v1:sha256:b90c4536f5e2415050300d0cc3dc844e29639bbe8833b9102793753c7d5e7afa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3OTVjMDBjOWU2YTg1Njg0ZmVkNGI5YTZkNjM4M2NiN2IxZDI1MGM4YWIxZmY5YTkwNzBhZWNlODYyNjg3ODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2ZDE0MGU2ZWM4ZjhhNTA4NDllMGRmMGE3OTQ5MjhjZGIyMGU1ZTVmNjRiN2EyZTllMzdlNTM5ODk5N2Y1ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1ZDI4NTQ5YTJlZThlMjU3ZmJlOTQyZmJiMGFiNmY5NDkwMTRjM2U0OTUyMDQwMmMzMTUxNDFjOWYzZjNjZTcifQ"
+          "resource": "repo://src/main.rs#L623-L696",
+          "version": "repo-lines-v1:sha256:6d977d69815f484d4db8ba58c06d7562e9b802823d5d900de96f51aa15ebedbc:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3OTVjMDBjOWU2YTg1Njg0ZmVkNGI5YTZkNjM4M2NiN2IxZDI1MGM4YWIxZmY5YTkwNzBhZWNlODYyNjg3ODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2ZDE0MGU2ZWM4ZjhhNTA4NDllMGRmMGE3OTQ5MjhjZGIyMGU1ZTVmNjRiN2EyZTllMzdlNTM5ODk5N2Y1ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1ZDI4NTQ5YTJlZThlMjU3ZmJlOTQyZmJiMGFiNmY5NDkwMTRjM2U0OTUyMDQwMmMzMTUxNDFjOWYzZjNjZTcifQ"
         }
       ]
     },
@@ -133,18 +133,86 @@
       "statement": "Unit tests pin the channel-aware behavior: a Stable-channel user at the newest stable is up to date even when a newer prerelease exists, a real newer stable is still offered on Stable, Stable falls back to overall when no stable exists, and Beta is up to date when the installed prerelease equals the newest release.",
       "evidence": [
         {
-          "resource": "repo://src/update.rs#L283-L293",
-          "version": "repo-lines-v1:sha256:65782c081c3592b62efb16be73f4a46454c36ac94e90a26178011c96ad86e6f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxNzgzMTliNmZmMGE4NGM0ZTE5MjY0NWM1YTRiYjQ3YjExMzY2MTI4ZTUxZDk0MjY4YjVhNTNjYTA5NzE2ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0OTMzM2JjY2E1MjhkYjNlNWJmNWE2MGZhMTVjYTk2ZTE3OWUwODlkOTgzYTkzYWI4YThiMTNiNmFmZjIwZmUifQ"
+          "resource": "repo://src/update.rs#L509-L583",
+          "version": "repo-lines-v1:sha256:e3a7fe88f684e66f58ca8829d04ac2b533aa630b7fe191da54b9a29f3a78dd29:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxNzgzMTliNmZmMGE4NGM0ZTE5MjY0NWM1YTRiYjQ3YjExMzY2MTI4ZTUxZDk0MjY4YjVhNTNjYTA5NzE2ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f200b93941334ac3ab139c0a1170ab51",
+      "statement": "The update-check cache lives at update-check.json beside the config file (XDG resolution stays in one place), stores checked_at and the newest stable version, and is written atomically; missing, unreadable, or malformed caches all read back as None via a degrade-silently contract.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L232-L280",
+          "version": "repo-lines-v1:sha256:357d75e033c8861ac83807e925f32555a743af834c0748af32b8aad8c112d9d3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmMWQ0NDRjZDgzNTk1NTk1YWVhNjA4YzZmYjVjYzM4OGVhMzVjNDg3MWQyZjJiOWVhMjkyNTIxYTA3ZDc5YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzNjRjNTNmMmE1YWYzNDkyODc1Mzc2OWVkZTM3NDY1NTNiZTIwOTBlZmJkMDNkYTMwMjA1ZDA3ZWQ3YjZmNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwMzEzNTkwMGFhNWFmZTdhZmZjODk1MTg3Zjg1MDM1NDZiMDg0YjQzM2Y5OGIwNmM4NGZlMDhjZGYzNGIzOGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d60a779de3e140c5ad6b8ac86a73ce91",
+      "statement": "On a successful `claudebar update`, the cache always records the newest stable release independent of the reported channel; when no stable release exists nothing is recorded, so stable-channel users are never badged toward a prerelease.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L655-L660",
+          "version": "repo-lines-v1:sha256:33f6ed568764db97abaf1f365b9e4e3454992f73b096805a596185fe65e8d03f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjA2MGRiMjQ2YzU3YTkxMDJiOTUxZDUzYzA2MzM4NGRmMTBlNTkwY2JhNTQxMzU1ZDU3NGNjNjlhYTRhNWZlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzcyYTgyNzFkMDQ3M2YxMzMyZGFlYjY2MWMyYWQ1ZDg1OWE4MjJlYjMxNjNiNzJhM2MxZWEwMjdmOWE4YWNhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTUwNjFjNjdiZDUxMDFiNmEwYWZkMjA0ZTM5MmQ3YzkyODllODhiYzY2MDA4ZjMwZjBjYTNkYmQwMmJkNTFhZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_09f779d258734c83879ebbe4b9cb1bea",
+      "statement": "On a failed fetch run_update still stamps the cache with the current time and the already-known newest version, so a background refresh backs off for a day instead of retrying every render and the badge is not blanked for machines offline when the daily refresh fires.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L637-L654",
+          "version": "repo-lines-v1:sha256:db9ba2b447666cb2f7e400af22750beb2fd168731c6f37cc57ccc1bf2de515cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3MjM5MTRlODkyMTk4MjdkYzA5OWU4MTA1N2I2ODY5YzkxZTBkOWUwNDA0NTVmNTVkODNkNjNkMzBlZjZiYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmNjc1MmQ4MjFkNDA1YzQwNzFiMmMyMmEwZWEzMjVhMGYwN2VmZDMzZTQ2ZjE1ZGFhNGJkYjIyNDU2OTk0M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyYjlmNmFjYzczMzRmMDJjNWU0NTdlOWQxNmE5OTY4ZTBjMGY5YTUwMDllMjg0MDdlZTdhMjg1NDJmNDVhMmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ba13c6ff48bf4afeba3ab97baf186851",
+      "statement": "refresh_in_background only spawns a detached `update --check` child when the cache is missing or older than a day (REFRESH_INTERVAL = 86400 s); it claims the rate-limit slot by re-stamping the cache with the known version before the child's network call, the caller never waits on the child or sees its output, and nothing is spawned when no cache can be written.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L218-L219",
+          "version": "repo-lines-v1:sha256:dba489afdf450d8cf6bd812c3c41c1d87c84e127f69d1e4dfbeafe999e2c9b6d:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDIzYTc5MzllMjVhNDY5MTMwM2M4M2QyOTE2ZjUzZjcyYWNkNDQzNWRiNGFlYmE2MGQ1MTkzNzcwNzBlOWM3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjgyYTJhZmY3MjQ4ZGE2NDI4OWFlMmEzN2IxMWJiYjRjYzM5NGU5OWU2NGM1OTliNjcwYzg4ZGU3MWQyNDYxMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjA2M2M0ZDFhZjhjZDg5YmIwYmRkNzY1N2ZmY2JmNjgwNmE2MTBkNzlkNmM4ZDRjMzA3YzI0MWRmMzkwMDUyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWMwNmFiOWNiMWM4NzFmNThlMmQ4NDc3MGVlMWFkNWYxMTkyMzk2MjA4ZWQ0N2FhYzVlNTAwZjE4NWQ3ODJmYSJ9"
         },
         {
-          "resource": "repo://src/update.rs#L311-L357",
-          "version": "repo-lines-v1:sha256:d562a15243a9a13f59a167c1218310d419538a1d8fa3653f629c98c53fa8431f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyZDgyOGEwMzdhYzFjODE1MzViMWQ1NTAwODMyMzIzYmZiYjg2NmEzYTNmODdlN2E2OGMxM2EyYmFlNTZmZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/update.rs#L282-L331",
+          "version": "repo-lines-v1:sha256:c0e2d9465823c4582b7179402f8929f8a7c23e06b4203e560030e4aa0fff2d55:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhNzZjYzk4MjNjNjAwMGVhMDBlNmMyMzU1NzBkNDk3OWViZjBiMTNlYThhMGQ0ZDkxZTExNzg5OGM0Y2IwNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2YWFhNjcwNjRlMmYyNDEwN2JjZjRiY2UyOTFmMmQwYzgwYzUwMjZmMDc5NTdkY2NlNGVkODJjOTJkNDNhZTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a3cbb23a4a94213975779cb0659de20",
+      "statement": "render_line reads the update cache once and calls refresh_in_background when the update-notice segment is enabled, so the badge stays current without the render ever blocking on the network; when update-notice is disabled no cache read happens at all.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L111-L131",
+          "version": "repo-lines-v1:sha256:a056d2283373467aa0799bdc44790a349ab6558a6464b2463e44c24773016160:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkNjU2MDc4NDJkNzRmY2RkZTNkNTlkOTNjODEyYmFkMDU5YzkzODI1NWNiOGUyZDQzNDc2ZTg0YWJkYWRkMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMzM3MTZjYjRiY2U3YzAwNTkwNWE4M2E1MTI3NDI4YmY1NDUyZWIwNjhlYWIwODdjM2ZiNDRhZGI3ODViNjkifQ"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L27-L37",
+          "version": "repo-lines-v1:sha256:36450ae78f96854430b5d41208b8e6e38924c88dbe5eb78f13e9d8decd09103a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ZWIxMTYzZDk1N2JiNGUwOGRlNTUzMGViOWNlNzg4YjM2N2ZjZDA5M2IyMzRhOWY5OTFlNjRkYWZkMjA4YTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhYjVjNjQzYTg0NWMzNGYxMzFmYzI0Y2M1NmY5NjQ2YmZmMzIzZWUxZGJjZDExZWYyNmJhODFlYjAxMTAxZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjZTY1ZDU0OWMyOTc1NDEyMGI2ZjQyMjg4ZTE4NTE1MDI0NjUzMDMxZjMwZmYyMDFhMWQ3YTUxNmE3MjVkM2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f0675de2566541aca2b83cd491b0851f",
+      "statement": "The update-notice segment is a pure formatter that renders the ahead glyph and cached version only when it is strictly newer than the running binary and shows nothing when there is no update; because it is the one segment that spawns a daily network check it stays opt-in and the sync command reports it instead of enabling it.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L426-L432",
+          "version": "repo-lines-v1:sha256:bc06f9d70c3d9e6ba0e96f2fe6c4d46893bb362305cbde4e6537009ee8bd7f1c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc0N2U1MzY2OTVhYzIzMmYwOWNkNWUxNzVhZTYxYjNjMTRjNjZkNzAyOThhZTBlMDI3NGY1YTczMjM3NWNkNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2QwMDdjNGM5Yzk3NzYxMmE2ZjczMzRlYzljMjBhYTkzZDRjZTE4ZGQ3NDMwYTNmZmFlMTJiNWU2ZmI1OWU2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2YzY2NlNDA2OGJmMDdmNWRkYjNlYmRjMDI2ZjY3YmEwNDVjMDU1Yjk3MjdlYWNiODBiZjQ0ODAwMzNhZTQzYyJ9"
+        },
+        {
+          "resource": "repo://src/segment/update_notice.rs#L1-L26",
+          "version": "repo-lines-v1:sha256:11da25297b04722d60f389ebb838d8a46bcbae1e1d77b2f5826f6df7a942fe50:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmZTAxYWI1M2VhYzU3Mjc3ZGJlZjBlNWZiNzQ2OTFjZWQwMGYyNDgwNTc3YWZiMzA2ZTlkYzVkMThmY2QwNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.0",
-    "at": "2026-08-26T22:48:34.063Z"
+    "at": "2026-08-29T00:17:43.706Z"
   }
 }

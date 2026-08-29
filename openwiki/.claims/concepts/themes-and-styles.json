@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:427d4752a087aae9ffe4fc37af1f6cebf984bf5e90f6e99b6f4c82f7758dbc0f",
+  "pageVersion": "sha256:94363c4d7752f63de4524d484b15c45ece0eaea00edd879921289e593d966a82",
   "claims": [
     {
       "id": "claim_65999dbbdd0042dfa29f2ef3ded51f9f",
@@ -35,18 +35,18 @@
       "statement": "A Theme is a fixed struct of named Color slots (one per semantic role such as dir, git_branch, bar_ok, separator, dim), not a map; adding a slot is a compile error in every theme that omits it, so a theme can never silently miss a color.",
       "evidence": [
         {
-          "resource": "repo://src/model/palette.rs#L36-L85",
-          "version": "repo-lines-v1:sha256:12f9e0fed43af029112e72bf7d53382e6dbf87664f4498066ab2601c4b0857f8:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwMzkyOWY4NGQ3ZDgzZjVmNzYyNzVjZjZjZDc1MDQ5YTU3MWM0MWVkNDc0ZTcxN2NjNzI3ZmFkM2U4MjY5MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwN2M0NTJmMTc2YWZjMTJjMmE5YWVjZTgwOTM3Y2MzMzE4MmQ0MjY3OTA0ZTgwYmRiYTdmODQ3MDA0MjA4NmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/model/palette.rs#L36-L83",
+          "version": "repo-lines-v1:sha256:94c1125785b063cd3c61c0ea8ef21eef5ba74a1ce3bb8c64114ad37715bf13e2:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwMzkyOWY4NGQ3ZDgzZjVmNzYyNzVjZjZjZDc1MDQ5YTU3MWM0MWVkNDc0ZTcxN2NjNzI3ZmFkM2U4MjY5MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwN2M0NTJmMTc2YWZjMTJjMmE5YWVjZTgwOTM3Y2MzMzE4MmQ0MjY3OTA0ZTgwYmRiYTdmODQ3MDA0MjA4NmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_347af53ea78a47338bf782945881c5b6",
-      "statement": "The project slot conventionally falls back to dir and the stash slot to git_branch in themes that predate those slots, implemented by setting the same Color index as the fallback slot.",
+      "statement": "The stash slot conventionally falls back to git_branch in themes that predate that slot, implemented by setting the same Color index as the fallback slot.",
       "evidence": [
         {
-          "resource": "repo://src/model/palette.rs#L68-L72",
-          "version": "repo-lines-v1:sha256:fa01489e3e64954a26185aba535f71f5b58f453480a4e86625a015616cf4017e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NjMmM2NmI5YTdhYTdhNDBmMDkxZmVhNGY3MzhiMmYzZDlmZmRiMTRlOWMyN2U4MDg5ZjRhNTgwZGU4NjRjNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGE2MGJlYzY0NGQzNTNjMGI5NDY1MzNjY2YyZWI3NGJmYzBjMmFhMzUzYTExNmEzMjI0NmMyM2QzODM0ZjNkOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjQ1YmU5MDYwMDU3ZTYxM2FlMWZmOGY1Njg2ZTc4YTMzODZjZDM1MGI1YTZhZmZjODg3MjZiZmIzN2Y3NzA3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzNhMmE2ZmFjNWIwZDFjNWViYWVmN2ZlN2MwNzUzNWIxMTZiMDIxZDVlMDhjODJmMzUwODY2MGFlYWVkZGFkMiJ9"
+          "resource": "repo://src/model/palette.rs#L68-L73",
+          "version": "repo-lines-v1:sha256:2dd737f6763681219e72590f52c168e3c889e0ba8f5d7e7bc1808bd2342c630d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NjMmM2NmI5YTdhYTdhNDBmMDkxZmVhNGY3MzhiMmYzZDlmZmRiMTRlOWMyN2U4MDg5ZjRhNTgwZGU4NjRjNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzYzMmYzNDJkYjhiY2MwZjQ1YzJlNmM2NmIxZWYxYzRhY2NjYmM2NjYxM2NjZjFhNDA5MDk5OWNmNGM4YWQzMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjQ1YmU5MDYwMDU3ZTYxM2FlMWZmOGY1Njg2ZTc4YTMzODZjZDM1MGI1YTZhZmZjODg3MjZiZmIzN2Y3NzA3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzY3NjA5NDU1MmQ5OWE3NDIyYjBlNTc5YTBlMWM2MGU3ZjAwYWVlMDAyYmE3YmZhNzNiODUxYTliZmRkYjljNCJ9"
         }
       ]
     },
@@ -56,14 +56,14 @@
       "evidence": [
         {
           "resource": "repo://src/model/config.rs#L160-L168",
-          "version": "repo-lines-v1:sha256:ac353ae358026fbcac85b5122f9a97b79c30e04bc04b6de44053a8ddf46a111c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjMxZWIxZjc1ZTc2NmJjMDc5Y2MwOTdjOTkxMzVkZmFjN2Y2OGE3MGMxYmVhNDI3Njk3MDk2YWYyNDJhY2EwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGYyMDZlMGY5NjM0MzU0YjkxZjI1MGQ4OWNiMGEyMzQ5ZDQzNjdmMjhkNGY5ODMxYjIzMWQ2NTU1YWIwN2ExZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjhiYmFhMTE4OGNhMjBjN2M5ZjdlOWFiZDNjNzJiMzE0NzU4OTlmMDU1ODZmZWViZDc2YTIwZGY4MTM2ZTc3MSJ9"
+          "version": "repo-lines-v1:sha256:0ac81118329004af323824e4f185fd17e713feb4bc0ae1eec8b8f0b71c1eeaee:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmViNmFmY2Y0M2Y0MmU0NmIyODkzZDk5OTM5ZGQ0ZTczYWU4ZmJmNmRiMWJmMzFkMWU2ODFiOWY4YzM1OTc3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMzNmIwYzQ5YTM0NzEwM2I2YjkxOWIyYWVlY2I2M2ZiYWRlODU2ZDk1OTc4N2QxZmRjOTJhY2FjNDdhNDFiYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzhiZjBhYTAwNWExN2E3Yjc1MzNhYTljODgzODlkOGY1ODc5Y2E4ZDI4MGFlZmJiNGJlNDdlNDQ2NTdiMjdmMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGRhOGIzYjQ1YzZlODk0YzBkMWY4M2VjM2I0ZDA3NjFmNDliY2Y5NWRjMjM4NTU4YWJiMmI5MTUzZjU4MmZmMyJ9"
         },
         {
           "resource": "repo://src/themes/mod.rs#L1-L24",
           "version": "repo-lines-v1:sha256:c9db7f9b3f72f40e2bda2d31fb5a84c3067cbd7b2c905495a26abc960aa842e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkMGJmM2M0YTI4M2VlMTRmYWNmMjEyYWY1Y2U0Zjg1OGFhOGY4MjZjMWMyODBiYzk3MDM1OWYzZDY0N2JjYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYzFkMzlkMzI1N2Q1ZjAxN2VlNmFjOGNjNDJkYjRkNDUwZjMyYTliOTU3YTg3ZmMxNWNlMDE1ZjY1Y2Y3ODAifQ"
         },
         {
-          "resource": "repo://src/themes/mod.rs#L458-L479",
+          "resource": "repo://src/themes/mod.rs#L442-L463",
           "version": "repo-lines-v1:sha256:a73a4e684ab88f06437ded5628dd23ee164c19dc9446e8a36b18af952237f8b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1Njk1Y2YwMDEyY2JkNzNiNDg2NDdjZDAzNWZkYjQ5MWViYTE5ZGRiMmQ4NzRlNzJkZmRjZDY2MmEzMjYwOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhMmI1ZjNkOGE4NjNlYmZhYjQwMDkzODAxNDAyMzEyMDZjMDNhYWVhNDg0MmMwZmNkZDllMzg5Y2RhYzE1ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
@@ -73,8 +73,8 @@
       "statement": "themes::NAMES is the public display-order list of built-in theme names; the TUI config editor builds theme pickers and a swatch cache indexed by NAMES position (reordering NAMES or changing Theme fields requires updating the swatch code).",
       "evidence": [
         {
-          "resource": "repo://src/themes/mod.rs#L6-L24",
-          "version": "repo-lines-v1:sha256:4035c0bb9fbc80b7d5ddb848d86a1b7a38a38f282e5489282cdc4e33fce1bb5b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlMDU3MTBiYzAwYTE5ZGZmNzMwY2RjM2Y4MjE1NjEzYWJiYzIzMTUxYzhlMjIzNTA4ZjBlNWJkMDZhY2Y2YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2NTdjMjFjODk5ZDgwMDIwZjQ4ZWQ1MmEzZDE5ZjBjOWJiMTVmNThhYzk3YmI3ZmM2NTY4MTlmM2YzMDVjYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYzFkMzlkMzI1N2Q1ZjAxN2VlNmFjOGNjNDJkYjRkNDUwZjMyYTliOTU3YTg3ZmMxNWNlMDE1ZjY1Y2Y3ODAifQ"
+          "resource": "repo://src/themes/mod.rs#L7-L24",
+          "version": "repo-lines-v1:sha256:fc636c246fb899b47ecfc02d8c2bd27800530338581ebb16341ff7d97ce92364:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjODk4YjYyMzQwNGFkODQ0MDEzMzdmMWIxOTg1NzA0NWYwNzUyNTY0MDMyMDk3NmIzMjQ5MTkyMzFjMWU5NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmYmQ3Zjc5MzIxMDkzM2E1YTJhZmYwNjQ2YWZmYTIxYzFiMzJjMzE3NTYwYzJjM2FhMTczYjY4OTYxNWRjMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYzFkMzlkMzI1N2Q1ZjAxN2VlNmFjOGNjNDJkYjRkNDUwZjMyYTliOTU3YTg3ZmMxNWNlMDE1ZjY1Y2Y3ODAifQ"
         },
         {
           "resource": "repo://src/tui/app.rs#L109-L125",
@@ -87,18 +87,18 @@
       "statement": "A unit test enforces that for every built-in theme the three bar fill colors bar_ok, bar_warn, and bar_crit are pairwise distinct, so the warn/crit bands always remain visually distinguishable.",
       "evidence": [
         {
-          "resource": "repo://src/themes/mod.rs#L495-L502",
+          "resource": "repo://src/themes/mod.rs#L479-L486",
           "version": "repo-lines-v1:sha256:2086ef73eece13d16c7293163882f9815809d73cbd991aa8317039159556672e:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTM5M2ZhZWVhZWFiOGRmZjhiNjRjMGNlMzYyYzUzOTJkMjg5NzkzZGQ3Zjg3ZjYwZTkwMTg5NWYzYWY5Mjk1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTcwZjQ0YjU4N2JlMjg1N2E4ZWYxZGVhMTAyM2JiMDQ5N2U3NWRlMzRkYzM4NjljN2QxZDYzNjA4ZTE2ZGVhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
         }
       ]
     },
     {
       "id": "claim_c47ab75e472b4bb8923dfce9c75eb498",
-      "statement": "A Style is pure data carrying separator glyph, window_gap glyph, icons flag, a GlyphSet of per-segment glyphs, and bar_fill/bar_empty chars; segments never branch on the style, they only read these fields through the writer.",
+      "statement": "A Style is pure data carrying separator glyph, window_gap glyph, icons flag, a GlyphSet of per-segment glyphs, bar_fill/bar_empty chars, and a bar_dots: Option<[char; 5]> quarter-step bar field; segments never branch on the style, they only read these fields through the writer.",
       "evidence": [
         {
-          "resource": "repo://src/model/style.rs#L1-L75",
-          "version": "repo-lines-v1:sha256:5c15c44b47e5bead1a8da3ba30b5559d48a596343e20dbd86884d05aa44d4543:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ODhmYzE3NGQ2N2ExNzg0OTYwMDQxM2FkYmIxOWZjMDAxNjY3NDNlZGVhZjQ3MjNkZmE1NDEwOTg2MGU4NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTlmYmI3Y2UxMTIzNDQ3YzkyMWUyM2RjZjdjMGI1ZjNlYjUxMTFiNGViMDYwZDc5NTM1NDNjMjFlOTk2ZmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/model/style.rs#L61-L81",
+          "version": "repo-lines-v1:sha256:2d2ea114d21768e52bcd3766d5439691fd769702b8bbb4a02b39d0aa6f2b74f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMjlmN2M2N2NmYmI5NWE0OWI4NDZhZjExYzM1MjZiYWYxMWU0Njc3YmIwOTQ1NDVmMDVlODJkMmYxODhhODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2MThmNWE3OTlhNGFiY2QwYTIyYzJjMzlmM2I0NGU0Yzc4ZmU3M2UyNjRhMmQwY2JjMGMwN2I0Njg4YmU2ODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -107,36 +107,40 @@
       "statement": "GlyphSet stores each per-segment glyph as &'static str (not char) because rich styles use Nerd Font PUA / multi-byte glyphs while ASCII fallbacks use ASCII characters.",
       "evidence": [
         {
-          "resource": "repo://src/model/style.rs#L7-L55",
-          "version": "repo-lines-v1:sha256:185b0b02e0df92a9a84bc3e20e8f203cc477e944b28581d55f2d6faa88faa806:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiNTVhYTAzZmY0MjAzNWIyMjJlMTEyNDY1ZmI3MTk2ZjE5YjliNGZjYjNlOTRmNmU5Y2Q1YmExMWYwNzM3YTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzYjVjZDljMDViM2I2MGM5MGE0ZjNhMjU2MDNiMzE0NzBjZTI2MWU3NDIwZjc2MmMyMWJkODY2Mjg2MDYzMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2MThmNWE3OTlhNGFiY2QwYTIyYzJjMzlmM2I0NGU0Yzc4ZmU3M2UyNjRhMmQwY2JjMGMwN2I0Njg4YmU2ODYifQ"
+          "resource": "repo://src/model/style.rs#L7-L57",
+          "version": "repo-lines-v1:sha256:07eb1fbda8207099619deb4265c48e9cd4648993babcc4e67b48c670cf5700a6:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiNTVhYTAzZmY0MjAzNWIyMjJlMTEyNDY1ZmI3MTk2ZjE5YjliNGZjYjNlOTRmNmU5Y2Q1YmExMWYwNzM3YTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzYjVjZDljMDViM2I2MGM5MGE0ZjNhMjU2MDNiMzE0NzBjZTI2MWU3NDIwZjc2MmMyMWJkODY2Mjg2MDYzMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2MThmNWE3OTlhNGFiY2QwYTIyYzJjMzlmM2I0NGU0Yzc4ZmU3M2UyNjRhMmQwY2JjMGMwN2I0Njg4YmU2ODYifQ"
         }
       ]
     },
     {
       "id": "claim_33ee3f3ced294a26bcaf04043c9d2522",
-      "statement": "All 7 built-in styles (powerline default, lean, plain, rounded, minimal, unicode, ascii) live in src/styles/mod.rs as pub const values with no per-style modules; styles::get resolves by name and unknown names fall back to POWERLINE.",
+      "statement": "All 8 built-in styles (powerline default, lean, plain, rounded, minimal, unicode, ascii, dots) live in src/styles/mod.rs as pub const values with no per-style modules; styles::get resolves by name and unknown names fall back to POWERLINE.",
       "evidence": [
         {
-          "resource": "repo://src/styles/mod.rs#L1-L15",
-          "version": "repo-lines-v1:sha256:4522583541d20cfd5a2be90e150a7b16084d6e2ad51742795dd7d0538bf675dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYWZlNjNlMjg1M2NiM2JjYzNhMTVlY2ZkODBmYWQ5MDQxYzlmMDQ3M2E0NTBhMTk3NWM2MDI2MjlhNzY1NjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxODQxODM3ZTI0NDJmY2I2NzJmMGRjYTFjODU0NzcyODlhMjZhZThlNmNmOWQzZWU4NDEwMjkwOTc2NmQ1YTAifQ"
+          "resource": "repo://src/styles/mod.rs#L208-L221",
+          "version": "repo-lines-v1:sha256:988aa84ef656b0cf894b5e524efe8a842719acf3ca0ef89ca7afe96ac041baf1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlOThjMmQxMzkxN2YzODAwNTQwNDM5NjFkYzE1NjQ0ZmZlMTJjNDhmMzExM2EyMWFiZmViNzMwZjAyOTY0YjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyZmNkNzNmMzIwODcyNGE1OWFkZDIwMTlmNTY0MGY1MDZkMzkxNDliZTNhMmI0M2Y0OTExMzI2N2I4YWZhZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         },
         {
-          "resource": "repo://src/styles/mod.rs#L179-L190",
-          "version": "repo-lines-v1:sha256:cfb71924c97d546cdb180f291c3023087804b8d293d8f94b840932738389af10:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlOThjMmQxMzkxN2YzODAwNTQwNDM5NjFkYzE1NjQ0ZmZlMTJjNDhmMzExM2EyMWFiZmViNzMwZjAyOTY0YjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+          "resource": "repo://src/styles/mod.rs#L7-L16",
+          "version": "repo-lines-v1:sha256:f95d3fb130dd012b4b31f5cec2682c61b8142d3f6771e87a6025b0171489bf16:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjODk4YjYyMzQwNGFkODQ0MDEzMzdmMWIxOTg1NzA0NWYwNzUyNTY0MDMyMDk3NmIzMjQ5MTkyMzFjMWU5NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwZTFkYTAwZWQzMTUzZjBmMDYzZGM2YjVkNzBkYzg5NDlkZDg4ZjBlZTk1MzAzODQ3MzQ0Yjg5NmYyNzVlYzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxODQxODM3ZTI0NDJmY2I2NzJmMGRjYTFjODU0NzcyODlhMjZhZThlNmNmOWQzZWU4NDEwMjkwOTc2NmQ1YTAifQ"
         }
       ]
     },
     {
       "id": "claim_9a29eca10a8a48a689e7fa734a9854c4",
-      "statement": "lean, rounded, and minimal styles reuse POWERLINE.glyphs; the icons flag (not the glyph table) is what suppresses glyphs, so minimal renders powerline glyphs but icons=false drops them without any per-segment branching.",
+      "statement": "lean, rounded, minimal, and dots styles reuse POWERLINE.glyphs; the icons flag (not the glyph table) is what suppresses glyphs, so minimal renders powerline glyphs but icons=false drops them without per-segment branching. minimal additionally overrides the review_ok/review_fail markers to plain unicode because those bypass SegmentWriter::icon and must not be Nerd Font PUA.",
       "evidence": [
         {
-          "resource": "repo://src/styles/mod.rs#L50-L58",
-          "version": "repo-lines-v1:sha256:d2aa8b4e120098e5792cc35050caf505da53863daa7d92855815ba3eafa831a0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2ZhYzQ1ZTRjYzVkZjhiNjQ3ZmUxY2RkZTVjNjU3OGUzMGU3Y2Y0YThkZmQ4N2RjYzk3ZTEzODU0ODI1ZGU2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWExZDFhNjMzOTAyMjljNzk4MzQ3ZTgzYTA0MDU0NDFjOTQwMDAzNTI4NGFkMTY4YzFiZjZjZGYxZDcwYTM3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGEyNDNlNDQxZDA4MWE0YjViZDBlMDMxNmEzN2ZjNDc1ZjE2ZGE3YmI5OTJlMjkyNDYwMjJkMzBiMzAyN2U5NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzQ3NmI1MWY4YzI5ZTU5YWFiNGZlMDI3MTFlMmMzODg2NTRiNTdkZDY3OThlNjQxMTI4ZjEzZGZiOGJmYWEwYyJ9"
+          "resource": "repo://src/styles/mod.rs#L110-L125",
+          "version": "repo-lines-v1:sha256:bcc764a8f6f36f7be1a5e3e8c0fa2429e7cf5727c446ca9da63cce02ef75353d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxMzg5NTAyM2E3YjE4MTJlYjY3ZWQzYzcwZDQ1YmE5MjJhM2ZiMzAzZjNlNmJjYmE4NjhkNjQ4Zjc3ZDI0ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyZmNkNzNmMzIwODcyNGE1OWFkZDIwMTlmNTY0MGY1MDZkMzkxNDliZTNhMmI0M2Y0OTExMzI2N2I4YWZhZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3YTg1NzE2OTI5N2QxZDcwMGMyN2ZiZGUyM2I0ZTg0MGI5NzBiYjk1MDNkY2UzNDY0OTdhYjAyMDFlNGMxODkifQ"
         },
         {
-          "resource": "repo://src/styles/mod.rs#L93-L111",
-          "version": "repo-lines-v1:sha256:6c5effc35f4fcfa25a0891b6d87c53fbca7c2f002aec02d08cd29c7fd4fd33d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyMDcxMWJkNDhiNGFjZDZkYjA5ZGNmNzJkOTc4OTlhZmI5MTY1YjlkZGNiMGNlMmU4N2E1MGIwM2M4ZGZjOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3YTg1NzE2OTI5N2QxZDcwMGMyN2ZiZGUyM2I0ZTg0MGI5NzBiYjk1MDNkY2UzNDY0OTdhYjAyMDFlNGMxODkifQ"
+          "resource": "repo://src/styles/mod.rs#L197-L206",
+          "version": "repo-lines-v1:sha256:54f70f47cb39a10666cb67b5ffcf4726623628868431ca17d8c82f399cc3d33c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMDY3MWE4ZTQ4OWNmZmMxZGJiMTY4MWUyZDJiMDUwNWQwMTY1OWViMGFjZDk3YTNkNDQwODU4MjZjYWM0YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzMjlmMGZhMTFmZTAwZDVjYzFmYmU0NmY1ODc0ODgxZmZkN2YyMTI3Njc1MmJhNjExNDE4MTNjYmU5YWE4NWQifQ"
+        },
+        {
+          "resource": "repo://src/styles/mod.rs#L53-L62",
+          "version": "repo-lines-v1:sha256:1a724123883ef9c1583c7e8a2aee60836b27e95c69fba05685e361c2d120cb52:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmYWM0NWU0Y2M1ZGY4YjY0N2ZlMWNkZGU1YzY1NzhlMzBlN2NmNGE4ZGZkODdkY2M5N2UxMzg1NDgyNWRlNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM0NzZiNTFmOGMyOWU1OWFhYjRmZTAyNzExZTJjMzg4NjU0YjU3ZGQ2Nzk4ZTY0MTEyOGYxM2RmYjhiZmFhMGMifQ"
         }
       ]
     },
@@ -145,15 +149,15 @@
       "statement": "The composer's inter-segment separator paints the style's separator glyph in theme.separator with a space on each side (a segment boundary), while SegmentWriter::window_gap paints the style's window_gap glyph in the lighter theme.dim color as an intra-segment join between related windows inside one segment.",
       "evidence": [
         {
-          "resource": "repo://src/model/style.rs#L60-L67",
-          "version": "repo-lines-v1:sha256:f88a1d69fd4e70b37e33d75d4b216c3b45db7f0efc74828a5d3c45bf0d5dade4:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWNjMDY5MzM2YTg4ZGEzNmIyNTUzNGEyODRiZWQzOTRmMDUzZDRmYmZmYmYzYjU5N2M5OTA0ZGFhOTMzYmM3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMyMzM2YTI4ZjM4ODRlMjBlNzZmNDdjMmFjNzE5ZmM0NzFhNjE3MDZhMDFlODFjZDFlZmM3MGE2MjBjNGU4MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM2ZGFlZjVkMzZlZDljZWI0ZjZlNzYyYzI3ZjU3MWM0NjI1MDRkZDgxNjUzOGFmNjAyMDUxNDRiYjBhZmVhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU4YjliOWI0MjAyMTA5MTFlNjUxMTQ2OGVmZjRiMmZjZWU1OTYzNjU1ZDBjMzM5NDY3NTEwMGM4ZDhjODllNCJ9"
+          "resource": "repo://src/model/style.rs#L60-L69",
+          "version": "repo-lines-v1:sha256:f4a4e744aca5874a2b11c8cf4338453b0b6f8d19b8cf59ec08e4d036e8293c37:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNDBlOTRiYTgxODRkNGI3YzA0ODJhYmI2ZTU1NDg5YzRhZmQwNjA3OGI0NDg5ZWNjMTViMWU0ZTNlMjRmOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjMjMzNmEyOGYzODg0ZTIwZTc2ZjQ3YzJhYzcxOWZjNDcxYTYxNzA2YTAxZTgxY2QxZWZjNzBhNjIwYzRlODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzY2NGQzZTY2ODg5NmVhOGFlYjM2ZjIzNWFhMzlhYWVkNDhjZjI3OGJhYzRjNjYxNzZlOWUxMzViMjI3NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1OGI5YjliNDIwMjEwOTExZTY1MTE0NjhlZmY0YjJmY2VlNTk2MzY1NWQwYzMzOTQ2NzUxMDBjOGQ4Yzg5ZTQifQ"
         },
         {
-          "resource": "repo://src/render/mod.rs#L191-L202",
-          "version": "repo-lines-v1:sha256:f58d10d13677f501081b08fa63004d91faac57646c4a56f5fb37912e85444072:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1OTkxNzVhZWMyNTllOWI3MWFlZDg2MzliMTliN2I3ZTg3MzhlMWY0OWQyYjIxZWYwYWY3NzRhM2M2YzMzZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5OGZjZDliYThlNjFmMTU4NTQ3MGU5MDkyMDFiN2NiMzMxNThiZTQ5NmE3NGM2NzFjZDdiN2I2NTY0YTQ1NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+          "resource": "repo://src/render/mod.rs#L258-L272",
+          "version": "repo-lines-v1:sha256:85cf396a2c473bad2852445cff3752b0eafbd5671684f48a66faea5f890daeb3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMmU1YTNkNDQzZmM5OWNlNzc0ZTg1MWEwMDg4ZmJkNzljNzdlMmQ5YjMzNDY1YTk3YjBhODMyYzU1MjQzYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         },
         {
-          "resource": "repo://src/render/writer.rs#L144-L154",
+          "resource": "repo://src/render/writer.rs#L155-L165",
           "version": "repo-lines-v1:sha256:dd9838e8de797c398ce8c61d0aad93c56d1ee8dce954af03a336d9263699eded:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjN2U4MTk2ZmE5YmY1MGYwYzRkMTM2ZWJkZmNiOTJlZTUxNzIzZWU0Y2FhMzMwNDZjNGFlMjlmMWM1MTgxZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkM2YzMDcwM2I1ZjBjYjcyZGRkNDQwZjNhNWZiYmJjZWNmMDFmMmE2MmQ3NWI1YzQ4NTM3OWU4NWYxOTAzYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4MWRjNjA4MTI4OGRlNTg2ODBhMmE1MWExM2UxZjFmNWQ0MmQ2MDZmMTEyZTY5OTEwYTU0MTgyODE2MjM0NGMifQ"
         }
       ]
@@ -164,15 +168,19 @@
       "evidence": [
         {
           "resource": "repo://src/render/mod.rs#L22-L31",
-          "version": "repo-lines-v1:sha256:1b8bf48fcd993614f3ed12a42d5410d4f10c59dd02efc0bda3f4a417b836c51d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMzljZTRlYmFjZWUyYTU1OGI1ZGY1N2NkYTZkMGYzMTk1Yjc0ZDI5Mjc1ZjMyMWFhODY0ZjcwMzQ1ZGZmYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMDEyNGMyMmI4NDVmMTY2MmRmZjlkZGZmMDM1NWI4ZDQxNmRjODBkYzYyZTgxZTgwNzFkYTg4NDYwZTIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViZWIzY2U5YmU2NTBhMDQ4ZTE5NTBjNjBmNjBkNmYyMWIxMmM0N2YwYjc5YzIyZDMwZjI1MTAzZjcyNjA5NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyYWMyZDY4NjdmN2U0MWNiNTJiOTVlZDg2OTY5MGIwOTdiZDgwMTc5NjkxMmE0YTI4OTQzY2M2YjUwNjY2OTcifQ"
+          "version": "repo-lines-v1:sha256:362124e5c7d35517d030fdeca63d6fcb16be481206a4c52b133d99ecedd130ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMzljZTRlYmFjZWUyYTU1OGI1ZGY1N2NkYTZkMGYzMTk1Yjc0ZDI5Mjc1ZjMyMWFhODY0ZjcwMzQ1ZGZmYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjNmRiNGY2OTI2OWVlZWEzNTE2NzIwNjJjYWUwZmE0NjY2Y2RjMWY4MjU4NzY2N2FhYmNjMGVhYTY3YzBjZTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViZWIzY2U5YmU2NTBhMDQ4ZTE5NTBjNjBmNjBkNmYyMWIxMmM0N2YwYjc5YzIyZDMwZjI1MTAzZjcyNjA5NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNzE5YmE1ZDRjNjViZjEzYmRhMTUwZjA4ZWU3YmU2NmNhMzcxNWQ1NGJiOTNjYTBlOWRlNjc1MGM0NDQ0MTcifQ"
         },
         {
-          "resource": "repo://src/render/writer.rs#L84-L102",
-          "version": "repo-lines-v1:sha256:691f953c078f6141293d123f03a6b95663019d5033977e9057dee6c48f28bc18:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmODliY2U1YTMxY2M1NmE3MTY4OGE1NzNhMDExYzQ1YWZjNTdlNDBhNDZmZGY4NThmYjg4OWVjNDI4YTZjYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0MjI4NWVlYjhjNTc2NjkxZTkxMWZmODVmNzQyZjcwYjk5YmUzYzFjZWNmZDE3MTgwN2M1Y2M3MDNjYjY3OWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyMjcxNDBiOTExZjgxMTdhZDdiYjExMWM4YWEyM2U0OWMwMzczMTZjMDEyMDc3NjM5ZDE1ODc3OGExNjQzMTIifQ"
+          "resource": "repo://src/render/writer.rs#L1-L4",
+          "version": "repo-lines-v1:sha256:5acbd4e7839f94d50a8d1287a8864e715bf1107d4f306ab7afd7351a21f0d3a5:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzkzM2ExNjg4NWM0Mzg3OGFhMzQzZDU3ZTM2ODkxYjgwMjQ0YzYwOWI3NDY1NGJlNzM5YmMzYWFhOTE2NmY4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTRjYzY5OGY5NjY5ZmQ0ZWRkNWU3YmU5YzEwOTM4YjBlYzljMWQ3OGVmYjg3ZjQ5ZTc4NmI5ZGZlZWRkNzA5YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGZmZWM3ZjRlMmY4YjliNDIxODk1ZWEzZTc2YzFjNmQ0NzEyYzU2MGZjOGU0MjhjZGFiOGQxOTU2Yjg4NGNjYyJ9"
         },
         {
-          "resource": "repo://src/segment/mod.rs#L27-L39",
-          "version": "repo-lines-v1:sha256:cacef3f66af6d2cb6df29b56704d92ff49c577125a359f3fbf516b3fb595a591:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZjg3ODRjNWMzM2JiMDQyNDFhZjlhNjc0MTQwMzBkYjkxMzhhNDYzMTVjNzQwMjJiYjM5NGYzNjk5ODNiMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNTVhNzI1ZWNjMWZlOTcwY2M5YmFhYWVmODU3MGUxNWU4MjdkYjA4YTZmODE4YjMxMjA5ZGI1M2MwYWQ4NDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4Mzg5ODVhZjA1NjM5NDBmNjI2MDM4NjRhYWZjNjUwMmY4ZjczNjQyNGIzMjkyYjYxOGI0ZTExMzdjMDE0ODgifQ"
+          "resource": "repo://src/render/writer.rs#L89-L102",
+          "version": "repo-lines-v1:sha256:75d77791aad134812179baaab9d3020d388154cd05a84b7aa3b884b56c5c3d51:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlM2JlNThmNWQwMzU5YWVkYmU2ZTBjOTM2ZDE3MGQwZmUxNDZiZjM4MzIwZjk4Mzk4MDlmNGQyZmI0ZTYxMTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlNWE3MWFjOTk5Y2Q4YWNlN2NhZDkyYzJlN2MxMzVhZjM5ZGMzOTcxYjFjNGVhNDQ0NmM1MDg3NTQzMzBlYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyMjcxNDBiOTExZjgxMTdhZDdiYjExMWM4YWEyM2U0OWMwMzczMTZjMDEyMDc3NjM5ZDE1ODc3OGExNjQzMTIifQ"
+        },
+        {
+          "resource": "repo://src/segment/mod.rs#L25-L44",
+          "version": "repo-lines-v1:sha256:829cc6c2c6f643053ce2a8f25ae59f183b0cec77b6c8b5996b6c2454dcce30d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDg5ZGRjNTRhZDI3YzJjMWUxNjVjNWRlZGYwMmI1YTU2YWQxY2U0Yzg4MzJkMTQyNGQyYjgwZDJhZDA1NDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyYjE4OWEwMDJlODk0YThkM2Q1ZDYwNzdiMWNhMDVkNTZlNDkwOGIwYzVhMGQwNWU1MzBiMTViODg5NzcyYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4Mzg5ODVhZjA1NjM5NDBmNjI2MDM4NjRhYWZjNjUwMmY4ZjczNjQyNGIzMjkyYjYxOGI0ZTExMzdjMDE0ODgifQ"
         }
       ]
     },
@@ -181,8 +189,8 @@
       "statement": "The float readout renders each float_segments entry with the ASCII style and strips ANSI afterwards, so the float file's plain text is independent of the user's configured theme/style.",
       "evidence": [
         {
-          "resource": "repo://src/render/float.rs#L38-L45",
-          "version": "repo-lines-v1:sha256:82d72b28592e36d5f68a7ce71660747618cc44ac2352f9c6cd145baaff385452:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjEwOWJmNzU4MjRmZWYzOTAxYzMwNWI3Mzc3YjZlNThhMWYxYWViMDdiNWM4ZDQ0ZmM3ZmMzMTIyNGM5MTgwMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg2NjVkZWYwZjVhZDBjODhiZDQ0MzU2YTMxMDY1OGQ1NTI2NmU3YTAxYzcyODVlNDI1OTgyYjFkYjI1YTAzOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDA4MGU1YWU2YjFhNDUzYmM2NGVmM2E4MWI3ZGU2N2FmMGM2ODJkMjk4ZWZmYWRjYzQ4MTY1NWJjNmRiZDNjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzFkYmVlYjE1ZjFlMmY2Mzg4MmY2YWE5YWZmYjdmMDY5M2MxNTE3MmYwMjIyZjc3MWFmZjg3YzczMjMyZDlhMCJ9"
+          "resource": "repo://src/render/float.rs#L38-L70",
+          "version": "repo-lines-v1:sha256:0cff09ff358d3f71e08eafeb43e1a69f438d83e8269e2e16b37752464ae10d09:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxMDliZjc1ODI0ZmVmMzkwMWMzMDViNzM3N2I2ZTU4YTFmMWFlYjA3YjVjOGQ0NGZjN2ZjMzEyMjRjOTE4MDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5ZjZkYWQ5MzFmMTE3MDFiMjVmYTM2OTA4MDc5MzE4MWMzMWY1ZjA3YTk5MGY4Y2E5M2NlM2E1YWE3YjM2ZWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwODBlNWFlNmIxYTQ1M2JjNjRlZjNhODFiN2RlNjdhZjBjNjgyZDI5OGVmZmFkY2M0ODE2NTViYzZkYmQzY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljMGYxOThhMTdkNWM4ZDhkZDkxYzAyNmNlNjYyZjFlMzMzODE1NjVhYWE4YWY4M2IyMDRkMDFmMjljMGYwMWUifQ"
         }
       ]
     },
@@ -195,8 +203,8 @@
           "version": "repo-lines-v1:sha256:2fa659f824a973c19d120fedccbc4e426b91f2b67ce71df8dd7ce0adf109fb58:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3OGZiYjFlY2NkMjQ4Y2YwMzdmZWYxMDg0YTIyNDg2YTI0NWNlNDE4ODI4M2JkYzk0OGVlNjE4YzUyNzMzNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5NzUwM2I3ZDJiYmFjZGRkMWI4MjYwY2E1YjU0MzFhMzM2OWRiMzU1ZjZhYzVkZjE5OGYyODJjY2I2NThlZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1N2FlY2E4MmNlZDJhYzRjZWJmZGQ1M2MwNTA2NWM2ZDMwZGMwODI1ZjI5MGEwMjk4ZTA0NjJhNDBlZDUzNzQifQ"
         },
         {
-          "resource": "repo://src/model/config.rs#L151-L168",
-          "version": "repo-lines-v1:sha256:ef0bffee22a0bdf462fd6fbd6bb558c3e82ab2fa309cc144a0271c29f6ed44a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NWU3NDNiZDVhZWVjYzE3OTE1YjM2NTMxNmQ1ODY3Yzk4MTk1MTIzYjIxMTE5YmI4N2NiMjQwNzg0MmJkZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4YmJhYTExODhjYTIwYzdjOWY3ZTlhYmQzYzcyYjMxNDc1ODk5ZjA1NTg2ZmVlYmQ3NmEyMGRmODEzNmU3NzEifQ"
+          "resource": "repo://src/model/config.rs#L151-L171",
+          "version": "repo-lines-v1:sha256:783f9040222c53806c0ca5bd9b2b9f782e266b92da571ec379521c8541cc109c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjYjQyMjIyZTJjNmI3NDgzODNhNzIwMzljZmY4OTUzYWJkNzIwMDYxZDBhNzI0ZDc2ZmNlZTI3YjY3ZjhlZWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4YmJhYTExODhjYTIwYzdjOWY3ZTlhYmQzYzcyYjMxNDc1ODk5ZjA1NTg2ZmVlYmQ3NmEyMGRmODEzNmU3NzEifQ"
         }
       ]
     },
@@ -209,10 +217,52 @@
           "version": "repo-lines-v1:sha256:287cff5ad87fedba2f739d6786e1679dca3e46175ca05f4143bacc096617ec05:eyJzZWxlY3RlZExpbmVDb3VudCI6NzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1Zjc1MTgzOGVlY2YwOTViOWY2YjNhZjgwNWNiOWJlNzM5NTg5MzgxOWMxYTA5YzhhOWUyY2M0MGFkNWYxYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNjExMmMwZTgxMTExNDZmY2ExM2UxOTUxZGUwZjlkMmRmNTkwNzMwNjM0MGFjODBiMzhkOGNjZmQzYjVkNjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMwN2ZlM2I2NGM1ZGU0MGU4ZjZmMzgwMTU0NzU0OWRmN2FhMTgxM2NkOTY1NTkwNTE2MGNkZDdhNzQ2MGU5ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxNjcyMmFlYmJlMmYxZjQxYzk1ODVjYTQwZjExN2YwNTc5NmNlODQ2ODUyYzdjMjA0MDY5ZjcwODA5YTQ1ODQifQ"
         }
       ]
+    },
+    {
+      "id": "claim_8e068e9e88f04b1398668fa51b81d6a2",
+      "statement": "A style's bar_dots: Option<[char; 5]> selects the quarter-step dot-meter bar when Some (the five chars are per-cell levels: index 0 = empty cell through index 4 = full cell); None selects the binary bar_fill/bar_empty bar. SegmentWriter::bar dispatches on this field.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/style.rs#L76-L81",
+          "version": "repo-lines-v1:sha256:d92c86b0e6213d905a022866444e7be988529a172982de8cfac83dadbd4b5090:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTNkMzYwODFjNzFhMTNlMmU2ZTI4ZTRjNWVhMDgwN2E3OTRlNzE2ZDRmMDZkZjkyYTFlMmQwM2NiYWZlZWVjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTczZDBjMDVjMWVhZmQ4Yzk1OWYxZmJiYzI3MDBlMTk3N2Y0M2EzY2RlOGI3OTkxMWZiMjBiYzZkYmFhYzM0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/render/writer.rs#L120-L143",
+          "version": "repo-lines-v1:sha256:b718ecf8cfc8e5a234187fd3f968e09a74348d9855307371615d4e6c0fda47ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMDM3YTU0ZjUyZTE4ZTdiYzc4ZWJiY2UzNTlmNjNkNWY0Y2ViMjNiMmUzMDI2ODhlNDFmY2YyM2IzMTIxZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NDdkY2RiOWI5N2FhMzkwNzQ3OWM0MTg2YjY0MDQ5ZGI4ODNhMDIyNTg3ZDU0MzYzNTMwYTllZjI5NzEyNTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmMmU5MDBhOTU2ZWY5NzNlYzBjMzcxODVkODZiMTFmZDcyOTgyODU3ZmRlZTBiNGI3Yjg0ZjBkNDMyZWIwZjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d59c03b3e80f4d828127cee436a0461c",
+      "statement": "bar::write_bar_dots builds the quarter-step dot-meter bar: it converts pct into a quarter-step count over width cells (pct*width*4/100, rounded half-up, clamped), fills each cell with the level matching its remaining quarters, and switches from fill to track color once a cell is not full; pct may exceed 100 and is clamped, and a non-zero pct always shows at least one quarter.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/bar.rs#L102-L120",
+          "version": "repo-lines-v1:sha256:db184944579397f641c57ec2a298d218ec64b0dbab5cb8456f402997e400a0cc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiMTA4ODQzYjBmNDdkYmJiOTMyMmM0ODU4MjIxOTNhZDA4MDZkZWJjMjEzZTI1ZjNkMjU4MGUyZTYxZTI1M2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxNmJhYzQ5MTY3NmZjOTY0YjZkYzY2NjhmMWJmM2M0OWE0ZTk3MTA3YmI0ZWMzOTdhNjFiNzc1Y2RiOGI1MjYifQ"
+        },
+        {
+          "resource": "repo://src/render/bar.rs#L50-L84",
+          "version": "repo-lines-v1:sha256:c065b05468b237e5d3b4e26189ceff8fb9a2eca0369e18abf85d68a7ea59ff34:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlMTk2MzI1ZGQ2ZWVjYzkxNmVmMTNlMDE4ODc2MThkNDMxYTdkMjhmMTRhMDQ1NDdmMWZkZDExNzVlNmZhZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiNTE3MmNiZTk2MjkxZjk2N2EzMzNlN2JkYzI0Y2I0YTQxMGFiZmMxZTE4Y2E5NmEwYTIzYjRjNzU4MzM4MmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_831cbdc4445945e1b15626185de95115",
+      "statement": "The dots style is powerline decoration (e0b1 separator, POWERLINE.glyphs) with bar_dots set to the five dot levels ['○','◔','◑','◕','●'], selecting the dot-meter bar for progress readouts; it is registered in styles::NAMES and in styles::get.",
+      "evidence": [
+        {
+          "resource": "repo://src/styles/mod.rs#L197-L206",
+          "version": "repo-lines-v1:sha256:54f70f47cb39a10666cb67b5ffcf4726623628868431ca17d8c82f399cc3d33c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMDY3MWE4ZTQ4OWNmZmMxZGJiMTY4MWUyZDJiMDUwNWQwMTY1OWViMGFjZDk3YTNkNDQwODU4MjZjYWM0YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMjQzZTQ0MWQwODFhNGI1YmQwZTAzMTZhMzdmYzQ3NWYxNmRhN2JiOTkyZTI5MjQ2MDIyZDMwYjMwMjdlOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzMjlmMGZhMTFmZTAwZDVjYzFmYmU0NmY1ODc0ODgxZmZkN2YyMTI3Njc1MmJhNjExNDE4MTNjYmU5YWE4NWQifQ"
+        },
+        {
+          "resource": "repo://src/styles/mod.rs#L210-L219",
+          "version": "repo-lines-v1:sha256:627e033a531349166a1fde0df9f2e82a43ac8af4922dfecb5e58b9c103c18ab5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzNjc0MmM1MTgwNWRhMWMwNjNkM2JlODYzN2IzZTZlY2UzMTAyYjJkODlhNjM4NTMxYjE4MzJhNzJhOGFiOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMGYxMjM1YTdmMWY0Mzg0ZDE0M2VmNDdiYjUwODZiMzZhNjIyOTkxZGFiNjdiYzkzZGNiNDNjNDRmMGZjMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzMjlmMGZhMTFmZTAwZDVjYzFmYmU0NmY1ODc0ODgxZmZkN2YyMTI3Njc1MmJhNjExNDE4MTNjYmU5YWE4NWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.0",
-    "at": "2026-08-27T14:08:42.273Z"
+    "at": "2026-08-29T00:17:43.706Z"
   }
 }

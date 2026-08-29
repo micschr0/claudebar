@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:918ded069cb6deebc8fd8d97985b309ce5a235ddfa0f767c1da64d65a7f6cf1e",
+  "pageVersion": "sha256:f5711d6103c7d57e1df40f19389bfedaa152604052d9b8312c523c07f19a733b",
   "claims": [
     {
       "id": "claim_6b277f077bd746b3911c9a709d64d376",
@@ -167,10 +167,42 @@
           "version": "repo-lines-v1:sha256:0ebf87eaef32311922845fb1c27f623880cd8170af2854d95d4782957f3a09f8:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxNWQyMjVmYmMxYzNiMTlhNzZlMmQxOTRkOGE2NmM4ZjA0M2UwYzFhNTc4N2IxNGE4MDk5OTk5MDk4ZmM5MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhNDg0YWU4MDhmMDQzODgzZTJiZTUwNGEwMjhlYTYwZmEyOTY4NDVmMDZiYTFkMjU5ZjUwZGYzOTQxMjcyYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
+    },
+    {
+      "id": "claim_d52016649fd744979230298b994bc66a",
+      "statement": "The plain-text float readout is safe by construction: render_float re-uses the exact same Segment implementations and ASCII style (icons off, ASCII-only glyphs) as the colored path, then strips the renderer's own SGR color runs with strip_ansi, so the written file contains no control or color bytes and never re-introduces an injection surface; write is best-effort and atomic.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/float.rs#L28-L36",
+          "version": "repo-lines-v1:sha256:517577c7ec3eff59c7670db570acbaf4c0de86f171d37f4bd7d11291936e4f52:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTI3N2JmYjY0NjBmMzZmMzVhZTM1ZDBhY2Y5NDRmYzk1NWVhZmJlMzVlYTkxMjljMjZlODljZTliOGM1NDBlMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjVhMTNmMGYyZjQ0OTY2OTk0YzA4YjMxNDdjZmQ5ZDI2OTVmYTJmNGZhN2VmNjg0ODI5N2UzMjJjNTY1MzE4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTMyYmRmNWYzYjdhMjI4ODY1MmVjNmQ0NGFiMDIyNjZmNzFlZjQ2NmRlYWEwNTI3NDAzMGI1MjY1YTI5ZWU5YSJ9"
+        },
+        {
+          "resource": "repo://src/render/float.rs#L41-L71",
+          "version": "repo-lines-v1:sha256:b28ba52a32a8f400460c4a969dbc0d44cb23a1807a8304b0bb3b081beb184a31:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4N2EwZDVjMjljZmU3M2YzMWM5MzY0M2MwNjZhZDE3YTNiNzU1YTBhM2UwOTAzMmJmYWNiMzFkNTIzZGE0ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1MmEwMDU3MzAyNDRmYzVhNjAwM2M2MTlhM2U2NDlkNTA2MTZhMmYwMWU1ZDk5YzhlMDcwOTYzMmM0YzRkZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1ZTc0ZThjMWZiYzc3NTBmMTU1OWFkZjI5NmVjMjJkM2NjZWY5ZDQ3MDAyMjYxMmYyMDU1MWI2Y2JhNWU4ZjEifQ"
+        },
+        {
+          "resource": "repo://src/render/float.rs#L82-L109",
+          "version": "repo-lines-v1:sha256:eecc5b5ed9f598c3de1645e944cd150f59420627828404ba3f509b7bedcc3ee7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMjgxMmJiOTBkN2E1MTdjY2RmM2M0MDk0ZmY4NzkxYTNhMzNmNGM3MzJiNjQ1NTdkZjRlNTk2ZGFiZmE4MzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0NmNjOWY0N2I1Mjg1NDE1ZmU5YmE0NzM2NmFhZTM4ODIzMzU3NDUzMDliYmIyMmUyNDkzOTZlYzY0NTEzYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwZmM4NTU3OWFkNGMzMGVkMjBkMDU2NWUyNGFkMDA0OTcwNWM5YWY1YWE5NDk0NzYxMjFmZjhkNzExNGJkODUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4de2d1e72cd64ea9a0baeb2ac5c56289",
+      "statement": "strip_ansi is a distinct helper from strip_control: it parses and removes CSI escape sequences (skipping parameter bytes 0x30-0x3F and intermediate bytes 0x20-0x2F up to the final byte 0x40-0x7E) for the renderer's own SGR color codes, and drops a lone non-CSI ESC plus its single follower; it is re-exported from render::mod and used by the float readout rather than to sanitize host bytes.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/float.rs#L82-L109",
+          "version": "repo-lines-v1:sha256:eecc5b5ed9f598c3de1645e944cd150f59420627828404ba3f509b7bedcc3ee7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMjgxMmJiOTBkN2E1MTdjY2RmM2M0MDk0ZmY4NzkxYTNhMzNmNGM3MzJiNjQ1NTdkZjRlNTk2ZGFiZmE4MzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0NmNjOWY0N2I1Mjg1NDE1ZmU5YmE0NzM2NmFhZTM4ODIzMzU3NDUzMDliYmIyMmUyNDkzOTZlYzY0NTEzYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwZmM4NTU3OWFkNGMzMGVkMjBkMDU2NWUyNGFkMDA0OTcwNWM5YWY1YWE5NDk0NzYxMjFmZjhkNzExNGJkODUifQ"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L11-L11",
+          "version": "repo-lines-v1:sha256:cb985f89c3e8f9348062fd421ab90f733ca86c5c9982fa17efb56017477b20c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2I5ODVmODljM2U4ZjkzNDgwNjJmZDQyMWFiOTBmNzMzY2E4NmM1Yzk5ODJmYTE3ZWZiNTYwMTc0NzdiMjBjMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2I5ODVmODljM2U4ZjkzNDgwNjJmZDQyMWFiOTBmNzMzY2E4NmM1Yzk5ODJmYTE3ZWZiNTYwMTc0NzdiMjBjMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2NkNjM3YjlhODA1ZGFiMDMzZGJiN2JhZWJiYmVkODE3ZGI4YWY4NTVhYjBhNWEzZTdhMzQ2MWU1ZjRiOGY3MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjM1NDBkNmQzN2U0MTE3OWM5ZDJhNTFlNDg1ZjZiOGNlOTY5NTY3YTBlZjE4NmU2ZmVmNGQyOTc5NTVkZTY4ZCJ9"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.0",
-    "at": "2026-08-26T22:48:34.063Z"
+    "at": "2026-08-29T00:17:43.706Z"
   }
 }

@@ -1,11 +1,11 @@
 ---
 type: Concept
 title: "Security: terminal-injection hardening"
-description: "How claudebar defends its statusline against ANSI/OSC escape injection: every host-provided string (cwd, git branch, model name, effort, dev-context) is stripped of terminal-control bytes by sanitize::strip_control before it reaches the rendered line, in both the Rust render path and the bash fallback."
+description: "How claudebar defends its statusline against ANSI/OSC escape injection: every host-provided string (cwd, git branch, model name, effort, dev-context) is stripped of terminal-control bytes by sanitize::strip_control before it reaches the rendered line, in both the Rust render path and the bash fallback, and the plain-text float readout re-uses ASCII-only rendering plus strip_ansi."
 tags: [security, sanitization, injection, ansi, terminal, statusline]
 verified:
   - by: openwiki/0.4.0
-    at: 2026-08-26T22:48:34.063Z
+    at: 2026-08-29T00:17:43.706Z
 sources:
   - id: openwiki-source-5c39d26440648d6fcf80937e
     resource: repo://fixtures/injection.json
@@ -13,6 +13,10 @@ sources:
     resource: repo://install.sh
   - id: openwiki-source-5d4fb36fe9d34b6bc366e220
     resource: repo://src/model/input.rs
+  - id: openwiki-source-763738302a84ffdcefbc9913
+    resource: repo://src/render/float.rs
+  - id: openwiki-source-1d33473d874a4090bb6026e0
+    resource: repo://src/render/mod.rs
   - id: openwiki-source-d977bd28254dbfcf5d7fe3bb
     resource: repo://src/render/writer.rs
   - id: openwiki-source-3a6ff89030cacfe8ee730edf
@@ -29,7 +33,7 @@ sources:
     resource: repo://statusline-command.sh
   - id: openwiki-source-d6e43e19ed4d1ddc97fba7dc
     resource: repo://tests/render_golden.rs
-generated: {by: "openwiki/0.4.0", at: "2026-08-26T22:48:34.063Z"}
+generated: {by: "openwiki/0.4.0", at: "2026-08-29T00:17:43.706Z"}
 ---
 
 # Security: terminal-injection hardening
@@ -105,6 +109,31 @@ means the defense is a *caller contract* rather than a second filter inside
 the writer — the writer deliberately stays a dumb buffer so segments have one
 place to enforce it, and the writer never guesses what is a "safe" string.
 
+## The plain-text float readout is safe by construction
+
+The float readout (`src/render/float.rs`) is the side-channel that writes a
+one-line, ANSI-free summary of the selected segments to a file (for tmux, a
+menu-bar app, etc.). It never re-introduces the injection surface:
+
+- `render_float` re-uses the **exact same `Segment` implementations** as the
+  colored `render_line` path — there is no second, unsanitized code path. The
+  segments still run their host strings through `strip_control` during
+  rendering, so ESC/BEL/CR/LF injected via `cwd`, model name, effort, or
+  dev-context never survive into the readout.
+- Each segment is rendered with the **ASCII style** (`icons: false`,
+  ASCII-only glyphs) and then passed through `strip_ansi`, which removes the
+  renderer's own SGR color runs (`\x1b[...m`). The result is plain text with
+  no control or color bytes, independent of the user's configured theme.
+- The write itself is **best-effort**: `emit_float` expands a leading `~`,
+  renders the line, and atomically renames it into place, swallowing any I/O
+  error so a float failure can never break the status render.
+
+`strip_ansi` is a distinct helper from `strip_control`: it parses CSI
+sequences (skipping parameter/intermediate bytes up to the final 0x40–0x7E
+byte) and drops a lone non-CSI ESC and its single follower — it removes the
+renderer's own color rather than host-injected bytes, which `strip_control`
+already handled.
+
 ## The golden injection test and fixture
 
 The end-to-end guarantee is pinned by `fixtures/injection.json`, whose `cwd`
@@ -169,7 +198,8 @@ isolation.
 ## Related
 
 - `/openwiki/architecture/render-pipeline.md` — where sanitized segments
-  compose into the final ANSI line.
+  compose into the final ANSI line, and where the float readout is emitted
+  alongside it.
 - `/openwiki/architecture/input-parsing.md` — why the raw (unsanitized) model
   is produced before per-segment sanitization.
 - `/openwiki/concepts/segment-seam.md` — the segment contract that makes
