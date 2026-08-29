@@ -3,9 +3,6 @@ type: Integration
 title: "Claude Code hook: setup and statusLine wiring"
 description: "How claudebar wires into Claude Code by patching the statusLine key of settings.json (a foreign, user-owned file) through `claudebar setup`, and how the legacy bash statusline command it replaces is reflected by the Rust default layout."
 tags: [claude-code, statusline, setup, settings-json, integration, cli]
-verified:
-  - by: openwiki/0.4.0
-    at: 2026-08-26T22:48:34.063Z
 sources:
   - id: openwiki-source-03ffc32a0ca502ab67c54b25
     resource: repo://install.sh
@@ -15,11 +12,16 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-c5edfb46b7c4acb766451a37
     resource: repo://src/model/config.rs
+  - id: openwiki-source-1d33473d874a4090bb6026e0
+    resource: repo://src/render/mod.rs
   - id: openwiki-source-551bfbd71774ea4fd0b8f063
     resource: repo://src/setup.rs
   - id: openwiki-source-7a7338bb32b984db689c58ba
     resource: repo://statusline-command.sh
-generated: {by: "openwiki/0.4.0", at: "2026-08-26T22:48:34.063Z"}
+generated: {by: "openwiki/0.4.0", at: "2026-08-29T00:17:43.706Z"}
+verified:
+  - by: openwiki/0.4.0
+    at: 2026-08-29T00:17:43.706Z
 ---
 
 # Claude Code hook: setup and statusLine wiring
@@ -74,6 +76,22 @@ saves only when safe or forced.
   renders a built-in fixture through the real CLI config path so `setup` proves
   the wiring works without needing to restart Claude Code and hope.
 
+## The statusLine contract: session JSON in, ANSI out
+
+Claude Code drives the per-session status line by running the `statusLine`
+command once per session, piping its **session JSON to the command's stdin** and
+rendering the command's **stdout as the status line**. `claudebar render` honors
+that contract: `run_render` reads all of stdin (`InputData::parse`), resolves the
+config, and writes the rendered status line to stdout with
+`println!` (`src/main.rs`). `render_line` in `src/render/mod.rs` is the single
+rendering entrypoint shared by the hook, the TUI preview, and `smoke` — there is
+no second rendering code path. When stdin is a TTY (not a pipe), `run_render`
+still parses whatever is read and merely prints a hint on stderr; empty stdin
+yields an empty/default input via the forgiving `InputData::parse`. The contract
+matters operationally: `setup`'s preview and `smoke` both prove it by rendering
+a known fixture so a broken install surfaces before Claude Code ever runs the
+hook.
+
 ## Classification and failure semantics
 
 `classify(settings, desired, force)` maps the current state to an `Outcome`:
@@ -117,18 +135,42 @@ mirroring `Config::save`.
   by config bootstrap fallback.
 - `resolve_editor_from(EDITOR, VISUAL)` picks the editor for `claudebar edit`
   (EDITOR wins over VISUAL; falls back to `vi`).
-- `claudebar doctor` checks five things including whether `statusLine` is
-  configured: it loads settings, reads the `statusLine.command` string, and
-  reports success if it contains `claudebar` (always exits 0 as informational).
+- `claudebar doctor` checks five things and always exits 0 as informational:
+  (1) the current executable's directory is on `$PATH`; (2) a Nerd Font is
+  installed (`check_nerd_font`); (3) `git` is on `$PATH` (via `which_ok`); (4)
+  `config.toml` parses (a missing config is treated as fine); and (5) `statusLine`
+  is configured — it resolves the settings path via `default_settings_path`,
+  loads and tolerates a parse failure with `.ok()`, reads the
+  `statusLine.command` string, and reports success if it contains `claudebar`. It
+  closes by pointing at `claudebar smoke` when rendering looks off.
+- `claudebar smoke` is the install-sanity helper: it renders a built-in fixture
+  through the *default* config with a fixed `now` (deterministic output) and
+  always exits 0, telling the user to run `claudebar doctor` if the render
+  "looks right". Whereas `smoke` verifies the render path itself, `setup`'s
+  preview (`print_setup_preview`) reuses the same fixture but resolves the
+  user's real config via `resolve_config` — so the two together isolate whether a
+  problem is the config or the install.
 
 ## Relation to other commands
 
 `setup` is one of the integration subcommands. `sync` adds newly introduced
 segments to an existing config in canonical positions; `doctor` reports
-diagnostics; `edit` opens the config in `$EDITOR`, initializing it if missing.
-Render overrides (`--theme`, `--style`, `--config`, `--segments`) are attached
-to `setup` via `Overrides` and win field-by-field over top-level overrides in
+diagnostics; `smoke` renders a fixture as an install-sanity check; `edit` opens
+the config in `$EDITOR`, initializing it if missing. Render overrides
+(`--theme`, `--style`, `--config`, `--segments`) are attached to `setup` via
+`Overrides` and win field-by-field over top-level overrides in
 `Cli::effective_overrides`.
+
+The preview/smoke/render commands all route through `resolve_config` (in
+`main.rs`), which resolves the config path from `--config` then
+`Config::default_path` (`$XDG_CONFIG_HOME/claudebar/config.toml` falling back to
+`$HOME/.config/claudebar/config.toml`), loads it, and applies theme/style/segment
+overrides. It warns on stderr — never fails — when a present config cannot be
+parsed (falling back to defaults), when an overridden theme or style name is
+unknown, or when a segment name is unknown; unknown segments are dropped from
+the list, and if no parsed segments remain the config's own `segments` are kept.
+For the hook this means a corrupted config degrades to defaults with a warning
+rather than failing the status line.
 
 ## The legacy bash statusline and default-layout parity
 
@@ -150,9 +192,14 @@ segment order, and warn/crit thresholds.
 
 `src/setup.rs` unit tests cover: `desired_status_line` with and without a
 binary-path override; `classify` across all four combinations of force and
-state; malformed JSON and non-object roots surfacing as `Parse` errors; a
-missing file loading as an empty object; save-then-load roundtrips;
-`apply` preserving unrelated keys; backup path construction and copy behavior;
-config-path resolution precedence; and editor resolution precedence. The
-`default_matches_bash_layout` test in `src/model/config.rs` guards the legacy
-paradigm.
+state (`missing`, `matching`, `conflicting` × `force` on/off); malformed JSON and
+non-object roots surfacing as `Parse` errors; a missing file loading as an empty
+object; save-then-load roundtrips; `apply` preserving unrelated keys; backup path
+construction and copy behavior; all three `resolve_config` precedence branches;
+`resolve_editor_from` editor-before-VISUAL and fallback-to-`None`; and a
+structural `check_nerd_font` test asserting it returns `bool` without panicking.
+The `default_matches_bash_layout` test in `src/model/config.rs` guards the legacy
+layout parity. Integration coverage lives in `tests/cli_main_dispatch.rs`
+(spawns the binary, asserts exit codes and stdout for `render`, `init`,
+`list`, etc.) and `tests/cli_smoke.rs`, which pipes the fixture into `render`
+via stdin and verifies exit 0 with non-empty stdout.

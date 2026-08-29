@@ -3,9 +3,6 @@ type: concept
 title: "Installation and distribution (install.sh, npm, Homebrew)"
 description: "The install methods and release-channel model for claudebar — the curl | sh install.sh path with its SHA256/provenance trust tiers, the npm thin-launcher and per-platform native packages, and the cargo-dist Homebrew tap — so users and maintainers know how binaries reach a machine and what each method verifies."
 tags: [install, install.sh, distribution, cargo-dist, homebrew, npm, sha256, provenance, attestation, release-channels]
-verified:
-  - by: openwiki/0.4.0
-    at: 2026-08-27T14:08:42.273Z
 sources:
   - id: openwiki-source-3b8ad14d6e1db1f7ce90ccce
     resource: repo://.github/workflows/npm-release.yml
@@ -33,16 +30,21 @@ sources:
     resource: repo://SECURITY.md
   - id: openwiki-source-cd66c9379c5d094a08541b0b
     resource: repo://tests/install.bats
-generated: {by: "openwiki/0.4.0", at: "2026-08-27T14:08:42.273Z"}
+generated: {by: "openwiki/0.4.0", at: "2026-08-29T00:17:43.706Z"}
+verified:
+  - by: openwiki/0.4.0
+    at: 2026-08-29T00:17:43.706Z
 ---
 
 # Installation and distribution (install.sh, npm, Homebrew)
 
 claudebar distributes a single native Rust binary through **four** methods: the
 documented `curl | sh` path (`install.sh`), Homebrew (cargo-dist tap), npm/pnpm
-per-platform packages, and `mise`. The GitHub Release is the single source of
-the already-built, provenance-attested binaries; every method repackages those
-same archives. This page documents the installers, their trust/verification
+per-platform packages, and `mise` (`mise use -g github:micschr0/claudebar`). The
+GitHub Release is the single source of the already-built, provenance-attested
+binaries; every method repackages those same archives. Every method checks the
+SHA256 of the downloaded artifact; only `install.sh` and `mise` additionally
+verify build provenance (Homebrew and npm do not). This page documents the installers, their trust/verification
 model, and how release channels (stable vs beta) flow to each. For the
 authoritative threat model and release-verification procedure for these
 channels, see `SECURITY.md` (`repo://SECURITY.md`) — the SHA256 checksum is
@@ -244,10 +246,15 @@ generate`) commits the formula to the tap using a GitHub App token:
 
 Two channels exist across the installers:
 
-| Channel | install.sh (`CLAUDEBAR_CHANNEL`) | Homebrew formula | npm |
+| Channel | install.sh (`CLAUDEBAR_CHANNEL`) | Homebrew formula | npm / mise |
 |---|---|---|---|
-| stable (default) | `/releases/latest` | `micschr0/tap/claudebar` | `@micschr0/claudebar` (same packages) |
+| stable (default) | `/releases/latest` | `micschr0/tap/claudebar` | `@micschr0/claudebar` (same packages); `mise use -g` |
 | beta | `/releases` → newest prerelease | `micschr0/tap/claudebar-beta` | npm always publishes the latest release tag |
+
+`mise` (`mise use -g github:micschr0/claudebar`) verifies the SHA256 and build
+provenance automatically; Homebrew and npm/pnpm are limited to the SHA256
+checksum (provenance is unavailable for tap formulae and repackaged npm
+binaries).
 
 The CalVer tag (`YYYY.M.D[-beta.N]`) is the single source of truth shared by
 Cargo.toml, the GitHub Release, the Homebrew formula version, and the npm
@@ -264,13 +271,20 @@ stable releases.
   missing entry), `verify_attestation` (all skip/fail branches always return 0
   since it is non-fatal by design), archive safety, and `install_from_source`
   guards.
-- `verify-install.yml` is the end-to-end network path: it runs `install.sh`
-  piped via stdin (matching the documented `curl | bash`, catching
-  unbound-variable bugs that only surface without a source file) in a clean
+- `verify-install.yml` is the per-target, end-to-end network path. It runs on a
+  matrix of the two Linux musl builders (`x86_64-unknown-linux-musl`,
+  `aarch64-unknown-linux-musl` on `ubuntu-24.04`) plus macOS Intel and Apple
+  silicon (`macos-15-intel`, `macos-15`). Each run downloads into a clean
   `$HOME` with `cargo` stripped from PATH (so a broken prebuilt download cannot
-  be silently masked by the `cargo build` fallback), asserts the binary is
-  executable, and smoke-runs `--version` and `render` where the arch matches
-  (`CLAUDEBAR_TARGET` forces the desired asset).
+  be silently masked by the `cargo build` fallback — enforced by an explicit
+  `command -v cargo` guard), and it invokes `install.sh` twice: once piped via
+  stdin (`cat install.sh | bash`, matching the documented `curl | bash` and
+  catching unbound-variable bugs that only surface without a source file) and
+  once normally (`bash install.sh`). It asserts the installed binary is
+  executable and smoke-runs `--version` and `render` where the host arch
+  matches (an aarch64 binary can't execute on an x86_64 runner, so
+  `CLAUDEBAR_TARGET` only proves the matching asset downloads, verifies, and
+  extracts; `CLAUDEBAR_SKIP_SETUP=1` avoids running setup on the arm64 run).
 - `npm-release.yml` smoke-tests the wrapper by mirroring a real install under
   `node_modules` before publishing.
 

@@ -1,11 +1,8 @@
 ---
 type: concept
 title: "Themes, styles, and the color model"
-description: "How the fixed-struct Theme of named 256-color slots, the Style/GlyphSet definitions, and the built-in theme and style registries work, and how to add a theme or style consistently."
-tags: [theme, style, color, palette, glyphset, theming, statusline]
-verified:
-  - by: openwiki/0.4.0
-    at: 2026-08-27T14:08:42.273Z
+description: "How the fixed-struct Theme of named 256-color slots, the Style/GlyphSet definitions (including bar_dots quarter-step bars), and the built-in theme and style registries work, and how to add a theme or style consistently."
+tags: [theme, style, color, palette, glyphset, theming, statusline, style-dots, bar-dots]
 sources:
   - id: openwiki-source-058fc071169e55002128500a
     resource: repo://CONTRIBUTING-themes.md
@@ -33,7 +30,10 @@ sources:
     resource: repo://src/themes/mod.rs
   - id: openwiki-source-d498d54938db40c967e5c84b
     resource: repo://src/tui/app.rs
-generated: {by: "openwiki/0.4.0", at: "2026-08-27T14:08:42.273Z"}
+verified:
+  - by: openwiki/0.4.0
+    at: 2026-08-29T00:17:43.706Z
+generated: {by: "openwiki/0.4.0", at: "2026-08-29T00:17:43.706Z"}
 ---
 
 # Themes, styles, and the color model
@@ -71,8 +71,9 @@ Emission happens two ways, and the difference matters on the render hot path:
   useful for tests and simple call sites.
 - `Color::write_fg(self, buf: &mut String)` **pushes straight into a caller's
   `String` buffer**, avoiding the throwaway allocation. All render code paths
-  (`SegmentWriter`, the composer's `separator()`, and `bar::write_bar`) use
-  `write_fg`, because a status line is built with many colored runs per frame.
+  (`SegmentWriter`, the composer's `separator()`, and `bar::write_bar` /
+  `bar::write_bar_dots`) use `write_fg`, because a status line is built with
+  many colored runs per frame.
 
 `palette.rs` also exports `RESET: &str = "\x1b[0m"` — the SGR reset that ends
 every colored run.
@@ -99,7 +100,6 @@ pub struct Theme {
     pub dim: Color,
     pub reset: Color,
     pub model: Color,
-    pub project: Color,
     pub stash: Color,
     pub lines: Color,
     pub cost: Color,
@@ -113,13 +113,15 @@ pub struct Theme {
 **Adding a slot is a compile error in every theme that omits it**, so a theme can
 never silently miss a color the renderer expects. The compiler is the safety
 net that guarantees every built-in theme fills every slot. The doc comments on
-each field document its semantic role (e.g. `dir` = directory path, `project`
-= repo-root name, `bar_warn` = progress fill at/above warn).
+each field document its semantic role — e.g. `dir` = directory path,
+`bar_warn` = progress fill at/above warn, `stash` = stash count, and the
+"background" slots `lines`, `cost`, `duration`, `clock`, `effort`, and `burn`
+feed the composited background of the cost / duration / clock / effort /
+burn-rate readouts.
 
-Some newer slots document a **fallback convention** in commentary rather than
-code: `project` "falls back to `dir`" and `stash` "falls back to `git_branch`"
-in themes that predate those slots — i.e. they are intentionally set to the
-same index as the fallback slot in older palettes.
+One slot documents a **fallback convention** in commentary rather than code:
+`stash` "falls back to `git_branch`" in themes that predate the slot — i.e. it
+is intentionally set to the same index as `git_branch` in older palettes.
 
 Themes are resolved by name via `themes::get(name)` (`src/themes/mod.rs`).
 Unknown names **fall back to Tokyo Night**:
@@ -153,12 +155,12 @@ pub const NAMES: &[&str] = &[
 ```
 
 There are **16 built-in themes**. Each is a `Theme` literal of `Color(n)`
-indices (e.g. `TOKYO_NIGHT.dir = Color(39)`). The registry also holds two
+indices (e.g. `TOKYO_NIGHT.dir = Color(39)`). The registry also holds three
 focused unit tests: `all_known_names_resolve` (every `NAMES` entry resolves
-through `get`) and an unknown-name fallback test. A third test,
-`bar_thresholds_distinct`, enforces a real invariant: for every theme the
-three bar fill colors `bar_ok`, `bar_warn`, and `bar_crit` must be pairwise
-distinct (so the warn/crit bands are always visually distinguishable).
+through `get`), an unknown-name fallback test, and `bar_thresholds_distinct`
+which enforces a real invariant: for every theme the three bar fill colors
+`bar_ok`, `bar_warn`, and `bar_crit` must be pairwise distinct (so the
+warn/crit bands are always visually distinguishable).
 
 ## Style: separators, glyphs, icons, and bar chars
 
@@ -178,6 +180,7 @@ pub struct Style {
     pub glyphs: GlyphSet,
     pub bar_fill: char,
     pub bar_empty: char,
+    pub bar_dots: Option<[char; 5]>,
 }
 ```
 
@@ -192,10 +195,15 @@ pub struct Style {
   the theme's `dim` color so the pair reads as one grouped unit rather than a
   segment boundary.
 - `icons` — when `false`, icons are suppressed entirely (minimal / plain /
-  ASCII styles).
+  ASCII / dots styles).
 - `glyphs` — the `GlyphSet` this style draws from.
-- `bar_fill` / `bar_empty` — the filled and empty cells of a progress bar track.
-  These are single `char`s so `bar::write_bar` can push them directly.
+- `bar_fill` / `bar_empty` — the filled and empty cells of a **binary** progress
+  bar track. These are single `char`s so `bar::write_bar` can push them directly.
+- `bar_dots: Option<[char; 5]>` — selects the **quarter-step dot-meter bar**
+  when `Some`; `None` selects the binary `bar_fill`/`bar_empty` bar. The five
+  `char`s are the per-cell levels: index 0 = empty cell through index 4 = full
+  cell (e.g. `['○', '◔', '◑', '◕', '●']`). When set, `SegmentWriter::bar`
+  dispatches to `bar::write_bar_dots` instead of `write_bar`.
 
 `GlyphSet` stores glyphs as `&'static str` (not `char`) because rich styles use
 Nerd Font PUA / multi-byte glyphs (e.g. `\u{f0c29}` for the token icon), while
@@ -212,11 +220,11 @@ is the default:
 
 ```rust
 pub const NAMES: &[&str] = &[
-    "powerline", "lean", "plain", "rounded", "minimal", "unicode", "ascii",
+    "powerline", "lean", "plain", "rounded", "minimal", "unicode", "ascii", "dots",
 ];
 ```
 
-There are **7 built-in styles**:
+There are **8 built-in styles**:
 
 - **powerline** (default) — Nerd-Font powerline separator `\u{e0b1}`, icons on,
   heavy-solid bar chars.
@@ -227,20 +235,26 @@ There are **7 built-in styles**:
 - **rounded** — the rounded powerline separator `\u{e0b5}`, otherwise reuses
   `POWERLINE.glyphs`.
 - **minimal** — a middot separator, icons off, but reuses `POWERLINE.glyphs`
-  (icons are gated by the `icons` flag, not the glyph table).
+  (icons are gated by the `icons` flag, not the glyph table). It overrides the
+  two review markers (`✓`/`×`) to plain unicode because those bypass
+  `SegmentWriter::icon` and must not be Nerd Font PUA.
 - **unicode** — a plain-text `❯` separator with full-width unicode glyphs
   (`█`/`░` bars, `⎇`/`◉`/`⬡` icons).
 - **ascii** — icons-off, ASCII-only glyphs and `#`/`-` bars; the base for the
   float readout.
+- **dots** — powerline decoration (`\u{e0b1}` separator, `POWERLINE.glyphs`)
+  but with `bar_dots: Some([…])` selecting the quarter-step dot-meter bar for
+  progress readouts.
 
 Styles are resolved via `styles::get(name)`; unknown names **fall back to
-Powerline**. The module's tests assert every `NAMES` entry resolves and that an
+Powerline**. The module's tests assert every `NAMES` entry resolves to the
+expected style (checking `separator`, `bar_fill`, and `bar_dots`), and that an
 unknown name falls back to `POWERLINE`.
 
-Several styles **reuse `POWERLINE.glyphs`** (lean, rounded, minimal). This is
-why `icons` is a separate flag: `minimal` draws powerline glyphs but suppresses
-them via `icons = false`, proving segments read the `icons` flag through the
-writer rather than branching on a hardcoded style identity.
+Several styles **reuse `POWERLINE.glyphs`** (lean, rounded, minimal, dots). This
+is why `icons` is a separate flag: `minimal` draws powerline glyphs but
+suppresses them via `icons = false`, proving segments read the `icons` flag
+through the writer rather than branching on a hardcoded style identity.
 
 ## How theme × style reach a segment
 
@@ -269,7 +283,10 @@ pub fn dim(&mut self, text: &str) { self.colored(self.theme.dim, text); }
 `SegmentWriter::icon` applies the `icons` gate centrally, so minimal/ASCII
 styles drop every glyph with **no per-segment branching**. `window_gap()` and
 `bar()`/`bar_pct()` likewise read `theme.dim`, `theme.separator`, `theme.bar_track`,
-`theme.bar_*`, `style.window_gap`, and `style.bar_fill`/`bar_empty` in one place.
+`theme.bar_*`, `style.window_gap`, `style.bar_fill`/`bar_empty`, and
+`style.bar_dots` in one place. `SegmentWriter::bar` dispatches on `bar_dots`:
+`Some(levels)` routes to `bar::write_bar_dots`, `None` to `bar::write_bar`, so a
+bar's binary-vs-quarter-step shape is decided by the style alone.
 
 ```mermaid
 flowchart LR
@@ -293,6 +310,18 @@ struct: the separator is painted in `theme.separator` (a segment boundary),
 while `window_gap` is painted in `theme.dim` (related windows grouped as one).
 `separator_width()` mirrors `separator()` for layout math (2 + the glyph's
 visible width, or 1 for the empty lean separator).
+
+### The dot-meter bar
+
+`bar::write_bar_dots` (`src/render/bar.rs`) is the pure string-builder behind
+the `dots` style and any style with `bar_dots: Some`. Given the five per-cell
+levels (index 0 = empty … 4 = full) it converts `pct` into a **quarter-step
+count** (`pct * width * 4 / 100`, rounded half-up, clamped) and fills each of
+`width` cells by its remaining quarter level, switching the ANSI color from the
+fill to the track color once a cell is less than full. It keeps the same
+contract as `write_bar`: `pct` may exceed 100 and is clamped, and a non-zero
+`pct` always shows at least one quarter so a live bar stays visually distinct
+from an empty one.
 
 ### The float readout is deliberately style-independent
 
@@ -323,7 +352,8 @@ Self {
   an unknown name reaches them from TOML.
 - The TUI config editor offers the registry `NAMES` lists for pickers, indexes
   theme swatches by `themes::NAMES` position (`src/tui/app.rs`), and keeps a
-  swatch cache in `themes::NAMES` order.
+  swatch cache in `themes::NAMES` order — reordering `NAMES` or changing
+  `Theme` fields requires updating that swatch code.
 
 ## Adding a theme or style
 
@@ -348,12 +378,14 @@ themes as inline `pub const` values in `src/themes/mod.rs`, but the contributed
   one-line registrations in `src/themes/mod.rs`. Because `Theme` is a fixed
   struct and `get` returns a `Theme`, **every theme must fill every slot** — the
   compiler enforces completeness, so a new theme can never silently miss a color.
-  Follow the fallback convention for the `project`/`stash` slots if you want
-  older-palette behavior.
+  Follow the fallback convention for the `stash` slot if you want older-palette
+  behavior.
 - **Style:** add a `Style` and, if needed, a `GlyphSet` to `src/styles/mod.rs`,
   register the name in `styles::NAMES`, and add a `get` match arm. Reuse
   `POWERLINE.glyphs` with `icons: false` for a minimal/plain variant rather
-  than duplicating the glyph table.
+  than duplicating the glyph table. For a dot-meter variant, set
+  `bar_dots: Some(['○', '◔', '◑', '◕', '●'])` (empty…full) and add the name to
+  the registry's `every_name_resolves_to_its_own_style` test table.
 
 The registry layout (one file, `pub const` values, no merge-conflict surface) and
 the exhaustive `get` match arms plus the focused `all_known_names_resolve`,

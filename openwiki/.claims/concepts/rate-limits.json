@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:27db44415406a4e4f661c1d77ad9254a91a259413d0f727f478f28ba827003ce",
+  "pageVersion": "sha256:2cec68a176e6bdeb566eb573acf779af107ab7752b90065ca62c7b07fa987410",
   "claims": [
     {
       "id": "claim_639d6fc2ae254164880857f498837b09",
@@ -31,7 +31,7 @@
       "statement": "The weekly window is joined to the 5-hour window by SegmentWriter::window_gap(), a dim-colored glyph (theme.dim + style.window_gap) that is lighter than the composer's inter-segment separator so the pair reads as one grouped segment rather than a boundary.",
       "evidence": [
         {
-          "resource": "repo://src/render/writer.rs#L144-L154",
+          "resource": "repo://src/render/writer.rs#L155-L165",
           "version": "repo-lines-v1:sha256:dd9838e8de797c398ce8c61d0aad93c56d1ee8dce954af03a336d9263699eded:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjN2U4MTk2ZmE5YmY1MGYwYzRkMTM2ZWJkZmNiOTJlZTUxNzIzZWU0Y2FhMzMwNDZjNGFlMjlmMWM1MTgxZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkM2YzMDcwM2I1ZjBjYjcyZGRkNDQwZjNhNWZiYmJjZWNmMDFmMmE2MmQ3NWI1YzQ4NTM3OWU4NWYxOTAzYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4MWRjNjA4MTI4OGRlNTg2ODBhMmE1MWExM2UxZjFmNWQ0MmQ2MDZmMTEyZTY5OTEwYTU0MTgyODE2MjM0NGMifQ"
         },
         {
@@ -45,12 +45,12 @@
       "statement": "Each window body (write_window) is an icon followed by a colored progress bar and percentage: icon() + bar_pct() which emits the bar, a space, and '<pct>%' in the given color; the 5-hour window uses the clock glyph and the weekly window uses the weekly glyph. A reset countdown is appended via write_reset_value as ' ' + reset icon + ' ' + formatted value in theme.reset.",
       "evidence": [
         {
-          "resource": "repo://src/render/writer.rs#L138-L142",
-          "version": "repo-lines-v1:sha256:acd9d49dc51474e0df6558e374d09a6712d2aebd315cbc95cb4b3d195d43a240:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA2NTA0NzQ0Y2JmMjFlYWE2MGU0ZDQ5ZTJmZGUzNzY1YzE0OTc0YzBlOTRmMTRiODdjNWNiMzYwZWYxNTk3NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGI2YjliNmI4ZGI1MTY5NzUxNzA0NTE2NjQzNTM4MjgxNmU3Mjk1Mjk3NDcyZjQ3Y2NlMmNkMjc4OTIzMzcyYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODU0ODA0YmUzODA5ODU2OWIxNzBkNjdhNDgxNjBmMjNmMGJlNTk1OTdlNDU4M2NlYmMzOTE2NmU1OTM0N2VjYSJ9"
+          "resource": "repo://src/render/writer.rs#L145-L153",
+          "version": "repo-lines-v1:sha256:4c301743059fb1cf5b9bdaf358d20f6e0acee2370c59594cc0b9eb137e119095:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRjMmI2ODFlNjQ2Mzc5M2I2NGI2MzFiYTNjOGM4MTQ4ZmJhMTgxMzNhN2VmMGQ0ODFmZmE1ZTMyMWU1ZDE4YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjJkODI4YTAzN2FjMWM4MTUzNWIxZDU1MDA4MzIzMjNiZmJiODY2YTNhM2Y4N2U3YTY4YzEzYTJiYWU1NmZmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODU0ODA0YmUzODA5ODU2OWIxNzBkNjdhNDgxNjBmMjNmMGJlNTk1OTdlNDU4M2NlYmMzOTE2NmU1OTM0N2VjYSJ9"
         },
         {
-          "resource": "repo://src/segment/rate_limits.rs#L178-L183",
-          "version": "repo-lines-v1:sha256:b02197a3f7cffa0a90e68506bc5c45aaa05d55acb67be9a846458c1d378c95d8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJjOGNkMTIxOGU1OTY0NjUwNjcwZTdlYTgyNGJmOGE0ZGE5MzQ3OTNmYmRkOWRhOThjZGUwMzg3NWUyZDkwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTZmOTk3ZjU0ODk1NDU0MTQyMDczNjgzMGJjYjU0Mzc3NDMwZWE5OTAxZDU1MjE5NmE2NGUxYTdmMTIyNWQwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2JjOThkNmIwZGM0OTJjNTAxNmRmMTA4MDVhM2E1NGViOWMxODRhNWE2MTM3ZTdmNGJlY2ZhMGMyMjA1NTBkMCJ9"
+          "resource": "repo://src/segment/rate_limits.rs#L180-L183",
+          "version": "repo-lines-v1:sha256:86103fcd1efe95e66e520e89e1406db59664fdb9dc30e09d49381037542e0a6a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTJhYjIxYjM5ZjdlM2MzZWQ0Y2ViYTE3MDA3Y2FlOWViMGUxZjBjZTJhNzZhYjdlMmExMzE4NzhmOGE2MTQ5ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjVmNDU1NDkyMzc5NjYzOGM2Nzg5Y2JhN2VhYWI1NjVhYTM2Yzc3MWY3MDFiMGNkNmY5M2YwYTI3ZTQ0NTA1MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2JjOThkNmIwZGM0OTJjNTAxNmRmMTA4MDVhM2E1NGViOWMxODRhNWE2MTM3ZTdmNGJlY2ZhMGMyMjA1NTBkMCJ9"
         },
         {
           "resource": "repo://src/segment/rate_limits.rs#L56-L60",
@@ -99,12 +99,12 @@
       "statement": "The weekly (7-day) window is only surfaced once its rounded percentage is at or above th.weekly_show_at (default 75); below that threshold the weekly gauge renders nothing and the segment shows only the 5-hour window. When shown after the 5-hour window it is joined via window_gap().",
       "evidence": [
         {
-          "resource": "repo://src/model/config.rs#L132-L132",
+          "resource": "repo://src/model/config.rs#L135-L135",
           "version": "repo-lines-v1:sha256:06e699bbb0c2851cd032015b2610f35819ab1609656733e9a1ef2340289f6dba:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDZlNjk5YmJiMGMyODUxY2QwMzIwMTViMjYxMGYzNTgxOWFiMTYwOTY1NjczM2U5YTFlZjIzNDAyODlmNmRiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDZlNjk5YmJiMGMyODUxY2QwMzIwMTViMjYxMGYzNTgxOWFiMTYwOTY1NjczM2U5YTFlZjIzNDAyODlmNmRiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRlYTUwOTI3YTRmZTNkNmJkY2VlNjU3OTA1NDFmMTRlOTZiYTJkZTVkN2Q4ZmYwMWY3N2M5YjYxZWJmZmVlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmJkMzQ4MDRiYmNmMWNjNzYwYjQ1NjFkM2RiNWJhZGY5MmZiZDQwYWUzOTk2OWJhMWE5ZDRmMzQ0ODhhYzE1MSJ9"
         },
         {
-          "resource": "repo://src/segment/rate_limits.rs#L75-L90",
-          "version": "repo-lines-v1:sha256:9c04f714e5e1ed3f23e40f37f6301ccebf3e83db81afc7edf79e83670ef1b562:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4OTFmYWM1NGNjMDcyMjFiOTY1OWI2YjAzYTI0MWNhOTNiYjg1NDJkMGE4N2JlZjgxNGYwMTExYjk0MjA1ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyYWZiYTZhODk3YjU4MDdlNGM3ODBiNGFhM2Y5NWUxYTVmNWY5MzY2OGI2M2I1NDdkNGMzMjllOGNkMzNjNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2NTE0YmJhZTRkYWY4ZDgwZmM0MzgwNDdiNzQ2NDkyNzRkNzhhMmNhMjAyYTE1ZDdhMGYwM2ZkZmY1YmMyNzUifQ"
+          "resource": "repo://src/segment/rate_limits.rs#L73-L90",
+          "version": "repo-lines-v1:sha256:652df46d7772089d9f7754da562bdb8195cc6540b84cd52b56edab03890837f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMGFlZTI4Njg5ZjUyNzE4YWYxYjkwN2JiYmQ4MjdkN2IwYWQxYmE4YjhkODZmZDFjNzUwM2M1YWI1MWVjMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4NjBmMzBhNGEwNzE1YjIzNGY5YTRmNTk0YWNkZTJiZWZkMTQxZDMzZmNiYzRiODVhNWQyZWU4N2Y2M2U0ZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2NTE0YmJhZTRkYWY4ZDgwZmM0MzgwNDdiNzQ2NDkyNzRkNzhhMmNhMjAyYTE1ZDdhMGYwM2ZkZmY1YmMyNzUifQ"
         }
       ]
     },
@@ -127,7 +127,7 @@
       "statement": "Cross-session sync is opt-in via Thresholds.limit_sync (default false). In effective_5h/effective_7d, when enabled the session's own (pct, reset) snapshot is recorded into the shared store, then the shared high-water mark is preferred when its reset is in the future; otherwise the session's own values are used. For the weekly window only sessions whose usage crosses weekly_show_at contribute to the store.",
       "evidence": [
         {
-          "resource": "repo://src/model/config.rs#L124-L125",
+          "resource": "repo://src/model/config.rs#L127-L128",
           "version": "repo-lines-v1:sha256:4e444fe95b84899e233ff254dedaa24f9f23e344be6a6dc091754c7d9d20759c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA2MGYyNGYyNTU2ZTNiNGNjNDI1MmE5YmExODM5ZjFkYjQ1MWIwNDZkNzg4YjY3MDQxMGVkYzNmYjkyYjFmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzg1Y2M3OThhNzdmNTBlMjEwNGNmYjRhMGNlMWJiYWNjOTJiNDM3OWJmNTFlYWZjYjk3MTNlYjJkYTQ3MTY2NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTIxYWViZWU2M2UxZjYxNzQ1ZTUwMDg0N2UwMDkyMWUwYzhhMGE5YTRhMjdiNDZkM2Y1Y2YwZWQwMWQ5ZWE0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWZmYmQyMTEzNDMzNTdmOTE1Zjg3M2RiODI3ZmI3YWEyMzc1NTlmYzZiYWYzNmMyMGIzZmRjYzM5Y2I2MTA2YyJ9"
         },
         {
@@ -205,6 +205,6 @@
   ],
   "verification": {
     "by": "openwiki/0.4.0",
-    "at": "2026-08-26T22:48:34.063Z"
+    "at": "2026-08-29T00:17:43.706Z"
   }
 }

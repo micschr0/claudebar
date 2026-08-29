@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:6df3b010fb66369ca3e5249b040798dc4c20359ca0de3476dee2b7a74c5da4da",
+  "claims": [
+    {
+      "id": "claim_75e4ec89206c41eab14f7eec9a442a68",
+      "statement": "All cross-session state (the limit_sync high-water marks, the burn TSV sample cache, the float readout file, and the update-check cache) is best-effort and never breaks the render: a missing, unreadable, or corrupt cache degrades to defaults, and no filesystem error surfaces into the status line.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/float.rs#L6-L8",
+          "version": "repo-lines-v1:sha256:a42b0878a56310ed90138fdab9aeca1ef03e443aca1f32b6e4d3543645b7e819:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAwNWMxZDg5ZTY3OGNiMTI3NTMyMzUzZGZhNmZiMDk4MWFhZjZhZGRhMjI3NzYzZGI5OWFiNjFjYWZhNWU3YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFkYTU1MDViM2QyZTIyM2U1Y2RiYmYxZTVkMmE4ZmY3YjQyZmQ2Y2NlNjAyYjkzNWM0ZjBkNmI0MTY4NmU2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDIyMDA0NDVhODJiZTU4ZTUzOTEyNTQyZTFkOTVkYjIzOGU4MTJkYjA2NzYzZTgxYzQ3YWVlMTYzMjI0YzkwNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjdhN2MyY2I2MmY5NzQwOWQ4MmRlNThiYzdhOTBjNTM1ZDI4MjI3MmFlNTRkMTJjZWM2YjUzN2M4MjMzMGU5MiJ9"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L313-L318",
+          "version": "repo-lines-v1:sha256:9e8ca82b58fa4697b58b12497f41209d27ae8e2abf31aa813aa0d00208e3063c:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzcwZjQ2NGQ5ZmZkMjhmOGMxNWY4ODJiZjJkZjEwMjNhMjg5MWJiNGZkZTc2MzFhYTEwMTQxNWQ2Y2FjY2I2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ5ZTEyNTQ2NDI1NTc2ZDNkZWFlOGM5YjlkYmYxMjhkNWQ2ZGRhZjVkN2ZlODU3OTM0OTI3ZGVmZmEzYjlkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWJmOGZkNzNkZTYxYzYxMjY2YjY1NDI5NzJjN2FiMmNjMTY2NDg5NjVjYWJiZjcwOTVmNjUwY2EwNTg3MDgwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2Y3Y2I1ZGI5YjlmN2I0YTg1ZDg1OGZkNjE3NzRkZWFiNGRjNWViZTc3ZDI3NjY1ZWM0NjAxYjM4NmEyMmE0ZCJ9"
+        },
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L35-L36",
+          "version": "repo-lines-v1:sha256:8b214a2e77badaa36b66496f29699d6e33ae751e18ee0579d4399f492c4239b3:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2Q4ZDljNmQ1ZWI0NGVhYTJkYzlmYzAwYmRlZTVhMWZiNTI4YTI1N2E2ZmZlNWY1NDY0ZDY5OTM2NDZiZDI3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTZhNDQzNzMxNTA4ZGRmZDgzNWYwODExMTJjMjI0MWEwMmM4MGM4MzYyYzVkNDNiM2I1NGMxMjcwNWI1NzRmOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmIyYTAzNTA1ZjE0ODg3MzkzNTFjNzEwYmJkODM3Y2E4ZDJjYzZlN2I3NWM5MTI2NGEwYWJiOTQ3MmM4M2Y0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzgxODI3ZGRkNjI5ZDYyYWZlOTA2NjA5YWYzZjg3OTNjZWI0NzkwYjNmZDU0ZGIzZTIyNTQ1YzRmMjY1MzYyZCJ9"
+        },
+        {
+          "resource": "repo://src/update.rs#L260-L261",
+          "version": "repo-lines-v1:sha256:d15306b59eb853d8c2ee281f4a39a6596a6033ff99971d909dd9dc6da3230626:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzAxY2M4ODYwZjQwNmM0ZGIzOTQ4NDY1MzQ3MzIzYzFkYTVjMGZhMjFkZjg0YWE4OGZhZjc0NzQyYzdkNzhhOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzQzMGMwYWQ4OTY3NWE4OTI5ZjEwMTgxNTFlODZhZDU0MjM5NDA1OTBkNmI0OTBmMzkxN2YyNjZiNzAyNWQ0ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmUzMDk1NmY1OGM4MDZhNTE2NmU5NjAwMDRjYjQ5NDhkOTc3YWNmZGNhMzg5ZTJlYTVjY2M2MGIzMzVlZTZkNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGRmYTAxMGE3ODJlOGU2ZTY5NzBjYzE3N2MyY2RiOWEwYzlmMzNiZWY2NGE1NWNlNTg1NTg5YzU4MjcwYTk2YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8e259425333a4effa86c64c5c56382fb",
+      "statement": "limit_sync shares the high-water mark across sessions on a host so idle sessions reflect other sessions' usage; it is opt-in, gated by thresholds.limit_sync which defaults to false.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L127-L128",
+          "version": "repo-lines-v1:sha256:4e444fe95b84899e233ff254dedaa24f9f23e344be6a6dc091754c7d9d20759c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA2MGYyNGYyNTU2ZTNiNGNjNDI1MmE5YmExODM5ZjFkYjQ1MWIwNDZkNzg4YjY3MDQxMGVkYzNmYjkyYjFmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzg1Y2M3OThhNzdmNTBlMjEwNGNmYjRhMGNlMWJiYWNjOTJiNDM3OWJmNTFlYWZjYjk3MTNlYjJkYTQ3MTY2NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTIxYWViZWU2M2UxZjYxNzQ1ZTUwMDg0N2UwMDkyMWUwYzhhMGE5YTRhMjdiNDZkM2Y1Y2YwZWQwMWQ5ZWE0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWZmYmQyMTEzNDMzNTdmOTE1Zjg3M2RiODI3ZmI3YWEyMzc1NTlmYzZiYWYzNmMyMGIzZmRjYzM5Y2I2MTA2YyJ9"
+        },
+        {
+          "resource": "repo://src/model/config.rs#L149-L149",
+          "version": "repo-lines-v1:sha256:faa96dc8d9818968f173b919f724fc336e7e03363d4b6f64f6284c28f6294868:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFhOTZkYzhkOTgxODk2OGYxNzNiOTE5ZjcyNGZjMzM2ZTdlMDMzNjNkNGI2ZjY0ZjYyODRjMjhmNjI5NDg2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFhOTZkYzhkOTgxODk2OGYxNzNiOTE5ZjcyNGZjMzM2ZTdlMDMzNjNkNGI2ZjY0ZjYyODRjMjhmNjI5NDg2OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDdlMjJjMDMwYTI3ODE4YTRiNzIyY2Q4MzJjMWM1YzBmNGRlNGRhNWU2NzNlMmU0YWU0NDM1MTM1NmZiOGUzZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjRhMzY1YTkwZWMxMWU5MDQzMjc1MmNmOTM3NmVjNWVkMzZiODBiYTVlOGU2ODU0ZmNmOTg5NzBkMzA0NDQ2OSJ9"
+        },
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L1-L18",
+          "version": "repo-lines-v1:sha256:35c4e3f20d3761384174339574e523fd2e30763510590be9ff130e2b70fb885b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxM2NhODlkNTUyYzUwNWI0OWEyMmJhODg3YTUwOGI3N2UyOTA1MTEzNDM2N2NkZjExZGUwMDA5Y2UwNmEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlMWRiMjRlOGQ2Y2NmNjY2N2M3MmZmY2EwYmRmZGI1Zjg0OGNjZDUzZjI2MjgzYThiNTdiYzdjN2ZkZmVlNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwMTlmMTUxN2YzYTVlNTVlNzQzNjkwZjA5Y2IzMGVkYWNlMGVkYjlkNjdkNWU4YTExYmE0MDFkYTA0NzI1MWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_985b566a8bcb4878a9cd9e3f122be76d",
+      "statement": "The limit_sync store lives under $CLAUDEBAR_LIMIT_SYNC_DIR (highest priority, used by tests), else $XDG_CACHE_HOME/claudebar, else ~/.cache/claudebar; per window there is a limit-5h.d / limit-7d.d directory whose records are directories named <reset:%010d>_<pct:%07.3f>, where the fixed-width fields make lexical sort match (reset, pct) ordering and the lexically-last entry is the high-water mark.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L47-L68",
+          "version": "repo-lines-v1:sha256:2d0b8ff60f39dc7085802fabc87c9763282fdf459c20498e7186e9388a0a1013:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMWU4YjYyZTMzYmM0ODQxYzg2YTUyYmJmZDQyNGFlNDFlMGJiZWE4MjQyMmQxMGUwZDIwYjlmMzA1ZmI0MGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5ZmQ2NzI5NjljOTM5YTA5MGE4YjhlZDliYjk3ZDAzMmZhNGFkMGEwMjJkZTQ4MDQ1YWYwZjE2MGI2MzE0ZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMThiZjQ3MmIyNTEyMzEyMjQzNjEyMjI4N2RiMmJmOThlNzYxNzk5Yjk4OTI1OTg4ODczN2Y0NDhkZDNmYjcifQ"
+        },
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L70-L76",
+          "version": "repo-lines-v1:sha256:daa3d7dbde1ff630fd0c26557cb1d88645b2fe86d48e5695c7f2ba3b664fe39d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGMzMzIxZDcyYjdlZmFiMmMyOTRkYTdhMDZhOTQ5Mjg0ODc2NDQ2MmJhYTVhMmVhZjZlOTRiMTliMzRlNWE1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTU3OWQ1ODgyOGI4OWY4ZmQ5MmU5MTQ4ZjQ1NjliOGU1ODI5NmI4NWE3MWZhYjZkYTNlNzg1NTc2NTIwNmI1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjc5ZTJhMmM2YmUwMjcxZmU0MWZmYjE4ODZkYzMzMjE5YjA0ZDM3MzZiMThiNTY1YTdkMzhmODcwNTkwZTBjOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_061dc99e16464674ad62b8c1c9a714a0",
+      "statement": "limit_sync record creation is an atomic mkdir (concurrent sessions write distinct names; identical values are idempotent and collapse to one), and latest_* lists the window dir, takes the lexically-highest entry, and rmdir's the rest so exactly one entry remains per window, keeping the store bounded; GC failures are ignored.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L112-L140",
+          "version": "repo-lines-v1:sha256:50323a5d65a1e9ea2ed5f42e123b45558207e5a46e744b9e90b4f85b311a57ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkZTNkNjEyYWFkNTIwMmQ2ODUyN2I1ZTFjOTQ5Nzg3MzY0N2UzMWVlZjRjMjc3NDM3MmJjYzk4YTRmYzljODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZTNhNDk4OWE4MjRjZDU0OTM3ZjExYTg5NTM3NTQ5YjY5YmM2M2FhZDQ5MmZlYWZjMmY2MWJmNWY1M2E3MWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0MjNiZjUyM2MzNGM3MDc3YzE2NWQzYzdmYTYwZjZkOTVmMWM1ZGRhZmEwOGM4YTdjMmQ1YjkyYzhkY2IzM2UifQ"
+        },
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L87-L105",
+          "version": "repo-lines-v1:sha256:ac9fafac9480b24a7c0a93c7a18185981d28268adfadb0060630dc0fbb4a5348:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NDE5ZjJjNmUxMjljZTI0MDdlMGQ3NTFkNDI1NDhkYzRmNzM5NzQ0YThhMzI4ZTU3N2JkMzBmNWEwOTIyMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxYjhjZDVjNzc0ZjIwMWUxYTJiM2NjOTkyZjUxZGUwZWIyN2YwMzYwODJkMTExOWEyNTg3NjIxNGYzMjFiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NDQzOTQ4ODBmOWE3MWRkN2UxM2UwMDliY2I3YzkwYTc5ZTQ3OTY2YWFhMmE2MDllZDYxYmFlYTU5M2NmNjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c87aeb09a4104b01bd1084edb1a863d9",
+      "statement": "limit_sync record_* rejects implausible data rather than storing it: non-finite or out-of-range pct, and resets_at more than 6 hours ahead for the 5-hour window or 8 days ahead for the 7-day window (corrupt/sentinel values dropped).",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L41-L44",
+          "version": "repo-lines-v1:sha256:8f077ef53ca3efc33b5f86bc02f7148a3de132c812b6098506f85b13fa387099:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjk4NTdlNjMzMzE5MmFlNTNhYmU1MDkzMTE3ZGRjZDg0ZjZmY2IzMWQ3YjJkYzllYTI4YmMyYjZjY2U4NDg4OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDIyOTNjY2UwMDczMTlhMGY5Mjk5YjRhNzg4M2I5ZDc2ZWFiMmU3MWFmOWE0MGI3ZDdjYzVmNWI1YWE4MzFhNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjRiMTViZGNkMmJkNzdkODNhZTlkNTE1YTRlYzcwNmQ3OGQ0YzllOGJmYWVhYjEwNTlkZmFiZDY4YzcwOTQ1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzJhYzQ5NjI5ZTIzMGM1Nzk1Mjg4NGIzOGM2MDhhYzY5ZDU0MTg3ZTU2MWQ5OTNjODY5NjRjNjZiMzFhYzc3OSJ9"
+        },
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L87-L99",
+          "version": "repo-lines-v1:sha256:5ad55c9bcdc0c961b31764f6136b8bfd97cf1bcde5e51a253d7144fa6559da00:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NDE5ZjJjNmUxMjljZTI0MDdlMGQ3NTFkNDI1NDhkYzRmNzM5NzQ0YThhMzI4ZTU3N2JkMzBmNWEwOTIyMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxYjhjZDVjNzc0ZjIwMWUxYTJiM2NjOTkyZjUxZGUwZWIyN2YwMzYwODJkMTExOWEyNTg3NjIxNGYzMjFiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiNDM4MjY4NzkwYTRkZWVmZDRiYThjYmRlMDQ4MDBmZGMwNTg5ZjFmYjBhNTE3MjNiM2JkYmUzZjgwNGUwZjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_26d809a3a7924ab59423243d0b129f58",
+      "statement": "The rate-limits segment's effective_5h/effective_7d record the session's own snapshot first, then prefer the shared high-water mark when it describes a live window (reset in the future), else fall back to the session's own values; for the 7-day window only sessions whose weekly usage crosses thresholds.weekly_show_at contribute to the store.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/rate_limits.rs#L96-L142",
+          "version": "repo-lines-v1:sha256:e6dd1d5f19b8a09749d09979dd1d72d9cb4155e0e3e7efe97a7588693e9ce02d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjYTkwYmQ4MWVkODJkODYxMGZmNTJmYmVlOTkzZTY0OTYyNWIxMDUzZDI4NWIzMGRlNTJiN2EwZTcxNWM3ZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmYTI2ODFkOWUyODY4NmFiNzJhYjhjMjVjZmE4OTAyYmJkOWFlNWNiYjgwZGQxMjU3ZjdkZjgwMGM3ZGViMDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6fc8314ffd0b4353babd51bee33b17e3",
+      "statement": "The burn segment appends a (now, pct, resets_at) sample to a TSV cache at $XDG_CACHE_HOME/claudebar/burn-5h.tsv (else ~/.cache/claudebar), overridable via CLAUDEBAR_BURN_FILE for tests; rows are capped at MAX_ROWS (1500) via an append-then-trim that keeps only the last MAX_ROWS lines.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/burn.rs#L289-L309",
+          "version": "repo-lines-v1:sha256:a84192e93fd62a1c1867b025f41a4c821c74a83820f03c6a7175e40122e45f1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhZmY2OGI1NjRiMmE4N2FhZTdhNjM2NGMwOTQ0ZWJkODM2M2E2ZDk0ZDZiY2U4YzVjZTM2YWE5OWM5NTEwZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MGY2MWY3Y2Q1NjhlMDFlMTUwOTUwNTBkNmNkNDFjMzRmOGU5MmY2MmYyMjA1ZWZhMDNmZDcwMDNiODJkNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViZjhmZDczZGU2MWM2MTI2NmI2NTQyOTcyYzdhYjJjYzE2NjQ4OTY1Y2FiYmY3MDk1ZjY1MGNhMDU4NzA4MDUifQ"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L31-L32",
+          "version": "repo-lines-v1:sha256:ee9d4f21c8b74818a33fd1d2c5765e6f3ed8ee0872ff10bce8aabf406fea1076:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzhmYTJhYjQyMTczYjNjNzBkY2JmNTg4Yjc2NTY4YWEzYzA5ZjQ1ZjJlYmRiNjQxYTBkNmJiMjFkZDYxNWZmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzllMjQ1YjVkYTUwNGY1YzZlZDIwNmJmYzNmYzI5MTU5ZjYyM2JhMDgwZDIyZDYxYzk1MWFiZjA5ZDFiYzhlOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGQxYmY4MzRiZjBmMTc5MGFhNGFmNDRlOTk4MjE3ZWZiNTQxNTUxZDhhZDVmODc2ZmIwMDA4OGQ0NWFlNjcyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTYwYWIwY2Q2YTBhNjIxMDgzOTA3NGUzYTVjNjk3YjU3NzJjYzMyYzk1NmJkNGU3N2NhMDMxYTgzMmRjOTBiMCJ9"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L339-L351",
+          "version": "repo-lines-v1:sha256:be04eb4ffd2f805b5104a4efe096996e0bfa38c87928122d86fb6a3c1c23c0bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5MTkyMWQyNTU1Yzg2NzVkY2MzNzkxYmQyNTgzMGQ0OTNjMDg2ZjEzNDMxMGNkMmFiMDM3MjdhMjRiNjdjOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNmNDdhMGVlNjc2M2RhOWU3MWUyNGFiYWMyYWI4MzJiYzE2YmE5NjMwM2FmMmE2MDUxNTkzYjY5YjBhZjNiNjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3f88380a4a0e4061b3c7bfe1c0305be3",
+      "statement": "The burn segment reads only samples with t >= now - lookback, where lookback is thresholds.burn_lookback (default 600s); a missing or unreadable file yields an empty sample set (warming state) rather than an error, and a sample is only appended when the 5-hour resets_at is at most 6h in the future.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L111-L112",
+          "version": "repo-lines-v1:sha256:7a8917af8e8d395c62d3317d4d28ccb8ac421d8b01f1222a3c089d09d0abfe8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGZjY2E1YmUzNGQ5NmVhMzZkMzA3NGU2MzVkNmQ2NzQ5ZjhkMzdhM2NhNmQ3NDE1ZmFmNjljMDgyMDE0NmRkNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2YwZTUxNGUyYjgyMGY5MzFlYzQ4M2NlMTExODgwYzc3M2JkMTYzOGI4N2NmZjE4OWQ3Y2QzNzY1YjJmOGM5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTRkMThmNWNkYWEyMDdkODRkOWIzYzJmNzIzNjI0MmQ5ODA2Mjk3ZTVjNjhkMTExMzcyN2YwY2E4ZmY5MDA1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2Q0ZTYxODY3Y2NjNDZkZDgxMWM5MzlkNDRlMzhlZjE1Y2E5NDkxZTViZmI2YjRmNWFiZTFiM2I4NmU0M2U3ZCJ9"
+        },
+        {
+          "resource": "repo://src/model/config.rs#L140-L140",
+          "version": "repo-lines-v1:sha256:97dac7adfc6fbfc2ccd5d02cf692f32c5e394db5ccb42db4ec2615f852a34378:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTdkYWM3YWRmYzZmYmZjMmNjZDVkMDJjZjY5MmYzMmM1ZTM5NGRiNWNjYjQyZGI0ZWMyNjE1Zjg1MmEzNDM3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTdkYWM3YWRmYzZmYmZjMmNjZDVkMDJjZjY5MmYzMmM1ZTM5NGRiNWNjYjQyZGI0ZWMyNjE1Zjg1MmEzNDM3OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDU1ZTA1MWJmZGMzYTE5M2VjZTkzOGJlYjE5ZThhYzZjOGJiNGIyNzg4NmRmNzYxNDhkMTZkZjRiYjAyMDRkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODUxM2JkMDIyMzczYmYzZWJjMWZmNmYwYWI4YzExZDBmYzE5ZWIyMGE2NzkxNTkyY2U2NmJjMzU4OWY2YTVkMyJ9"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L312-L337",
+          "version": "repo-lines-v1:sha256:70700a398df560348e65ff14d3fa753239932e1753395c17a54b5b3ed98d0509:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkYmZkZmZjNzRlYzdjYjVkMGVkYjJmNzQ3ZTQxZTIwNDIyMmYxMDEyNTFiMTE4MDIzYmVmNWVhNzIxNWNjMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiYjMzYjNmMzVhNWI4YmVmZjNkYzA5ZDU1N2ExMzcyODMxZDVkNzRhNzg0YjY2NWYwM2QxMmVhYTk4Nzg4ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0ZWQwMGRjM2QzOGRmNjIxYzBmMTRkMmI5OWQ3ZmYyNzY0ZjgzM2Q0MzAyZGRhZjM2MzhjNDliOGU1MTg1YzcifQ"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L52-L59",
+          "version": "repo-lines-v1:sha256:9150a96320b24af871d544b6cc2bd5717fe61554f8e5ce7e7fb9a731136287dd:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjIwYzg3YTE0ODlmODMzNzUxYjVlMzc4YzAwODdkOGFhNmVlYTIwZGUzOWZjNDNjYTNlNWI0ODYxNDg1ODkzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGFjYzVkODQzYTEzNzdiMjBjNzU1YjQwNDA3ZDMyZDg2YmZiODRmNjJmOWQ5ZTUxNGE3YTQzNzQ2YTQxMzM4NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmFlY2Y4OGI2YzcwMzM1YmU1NDc5OGJlMzg2OTY5OGY3ZTkwNTAzMTkxYzZkYmMzOTFlMjg1ODU1YzM5ZmI1MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_62f8af719a8c4521ad0c1e4b4b0b159d",
+      "statement": "The burn segment projects range-to-empty by linear regression over the lookback samples: warming (no samples), idle (slope <= 0), or active (slope > 0) with a colored ETA that is red if the window would run dry before reset, yellow within a 20% margin, and green otherwise; there is no 7-day TSV — the 7-day window is rendered statelessly.",
+      "evidence": [
+        {
+          "resource": "repo://src/segment/burn.rs#L160-L176",
+          "version": "repo-lines-v1:sha256:eb7f6d906e56b1d131bd83368660422b0f8f6fb68f93b11c6e562092aaea613c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3ZjdjNjI0ZTNhM2E4N2JjNGEwMmQzYzFjZDg3MDRmZmVkYzc1ODNiZDA3ZGFlZTYyZGU4OTUxYWVlMDExOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwOGMzYjVhZjgxYTQ1MjljNzQ2MjczZWY5ZDExOWQxNTYwZjFlZWIzZjdjM2FlNDUwOGQ0MjFjYTc5M2NjOTgifQ"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L180-L207",
+          "version": "repo-lines-v1:sha256:153bae2e6581d57d751c8b178b269dc40101010234e7e3d544077d0dc53d7c22:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZTBjZTMwZTRlMDRiZDZlMGNlNDUyNDY2ZjgzMDdiODA5MzNjZmM0OTcyZWJmOWUwNDA5NGJlYTExYTgwNjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwOGMzYjVhZjgxYTQ1MjljNzQ2MjczZWY5ZDExOWQxNTYwZjFlZWIzZjdjM2FlNDUwOGQ0MjFjYTc5M2NjOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViMzBlNTQ4MzNjNTAwNmRjOTMwOWM0OTM3NDA0YjQ3ZjIwOGI1NzVjZmI2Nzg3NmQ0ODY3ZWM4NmRmODUxN2IifQ"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L92-L158",
+          "version": "repo-lines-v1:sha256:08d6727dceb6de5e187118b717be80ecaa3dde1d6e8adfbe6897822256e6b36e:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1YjQ0ZDczYWVmZDc5MTE5MmY0YTg0MGRjYjMyYjE3YTM0MWM0YTE1MzViYzZmZWE0ODUxMjUxMTI1M2IzMDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA2N2E1NWU0NmI0MWNiMTNjODc1ZTFmZmJkMWVjMmE3MDJmYjFhNGJkNzlmZmQ3YWZhM2JlMzllZTExYmM5OTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQyZjdhMWJhZWE3YzkzODMzMDk1ODFlNDc2ZTY0ZmViYzFiNzQ0Yjc5MTIyMDM5ZjYwODdkMzdlN2Y0ZWNmNTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7df6d2edc25d4ccabbfb55743f094bc5",
+      "statement": "The float is a plain-text side output of the status render: when thresholds.float is enabled, render_line calls float::emit_float, which renders the segments named in thresholds.float_segments (default \"model context cost\") as ANSI-free, icon-free text joined by float_sep (default \"  ·  \") and writes it to float_file (default ~/.claude/claudebar-float.txt); it is the seam for piping the status to tmux or a status bar.",
+      "evidence": [
+        {
+          "resource": "repo://src/model/config.rs#L113-L120",
+          "version": "repo-lines-v1:sha256:41ad64cc1db818bcc696119746d2b2e7bd1b23658cce5177b944bda7f3b960aa:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzI4MzViZDA1YzY4MmFmZTQ0MTY2Njk5OTU4NzdjZTgxYmQ2YTE5ZGFlODE4OGU2MGE0MTk0MjRkNGFhOTI3ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmViZWQ1ZDAyYmVjZGJlZDQzYWU0ZTY4MDljM2EwMDI4M2JiZTFlMTU5ZWUxMWIyY2RmYmMyZWI2ZDMxYWMzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTBjNjEwMjVmOTIzYjlmZjNmMDliNTcyNTRlNjFjNWRlNTdlY2U0YTFmZjdhNTI4YWQ0NGE2MmRlYTFjOTkzMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGJhZjAyOGQyNjJlNDBmOWI0NzZmNzIzZDBhMWM3NTA1YWY1OGE0MTNhMWY2N2ZjYjI0NmI3ZjE1YjQ4YTk4MiJ9"
+        },
+        {
+          "resource": "repo://src/model/config.rs#L142-L145",
+          "version": "repo-lines-v1:sha256:b810e56dd6a2d0919718c48774118520ceb7a32ad7626f9ae46a6cd3dd968b9a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjUyZDliNTdhMGVhOGJhODI0OTZhM2E1MTczMGEwMzVmOWQwM2FhOTkwZGU2MzAwMWE0YjcyMzVmM2Q1NDdjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGVhZjdmMzYyNTJiYjVhZGNiNjQ0MTI5ZGUwYmVlNDZmZDYxM2IxOWY2ZTY3YWZjNmFhYmM3ZDA2YjcyNzFhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzk3OGQwMjViYzhmNDE0MWYxYzkxYWRkNjJlZTBjMWI1MWQwZDEzY2NhY2RjYTYwYjlmMjVhNmFlZmE0ZWUyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDdlMjJjMDMwYTI3ODE4YTRiNzIyY2Q4MzJjMWM1YzBmNGRlNGRhNWU2NzNlMmU0YWU0NDM1MTM1NmZiOGUzZSJ9"
+        },
+        {
+          "resource": "repo://src/render/float.rs#L22-L36",
+          "version": "repo-lines-v1:sha256:3e7afeec8a6ec6f19ed5c9f6949e5a74d1a824e5f3b57e3da9bd3868da383542:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMWU4YjYyZTMzYmM0ODQxYzg2YTUyYmJmZDQyNGFlNDFlMGJiZWE4MjQyMmQxMGUwZDIwYjlmMzA1ZmI0MGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlZTMzNjYwNjJkNjdjNzMxZjEwMDI1ZmI4MmUxNDBmNmQyY2Y4ZThiMGUzM2M4ZmE4YzI5OGJhZmE4NzRjMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzMmJkZjVmM2I3YTIyODg2NTJlYzZkNDRhYjAyMjY2ZjcxZWY0NjZkZWFhMDUyNzQwMzBiNTI2NWEyOWVlOWEifQ"
+        },
+        {
+          "resource": "repo://src/render/mod.rs#L48-L51",
+          "version": "repo-lines-v1:sha256:7073ac4aacf8a067f0ee3766e77aadd30ec2c34d75ba46e2dc92c27a88aa8dc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTMyMGIzMDdmNTg5OTY1ZmU4YTliNjYxMGY3OTQ4YmY3YmU3MWQ1NDM3OWUxYTcyM2QxYjdmZTc2YmI0ZjNhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMwMTI0YzIyYjg0NWYxNjYyZGZmOWRkZmYwMzU1YjhkNDE2ZGM4MGRjNjJlODFlODA3MWRhODg0NjBlMjE1NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDkzMGM5YTFmYjBlNGYwNDA2ODljMWRlZThkOTc0YzhjNTY3YmQ5Nzk4MWQwZmEyOWJkY2Y3NDY2MGVhYTA0ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzJhYzJkNjg2N2Y3ZTQxY2I1MmI5NWVkODY5NjkwYjA5N2JkODAxNzk2OTEyYTRhMjg5NDNjYzZiNTA2NjY5NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7f70bc2639543d18a10c9106c3a2c26",
+      "statement": "The float readout reuses the exact same Segment implementations as the colored path (no second code path), rendered with the ASCII style and then stripped of ANSI color, so output is stable regardless of theme/style; a leading ~ in float_file expands to $HOME (a ~ without a resolvable $HOME is a no-op), unknown float_segments names are dropped, and the float never carries the update badge.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/float.rs#L10-L13",
+          "version": "repo-lines-v1:sha256:40be35eb4670a8287b25ada6809a10980f5cbb5727feba9fa035b21db6f5aef4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDAyMzQyNGVhZDk5MDJkOTMxNTAwYmFlMGFiZTA4ZWM0YTRmY2M3NzgzN2Q3NTkyYjI0NmY3NWQwZTU2OWU0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjkwOWM1YmM0ZmMyZTg4Mjg4ZGU4MDUxMGE1NzQxOTY4NWVhYjNjYzQwODlhMTRmM2M4NzYwZjNiYWRlYzdiNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWMxZWRiNDc1NTFmYjIzYzJmOWJmYmZiMjA2MjNlZmMxZmRjNmU5ZjVlMjllZjVhNzdiNWRkZjgxYzA4MTU5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjM5ZDk5OTEzNWVlOTM2MDIxMWI0ZjVkMjZkMTg5Yjk5NDZmOGJjMzgzMjgzZmNjNWJiOGFlYzA2YWEzM2IzNyJ9"
+        },
+        {
+          "resource": "repo://src/render/float.rs#L114-L123",
+          "version": "repo-lines-v1:sha256:1af9130fcb31c12efe22f55c5e54c63d5a8715cc98e6477f5d4a961a281acda0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2NzBiMGU5ZTY2ZDZlYTNhY2Q2ZTg5NmU3ZTU3OWI3MTRkYTMyMjAyZjBiMmU5ZjE0YTkxYWFhYjNkODg3NjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhODRhYzE2ZTVlOWVmOTJkNTQyOGQ4MDM0OThlNWIyN2Q2ZTQ2NThiYmY1YzBlNzRlMjlhMTM4ODkzZGIzYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3ZGZhM2E2OTUxYzQ2MTc3YWU1YTgyN2U3MGY2N2ZlNDU3ZTk1ODExNGY0YTRjMDQ1NmNmMGUzOGM5OTgxNmQifQ"
+        },
+        {
+          "resource": "repo://src/render/float.rs#L41-L71",
+          "version": "repo-lines-v1:sha256:b28ba52a32a8f400460c4a969dbc0d44cb23a1807a8304b0bb3b081beb184a31:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4N2EwZDVjMjljZmU3M2YzMWM5MzY0M2MwNjZhZDE3YTNiNzU1YTBhM2UwOTAzMmJmYWNiMzFkNTIzZGE0ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1MmEwMDU3MzAyNDRmYzVhNjAwM2M2MTlhM2U2NDlkNTA2MTZhMmYwMWU1ZDk5YzhlMDcwOTYzMmM0YzRkZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1ZTc0ZThjMWZiYzc3NTBmMTU1OWFkZjI5NmVjMjJkM2NjZWY5ZDQ3MDAyMjYxMmYyMDU1MWI2Y2JhNWU4ZjEifQ"
+        },
+        {
+          "resource": "repo://src/render/float.rs#L76-L80",
+          "version": "repo-lines-v1:sha256:701819b26238188e8575e83485b04b3cfc79e76d3b46005e9bfd00ce82c0f5fb:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjc1NjQzODZjZWJmNDhmMGE5NWE1Nzk5YzhhMGVhNzE5MWMyOGQ3NGIwM2VhZjdjYjQ0NjUyNzUwZGNjYzQ4NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Q2YjVhNDAyMTZmZjEzZDQzMzcxMTQwZjQwYzM5Yzc4N2Y0MzY2MzdiODBhYzA2MmU4MWNhMWJiMWY4ZDFjNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWUwOWU1NDA5ODdjMWI1ODY0MDQxZTI3MGJhNjJiY2U4YmZiMWVmMzA3MWU3ODlkNTkzM2EyOWU1MGFkN2VkOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c6048c19a6704508b6e295c353dd6f1b",
+      "statement": "The float is written atomically by write_atomic: it creates parent dirs, writes to a sibling temp file named .{name}.{pid}.tmp (pid-tagged so concurrent writers do not clobber each other's staging files), then renames over the target, which is atomic on POSIX; any I/O error is silently swallowed.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/float.rs#L125-L152",
+          "version": "repo-lines-v1:sha256:19ab0ac497ea94895fd5d693cc09b0f558ccb1aec85ccd533c0f9fe968fb1374:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzM2Q2MTJmMDljMTliMDRhZGMxYTJiM2M4NDUwZDljMDlkYmUyZTg4Y2M3MTA5ZjY3YWM5OTA1MTUyYzVhMTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_25592257918644d1a54662c31abaf298",
+      "statement": "The update-notice badge and background version check share one cache, update-check.json placed beside the config file (Config::default_path()), with schema {\"checked_at\": epoch, \"latest\": calver-or-null}, where latest is null on a failed check so the retry interval still applies.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L232-L245",
+          "version": "repo-lines-v1:sha256:bf9f8109a9f24bf1d556acac8ba774e80db7984639a2d9b7036cb38c4d35ebdc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmMWQ0NDRjZDgzNTk1NTk1YWVhNjA4YzZmYjVjYzM4OGVhMzVjNDg3MWQyZjJiOWVhMjkyNTIxYTA3ZDc5YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzNjRjNTNmMmE1YWYzNDkyODc1Mzc2OWVkZTM3NDY1NTNiZTIwOTBlZmJkMDNkYTMwMjA1ZDA3ZWQ3YjZmNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM0ZDJkMWM4MDQ0YTAxZjQ3NDE2YzI5ZjZjNjAxNWQ2ODU1ZGY2YmIzNzkzMTMzN2U4ZjFmYzhjMzU2NTRhMjIifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L250-L258",
+          "version": "repo-lines-v1:sha256:7d74b6f2ed98635aca8fb832cd5d5fd6cf29526cce9460cf1786c5cfe72405d0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQxNWRlNzdlYWE3NDNiODQwMTVhZTQ2ZTMxMGM2NzdlMjg2OWZiZTI1MmRjODVkZWRkMDhkNmI2ZmZmOGY1ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTk2NTJlNjExNWNmNmQ0NjkxZmIxYjU4MzBiNmQ0NmZkMWZlZjVkMjc0NzIwN2IzZTI4ZGFjMzdlMjFmZWMzMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmU0NDdmY2I0NDg2N2MyM2MxMTBjZTg0N2VmNmRhYzc4OGI5ZDMwNGJkNzY3Y2Y3ZDZhZjlhZDk1OGUxZjYxMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b2f7248046d84d7fb4ad292dbb209331",
+      "statement": "The render hot path never touches the network: render_line calls refresh_in_background, which only when the cache is missing or older than REFRESH_INTERVAL (24h) claims the slot atomically with the still-known version and spawns a detached 'claudebar update --check' subprocess the caller never waits on; without a usable/writable cache path nothing is spawned.",
+      "evidence": [
+        {
+          "resource": "repo://src/render/mod.rs#L27-L37",
+          "version": "repo-lines-v1:sha256:36450ae78f96854430b5d41208b8e6e38924c88dbe5eb78f13e9d8decd09103a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ZWIxMTYzZDk1N2JiNGUwOGRlNTUzMGViOWNlNzg4YjM2N2ZjZDA5M2IyMzRhOWY5OTFlNjRkYWZkMjA4YTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhYjVjNjQzYTg0NWMzNGYxMzFmYzI0Y2M1NmY5NjQ2YmZmMzIzZWUxZGJjZDExZWYyNmJhODFlYjAxMTAxZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjZTY1ZDU0OWMyOTc1NDEyMGI2ZjQyMjg4ZTE4NTE1MDI0NjUzMDMxZjMwZmYyMDFhMWQ3YTUxNmE3MjVkM2UifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L218-L219",
+          "version": "repo-lines-v1:sha256:dba489afdf450d8cf6bd812c3c41c1d87c84e127f69d1e4dfbeafe999e2c9b6d:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDIzYTc5MzllMjVhNDY5MTMwM2M4M2QyOTE2ZjUzZjcyYWNkNDQzNWRiNGFlYmE2MGQ1MTkzNzcwNzBlOWM3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjgyYTJhZmY3MjQ4ZGE2NDI4OWFlMmEzN2IxMWJiYjRjYzM5NGU5OWU2NGM1OTliNjcwYzg4ZGU3MWQyNDYxMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjA2M2M0ZDFhZjhjZDg5YmIwYmRkNzY1N2ZmY2JmNjgwNmE2MTBkNzlkNmM4ZDRjMzA3YzI0MWRmMzkwMDUyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWMwNmFiOWNiMWM4NzFmNThlMmQ4NDc3MGVlMWFkNWYxMTkyMzk2MjA4ZWQ0N2FhYzVlNTAwZjE4NWQ3ODJmYSJ9"
+        },
+        {
+          "resource": "repo://src/update.rs#L296-L331",
+          "version": "repo-lines-v1:sha256:70b13e8418820e3534bbbc8dd7d02b607a90cb80dddfe22c8b18493e3447ed03:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNGQ1NDY1ZTQ2MDIyMDBiOTQ5OTcxZmMxYTE5ZTkzOGFlOWViMWMwMWZmYmVjN2UwNzkwOWE4MjEyNDU4ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2YWFhNjcwNjRlMmYyNDEwN2JjZjRiY2UyOTFmMmQwYzgwYzUwMjZmMDc5NTdkY2NlNGVkODJjOTJkNDNhZTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4c0dd1f74970489e8c4a6bcd3a4576e8",
+      "statement": "The update cache is written with the float module's write_atomic (temp file + rename), so a torn read degrades to \"no cache\" and merely schedules a redundant check; reading a missing, unreadable, or malformed cache yields None.",
+      "evidence": [
+        {
+          "resource": "repo://src/update.rs#L255-L280",
+          "version": "repo-lines-v1:sha256:6251685480d3ba009387d35c8cab53f59cc4eda50c872134973eb0b306857b1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4NjJmZDc5YmRlMGEwOTYyYmNhOGQwOWFkNzg2NmI0ZDRjNDM0NzQ4N2Q5MjhiYzMyOWM2M2ZiMTg0ZjBjZjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxNmNhYzE5MmQ0NjkyMTVmZjgzZmZiNzFmNTBlYTFiMWUzODFjOTFjYzhjYzZlZDkxYTJkNzI4YmZmNzA1ZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwMzEzNTkwMGFhNWFmZTdhZmZjODk1MTg3Zjg1MDM1NDZiMDg0YjQzM2Y5OGIwNmM4NGZlMDhjZGYzNGIzOGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cf2dd76a50a94f59b6af4499007c1fe9",
+      "statement": "All four cross-session caches store only display/projection data — percentages, resets, sample rows, segment text, and version strings — and never secrets; storage is bounded (one record per limit_sync window, MAX_ROWS burn rows, and single fixed float/update files).",
+      "evidence": [
+        {
+          "resource": "repo://src/render/float.rs#L125-L152",
+          "version": "repo-lines-v1:sha256:19ab0ac497ea94895fd5d693cc09b0f558ccb1aec85ccd533c0f9fe968fb1374:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzM2Q2MTJmMDljMTliMDRhZGMxYTJiM2M4NDUwZDljMDlkYmUyZTg4Y2M3MTA5ZjY3YWM5OTA1MTUyYzVhMTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/segment/burn.rs#L31-L32",
+          "version": "repo-lines-v1:sha256:ee9d4f21c8b74818a33fd1d2c5765e6f3ed8ee0872ff10bce8aabf406fea1076:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzhmYTJhYjQyMTczYjNjNzBkY2JmNTg4Yjc2NTY4YWEzYzA5ZjQ1ZjJlYmRiNjQxYTBkNmJiMjFkZDYxNWZmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzllMjQ1YjVkYTUwNGY1YzZlZDIwNmJmYzNmYzI5MTU5ZjYyM2JhMDgwZDIyZDYxYzk1MWFiZjA5ZDFiYzhlOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGQxYmY4MzRiZjBmMTc5MGFhNGFmNDRlOTk4MjE3ZWZiNTQxNTUxZDhhZDVmODc2ZmIwMDA4OGQ0NWFlNjcyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTYwYWIwY2Q2YTBhNjIxMDgzOTA3NGUzYTVjNjk3YjU3NzJjYzMyYzk1NmJkNGU3N2NhMDMxYTgzMmRjOTBiMCJ9"
+        },
+        {
+          "resource": "repo://src/segment/limit_sync.rs#L87-L140",
+          "version": "repo-lines-v1:sha256:0c6e1ce2880a798acb52e3acf931dfdd903d627629ce1dc6718c9ec9ee3c2fd1:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NDE5ZjJjNmUxMjljZTI0MDdlMGQ3NTFkNDI1NDhkYzRmNzM5NzQ0YThhMzI4ZTU3N2JkMzBmNWEwOTIyMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxYjhjZDVjNzc0ZjIwMWUxYTJiM2NjOTkyZjUxZGUwZWIyN2YwMzYwODJkMTExOWEyNTg3NjIxNGYzMjFiNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0MjNiZjUyM2MzNGM3MDc3YzE2NWQzYzdmYTYwZjZkOTVmMWM1ZGRhZmEwOGM4YTdjMmQ1YjkyYzhkY2IzM2UifQ"
+        },
+        {
+          "resource": "repo://src/update.rs#L250-L258",
+          "version": "repo-lines-v1:sha256:7d74b6f2ed98635aca8fb832cd5d5fd6cf29526cce9460cf1786c5cfe72405d0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQxNWRlNzdlYWE3NDNiODQwMTVhZTQ2ZTMxMGM2NzdlMjg2OWZiZTI1MmRjODVkZWRkMDhkNmI2ZmZmOGY1ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTk2NTJlNjExNWNmNmQ0NjkxZmIxYjU4MzBiNmQ0NmZkMWZlZjVkMjc0NzIwN2IzZTI4ZGFjMzdlMjFmZWMzMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmU0NDdmY2I0NDg2N2MyM2MxMTBjZTg0N2VmNmRhYzc4OGI5ZDMwNGJkNzY3Y2Y3ZDZhZjlhZDk1OGUxZjYxMCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.0",
+    "at": "2026-08-29T00:17:43.706Z"
+  }
+}
