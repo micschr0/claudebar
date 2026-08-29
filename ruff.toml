@@ -1,0 +1,5 @@
+# scripts/ are dev-only asset generators, not shipped code. Gate the rules that
+# catch bugs (syntax errors, undefined names, unused imports) and leave style
+# alone — the existing code deliberately uses semicolons and one-line ifs.
+[lint]
+select = ["E9", "F"]

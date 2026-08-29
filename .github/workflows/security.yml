@@ -26,6 +26,19 @@ jobs:
       - name: Run shellcheck
         run: shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
 
+  ruff:
+    name: Ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install ruff
+        # Pinned so a new ruff release cannot turn this job red on its own.
+        run: pipx install ruff==0.16.5
+      - name: Run ruff
+        run: ruff check scripts/
+
   actionlint:
     name: actionlint
     runs-on: ubuntu-latest

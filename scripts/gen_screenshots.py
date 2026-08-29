@@ -18,7 +18,7 @@ Prerequisites for PNG:
     /tmp/demo-{clean,app,busy,release,behind} in distinct git states so the
     screenshots show varied git segments instead of an identical one.
 """
-import subprocess, re, time, os, sys, base64, math, shutil
+import subprocess, re, time, os, sys, base64
 
 REPO     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Screenshots render the real Rust binary's output (what users actually install),
@@ -822,7 +822,7 @@ def generate_svg():
     o.append(f'<defs><style>{embed_nerd_font(glyph_chars)}</style>')
     o.append(f'<clipPath id="win"><rect width="{SVG_W}" height="{TH}" rx="10"/></clipPath></defs>')
     o.append(f'<rect width="{SVG_W}" height="{TH}" rx="10" fill="{SVG_BORDER}"/>')
-    o.append(f'<g clip-path="url(#win)">')
+    o.append('<g clip-path="url(#win)">')
     o.append(f'<rect width="{SVG_W}" height="{TH}" fill="{SVG_BG}"/>')
     o.append(f'<rect width="{SVG_W}" height="{SVG_TITLEBAR_H}" fill="{SVG_BAR_BG}"/>')
     o.append(f'<rect y="{SVG_TITLEBAR_H-1}" width="{SVG_W}" height="1" fill="#16172a"/>')
