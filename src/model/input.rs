@@ -15,9 +15,7 @@
     clippy::cast_precision_loss
 )]
 use serde::Deserialize;
-use serde::de::{self, Deserializer, Visitor};
-use std::fmt;
-use std::marker::PhantomData;
+use serde::de::Deserializer;
 
 /// Top-level input object. All fields optional and independently absent.
 #[derive(Debug, Default, Deserialize)]
@@ -278,55 +276,37 @@ impl<'de, T> Deserialize<'de> for Coerce<T>
 where
     T: FromJsonNumber,
 {
+    /// Route every JSON scalar through [`FromJsonNumber`], and degrade every
+    /// other shape to `None`.
+    ///
+    /// Goes via [`serde_json::Value`] rather than a hand-written `Visitor`: the
+    /// visitor needed eight `visit_*` methods to say "numbers and numeric
+    /// strings convert, everything else is `None`", and five of them existed
+    /// only to swallow a type. The range checks that actually matter live in
+    /// `FromJsonNumber` either way.
+    ///
+    /// A malformed *token* (`1e400`) is still a hard serde error here, exactly
+    /// as before — it aborts the object parse and `InputData::parse` falls back
+    /// to `Default`. Only well-formed-but-wrong-typed values degrade.
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        struct CoerceVisitor<T>(PhantomData<T>);
-
-        impl<'de, T: FromJsonNumber> Visitor<'de> for CoerceVisitor<T> {
-            type Value = Coerce<T>;
-
-            fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.write_str("a number, numeric string, or null")
+        use serde_json::Value;
+        Ok(Coerce(match Value::deserialize(deserializer)? {
+            Value::Number(n) => {
+                if let Some(u) = n.as_u64() {
+                    T::from_u64(u)
+                } else if let Some(i) = n.as_i64() {
+                    T::from_i64(i)
+                } else {
+                    n.as_f64().and_then(T::from_f64)
+                }
             }
-
-            fn visit_u64<E: de::Error>(self, v: u64) -> Result<Self::Value, E> {
-                Ok(Coerce(T::from_u64(v)))
-            }
-            fn visit_i64<E: de::Error>(self, v: i64) -> Result<Self::Value, E> {
-                Ok(Coerce(T::from_i64(v)))
-            }
-            fn visit_f64<E: de::Error>(self, v: f64) -> Result<Self::Value, E> {
-                Ok(Coerce(T::from_f64(v)))
-            }
-            fn visit_str<E: de::Error>(self, v: &str) -> Result<Self::Value, E> {
-                Ok(Coerce(T::from_str_num(v)))
-            }
-            fn visit_unit<E: de::Error>(self) -> Result<Self::Value, E> {
-                Ok(Coerce(None))
-            }
-            fn visit_none<E: de::Error>(self) -> Result<Self::Value, E> {
-                Ok(Coerce(None))
-            }
-            fn visit_some<D: Deserializer<'de>>(self, d: D) -> Result<Self::Value, D::Error> {
-                d.deserialize_any(self)
-            }
-            // Anything else (bool, seq, map) degrades to None rather than erroring.
-            fn visit_bool<E: de::Error>(self, _: bool) -> Result<Self::Value, E> {
-                Ok(Coerce(None))
-            }
-            fn visit_seq<A: de::SeqAccess<'de>>(self, mut a: A) -> Result<Self::Value, A::Error> {
-                while a.next_element::<de::IgnoredAny>()?.is_some() {}
-                Ok(Coerce(None))
-            }
-            fn visit_map<A: de::MapAccess<'de>>(self, mut m: A) -> Result<Self::Value, A::Error> {
-                while m.next_entry::<de::IgnoredAny, de::IgnoredAny>()?.is_some() {}
-                Ok(Coerce(None))
-            }
-        }
-
-        deserializer.deserialize_any(CoerceVisitor(PhantomData))
+            Value::String(s) => T::from_str_num(&s),
+            // null, bool, array, object: not a number, not an error.
+            _ => None,
+        }))
     }
 }
 
@@ -475,4 +455,127 @@ mod tests {
         let c: Coerce<i64> = serde_json::from_str(r#""999999999999999999999""#).unwrap();
         assert_eq!(c.get(), None);
     }
+}
+
+#[cfg(test)]
+mod corpus {
+    use super::*;
+
+    /// Inputs that probe every branch of the coercion: the three JSON number
+    /// widths, numeric strings, the exact float boundaries where a cast would
+    /// silently wrap, and every non-numeric JSON type.
+    const CORPUS: &[&str] = &[
+        "0",
+        "1",
+        "-1",
+        "42",
+        "67.5",
+        "-0.0",
+        "1e3",
+        "1e-3",
+        "18446744073709551615",
+        "18446744073709549568.0",
+        "18446744073709551616.0",
+        "9223372036854775807",
+        "9223372036854775808.0",
+        "-9223372036854775808",
+        "1e400",
+        "-1e400",
+        r#""0""#,
+        r#""42""#,
+        r#""-1""#,
+        r#""67.5""#,
+        r#""  42  ""#,
+        r#""18446744073709551616""#,
+        r#""9223372036854775808.0""#,
+        r#""-9223372036854775808""#,
+        r#""""#,
+        r#""abc""#,
+        r#""NaN""#,
+        r#""inf""#,
+        "true",
+        "false",
+        "null",
+        "[]",
+        "[1,2,3]",
+        "{}",
+        r#"{"a":1}"#,
+    ];
+
+    /// One line per input: the value each target type coerces it to.
+    ///
+    /// `ERR` means serde_json rejected the token before `Coerce` ever saw it —
+    /// a distinct outcome from coercing to `None`, because it aborts the whole
+    /// object parse and `InputData::parse` falls back to `Default`.
+    fn table() -> String {
+        fn cell<T: FromJsonNumber + std::fmt::Debug>(json: &str) -> String {
+            match serde_json::from_str::<Coerce<T>>(json) {
+                Ok(c) => format!("{:?}", c.get()),
+                Err(_) => "ERR".to_string(),
+            }
+        }
+        let mut out = String::new();
+        for json in CORPUS {
+            out.push_str(&format!(
+                "{json} => u64:{} i64:{} f64:{}\n",
+                cell::<u64>(json),
+                cell::<i64>(json),
+                cell::<f64>(json)
+            ));
+        }
+        out
+    }
+
+    /// Pins the full coercion contract at a trust boundary.
+    ///
+    /// The expectation below was generated from the hand-written `Visitor`
+    /// implementation that predates the `serde_json::Value` rewrite, so it is a
+    /// record of the old behaviour rather than a restatement of the new one.
+    /// Regenerate deliberately, never to make a red test green:
+    /// `PRINT_COERCE_CORPUS=1 cargo test --lib corpus -- --nocapture`
+    #[test]
+    fn coercion_table_is_unchanged() {
+        let actual = table();
+        if std::env::var_os("PRINT_COERCE_CORPUS").is_some() {
+            println!("---8<---\n{actual}--->8---");
+        }
+        assert_eq!(actual, EXPECTED, "coercion behaviour changed");
+    }
+
+    const EXPECTED: &str = r#"0 => u64:Some(0) i64:Some(0) f64:Some(0.0)
+1 => u64:Some(1) i64:Some(1) f64:Some(1.0)
+-1 => u64:None i64:Some(-1) f64:Some(-1.0)
+42 => u64:Some(42) i64:Some(42) f64:Some(42.0)
+67.5 => u64:Some(67) i64:Some(67) f64:Some(67.5)
+-0.0 => u64:Some(0) i64:Some(0) f64:Some(-0.0)
+1e3 => u64:Some(1000) i64:Some(1000) f64:Some(1000.0)
+1e-3 => u64:Some(0) i64:Some(0) f64:Some(0.001)
+18446744073709551615 => u64:Some(18446744073709551615) i64:None f64:Some(1.8446744073709552e19)
+18446744073709549568.0 => u64:Some(18446744073709549568) i64:None f64:Some(1.844674407370955e19)
+18446744073709551616.0 => u64:None i64:None f64:Some(1.8446744073709552e19)
+9223372036854775807 => u64:Some(9223372036854775807) i64:Some(9223372036854775807) f64:Some(9.223372036854776e18)
+9223372036854775808.0 => u64:Some(9223372036854775808) i64:None f64:Some(9.223372036854776e18)
+-9223372036854775808 => u64:None i64:Some(-9223372036854775808) f64:Some(-9.223372036854776e18)
+1e400 => u64:ERR i64:ERR f64:ERR
+-1e400 => u64:ERR i64:ERR f64:ERR
+"0" => u64:Some(0) i64:Some(0) f64:Some(0.0)
+"42" => u64:Some(42) i64:Some(42) f64:Some(42.0)
+"-1" => u64:None i64:Some(-1) f64:Some(-1.0)
+"67.5" => u64:Some(67) i64:Some(67) f64:Some(67.5)
+"  42  " => u64:Some(42) i64:Some(42) f64:Some(42.0)
+"18446744073709551616" => u64:None i64:None f64:Some(1.8446744073709552e19)
+"9223372036854775808.0" => u64:Some(9223372036854775808) i64:None f64:Some(9.223372036854776e18)
+"-9223372036854775808" => u64:None i64:Some(-9223372036854775808) f64:Some(-9.223372036854776e18)
+"" => u64:None i64:None f64:None
+"abc" => u64:None i64:None f64:None
+"NaN" => u64:None i64:None f64:None
+"inf" => u64:None i64:None f64:None
+true => u64:None i64:None f64:None
+false => u64:None i64:None f64:None
+null => u64:None i64:None f64:None
+[] => u64:None i64:None f64:None
+[1,2,3] => u64:None i64:None f64:None
+{} => u64:None i64:None f64:None
+{"a":1} => u64:None i64:None f64:None
+"#;
 }
