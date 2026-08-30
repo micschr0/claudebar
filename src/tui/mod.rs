@@ -348,17 +348,7 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
             app.toggle_cursor();
         }
         KeyCode::Char('m') if app.focused_panel == Panel::Right && app.menu_cursor == 0 => {
-            // Build segment display order to find the kind at detail_cursor.
-            let display_order: Vec<crate::model::SegmentKind> = {
-                let mut order = app.config.segments.clone();
-                for &kind in &crate::model::SegmentKind::ALL {
-                    if !app.config.segments.contains(&kind) {
-                        order.push(kind);
-                    }
-                }
-                order
-            };
-            match display_order.get(app.detail_cursor) {
+            match app.segment_display_order().get(app.detail_cursor) {
                 Some(&kind) if app.config.segments.contains(&kind) => {
                     app.reorder_mode = true;
                 }
