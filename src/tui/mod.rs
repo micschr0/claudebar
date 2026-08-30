@@ -6,9 +6,7 @@ mod preview;
 mod sample;
 mod ui;
 
-use app::{
-    App, Dir, Panel, RowItem, StatusKind, ThresholdField, build_list, detail_len, move_segment,
-};
+use app::{App, Dir, Panel, StatusKind, ThresholdField, detail_len, move_segment};
 use crossterm::ExecutableCommand;
 use crossterm::event::{
     self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyEventKind,
@@ -259,32 +257,10 @@ fn handle_reorder(app: &mut App, key: KeyEvent) {
 }
 
 fn rebuild_and_follow(app: &mut App, moved_kind: crate::model::SegmentKind) {
-    let (list_rows, selectable_indices, section_starts) = build_list(&app.config);
-    app.list_rows = list_rows;
-    app.selectable_indices = selectable_indices;
-    app.section_starts = section_starts;
-
     // In reorder mode, the moved segment is always enabled, so its index in
     // config.segments equals its position in the right panel's item list.
     if let Some(idx) = app.config.segments.iter().position(|&k| k == moved_kind) {
         app.detail_cursor = idx;
-    }
-
-    // Also update flat_cursor for backward compat with unit tests.
-    if let Some(new_si) = app
-        .selectable_indices
-        .iter()
-        .enumerate()
-        .find_map(|(si, &dr)| {
-            if let RowItem::SegmentRow(k) = &app.list_rows[dr]
-                && *k == moved_kind
-            {
-                return Some(si);
-            }
-            None
-        })
-    {
-        app.flat_cursor = new_si;
     }
 }
 
@@ -505,5 +481,354 @@ fn handle_mouse(app: &mut App, event: MouseEvent) {
             }
         }
         _ => {}
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::model::{Config, SegmentKind};
+
+    /// The configurator's navigation runs entirely on `focused_panel`,
+    /// `menu_cursor` and `detail_cursor`. These tests drive `handle_key` — the
+    /// real dispatch the event loop calls — and assert on those fields only, so
+    /// they pin behaviour rather than any particular internal representation.
+    fn app() -> App {
+        App::new(Config::default(), None)
+    }
+
+    fn press(app: &mut App, c: char) {
+        handle_key(app, KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
+    }
+
+    fn press_code(app: &mut App, code: KeyCode) {
+        handle_key(app, KeyEvent::new(code, KeyModifiers::NONE));
+    }
+
+    fn press_all(app: &mut App, keys: &str) {
+        for c in keys.chars() {
+            press(app, c);
+        }
+    }
+
+    // ── Panel focus ──────────────────────────────────────────────────────────
+
+    #[test]
+    fn h_and_l_move_panel_focus() {
+        let mut a = app();
+        press(&mut a, 'l');
+        assert_eq!(a.focused_panel, Panel::Right);
+        press(&mut a, 'h');
+        assert_eq!(a.focused_panel, Panel::Left);
+    }
+
+    #[test]
+    fn arrow_keys_move_panel_focus() {
+        let mut a = app();
+        press_code(&mut a, KeyCode::Right);
+        assert_eq!(a.focused_panel, Panel::Right);
+        press_code(&mut a, KeyCode::Left);
+        assert_eq!(a.focused_panel, Panel::Left);
+    }
+
+    #[test]
+    fn tab_and_backtab_both_toggle_focus() {
+        // Documented quirk: Shift-Tab toggles rather than reversing.
+        let mut a = app();
+        press_code(&mut a, KeyCode::Tab);
+        assert_eq!(a.focused_panel, Panel::Right);
+        press_code(&mut a, KeyCode::Tab);
+        assert_eq!(a.focused_panel, Panel::Left);
+        press_code(&mut a, KeyCode::BackTab);
+        assert_eq!(a.focused_panel, Panel::Right);
+        press_code(&mut a, KeyCode::BackTab);
+        assert_eq!(a.focused_panel, Panel::Left);
+    }
+
+    // ── Section jumps ────────────────────────────────────────────────────────
+
+    #[test]
+    fn digits_jump_to_section_and_focus_right() {
+        for (key, want) in [('1', 0), ('2', 1), ('3', 2), ('4', 3)] {
+            let mut a = app();
+            press(&mut a, key);
+            assert_eq!(a.menu_cursor, want, "key {key} selects section {want}");
+            assert_eq!(a.detail_cursor, 0, "key {key} resets the detail cursor");
+            assert_eq!(
+                a.focused_panel,
+                Panel::Right,
+                "key {key} focuses the right panel"
+            );
+        }
+    }
+
+    // ── Cursor movement ──────────────────────────────────────────────────────
+
+    #[test]
+    fn jk_move_menu_cursor_in_left_panel() {
+        let mut a = app();
+        assert_eq!(a.focused_panel, Panel::Left);
+        press_all(&mut a, "jj");
+        assert_eq!(a.menu_cursor, 2);
+        press(&mut a, 'k');
+        assert_eq!(a.menu_cursor, 1);
+    }
+
+    #[test]
+    fn menu_cursor_clamps_at_both_ends() {
+        let mut a = app();
+        press_all(&mut a, "kkk");
+        assert_eq!(a.menu_cursor, 0, "cannot go above the first section");
+        press_all(&mut a, "jjjjjj");
+        assert_eq!(a.menu_cursor, 3, "cannot go past the last section");
+    }
+
+    #[test]
+    fn jk_move_detail_cursor_in_right_panel() {
+        let mut a = app();
+        press(&mut a, '1');
+        press_all(&mut a, "jj");
+        assert_eq!(a.detail_cursor, 2);
+        press(&mut a, 'k');
+        assert_eq!(a.detail_cursor, 1);
+    }
+
+    #[test]
+    fn detail_cursor_clamps_at_the_end_of_the_section() {
+        let mut a = app();
+        press(&mut a, '3'); // Style section
+        for _ in 0..50 {
+            press(&mut a, 'j');
+        }
+        assert_eq!(a.detail_cursor, crate::styles::NAMES.len() - 1);
+    }
+
+    #[test]
+    fn g_and_shift_g_jump_to_first_and_last() {
+        let mut a = app();
+        press(&mut a, '2'); // Theme section
+        press(&mut a, 'G');
+        assert_eq!(a.detail_cursor, crate::themes::NAMES.len() - 1);
+        press(&mut a, 'g');
+        assert_eq!(a.detail_cursor, 0);
+    }
+
+    #[test]
+    fn switching_section_clamps_a_now_out_of_range_detail_cursor() {
+        let mut a = app();
+        press(&mut a, '2'); // Themes: 16 entries
+        press(&mut a, 'G');
+        let themes_last = a.detail_cursor;
+        press(&mut a, 'h'); // back to the left panel
+        press(&mut a, 'k'); // up to Segments: 12 entries
+        assert_eq!(a.menu_cursor, 0);
+        assert!(
+            a.detail_cursor < themes_last,
+            "detail cursor must be clamped into the shorter section"
+        );
+        assert_eq!(a.detail_cursor, SegmentKind::ALL.len() - 1);
+    }
+
+    // ── Theme and style selection ────────────────────────────────────────────
+
+    #[test]
+    fn moving_in_theme_section_applies_the_theme() {
+        let mut a = app();
+        press(&mut a, '2');
+        press(&mut a, 'j');
+        assert_eq!(a.config.theme, crate::themes::NAMES[1]);
+        press(&mut a, 'G');
+        press(&mut a, 'k');
+        assert_eq!(
+            a.config.theme,
+            crate::themes::NAMES[crate::themes::NAMES.len() - 2]
+        );
+    }
+
+    #[test]
+    fn moving_in_style_section_applies_the_style() {
+        let mut a = app();
+        press(&mut a, '3');
+        press(&mut a, 'j');
+        assert_eq!(a.config.style, crate::styles::NAMES[1]);
+    }
+
+    // ── Segments ─────────────────────────────────────────────────────────────
+
+    #[test]
+    fn space_toggles_the_segment_under_the_cursor() {
+        let mut a = app();
+        press(&mut a, '1');
+        let first = a.config.segments[0];
+        press_code(&mut a, KeyCode::Char(' '));
+        assert!(
+            !a.config.segments.contains(&first),
+            "space must disable the focused segment"
+        );
+        // The cursor follows the segment into the disabled group; toggling again
+        // must bring it back.
+        press_code(&mut a, KeyCode::Char(' '));
+        assert!(a.config.segments.contains(&first));
+    }
+
+    #[test]
+    fn m_enters_reorder_mode_only_for_an_enabled_segment() {
+        let mut a = app();
+        press(&mut a, '1');
+        press(&mut a, 'm');
+        assert!(a.reorder_mode, "an enabled segment can be reordered");
+
+        let mut b = app();
+        press(&mut b, '1');
+        press(&mut b, 'G'); // last row is a disabled segment
+        press(&mut b, 'm');
+        assert!(!b.reorder_mode, "a disabled segment cannot be reordered");
+        assert!(b.status.is_some(), "and the refusal is explained");
+    }
+
+    #[test]
+    fn reorder_moves_the_segment_and_the_cursor_follows_it() {
+        let mut a = app();
+        press(&mut a, '1');
+        let moved = a.config.segments[0];
+        press(&mut a, 'm');
+        press(&mut a, 'j');
+        assert_eq!(a.config.segments[1], moved, "segment moved down one slot");
+        assert_eq!(a.detail_cursor, 1, "cursor follows the moved segment");
+        press(&mut a, 'k');
+        assert_eq!(a.config.segments[0], moved, "and back up again");
+        assert_eq!(a.detail_cursor, 0);
+    }
+
+    #[test]
+    fn reorder_mode_exits_on_m_and_esc() {
+        let mut a = app();
+        press(&mut a, '1');
+        press(&mut a, 'm');
+        press(&mut a, 'm');
+        assert!(!a.reorder_mode);
+
+        press(&mut a, 'm');
+        assert!(a.reorder_mode);
+        press_code(&mut a, KeyCode::Esc);
+        assert!(!a.reorder_mode);
+    }
+
+    // ── Thresholds ───────────────────────────────────────────────────────────
+
+    #[test]
+    fn minus_and_equals_nudge_the_focused_threshold_by_one() {
+        let mut a = app();
+        press(&mut a, '4');
+        let before = a.config.thresholds.warn;
+        press(&mut a, '=');
+        assert_eq!(a.config.thresholds.warn, before + 1);
+        press(&mut a, '-');
+        assert_eq!(a.config.thresholds.warn, before);
+    }
+
+    #[test]
+    fn underscore_and_plus_nudge_by_five() {
+        let mut a = app();
+        press(&mut a, '4');
+        let before = a.config.thresholds.warn;
+        press(&mut a, '+');
+        assert_eq!(a.config.thresholds.warn, before + 5);
+        press(&mut a, '_');
+        assert_eq!(a.config.thresholds.warn, before);
+    }
+
+    #[test]
+    fn space_cycles_an_enum_threshold() {
+        let mut a = app();
+        press(&mut a, '4');
+        press(&mut a, 'G'); // last threshold row is the Layout enum
+        let before = a.config.thresholds.layout.clone();
+        press_code(&mut a, KeyCode::Char(' '));
+        assert_ne!(a.config.thresholds.layout, before, "space cycles the value");
+    }
+
+    #[test]
+    fn nudge_keys_do_nothing_outside_the_thresholds_section() {
+        let mut a = app();
+        press(&mut a, '1'); // Segments
+        let before = a.config.thresholds.clone();
+        press_all(&mut a, "=-+_");
+        assert_eq!(a.config.thresholds, before);
+    }
+
+    // ── Preview samples ──────────────────────────────────────────────────────
+
+    #[test]
+    fn p_cycles_the_preview_sample_both_ways() {
+        let mut a = app();
+        let n = a.samples.len();
+        press(&mut a, 'p');
+        assert_eq!(a.sample_idx, 1);
+        press(&mut a, 'P');
+        assert_eq!(a.sample_idx, 0);
+        press(&mut a, 'P');
+        assert_eq!(a.sample_idx, n - 1, "wraps backwards past the start");
+    }
+
+    // ── Overlays and guards ──────────────────────────────────────────────────
+
+    #[test]
+    fn question_mark_opens_help_and_help_swallows_input() {
+        let mut a = app();
+        press(&mut a, '?');
+        assert!(a.show_help);
+
+        // While the overlay is up, navigation must not move underneath it.
+        let menu_before = a.menu_cursor;
+        press_all(&mut a, "jjj");
+        assert_eq!(
+            a.menu_cursor, menu_before,
+            "help overlay swallows navigation"
+        );
+
+        press(&mut a, '?');
+        assert!(!a.show_help);
+    }
+
+    #[test]
+    fn quitting_clean_exits_but_dirty_asks_first() {
+        let mut a = app();
+        press(&mut a, 'q');
+        assert!(a.should_quit, "a clean config quits straight away");
+
+        let mut b = app();
+        press(&mut b, '2');
+        press(&mut b, 'j'); // changes the theme -> dirty
+        assert!(b.is_dirty());
+        press(&mut b, 'q');
+        assert!(!b.should_quit, "a dirty config must not quit silently");
+        assert!(b.pending_quit, "it arms the confirmation instead");
+        press(&mut b, 'q');
+        assert!(b.should_quit, "confirming quits");
+    }
+
+    #[test]
+    fn reset_is_two_press_guarded() {
+        let mut a = app();
+        press(&mut a, '2');
+        press(&mut a, 'j');
+        assert!(a.is_dirty());
+        press(&mut a, 'r');
+        assert!(a.pending_reset, "first press only arms the guard");
+        assert!(a.is_dirty(), "and changes nothing yet");
+    }
+
+    #[test]
+    fn navigation_keys_do_not_cancel_a_pending_guard() {
+        let mut a = app();
+        press(&mut a, 'r');
+        assert!(a.pending_reset);
+        press_all(&mut a, "jk1234");
+        press_code(&mut a, KeyCode::Tab);
+        assert!(
+            a.pending_reset,
+            "navigation must preserve the confirmation banner"
+        );
     }
 }
