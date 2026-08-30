@@ -280,7 +280,7 @@ fn parse_cache(raw: &str) -> Option<CachedCheck> {
 }
 
 /// Whether a background check is due: no cache at all, or one older than
-/// [`REFRESH_INTERVAL`].
+/// `REFRESH_INTERVAL`.
 ///
 /// `saturating_sub` is here for overflow, not for sign: an extreme `checked_at`
 /// would otherwise panic on subtraction in debug builds. A stamp in the future
@@ -294,7 +294,7 @@ fn is_refresh_due(cache: Option<&CachedCheck>, now: i64) -> bool {
 }
 
 /// Spawn a detached `claudebar update --check` when `cached` is missing or
-/// older than [`REFRESH_INTERVAL`].
+/// older than `REFRESH_INTERVAL`.
 ///
 /// Takes the cache the caller has already read — the render path needs the same
 /// value to draw the badge, and reading the file twice per render is waste.

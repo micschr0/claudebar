@@ -589,11 +589,10 @@ fn run_edit(cli: &Cli) -> ExitCode {
         }
     }
 
-    let editor = claudebar::setup::resolve_editor_from(
-        std::env::var("EDITOR").ok(),
-        std::env::var("VISUAL").ok(),
-    )
-    .unwrap_or_else(|| String::from("vi"));
+    let editor = std::env::var("EDITOR")
+        .ok()
+        .or_else(|| std::env::var("VISUAL").ok())
+        .unwrap_or_else(|| String::from("vi"));
 
     let status = std::process::Command::new(&editor).arg(&path).status();
 
