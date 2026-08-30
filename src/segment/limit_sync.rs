@@ -10,23 +10,22 @@
 //! highest `pct` any session has seen for the *current* window (the highest
 //! reset), so an idle session reflects another session's heavier usage.
 //!
-//! ## Storage layout
+//! ## Storage
 //!
-//! The store lives under the cache dir (`$CLAUDEBAR_LIMIT_SYNC_DIR`, else
-//! `$XDG_CACHE_HOME/claudebar`, else `~/.cache/claudebar`). Per window there is
-//! a directory `limit-5h.d` / `limit-7d.d`; each record is itself a directory
-//! (atomic `mkdir`) named `<reset:%010d>_<pct:%07.3f>`:
+//! One file per window under the cache dir (`$CLAUDEBAR_LIMIT_SYNC_DIR`, else
+//! `$XDG_CACHE_HOME/claudebar`, else `~/.cache/claudebar`): `limit-5h` and
+//! `limit-7d`, each a single line `<reset>\t<pct>`. Writes go through the
+//! crate's atomic writer (temp file + rename), so a concurrent reader sees
+//! either the old contents or the new, never a torn line.
 //!
-//! - Fixed-width fields make lexical sort match `(reset, pct)` ordering, so the
-//!   last entry is the highest reset, then the highest pct for that reset.
-//! - `mkdir` is atomic: concurrent records from different sessions create
-//!   distinct names and are idempotent for identical values.
-//!
-//! ## Reading & GC
-//!
-//! `latest_*` lists the window dir, takes the lexically-last (highest) entry,
-//! and `rmdir`s the rest — keeping the store to a single entry per window so
-//! the file count stays bounded across sessions and renders.
+//! Recording is read-modify-write and keeps the higher `(reset, pct)`. Two
+//! sessions writing at the same instant can therefore lose the higher value:
+//! both read the old one, and the lower write can land last. That is benign
+//! and self-correcting — the session holding the higher number re-records it
+//! on its next render, which is at most one status-line refresh away. The
+//! previous design encoded each record as its own directory name and relied on
+//! `mkdir` atomicity to avoid this, at the cost of a listing, a lexical-sort
+//! encoding, and a garbage-collection sweep on every read.
 //!
 //! ## Plausibility
 //!
@@ -58,34 +57,35 @@ fn cache_dir() -> Option<PathBuf> {
     crate::paths::cache_dir()
 }
 
-/// The window subdirectory (`limit-5h.d` / `limit-7d.d`) under `cache`.
-fn window_dir(cache: &Path, window: &str) -> PathBuf {
-    cache.join(format!("limit-{window}.d"))
+/// The file holding `window`'s high-water mark.
+fn window_file(cache: &Path, window: &str) -> PathBuf {
+    cache.join(format!("limit-{window}"))
 }
 
-/// Encode a record as a fixed-width entry name `<reset:%010d>_<pct:%07.3f>`.
-///
-/// Fixed width means lexical sort matches `(reset, pct)` ordering, so the last
-/// entry is the highest reset, then the highest pct for that reset.
-fn entry_name(reset: i64, pct: f64) -> String {
-    format!("{reset:010}_{pct:07.3}")
-}
-
-/// Parse an entry name back into `(reset, pct)`. Returns `None` for anything
-/// not shaped like one of our own entries (defensive — the only writer is us).
-fn parse_entry(name: &str) -> Option<(i64, f64)> {
-    let (r, p) = name.split_once('_')?;
+/// Parse a stored line back into `(reset, pct)`. `None` for anything not
+/// shaped like one of our own writes.
+fn parse_line(line: &str) -> Option<(i64, f64)> {
+    let (r, p) = line.trim().split_once('\t')?;
     let reset = r.parse::<i64>().ok()?;
     let pct = p.parse::<f64>().ok()?;
+    if !pct.is_finite() {
+        return None;
+    }
     Some((reset, pct))
 }
 
-/// Record a `(pct, resets_at)` snapshot for `window` under `cache`.
+/// Read `window`'s stored `(reset, pct)`, or `None` when absent or unreadable.
+fn read(cache: &Path, window: &str) -> Option<(i64, f64)> {
+    parse_line(&fs::read_to_string(window_file(cache, window)).ok()?)
+}
+
+/// Record a `(pct, resets_at)` snapshot for `window` under `cache`, keeping
+/// whichever `(reset, pct)` is higher.
 ///
 /// No-op (rather than an error) when the value is implausible: a non-finite or
-/// out-of-range `pct`, or a `resets_at` more than `max_ahead` in the future
-/// (corrupt/sentinel). `mkdir` is atomic, so concurrent records with distinct
-/// names never collide and identical values are idempotent.
+/// out-of-range `pct`, or a `resets_at` more than `max_ahead` in the future.
+/// Filesystem errors are swallowed — a render that cannot write simply does not
+/// contribute to the shared store.
 fn record(cache: &Path, window: &str, now: i64, pct: f64, resets_at: i64, max_ahead: i64) {
     if !pct.is_finite() || !(0.0..=999.0).contains(&pct) {
         return;
@@ -93,46 +93,22 @@ fn record(cache: &Path, window: &str, now: i64, pct: f64, resets_at: i64, max_ah
     if resets_at > now.saturating_add(max_ahead) {
         return;
     }
-    let dir = window_dir(cache, window);
-    // Ignore errors: the cache is best-effort. A missing parent or a permission
-    // failure simply means this render doesn't contribute to the shared store.
-    let _ = fs::create_dir_all(&dir);
-    let _ = fs::create_dir(dir.join(entry_name(resets_at, pct)));
+    // Nothing to do when the stored mark already covers this snapshot; skipping
+    // the write also keeps idle sessions from touching the file every render.
+    if let Some(stored) = read(cache, window)
+        && stored >= (resets_at, pct)
+    {
+        return;
+    }
+    let _ = crate::render::float::write_atomic(
+        &window_file(cache, window),
+        &format!("{resets_at}\t{pct:.3}\n"),
+    );
 }
 
-/// The highest `(pct, resets_at)` recorded for `window` under `cache`, or `None`.
-///
-/// Lists the window dir, takes the lexically-last (highest) entry, and garbage
-/// collects the rest so the store stays at a single entry. Read and GC errors
-/// are swallowed: a missing dir yields `None`, and a failed `rmdir` is ignored.
+/// The highest `(pct, resets_at)` recorded for `window` under `cache`.
 fn latest(cache: &Path, window: &str) -> Option<(f64, i64)> {
-    let dir = window_dir(cache, window);
-    let mut names: Vec<String> = Vec::new();
-    let mut best: Option<(i64, f64, String)> = None;
-    for entry in fs::read_dir(&dir).ok()?.flatten() {
-        let file_name = entry.file_name();
-        let Some(name) = file_name.to_str() else {
-            continue;
-        };
-        names.push(name.to_owned());
-        if let Some((reset, pct)) = parse_entry(name) {
-            let is_best = match &best {
-                Some((br, bp, _)) => (reset, pct) > (*br, *bp),
-                None => true,
-            };
-            if is_best {
-                best = Some((reset, pct, name.to_owned()));
-            }
-        }
-    }
-    let (best_reset, best_pct, best_name) = best?;
-    // GC: keep only the high-water mark; rmdir everything else (best-effort).
-    for name in &names {
-        if name != &best_name {
-            let _ = fs::remove_dir(dir.join(name));
-        }
-    }
-    Some((best_pct, best_reset))
+    read(cache, window).map(|(reset, pct)| (pct, reset))
 }
 
 /// Record this session's 5-hour `(pct, resets_at)` snapshot.
@@ -249,12 +225,13 @@ mod tests {
         let _ = fs::remove_dir_all(&dir);
     }
 
+    /// The store keeps the *current* window: a later reset wins even when its
+    /// percentage is lower, so a fresh window is not masked by the previous
+    /// window's high-water mark.
     #[test]
-    fn gc_removes_old_window_entries() {
+    fn a_newer_window_supersedes_the_previous_high_water_mark() {
         let dir = unique_temp_dir();
         let now = 1_700_000_000;
-        // An older window (lower reset, higher pct) then the current window
-        // (higher reset). The current window's entry wins; the stale 80% is GC'd.
         record(&dir, "5h", now, 80.0, now + 3600, FIVE_HOUR_MAX_AHEAD_SECS);
         record(
             &dir,
@@ -265,39 +242,130 @@ mod tests {
             FIVE_HOUR_MAX_AHEAD_SECS,
         );
         assert_eq!(latest(&dir, "5h"), Some((30.0, now + 2 * 3600)));
-        // After GC exactly one entry remains; a second read is stable.
-        let remaining = fs::read_dir(window_dir(&dir, "5h"))
-            .map(std::fs::ReadDir::count)
-            .unwrap_or(0);
-        assert_eq!(remaining, 1, "GC should leave exactly one entry");
-        assert_eq!(latest(&dir, "5h"), Some((30.0, now + 2 * 3600)));
         let _ = fs::remove_dir_all(&dir);
     }
 
+    /// A lower percentage within the same window must not overwrite a higher one.
     #[test]
-    fn record_is_idempotent_for_identical_values() {
+    fn a_lower_percentage_does_not_lower_the_mark() {
         let dir = unique_temp_dir();
         let now = 1_700_000_000;
         let reset = now + 3600;
-        // Recording the same (reset, pct) twice yields one entry (mkdir is
-        // idempotent) and a stable latest.
-        record(&dir, "7d", now, 55.0, reset, SEVEN_DAY_MAX_AHEAD_SECS);
-        record(&dir, "7d", now, 55.0, reset, SEVEN_DAY_MAX_AHEAD_SECS);
-        assert_eq!(latest(&dir, "7d"), Some((55.0, reset)));
-        let remaining = fs::read_dir(window_dir(&dir, "7d"))
-            .map(std::fs::ReadDir::count)
-            .unwrap_or(0);
-        assert_eq!(remaining, 1, "identical records should collapse to one");
+        record(&dir, "5h", now, 80.0, reset, FIVE_HOUR_MAX_AHEAD_SECS);
+        record(&dir, "5h", now, 30.0, reset, FIVE_HOUR_MAX_AHEAD_SECS);
+        assert_eq!(latest(&dir, "5h"), Some((80.0, reset)));
         let _ = fs::remove_dir_all(&dir);
     }
 
+    /// One file per window, no matter how many records land.
     #[test]
-    fn entry_name_roundtrips_through_parse() {
-        // Fixed-width names must round-trip and sort numerically.
-        let a = entry_name(1_700_000_000, 48.0);
-        let b = entry_name(1_900_000_000, 80.0);
-        assert!(a < b, "lexical sort must match numeric sort: {a:?} < {b:?}");
-        assert_eq!(parse_entry(&a), Some((1_700_000_000, 48.0)));
-        assert_eq!(parse_entry(&b), Some((1_900_000_000, 80.0)));
+    fn the_store_stays_one_file_per_window() {
+        let dir = unique_temp_dir();
+        let now = 1_700_000_000;
+        for i in 0..25 {
+            record(
+                &dir,
+                "5h",
+                now,
+                f64::from(i),
+                now + 3600,
+                FIVE_HOUR_MAX_AHEAD_SECS,
+            );
+        }
+        let entries = fs::read_dir(&dir).map(std::fs::ReadDir::count).unwrap_or(0);
+        assert_eq!(entries, 1, "expected exactly one file, found {entries}");
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    /// Garbage in the file reads as "no mark" rather than panicking or
+    /// resurrecting a bogus percentage.
+    #[test]
+    fn a_corrupt_file_reads_as_absent() {
+        let dir = unique_temp_dir();
+        fs::create_dir_all(&dir).unwrap();
+        for junk in [
+            "",
+            "not a line",
+            "abc\tdef",
+            "1700000000",
+            "1700000000\tNaN",
+        ] {
+            fs::write(window_file(&dir, "5h"), junk).unwrap();
+            assert_eq!(
+                latest(&dir, "5h"),
+                None,
+                "junk {junk:?} should read as absent"
+            );
+        }
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    /// A reader never observes a half-written line: `write_atomic` renames a
+    /// complete temp file into place.
+    ///
+    /// Threads rather than processes on purpose, and this is the *harsher*
+    /// case: `write_atomic` names its temp file after the pid, so eight threads
+    /// in one process all contend for the same temp path — something separate
+    /// claudebar renders never do. Even then the rename publishes a whole line,
+    /// which is the property under test.
+    #[test]
+    fn concurrent_writers_leave_the_file_parseable() {
+        let dir = unique_temp_dir();
+        fs::create_dir_all(&dir).unwrap();
+        let now = 1_700_000_000;
+        let reset = now + 3600;
+
+        std::thread::scope(|scope| {
+            for t in 0..8 {
+                let dir = dir.clone();
+                scope.spawn(move || {
+                    for i in 0..40 {
+                        let pct = f64::from((t * 40 + i) % 100);
+                        record(&dir, "5h", now, pct, reset, FIVE_HOUR_MAX_AHEAD_SECS);
+                        // Every read must land on a complete record.
+                        if let Some(raw) = read(&dir, "5h") {
+                            assert!(raw.1.is_finite(), "torn read: {raw:?}");
+                        }
+                    }
+                });
+            }
+        });
+
+        let (pct, r) = latest(&dir, "5h").expect("a mark must survive the race");
+        assert_eq!(r, reset);
+        assert!((0.0..=99.0).contains(&pct), "unexpected pct {pct}");
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    /// The deliberate trade this storage makes, stated as a test rather than
+    /// left as a surprise.
+    ///
+    /// Recording is read-modify-write, so two writers that both read the same
+    /// old value can let the lower one land last. The previous directory-based
+    /// store could not lose an update this way. It is accepted because the loss
+    /// is transient: the session holding the higher number re-records it on its
+    /// next render.
+    #[test]
+    fn a_lost_update_is_recovered_by_the_next_record() {
+        let dir = unique_temp_dir();
+        let now = 1_700_000_000;
+        let reset = now + 3600;
+
+        record(&dir, "5h", now, 80.0, reset, FIVE_HOUR_MAX_AHEAD_SECS);
+        // Simulate the racing writer that read before the 80 landed.
+        let _ = crate::render::float::write_atomic(
+            &window_file(&dir, "5h"),
+            &format!("{reset}\t{:.3}\n", 30.0),
+        );
+        assert_eq!(
+            latest(&dir, "5h"),
+            Some((30.0, reset)),
+            "the update was lost"
+        );
+
+        // The next render from the busy session restores it.
+        record(&dir, "5h", now, 80.0, reset, FIVE_HOUR_MAX_AHEAD_SECS);
+        assert_eq!(latest(&dir, "5h"), Some((80.0, reset)), "and recovered");
+        let _ = fs::remove_dir_all(&dir);
     }
 }
