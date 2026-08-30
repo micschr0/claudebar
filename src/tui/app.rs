@@ -179,39 +179,31 @@ impl App {
         }
     }
 
+    /// Segment rows as the right panel lists them: enabled ones in
+    /// `config.segments` order, then the rest in `SegmentKind::ALL` order.
+    pub(crate) fn segment_display_order(&self) -> Vec<SegmentKind> {
+        let mut order: Vec<SegmentKind> = self.config.segments.clone();
+        order.extend(
+            SegmentKind::ALL
+                .iter()
+                .copied()
+                .filter(|k| !self.config.segments.contains(k)),
+        );
+        order
+    }
+
     /// Toggle the segment under `detail_cursor`; the cursor follows it.
     /// `detail_cursor` indexes into the display order (enabled first, then
     /// disabled in `SegmentKind::ALL` order).
     pub(crate) fn toggle_cursor(&mut self) {
-        // Build display order for segments: enabled in config.segments order, then disabled in ALL order.
-        let display_order: Vec<SegmentKind> = {
-            let mut order: Vec<SegmentKind> = self.config.segments.clone();
-            for &kind in &SegmentKind::ALL {
-                if !self.config.segments.contains(&kind) {
-                    order.push(kind);
-                }
-            }
-            order
-        };
-
-        let kind = match display_order.get(self.detail_cursor) {
+        let kind = match self.segment_display_order().get(self.detail_cursor) {
             Some(&k) => k,
             None => return,
         };
 
         toggle_segment(&mut self.config.segments, kind);
 
-        // Update detail_cursor to follow the toggled segment in new display order.
-        let new_display_order: Vec<SegmentKind> = {
-            let mut order: Vec<SegmentKind> = self.config.segments.clone();
-            for &kind in &SegmentKind::ALL {
-                if !self.config.segments.contains(&kind) {
-                    order.push(kind);
-                }
-            }
-            order
-        };
-        if let Some(idx) = new_display_order.iter().position(|&k| k == kind) {
+        if let Some(idx) = self.segment_display_order().iter().position(|&k| k == kind) {
             self.detail_cursor = idx;
         }
     }
@@ -288,17 +280,10 @@ impl App {
             return None;
         }
         match self.menu_cursor {
-            0 => {
-                let mut order: Vec<SegmentKind> = self.config.segments.clone();
-                for &kind in &SegmentKind::ALL {
-                    if !self.config.segments.contains(&kind) {
-                        order.push(kind);
-                    }
-                }
-                order
-                    .get(self.detail_cursor)
-                    .map(|&kind| segment_help(kind))
-            }
+            0 => self
+                .segment_display_order()
+                .get(self.detail_cursor)
+                .map(|&kind| segment_help(kind)),
             3 => {
                 const ORDER: [ThresholdField; 6] = [
                     ThresholdField::Warn,

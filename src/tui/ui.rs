@@ -259,18 +259,7 @@ fn draw_right_panel(f: &mut Frame, app: &App, area: Rect) {
 }
 
 fn build_segment_lines(app: &App, width: u16) -> Vec<Line<'static>> {
-    // Display order: enabled in config.segments order, then disabled in ALL order.
-    let display_order: Vec<crate::model::SegmentKind> = {
-        let mut order: Vec<crate::model::SegmentKind> = app.config.segments.clone();
-        for &kind in &crate::model::SegmentKind::ALL {
-            if !app.config.segments.contains(&kind) {
-                order.push(kind);
-            }
-        }
-        order
-    };
-
-    display_order
+    app.segment_display_order()
         .into_iter()
         .enumerate()
         .map(|(idx, kind)| {
