@@ -6,7 +6,11 @@
 
 /// The set of glyphs a style uses. Nerd Font PUA glyphs for rich styles, ASCII
 /// for the fallback. Stored as `&'static str` because some glyphs are multi-byte.
-#[derive(Debug, Clone, Copy)]
+///
+/// `PartialEq` lets the style registry assert that every registered name
+/// resolves to a distinct style — the check that a per-field comparison was
+/// too coarse to make.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct GlyphSet {
     /// Branch icon preceding the branch name.
     pub branch: &'static str,
@@ -57,7 +61,7 @@ pub struct GlyphSet {
 }
 
 /// A complete visual style: how segments are separated and decorated.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Style {
     /// Separator glyph placed between adjacent non-empty segments (painted in
     /// the theme's `separator` color, with a space on each side).

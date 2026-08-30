@@ -3,26 +3,6 @@
 
 use crate::model::{Color, Theme};
 
-/// All built-in theme names, in display order. Tokyo Night remains the default.
-pub const NAMES: &[&str] = &[
-    "tokyo-night",
-    "ayu-mirage",
-    "catppuccin",
-    "cobalt2",
-    "everforest-dark",
-    "github-dark",
-    "gruvbox",
-    "kanagawa-wave",
-    "moonfly",
-    "night-owl",
-    "nord",
-    "one-dark",
-    "dracula",
-    "rose-pine",
-    "sonokai",
-    "solarized-dark",
-];
-
 /// tokyo-night palette.
 pub const TOKYO_NIGHT: Theme = Theme {
     dir: Color(39),
@@ -439,42 +419,28 @@ pub const SOLARIZED_DARK: Theme = Theme {
     burn: Color(167),
 };
 
-/// Resolve a theme by name. Unknown names fall back to Tokyo Night.
-#[must_use]
-pub fn get(name: &str) -> Theme {
-    match name {
-        "ayu-mirage" => AYU_MIRAGE,
-        "catppuccin" => CATPPUCCIN,
-        "cobalt2" => COBALT2,
-        "everforest-dark" => EVERFOREST_DARK,
-        "github-dark" => GITHUB_DARK,
-        "gruvbox" => GRUVBOX,
-        "kanagawa-wave" => KANAGAWA_WAVE,
-        "moonfly" => MOONFLY,
-        "night-owl" => NIGHT_OWL,
-        "nord" => NORD,
-        "one-dark" => ONE_DARK,
-        "dracula" => DRACULA,
-        "rose-pine" => ROSE_PINE,
-        "sonokai" => SONOKAI,
-        "solarized-dark" => SOLARIZED_DARK,
-        _ => TOKYO_NIGHT,
-    }
+crate::registry! { Theme, TOKYO_NIGHT,
+    "tokyo-night"     => TOKYO_NIGHT,
+    "ayu-mirage"      => AYU_MIRAGE,
+    "catppuccin"      => CATPPUCCIN,
+    "cobalt2"         => COBALT2,
+    "everforest-dark" => EVERFOREST_DARK,
+    "github-dark"     => GITHUB_DARK,
+    "gruvbox"         => GRUVBOX,
+    "kanagawa-wave"   => KANAGAWA_WAVE,
+    "moonfly"         => MOONFLY,
+    "night-owl"       => NIGHT_OWL,
+    "nord"            => NORD,
+    "one-dark"        => ONE_DARK,
+    "dracula"         => DRACULA,
+    "rose-pine"       => ROSE_PINE,
+    "sonokai"         => SONOKAI,
+    "solarized-dark"  => SOLARIZED_DARK,
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test]
-    fn all_known_names_resolve() {
-        for n in NAMES {
-            let _ = get(n);
-        }
-    }
-    #[test]
-    fn unknown_falls_back_to_tokyo_night() {
-        assert_eq!(get("nope"), TOKYO_NIGHT);
-    }
     #[test]
     fn bar_thresholds_distinct() {
         for n in NAMES {
