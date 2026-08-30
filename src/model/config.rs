@@ -169,11 +169,7 @@ impl Config {
     /// falling back to `$HOME/.config/claudebar/config.toml`.
     #[must_use]
     pub fn default_path() -> Option<PathBuf> {
-        let base = std::env::var_os("XDG_CONFIG_HOME")
-            .map(PathBuf::from)
-            .filter(|p| !p.as_os_str().is_empty())
-            .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".config")))?;
-        Some(base.join("claudebar").join("config.toml"))
+        Some(crate::paths::config_dir()?.join("config.toml"))
     }
 
     /// Load config from `path`. A missing file yields `Config::default()`

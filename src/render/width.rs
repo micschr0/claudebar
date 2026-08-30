@@ -7,30 +7,14 @@
 
 /// Compute the visible terminal width of `s` in columns.
 ///
-/// ANSI SGR escapes (`\x1b[...m`) are stripped before counting via a simple
-/// state machine: after an ESC byte, every byte is skipped until the
-/// terminating `m`. Each remaining codepoint counts as 1 column by default;
-/// wide CJK/kana/Hangul/emoji ranges count as 2, and combining diacritical
-/// marks (including variation selectors) count as 0.
+/// Escape sequences are removed by [`crate::render::strip_ansi`] — the same
+/// stripper the plain-text float readout uses, so the two cannot disagree about
+/// what counts as visible. Each remaining codepoint counts as 1 column by
+/// default; wide CJK/kana/Hangul/emoji ranges count as 2, and combining
+/// diacritical marks (including variation selectors) count as 0.
 #[must_use]
 pub fn visible_width(s: &str) -> usize {
-    let mut width = 0;
-    let mut in_escape = false;
-    for c in s.chars() {
-        if in_escape {
-            // Inside an SGR run: swallow everything until the closing `m`.
-            if c == 'm' {
-                in_escape = false;
-            }
-            continue;
-        }
-        if c == '\x1b' {
-            in_escape = true;
-            continue;
-        }
-        width += char_width(c);
-    }
-    width
+    crate::render::strip_ansi(s).chars().map(char_width).sum()
 }
 
 /// Column width of a single codepoint. Combining marks resolve to 0 before
@@ -141,9 +125,23 @@ mod tests {
         assert_eq!(visible_width("e\u{0301}"), 1);
     }
 
+    /// A CSI sequence ends at its first byte in `0x40..=0x7E`, not specifically
+    /// at `m`. `\x1b[31a` is therefore a *complete* sequence and only `bc`
+    /// remains visible.
+    ///
+    /// The previous hand-rolled scanner skipped to the next `m` and so ate the
+    /// rest of the string here, reporting 0. Nothing observable changed: the
+    /// renderer only ever emits SGR (`…m`), so no real status line contains a
+    /// sequence that terminates on another byte.
     #[test]
-    fn unterminated_escape_is_swallowed() {
-        // Per the state machine, ESC skips until 'm'; no 'm' ⇒ rest is skipped.
-        assert_eq!(visible_width("\x1b[31abc"), 0);
+    fn a_csi_sequence_ends_at_its_final_byte_not_at_m() {
+        assert_eq!(visible_width("\x1b[31abc"), 2);
+    }
+
+    /// A lone ESC at the very end has nothing to terminate it and contributes
+    /// no columns.
+    #[test]
+    fn trailing_lone_escape_is_dropped() {
+        assert_eq!(visible_width("ab\x1b"), 2);
     }
 }

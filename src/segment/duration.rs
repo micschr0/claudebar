@@ -7,23 +7,6 @@ use crate::segment::{RenderCtx, Segment};
 
 pub struct Duration;
 
-fn fmt_duration(ms: u64) -> String {
-    let total_s = ms / 1000;
-    let h = total_s / 3600;
-    let m = (total_s % 3600) / 60;
-    let s = total_s % 60;
-    let mut buf = String::with_capacity(7); // "1h02m" ≤ 7 bytes
-    use std::fmt::Write as _;
-    if h > 0 {
-        write!(buf, "{h}h{m:02}m").unwrap();
-    } else if m > 0 {
-        write!(buf, "{m}m").unwrap();
-    } else {
-        write!(buf, "{s}s").unwrap();
-    }
-    buf
-}
-
 impl Segment for Duration {
     fn render(&self, ctx: &RenderCtx, out: &mut SegmentWriter) -> bool {
         let ms = match ctx.input.cost.total_duration_ms.0 {
@@ -31,7 +14,9 @@ impl Segment for Duration {
             _ => return false,
         };
 
-        let formatted = fmt_duration(ms);
+        // Session wall-clock: hours are never folded into days.
+        let formatted =
+            crate::sanitize::fmt_span(i64::try_from(ms / 1000).unwrap_or(i64::MAX), false);
 
         out.colored_with(ctx.theme.duration, |w| {
             w.icon(ctx.style.glyphs.duration);
@@ -45,7 +30,6 @@ impl Segment for Duration {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::model::{Config, InputData, SegmentKind};
     use crate::render::render_with;
     use crate::{styles, themes};
@@ -67,19 +51,21 @@ mod tests {
         render_with(&input, &cfg, &theme, &style, 0, None, 0)
     }
 
+    /// The segment's own formatting contract, end to end. The formatter itself
+    /// is property-tested against its pre-merge reference in `sanitize`.
     #[test]
-    fn fmt_seconds() {
-        assert_eq!(fmt_duration(42_000), "42s");
+    fn renders_seconds_minutes_and_padded_hours() {
+        assert!(render_dur(42_000).contains("42s"));
+        assert!(render_dur(2_820_000).contains("47m"));
+        assert!(render_dur(3_720_000).contains("1h02m"));
     }
 
+    /// A session past 24h keeps counting hours instead of folding into days —
+    /// the reason `fmt_span` takes a flag rather than always showing days.
     #[test]
-    fn fmt_minutes() {
-        assert_eq!(fmt_duration(2_820_000), "47m");
-    }
-
-    #[test]
-    fn fmt_hours() {
-        assert_eq!(fmt_duration(3_720_000), "1h02m");
+    fn long_session_does_not_fold_hours_into_days() {
+        let out = render_dur(90_000_000); // 25h
+        assert!(out.contains("25h00m"), "expected 25h00m, got: {out:?}");
     }
 
     /// Sub-second durations render as "0s" (the minimum granularity).
