@@ -37,6 +37,7 @@
 )]
 
 pub mod model;
+pub mod paths;
 pub mod render;
 pub mod sanitize;
 pub mod segment;

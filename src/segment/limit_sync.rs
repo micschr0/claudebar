@@ -55,11 +55,7 @@ fn cache_dir() -> Option<PathBuf> {
     {
         return Some(d);
     }
-    let base = std::env::var_os("XDG_CACHE_HOME")
-        .map(PathBuf::from)
-        .filter(|p| !p.as_os_str().is_empty())
-        .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".cache")))?;
-    Some(base.join("claudebar"))
+    crate::paths::cache_dir()
 }
 
 /// The window subdirectory (`limit-5h.d` / `limit-7d.d`) under `cache`.

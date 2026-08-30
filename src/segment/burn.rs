@@ -120,7 +120,7 @@ fn estimate(
         let remaining_pct = (100.0 - pct).max(0.0);
         let eta_secs = remaining_pct / slope;
         let time_to_reset = (rst - now).max(0) as f64;
-        let eta = fmt_eta(eta_secs.min(time_to_reset) as i64);
+        let eta = crate::sanitize::fmt_span(eta_secs.min(time_to_reset) as i64, true);
         let color = urgency_color(eta_secs, time_to_reset, theme);
 
         return BurnEstimate {
@@ -206,29 +206,6 @@ fn urgency_color_stateless(pct: f64, resets_at: Option<i64>, now: i64, theme: &T
     }
 }
 
-/// Format seconds as a compact human duration: `1h58m`, `42m`, `15s`, `2d3h`.
-fn fmt_eta(secs: i64) -> String {
-    if secs <= 0 {
-        return String::from("0s");
-    }
-    let days = secs / 86400;
-    let h = (secs % 86400) / 3600;
-    let m = (secs % 3600) / 60;
-    let s = secs % 60;
-    let mut buf = String::with_capacity(8); // "1d23h" ≤ 7 bytes
-    use std::fmt::Write as _;
-    if days > 0 {
-        write!(buf, "{days}d{h}h").unwrap();
-    } else if h > 0 {
-        write!(buf, "{h}h{m:02}m").unwrap();
-    } else if m > 0 {
-        write!(buf, "{m}m").unwrap();
-    } else {
-        write!(buf, "{s}s").unwrap();
-    }
-    buf
-}
-
 /// Render the burn estimate into the writer.
 fn render_burn(ctx: &RenderCtx, out: &mut SegmentWriter, burn: &BurnEstimate) {
     let glyph = ctx.style.glyphs.burn;
@@ -269,11 +246,7 @@ fn render_burn(ctx: &RenderCtx, out: &mut SegmentWriter, burn: &BurnEstimate) {
 /// Default cache path: `$XDG_CACHE_HOME/claudebar/burn-5h.tsv` or
 /// `~/.cache/claudebar/burn-5h.tsv`.
 fn default_path() -> Option<PathBuf> {
-    let base = std::env::var_os("XDG_CACHE_HOME")
-        .map(PathBuf::from)
-        .filter(|p| !p.as_os_str().is_empty())
-        .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".cache")))?;
-    Some(base.join("claudebar").join("burn-5h.tsv"))
+    Some(crate::paths::cache_dir()?.join("burn-5h.tsv"))
 }
 
 /// Override path via env var `CLAUDEBAR_BURN_FILE` (for testing).
@@ -359,26 +332,6 @@ mod tests {
     fn test_theme() -> Theme {
         let config = Config::default();
         themes::get(&config.theme)
-    }
-
-    #[test]
-    fn fmt_eta_seconds() {
-        assert_eq!(fmt_eta(42), "42s");
-    }
-
-    #[test]
-    fn fmt_eta_minutes() {
-        assert_eq!(fmt_eta(2820), "47m");
-    }
-
-    #[test]
-    fn fmt_eta_hours() {
-        assert_eq!(fmt_eta(7080), "1h58m");
-    }
-
-    #[test]
-    fn fmt_eta_days() {
-        assert_eq!(fmt_eta(186_120), "2d3h");
     }
 
     #[test]

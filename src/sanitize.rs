@@ -133,6 +133,42 @@ pub fn fmt_reset(target: i64, now: i64) -> Option<String> {
     Some(buf)
 }
 
+/// Compact span for a positive second count: `2d3h` / `1h58m` / `47m` / `42s`.
+/// Zero or negative renders `0s`.
+///
+/// `with_days` folds spans of 24h or more into a day count. The burn-rate ETA
+/// passes `true`; the session-duration readout passes `false` and renders a
+/// 25-hour session as `25h00m` rather than `1d1h`.
+///
+/// Distinct from [`fmt_reset`], which shares the arithmetic but not the shape:
+/// it leaves the minute unpadded and carries seconds alongside minutes
+/// (`2m10s`), because a countdown ticking toward zero wants the finer grain.
+#[must_use]
+pub fn fmt_span(secs: i64, with_days: bool) -> String {
+    if secs <= 0 {
+        return String::from("0s");
+    }
+    let (d, h) = if with_days {
+        (secs / 86_400, (secs % 86_400) / 3_600)
+    } else {
+        (0, secs / 3_600)
+    };
+    let m = (secs % 3_600) / 60;
+    let s = secs % 60;
+    let mut buf = String::with_capacity(8); // "1d23h" ≤ 7 bytes
+    use std::fmt::Write as _;
+    if d > 0 {
+        write!(buf, "{d}d{h}h").unwrap();
+    } else if h > 0 {
+        write!(buf, "{h}h{m:02}m").unwrap();
+    } else if m > 0 {
+        write!(buf, "{m}m").unwrap();
+    } else {
+        write!(buf, "{s}s").unwrap();
+    }
+    buf
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -203,6 +239,89 @@ mod tests {
         assert_eq!(fmt_reset(now + 5, now).as_deref(), Some("5s"));
         assert_eq!(fmt_reset(now - 5, now), None); // past
         assert_eq!(fmt_reset(0, now), None); // absent
+    }
+
+    /// The three duration formatters this crate used to carry, verbatim, as
+    /// reference implementations. `fmt_span` replaced two of them; these prove
+    /// the replacement is byte-identical rather than merely plausible.
+    mod reference {
+        use std::fmt::Write as _;
+
+        /// Former `segment::burn::fmt_eta`.
+        pub fn fmt_eta(secs: i64) -> String {
+            if secs <= 0 {
+                return String::from("0s");
+            }
+            let days = secs / 86400;
+            let h = (secs % 86400) / 3600;
+            let m = (secs % 3600) / 60;
+            let s = secs % 60;
+            let mut buf = String::new();
+            if days > 0 {
+                write!(buf, "{days}d{h}h").unwrap();
+            } else if h > 0 {
+                write!(buf, "{h}h{m:02}m").unwrap();
+            } else if m > 0 {
+                write!(buf, "{m}m").unwrap();
+            } else {
+                write!(buf, "{s}s").unwrap();
+            }
+            buf
+        }
+
+        /// Former `segment::duration::fmt_duration`, in seconds.
+        pub fn fmt_duration_secs(total_s: u64) -> String {
+            let h = total_s / 3600;
+            let m = (total_s % 3600) / 60;
+            let s = total_s % 60;
+            let mut buf = String::new();
+            if h > 0 {
+                write!(buf, "{h}h{m:02}m").unwrap();
+            } else if m > 0 {
+                write!(buf, "{m}m").unwrap();
+            } else {
+                write!(buf, "{s}s").unwrap();
+            }
+            buf
+        }
+    }
+
+    /// Every second from 0 to 10_000_000 (just under 116 days), plus the day and
+    /// hour boundaries, must format exactly as the old burn ETA did.
+    #[test]
+    fn fmt_span_with_days_matches_the_old_eta_formatter() {
+        for secs in (0..10_000_000).step_by(97) {
+            assert_eq!(
+                fmt_span(secs, true),
+                reference::fmt_eta(secs),
+                "with_days mismatch at {secs}s"
+            );
+        }
+        for secs in [0, 1, 59, 60, 61, 3599, 3600, 3601, 86_399, 86_400, 86_401] {
+            assert_eq!(fmt_span(secs, true), reference::fmt_eta(secs), "at {secs}s");
+        }
+    }
+
+    /// Same for the session-duration readout, which deliberately does *not*
+    /// fold hours into days — a 25-hour session stays `25h00m`.
+    #[test]
+    fn fmt_span_without_days_matches_the_old_duration_formatter() {
+        for secs in (1..10_000_000).step_by(97) {
+            assert_eq!(
+                fmt_span(secs, false),
+                reference::fmt_duration_secs(secs as u64),
+                "no-days mismatch at {secs}s"
+            );
+        }
+        assert_eq!(fmt_span(90_000, false), "25h00m", "hours must not fold");
+        assert_eq!(fmt_span(90_000, true), "1d1h", "unless days are requested");
+    }
+
+    #[test]
+    fn fmt_span_clamps_non_positive_to_zero_seconds() {
+        assert_eq!(fmt_span(0, true), "0s");
+        assert_eq!(fmt_span(-1, true), "0s");
+        assert_eq!(fmt_span(-100, false), "0s");
     }
 
     #[test]
