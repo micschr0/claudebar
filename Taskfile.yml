@@ -39,19 +39,11 @@ tasks:
     desc: Clippy + shellcheck + ruff + actionlint + gitleaks + zizmor
     cmds:
       - cargo clippy -- -D warnings
-      - shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
+      - shellcheck -S warning install.sh scripts/*.sh
       - ruff check scripts/
       - actionlint .github/workflows/*.yml
       - zizmor .github/workflows/*.yml
       - gitleaks detect -v
-
-  syntax:
-    desc: Syntax-check the bash script (no deps needed)
-    cmd: bash -n statusline-command.sh
-
-  bench:
-    desc: Performance benchmark + SLO guard
-    cmd: bash scripts/benchmark.sh
 
   render:
     desc: "Render a fixture: task render -- typical"

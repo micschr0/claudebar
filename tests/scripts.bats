@@ -1,17 +1,12 @@
 #!/usr/bin/env bats
 # Bats coverage for the scripts/ tooling: syntax checks for every script plus
 # the fail-fast guard contracts of gen-gallery.sh. Runtime behavior of
-# benchmark.sh (SLO timing — flaky under CI load) and gen_terminal_gifs.sh
-# (needs asciinema/agg/tmux/Nerd Fonts) is intentionally not exercised here.
+# gen_terminal_gifs.sh (needs asciinema/agg/tmux/Nerd Fonts) is intentionally
+# not exercised here.
 
 setup() {
   REPO_ROOT="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   SCRIPTS="$REPO_ROOT/scripts"
-}
-
-@test "syntax check: bash -n benchmark.sh" {
-  run bash -n "$SCRIPTS/benchmark.sh"
-  [ "$status" -eq 0 ]
 }
 
 @test "syntax check: bash -n gen-gallery.sh" {
