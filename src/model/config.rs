@@ -101,13 +101,8 @@ pub struct Thresholds {
     pub bar_width: u8,
     /// Decimal places for the cost segment (0–4).
     pub cost_decimals: u8,
-    /// Max chars for project/git/model names before … truncation (0 = off).
-    pub name_max: u16,
     /// Clock display mode: `12h`, `24h`, or `off`.
     pub clock_mode: String,
-    /// When enabled, the Model segment appends an inline effort bar (Effort
-    /// is NOT a standalone segment by default — flip this to false to hide it).
-    pub model_show_effort: bool,
     /// Burn-rate lookback window in seconds (default 600 = 10 min).
     pub burn_lookback: u32,
     /// Enable the plain-text float readout file (best-effort side effect).
@@ -135,10 +130,8 @@ impl Default for Thresholds {
             weekly_show_at: 75,
             bar_width: 6,
             cost_decimals: 2,
-            name_max: 0,
             clock_mode: "auto".into(),
             burn_lookback: 600,
-            model_show_effort: true,
             float: false,
             float_segments: "model context cost".into(),
             float_sep: "  ·  ".into(),
@@ -266,6 +259,35 @@ mod tests {
         assert_eq!(c.theme, "nord");
         assert_eq!(c.style, "powerline");
         assert_eq!(c.segments, SegmentKind::DEFAULT.to_vec());
+    }
+
+    /// A config written by an older claudebar still loads after a threshold key
+    /// is retired. `name_max` and `model_show_effort` were both serialized into
+    /// real user configs before being removed as dead (neither was ever read),
+    /// so those files are out in the world and must not start erroring.
+    ///
+    /// This holds because neither `Config` nor `Thresholds` sets
+    /// `deny_unknown_fields`. That is load-bearing rather than incidental —
+    /// adding it would break every config file written before this commit —
+    /// so the guarantee is pinned here instead of left to be rediscovered.
+    #[test]
+    fn retired_and_unknown_threshold_keys_are_ignored() {
+        let c: Config = toml::from_str(
+            r#"
+            theme = "nord"
+            [thresholds]
+            warn = 42
+            name_max = 30
+            model_show_effort = false
+            some_key_that_never_existed = "whatever"
+            "#,
+        )
+        .expect("a config with retired/unknown threshold keys must still load");
+
+        // The retired keys are ignored; every surviving key still applies.
+        assert_eq!(c.theme, "nord");
+        assert_eq!(c.thresholds.warn, 42);
+        assert_eq!(c.thresholds.crit, Thresholds::default().crit);
     }
 
     #[test]
