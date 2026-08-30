@@ -39,38 +39,12 @@ pub(crate) enum Panel {
     Right,
 }
 
-/// A single display row in the flat list. SectionHeader and Divider are
-/// non-selectable; all others can receive flat_cursor.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum RowItem {
-    /// Non-selectable section separator line.
-    SectionHeader(usize), // 0=Segments, 1=Theme, 2=Style, 3=Thresholds
-    /// Selectable segment toggle row.
-    SegmentRow(SegmentKind),
-    /// Non-selectable visual divider between enabled/disabled segments.
-    Divider,
-    /// Selectable theme row.
-    ThemeRow(&'static str),
-    /// Selectable style row.
-    StyleRow(&'static str),
-    /// Selectable threshold nudge row.
-    ThresholdRow(ThresholdField),
-}
-
-/// Full configurator state — single flat-list design.
+/// Full configurator state.
 pub(crate) struct App {
     pub config: Config,
     pub save_path: Option<PathBuf>,
     /// Snapshot at new()/save()/reset() used by is_dirty().
     pub saved_config: Config,
-    /// Index into selectable_indices (the flat cursor).
-    pub flat_cursor: usize,
-    /// Maps flat_cursor → display row index in list_rows.
-    pub selectable_indices: Vec<usize>,
-    /// Full ordered display rows (headers + selectables + dividers).
-    pub list_rows: Vec<RowItem>,
-    /// i-th element of `section_starts` holds the flat_cursor index of the first row in section i.
-    pub section_starts: [usize; 4],
     /// Which panel (Left/Right) currently has keyboard focus.
     pub focused_panel: Panel,
     /// 0–3: which section is highlighted in the left panel.
@@ -122,16 +96,10 @@ impl App {
             })
             .collect();
 
-        let (list_rows, selectable_indices, section_starts) = build_list(&config);
-
         App {
             config,
             save_path,
             saved_config,
-            flat_cursor: 0,
-            selectable_indices,
-            list_rows,
-            section_starts,
             focused_panel: Panel::Left,
             menu_cursor: 0,
             detail_cursor: 0,
@@ -159,13 +127,6 @@ impl App {
         &self.samples[self.sample_idx]
     }
 
-    /// The RowItem currently under flat_cursor.
-    pub(crate) fn cursor_row(&self) -> Option<&RowItem> {
-        self.selectable_indices
-            .get(self.flat_cursor)
-            .and_then(|&dr| self.list_rows.get(dr))
-    }
-
     /// Advance the preview sample forward.
     pub(crate) fn cycle_sample(&mut self) {
         self.sample_idx = (self.sample_idx + 1) % self.samples.len();
@@ -186,15 +147,10 @@ impl App {
         self.pending_quit = true;
     }
 
-    /// Reset config to defaults; rebuild list; reset cursor/scroll.
+    /// Reset config to defaults and send both cursors home.
     pub(crate) fn reset(&mut self) {
         self.config = Config::default();
         self.saved_config = Config::default();
-        let (list_rows, selectable_indices, section_starts) = build_list(&self.config);
-        self.list_rows = list_rows;
-        self.selectable_indices = selectable_indices;
-        self.section_starts = section_starts;
-        self.flat_cursor = 0;
         self.menu_cursor = 0;
         self.detail_cursor = 0;
         self.focused_panel = Panel::Left;
@@ -223,9 +179,9 @@ impl App {
         }
     }
 
-    /// Toggle the segment under detail_cursor; rebuild list; both cursors follow segment.
-    /// detail_cursor indexes into the display order (enabled first, then disabled in ALL order).
-    /// flat_cursor is also updated for backward compat with unit tests that use cursor_row().
+    /// Toggle the segment under `detail_cursor`; the cursor follows it.
+    /// `detail_cursor` indexes into the display order (enabled first, then
+    /// disabled in `SegmentKind::ALL` order).
     pub(crate) fn toggle_cursor(&mut self) {
         // Build display order for segments: enabled in config.segments order, then disabled in ALL order.
         let display_order: Vec<SegmentKind> = {
@@ -244,10 +200,6 @@ impl App {
         };
 
         toggle_segment(&mut self.config.segments, kind);
-        let (list_rows, selectable_indices, section_starts) = build_list(&self.config);
-        self.list_rows = list_rows;
-        self.selectable_indices = selectable_indices;
-        self.section_starts = section_starts;
 
         // Update detail_cursor to follow the toggled segment in new display order.
         let new_display_order: Vec<SegmentKind> = {
@@ -261,23 +213,6 @@ impl App {
         };
         if let Some(idx) = new_display_order.iter().position(|&k| k == kind) {
             self.detail_cursor = idx;
-        }
-
-        // Also update flat_cursor for backward compat with unit tests.
-        if let Some(si) = self
-            .selectable_indices
-            .iter()
-            .enumerate()
-            .find_map(|(si, &dr)| {
-                if let RowItem::SegmentRow(k) = &self.list_rows[dr]
-                    && *k == kind
-                {
-                    return Some(si);
-                }
-                None
-            })
-        {
-            self.flat_cursor = si;
         }
     }
 
@@ -331,8 +266,6 @@ impl App {
 
     /// Apply move-is-select for theme/style sections after navigation.
     /// In the two-panel model, keyed to menu_cursor + detail_cursor.
-    /// Falls back to cursor_row() when menu_cursor == 0 for backward
-    /// compatibility with unit tests that manipulate flat_cursor directly.
     pub(crate) fn apply_move_is_select(&mut self) {
         match self.menu_cursor {
             1 => {
@@ -345,18 +278,8 @@ impl App {
                     self.config.style = name.to_string();
                 }
             }
-            _ => {
-                // Backward compat: flat-cursor callers (unit tests) use cursor_row().
-                match self.cursor_row().cloned() {
-                    Some(RowItem::ThemeRow(name)) => {
-                        self.config.theme = name.to_string();
-                    }
-                    Some(RowItem::StyleRow(name)) => {
-                        self.config.style = name.to_string();
-                    }
-                    _ => {}
-                }
-            }
+            // Segments and Thresholds have nothing to select on move.
+            _ => {}
         }
     }
 
@@ -392,81 +315,6 @@ impl App {
             _ => None,
         }
     }
-}
-
-/// Build list_rows, selectable_indices, and section_starts from config.
-/// Called in App::new(), toggle_cursor(), reset(), and move_segment().
-pub(crate) fn build_list(config: &Config) -> (Vec<RowItem>, Vec<usize>, [usize; 4]) {
-    let mut list_rows: Vec<RowItem> = Vec::with_capacity(
-        4 + SegmentKind::ALL.len()
-            + 1
-            + crate::themes::NAMES.len()
-            + crate::styles::NAMES.len()
-            + 4,
-    );
-    let mut selectable_indices: Vec<usize> = Vec::with_capacity(
-        SegmentKind::ALL.len() + crate::themes::NAMES.len() + crate::styles::NAMES.len() + 4,
-    );
-
-    // --- Section 0: Segments ---
-    list_rows.push(RowItem::SectionHeader(0));
-    // Enabled segments in config.segments order, then disabled in ALL order.
-    let enabled_count = config.segments.len();
-    let total = SegmentKind::ALL.len();
-    // Enabled first.
-    for &kind in &config.segments {
-        selectable_indices.push(list_rows.len());
-        list_rows.push(RowItem::SegmentRow(kind));
-    }
-    // Divider only when some are enabled and some are disabled.
-    if enabled_count > 0 && enabled_count < total {
-        list_rows.push(RowItem::Divider);
-    }
-    // Disabled in canonical order.
-    for &kind in &SegmentKind::ALL {
-        if !config.segments.contains(&kind) {
-            selectable_indices.push(list_rows.len());
-            list_rows.push(RowItem::SegmentRow(kind));
-        }
-    }
-
-    // --- Section 1: Theme ---
-    list_rows.push(RowItem::SectionHeader(1));
-    for &name in crate::themes::NAMES {
-        selectable_indices.push(list_rows.len());
-        list_rows.push(RowItem::ThemeRow(name));
-    }
-
-    // --- Section 2: Style ---
-    list_rows.push(RowItem::SectionHeader(2));
-    for &name in crate::styles::NAMES {
-        selectable_indices.push(list_rows.len());
-        list_rows.push(RowItem::StyleRow(name));
-    }
-
-    // --- Section 3: Thresholds ---
-    list_rows.push(RowItem::SectionHeader(3));
-    selectable_indices.push(list_rows.len());
-    list_rows.push(RowItem::ThresholdRow(ThresholdField::Warn));
-    selectable_indices.push(list_rows.len());
-    list_rows.push(RowItem::ThresholdRow(ThresholdField::Crit));
-    selectable_indices.push(list_rows.len());
-    list_rows.push(RowItem::ThresholdRow(ThresholdField::WeeklyShowAt));
-    selectable_indices.push(list_rows.len());
-    list_rows.push(RowItem::ThresholdRow(ThresholdField::BarWidth));
-
-    // section_starts[i] = flat_cursor of first selectable in section i.
-    let seg_count = SegmentKind::ALL.len();
-    let theme_count = crate::themes::NAMES.len();
-    let style_count = crate::styles::NAMES.len();
-    let section_starts: [usize; 4] = [
-        0,
-        seg_count,
-        seg_count + theme_count,
-        seg_count + theme_count + style_count,
-    ];
-
-    (list_rows, selectable_indices, section_starts)
 }
 
 /// Enable seg (append) if absent, else disable it (remove).
@@ -612,13 +460,6 @@ mod tests {
     }
 
     #[test]
-    fn step_clamps_at_ends() {
-        // flat_cursor clamp logic: saturating_sub and .min(max_idx)
-        assert_eq!(0usize.saturating_sub(1), 0);
-        assert_eq!(4, 4);
-    }
-
-    #[test]
     fn new_syncs_theme_style_cursors() {
         let cfg = Config {
             theme: "nord".into(),
@@ -626,49 +467,8 @@ mod tests {
             ..Config::default()
         };
         let app = App::new(cfg, None);
-        // In the flat list, theme section starts at section_starts[1]=5.
-        // Nord is at index 3 in NAMES, so flat_cursor for nord would be 5+3=8.
-        // But App::new() starts flat_cursor at 0 — just verify config is right.
         assert_eq!(app.config.theme, "nord");
         assert_eq!(app.config.style, "ascii");
-    }
-
-    #[test]
-    fn moving_theme_cursor_updates_config_and_dirty() {
-        let mut app = App::new(Config::default(), None);
-        // Jump to theme section via flat_cursor (backward compat with old flat-list model).
-        app.flat_cursor = app.section_starts[1];
-        let before = app.config.theme.clone();
-        // Simulate j press: move down, apply move-is-select.
-        let max_idx = app.selectable_indices.len().saturating_sub(1);
-        if app.flat_cursor < max_idx {
-            app.flat_cursor += 1;
-        }
-        app.apply_move_is_select();
-        assert_ne!(app.config.theme, before);
-        assert!(app.is_dirty());
-    }
-
-    #[test]
-    fn moving_cursor_at_boundary_does_not_set_dirty() {
-        let mut app = App::new(Config::default(), None);
-        // Jump to first theme row (flat_cursor = section_starts[1]).
-        app.flat_cursor = app.section_starts[1];
-        // Move up — stays on same theme row, no change.
-        let _before = app.config.theme.clone();
-        if app.flat_cursor > 0 {
-            app.flat_cursor -= 1;
-        }
-        // This moves into the last segment row, not a theme row — no theme change.
-        // For this test: manually put cursor on first theme and try to go up within themes.
-        app.flat_cursor = app.section_starts[1]; // first theme
-        let saved = app.config.theme.clone();
-        // Going up from first theme would go to a segment row, not apply theme change.
-        // Theme move-is-select only applies when landing on a ThemeRow.
-        // So staying on the same theme row (boundary) leaves config unchanged.
-        app.apply_move_is_select(); // still on first theme
-        assert_eq!(app.config.theme, saved);
-        assert!(!app.is_dirty());
     }
 
     #[test]
@@ -676,10 +476,6 @@ mod tests {
         let mut app = App::new(Config::default(), None);
         app.config.theme = "dracula".into();
         app.config.segments.clear();
-        let (rows, si, ss) = build_list(&app.config);
-        app.list_rows = rows;
-        app.selectable_indices = si;
-        app.section_starts = ss;
         app.reset();
         assert_eq!(app.config, Config::default());
         assert!(!app.is_dirty());
@@ -696,40 +492,6 @@ mod tests {
         app.save();
         assert!(!app.is_dirty());
         let _ = std::fs::remove_file(path);
-    }
-
-    #[test]
-    fn toggle_cursor_sets_dirty_and_follows_segment() {
-        let mut app = App::new(Config::default(), None);
-        app.flat_cursor = 0; // Directory (enabled)
-        let seg = if let Some(RowItem::SegmentRow(k)) = app.cursor_row() {
-            *k
-        } else {
-            panic!("expected SegmentRow at cursor 0");
-        };
-        app.toggle_cursor(); // disable it → moves to end of disabled list
-        assert!(!app.config.segments.contains(&seg));
-        assert!(app.is_dirty());
-        // Cursor should follow the segment to its new position.
-        assert!(matches!(app.cursor_row(), Some(RowItem::SegmentRow(k)) if *k == seg));
-    }
-
-    #[test]
-    fn seg_order_lists_disabled_after_enabled() {
-        let cfg = Config {
-            segments: vec![SegmentKind::Model, SegmentKind::Git],
-            ..Config::default()
-        };
-        let app = App::new(cfg, None);
-        // First two selectable rows should be Model and Git.
-        assert!(matches!(
-            app.list_rows[app.selectable_indices[0]],
-            RowItem::SegmentRow(SegmentKind::Model)
-        ));
-        assert!(matches!(
-            app.list_rows[app.selectable_indices[1]],
-            RowItem::SegmentRow(SegmentKind::Git)
-        ));
     }
 
     #[test]
@@ -756,50 +518,5 @@ mod tests {
         app.request_quit();
         assert!(app.pending_quit);
         // New design: status is NOT written by request_quit().
-    }
-
-    #[test]
-    fn reorder_follows_cursor_in_display_order() {
-        let mut app = App::new(Config::default(), None);
-        // Cursor on second segment (Git at flat_cursor=1).
-        app.flat_cursor = 1;
-        let moved_kind = if let Some(RowItem::SegmentRow(k)) = app.cursor_row() {
-            *k
-        } else {
-            panic!("expected SegmentRow");
-        };
-        // Move up.
-        if let Some(&seg_idx) = app
-            .config
-            .segments
-            .iter()
-            .position(|s| *s == moved_kind)
-            .as_ref()
-            && seg_idx > 0
-        {
-            move_segment(&mut app.config.segments, seg_idx, Dir::Up);
-            let (rows, si, ss) = build_list(&app.config);
-            app.list_rows = rows;
-            app.selectable_indices = si;
-            app.section_starts = ss;
-            // Cursor follows moved segment.
-            if let Some(new_si) = app
-                .selectable_indices
-                .iter()
-                .enumerate()
-                .find_map(|(si, &dr)| {
-                    if let RowItem::SegmentRow(k) = &app.list_rows[dr]
-                        && *k == moved_kind
-                    {
-                        return Some(si);
-                    }
-                    None
-                })
-            {
-                app.flat_cursor = new_si;
-            }
-        }
-        assert!(matches!(app.cursor_row(), Some(RowItem::SegmentRow(k)) if *k == moved_kind));
-        assert_eq!(app.config.segments[0], moved_kind);
     }
 }
