@@ -55,6 +55,11 @@ jobs:
       - name: Clippy (render-only, no TUI)
         run: cargo clippy --locked --no-default-features -- -D warnings
 
+      - name: Docs
+        run: cargo doc --locked --all-features --no-deps
+        env:
+          RUSTDOCFLAGS: -D warnings
+
       - name: Test
         run: cargo test --locked --all-features
         env:
