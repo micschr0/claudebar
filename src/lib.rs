@@ -36,6 +36,59 @@
     clippy::cast_sign_loss
 )]
 
+/// Declare a name → value registry from one list.
+///
+/// Generates `NAMES` (display order) and `get()` (name lookup with a fallback)
+/// from a single set of entries, so a name can never exist without a matching
+/// arm. That failure mode is not hypothetical: `rounded` sat in `styles::NAMES`
+/// with no arm in `get()` for its entire life, silently resolving to Powerline,
+/// and the tests of the day could not see it.
+macro_rules! registry {
+    ($ty:ty, $fallback:ident, $($name:literal => $konst:ident),+ $(,)?) => {
+        /// Every built-in name, in display order.
+        pub const NAMES: &[&str] = &[$($name),+];
+
+        /// Resolve a name. Unknown names fall back to the default.
+        #[must_use]
+        pub fn get(name: &str) -> $ty {
+            match name {
+                $($name => $konst,)+
+                _ => $fallback,
+            }
+        }
+
+        #[cfg(test)]
+        mod registry_tests {
+            use super::*;
+
+            /// Every name must resolve to its *own* value. A name whose arm is
+            /// missing falls through to the default and collides with it —
+            /// exactly the `rounded` bug, now impossible to reintroduce.
+            #[test]
+            fn every_name_resolves_to_a_distinct_value() {
+                let mut seen: Vec<(&str, $ty)> = Vec::new();
+                for &name in NAMES {
+                    let got = get(name);
+                    if let Some((other, _)) = seen.iter().find(|(_, v)| *v == got) {
+                        panic!(
+                            "{name:?} resolves to the same value as {other:?} — \
+                             missing match arm, or two entries share a constant"
+                        );
+                    }
+                    seen.push((name, got));
+                }
+                assert_eq!(seen.len(), NAMES.len());
+            }
+
+            #[test]
+            fn an_unknown_name_falls_back() {
+                assert_eq!(get("no-such-entry"), $fallback);
+            }
+        }
+    };
+}
+pub(crate) use registry;
+
 pub mod model;
 pub mod paths;
 pub mod render;

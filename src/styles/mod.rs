@@ -3,18 +3,6 @@
 
 use crate::model::{GlyphSet, Style};
 
-/// All built-in style names, in display order. Powerline is the default.
-pub const NAMES: &[&str] = &[
-    "powerline",
-    "lean",
-    "plain",
-    "rounded",
-    "minimal",
-    "unicode",
-    "ascii",
-    "dots",
-];
-
 /// powerline style.
 pub const POWERLINE: Style = Style {
     separator: "\u{e0b1}",
@@ -61,39 +49,16 @@ pub const LEAN: Style = Style {
     glyphs: POWERLINE.glyphs,
 };
 
-/// plain style.
+/// plain style — ASCII with a different worktree marker.
+///
+/// Byte-identical to [`ASCII`] apart from `worktree`; spelling out all 23
+/// glyphs again would just be a second copy to keep in sync.
 pub const PLAIN: Style = Style {
-    separator: "|",
-    window_gap: ":",
-    icons: false,
-    bar_fill: '#',
-    bar_empty: '-',
-    bar_dots: None,
     glyphs: GlyphSet {
-        branch: "",
-        ahead: "^",
-        behind: "v",
-        modified: "M",
-        untracked: "?",
-        context: "",
-        token: "#",
-        clock: "",
-        weekly: "W",
-        reset: "~",
-        model: "@",
-        effort: "*",
         worktree: "+",
-        pull_request: "#",
-        review_ok: "+",
-        review_fail: "x",
-        agent: "&",
-        stash: "s",
-        lines: "-",
-        cost: "$",
-        duration: "d",
-        time: "T",
-        burn: "B",
+        ..ASCII.glyphs
     },
+    ..ASCII
 };
 
 /// rounded style.
@@ -205,46 +170,13 @@ pub const DOTS: Style = Style {
     glyphs: POWERLINE.glyphs,
 };
 
-/// Resolve a style by name. Unknown names fall back to Powerline.
-#[must_use]
-pub fn get(name: &str) -> Style {
-    match name {
-        "lean" => LEAN,
-        "rounded" => ROUNDED,
-        "dots" => DOTS,
-        "plain" => PLAIN,
-        "minimal" => MINIMAL,
-        "unicode" => UNICODE,
-        "ascii" => ASCII,
-        _ => POWERLINE,
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn every_name_resolves_to_its_own_style() {
-        let expected = [
-            ("powerline", POWERLINE),
-            ("lean", LEAN),
-            ("plain", PLAIN),
-            ("rounded", ROUNDED),
-            ("minimal", MINIMAL),
-            ("unicode", UNICODE),
-            ("ascii", ASCII),
-            ("dots", DOTS),
-        ];
-        assert_eq!(expected.len(), NAMES.len(), "NAMES and the table disagree");
-        for (name, want) in expected {
-            let got = get(name);
-            assert_eq!(got.separator, want.separator, "{name}: separator");
-            assert_eq!(got.bar_fill, want.bar_fill, "{name}: bar_fill");
-            assert_eq!(got.bar_dots, want.bar_dots, "{name}: bar_dots");
-        }
-    }
-    #[test]
-    fn unknown_falls_back_to_powerline() {
-        assert_eq!(get("nope").separator, POWERLINE.separator);
-    }
+crate::registry! { Style, POWERLINE,
+    "powerline" => POWERLINE,
+    "lean"      => LEAN,
+    "plain"     => PLAIN,
+    "rounded"   => ROUNDED,
+    "minimal"   => MINIMAL,
+    "unicode"   => UNICODE,
+    "ascii"     => ASCII,
+    "dots"      => DOTS,
 }
