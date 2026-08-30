@@ -14,27 +14,6 @@ use std::path::{Path, PathBuf};
 /// formatting external/user input into the JSON `command` field.
 pub const STATUSLINE_COMMAND: &str = "claudebar render";
 
-/// Resolve the claudebar config file path. Pure — no environment reads, so
-/// directly unit-testable. Mirrors the logic in [`crate::model::Config::default_path`]
-/// but takes explicit parameters.
-#[must_use]
-pub fn resolve_config(xdg_config_home: Option<&Path>, home: Option<&Path>) -> PathBuf {
-    if let Some(xdg) = xdg_config_home {
-        xdg.join("claudebar").join("config.toml")
-    } else if let Some(home) = home {
-        home.join(".config").join("claudebar").join("config.toml")
-    } else {
-        PathBuf::from("config.toml")
-    }
-}
-
-/// Resolve the editor command from `EDITOR` / `VISUAL` env var values passed
-/// explicitly. Returns `None` when neither is set.
-#[must_use]
-pub fn resolve_editor_from(editor: Option<String>, visual: Option<String>) -> Option<String> {
-    editor.or(visual)
-}
-
 /// Nerd Font check: look for .ttf/.otf files with "Nerd" or "nerd" in their name.
 /// Uses `fc-list` if available; falls back to scanning common font dirs.
 #[must_use]
@@ -384,45 +363,8 @@ mod tests {
     }
 
     #[test]
-    fn resolve_config_uses_xdg_var_when_set() {
-        let xdg = Path::new("/tmp/xdg");
-        let home = Path::new("/home/user");
-        let result = resolve_config(Some(xdg), Some(home));
-        assert_eq!(result, PathBuf::from("/tmp/xdg/claudebar/config.toml"));
-    }
-
-    #[test]
-    fn resolve_config_falls_back_to_home_when_xdg_unset() {
-        let home = Path::new("/home/user");
-        let result = resolve_config(None, Some(home));
-        assert_eq!(
-            result,
-            PathBuf::from("/home/user/.config/claudebar/config.toml")
-        );
-    }
-
-    #[test]
-    fn resolve_config_defaults_to_relative_when_neither_set() {
-        let result = resolve_config(None, None);
-        assert_eq!(result, PathBuf::from("config.toml"));
-    }
-
-    #[test]
     fn doctor_reports_missing_nerd_font_is_bool() {
         // Structural test: the function must return bool and not panic.
         let _: bool = check_nerd_font();
-    }
-
-    #[test]
-    fn resolve_editor_from_uses_editor_before_visual() {
-        assert_eq!(
-            resolve_editor_from(Some("vim".into()), Some("code".into())),
-            Some("vim".into())
-        );
-        assert_eq!(
-            resolve_editor_from(None, Some("code".into())),
-            Some("code".into())
-        );
-        assert_eq!(resolve_editor_from(None, None), None);
     }
 }

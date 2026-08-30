@@ -69,8 +69,6 @@ pub(crate) struct App {
     pub selectable_indices: Vec<usize>,
     /// Full ordered display rows (headers + selectables + dividers).
     pub list_rows: Vec<RowItem>,
-    /// Top display-row index currently scrolled to.
-    pub scroll_offset: usize,
     /// i-th element of `section_starts` holds the flat_cursor index of the first row in section i.
     pub section_starts: [usize; 4],
     /// Which panel (Left/Right) currently has keyboard focus.
@@ -133,7 +131,6 @@ impl App {
             flat_cursor: 0,
             selectable_indices,
             list_rows,
-            scroll_offset: 0,
             section_starts,
             focused_panel: Panel::Left,
             menu_cursor: 0,
@@ -198,7 +195,6 @@ impl App {
         self.selectable_indices = selectable_indices;
         self.section_starts = section_starts;
         self.flat_cursor = 0;
-        self.scroll_offset = 0;
         self.menu_cursor = 0;
         self.detail_cursor = 0;
         self.focused_panel = Panel::Left;

@@ -4,8 +4,7 @@
 
 use crate::model::{Color, RESET};
 
-/// Append a self-colored bar of `width` cells for `pct` percent into `buf`,
-/// avoiding the throwaway `String` that [`make_bar`] allocates.
+/// Append a self-colored bar of `width` cells for `pct` percent into `buf`.
 ///
 /// `pct` may exceed 100 (over-limit); the filled run is clamped to `width`.
 #[allow(clippy::too_many_arguments)]

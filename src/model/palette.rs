@@ -10,14 +10,21 @@ use std::fmt::Write;
 pub struct Color(pub u8);
 
 impl Color {
-    /// SGR foreground sequence, e.g. `\x1b[38;5;33m`.
+    /// SGR foreground sequence as an owned `String`, e.g. `\x1b[38;5;33m`.
+    ///
+    /// Test-only: the render path uses [`Color::write_fg`], which appends into
+    /// an existing buffer instead of allocating. This one exists so assertions
+    /// can build an expected escape sequence inline, and is gated so it does
+    /// not sit in the public API or the shipped binary as a slower twin.
+    #[cfg(test)]
     #[must_use = "returns ANSI escape string; ignoring it is a bug"]
     pub fn fg(self) -> String {
         format!("\x1b[38;5;{}m", self.0)
     }
 
     /// Append the SGR foreground sequence directly into `buf`, avoiding the
-    /// throwaway `String` that [`Color::fg`] allocates on the render hot path.
+    /// throwaway `String` an owned-return variant would allocate on the render
+    /// hot path.
     ///
     /// # Panics
     ///
