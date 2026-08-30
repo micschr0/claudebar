@@ -24,7 +24,7 @@ jobs:
       - name: Install shellcheck
         run: sudo apt-get install -y shellcheck
       - name: Run shellcheck
-        run: shellcheck -S warning install.sh statusline-command.sh scripts/*.sh
+        run: shellcheck -S warning install.sh scripts/*.sh
 
   ruff:
     name: Ruff
