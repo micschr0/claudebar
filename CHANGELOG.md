@@ -8,6 +8,37 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.9.9-beta.1](https://github.com/micschr0/claudebar/compare/2026.8.27...2026.9.9-beta.1)
+
+### Added
+- Dots bar style + update-notice segment (#119)
+
+### Fixed
+- Authenticate github api call in verify-install (#118)
+- Complete stable changelog rollup, dedup guard, install block (#144)
+
+### Changed
+- Coerce numbers via serde_json::Value
+- Generate theme and style registries from one list
+- Measure width with unicode-width
+- Remove dead flat-list model, test key dispatch
+- Share duration, path and ansi-strip helpers
+- Store the mark in one file
+
+### Documentation
+- Add code wiki (#117)
+- Link openwiki from readme footer (#138)
+- Link openwiki from readme footer (#146)
+- Update OpenWiki (#122)
+
+### Testing
+- Byte-exact render matrix regression net
+- Tui full-frame goldens, cli setup/edit coverage (#145)
+
+### CI
+- Drop unused coverage HTML, add job timeouts (#143)
+- Lint scripts with ruff (#124)
+
 ## [2026.8.27](https://github.com/micschr0/claudebar/compare/2026.7.21...2026.8.27)
 
 ### Added
