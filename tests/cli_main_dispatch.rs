@@ -14,7 +14,7 @@
 
 use std::fs;
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicU32, Ordering};
 
@@ -23,6 +23,16 @@ static TEST_COUNTER: AtomicU32 = AtomicU32::new(0);
 fn unique_temp_path(name: &str) -> PathBuf {
     let n = TEST_COUNTER.fetch_add(1, Ordering::Relaxed);
     std::env::temp_dir().join(format!("claudebar_test_{name}_{n}.toml"))
+}
+
+/// A fresh empty directory unique to the caller — for tests that need to glob
+/// sibling files (e.g. `setup`'s `.bak-*` backups).
+fn unique_temp_dir(name: &str) -> PathBuf {
+    let n = TEST_COUNTER.fetch_add(1, Ordering::Relaxed);
+    let dir = std::env::temp_dir().join(format!("claudebar_test_{name}_{n}"));
+    let _ = fs::remove_dir_all(&dir);
+    fs::create_dir_all(&dir).expect("mkdir temp");
+    dir
 }
 
 fn bin() -> Command {
@@ -414,6 +424,264 @@ fn main_version_flag() {
 }
 
 // -- config test ------------------------------------------------------------
+
+// -- edit tests -----------------------------------------------------------
+
+#[test]
+fn main_edit_creates_config_then_runs_editor() {
+    let path = unique_temp_path("edit_create");
+    let _ = fs::remove_file(&path);
+
+    let output = bin()
+        .arg("edit")
+        .arg("--config")
+        .arg(&path)
+        .env("EDITOR", "true") // coreutils `true` — exits 0, ignores args
+        .output()
+        .expect("failed to run claudebar edit");
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "edit should exit 0 when the editor succeeds, got: {:?}",
+        output.status.code()
+    );
+    assert!(path.exists(), "edit should create the config if missing");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("created default config"),
+        "edit should announce the config it created, got: {stderr}"
+    );
+
+    let _ = fs::remove_file(&path);
+}
+
+#[test]
+fn main_edit_propagates_editor_failure() {
+    let path = unique_temp_path("edit_fail");
+    let _ = fs::remove_file(&path);
+
+    let output = bin()
+        .arg("edit")
+        .arg("--config")
+        .arg(&path)
+        .env("EDITOR", "false") // exits 1
+        .output()
+        .expect("failed to run claudebar edit");
+
+    assert_eq!(
+        output.status.code(),
+        Some(1),
+        "edit should exit 1 when the editor exits non-zero"
+    );
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("exited with status"),
+        "stderr should report the editor's exit status"
+    );
+
+    let _ = fs::remove_file(&path);
+}
+
+#[test]
+fn main_edit_reports_missing_editor() {
+    let path = unique_temp_path("edit_noeditor");
+    let _ = fs::remove_file(&path);
+
+    let output = bin()
+        .arg("edit")
+        .arg("--config")
+        .arg(&path)
+        .env("EDITOR", "claudebar-no-such-editor-xyz")
+        .output()
+        .expect("failed to run claudebar edit");
+
+    assert_eq!(output.status.code(), Some(1), "edit should exit 1");
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("failed to launch"),
+        "stderr should report the launch failure"
+    );
+
+    let _ = fs::remove_file(&path);
+}
+
+// -- update test ---------------------------------------------------------
+
+#[test]
+fn main_update_check_never_exits_two_when_offline() {
+    // The sandbox has no network, so `fetch_latest()` fails — that is the
+    // error path we want to cover. `--check` must still not exit 2, and the
+    // failed attempt is stamped into an isolated cache dir, not the real one.
+    let cache = std::env::temp_dir().join(format!(
+        "claudebar_update_cache_{}",
+        TEST_COUNTER.fetch_add(1, Ordering::Relaxed)
+    ));
+    let _ = fs::remove_dir_all(&cache);
+
+    let output = bin()
+        .arg("update")
+        .arg("--check")
+        .env("XDG_CACHE_HOME", &cache)
+        .output()
+        .expect("failed to run claudebar update --check");
+
+    let code = output.status.code();
+    assert!(
+        code == Some(0) || code == Some(1),
+        "update --check must never exit 2, got: {code:?}"
+    );
+
+    let _ = fs::remove_dir_all(&cache);
+}
+
+// -- setup tests --------------------------------------------------------
+// `run_setup` wires `statusLine` into Claude Code's settings.json. `--settings-path`
+// bypasses $HOME resolution. Stdin is not a TTY here, so the interactive y/N
+// prompt is unreachable — the non-interactive branches are what these assert.
+
+fn setup(dir: &Path, extra: &[&str]) -> std::process::Output {
+    bin()
+        .arg("setup")
+        .arg("--settings-path")
+        .arg(dir.join("settings.json"))
+        .args(extra)
+        .output()
+        .expect("spawn claudebar setup")
+}
+
+fn bak_count(dir: &Path) -> usize {
+    fs::read_dir(dir)
+        .unwrap()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.file_name().to_string_lossy().contains(".bak-"))
+        .count()
+}
+
+#[test]
+fn main_setup_writes_status_line_into_a_new_file() {
+    let dir = unique_temp_dir("setup_new");
+    let out = setup(&dir, &["-y"]);
+
+    assert_eq!(out.status.code(), Some(0), "exit 0 on fresh write");
+    let written = fs::read_to_string(dir.join("settings.json")).expect("settings written");
+    assert!(written.contains("\"statusLine\""), "key present: {written}");
+    assert!(
+        written.contains("claudebar render"),
+        "command set: {written}"
+    );
+    assert!(
+        String::from_utf8_lossy(&out.stdout).contains("configured"),
+        "stdout confirms: {}",
+        String::from_utf8_lossy(&out.stdout)
+    );
+}
+
+#[test]
+fn main_setup_print_shows_diff_and_touches_nothing() {
+    let dir = unique_temp_dir("setup_print");
+    let out = setup(&dir, &["--print"]);
+
+    assert_eq!(out.status.code(), Some(0));
+    assert!(
+        String::from_utf8_lossy(&out.stdout).contains("statusLine:"),
+        "diff header printed"
+    );
+    assert!(
+        !dir.join("settings.json").exists(),
+        "--print writes nothing"
+    );
+}
+
+#[test]
+fn main_setup_already_configured_is_a_noop() {
+    let dir = unique_temp_dir("setup_noop");
+    fs::write(
+        dir.join("settings.json"),
+        r#"{"statusLine":{"type":"command","command":"claudebar render"}}"#,
+    )
+    .unwrap();
+
+    let out = setup(&dir, &["-y"]);
+
+    assert_eq!(out.status.code(), Some(0));
+    assert!(
+        String::from_utf8_lossy(&out.stdout).contains("nothing to do"),
+        "stdout: {}",
+        String::from_utf8_lossy(&out.stdout)
+    );
+}
+
+#[test]
+fn main_setup_conflicting_value_without_force_fails() {
+    let dir = unique_temp_dir("setup_conflict");
+    fs::write(
+        dir.join("settings.json"),
+        r#"{"statusLine":{"type":"command","command":"other-tool"}}"#,
+    )
+    .unwrap();
+
+    let out = setup(&dir, &["-y"]);
+
+    assert_eq!(out.status.code(), Some(1), "conflict exits 1");
+    assert!(
+        String::from_utf8_lossy(&out.stderr).contains("--force"),
+        "stderr points at --force: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let after = fs::read_to_string(dir.join("settings.json")).unwrap();
+    assert!(after.contains("other-tool"), "file left untouched: {after}");
+}
+
+#[test]
+fn main_setup_force_overwrites_a_conflicting_value() {
+    let dir = unique_temp_dir("setup_force");
+    fs::write(
+        dir.join("settings.json"),
+        r#"{"statusLine":{"type":"command","command":"other-tool"}}"#,
+    )
+    .unwrap();
+
+    let out = setup(&dir, &["--force", "-y"]);
+
+    assert_eq!(out.status.code(), Some(0));
+    let after = fs::read_to_string(dir.join("settings.json")).unwrap();
+    assert!(after.contains("claudebar render"), "overwritten: {after}");
+    assert_eq!(bak_count(&dir), 1, "one backup written");
+}
+
+#[test]
+fn main_setup_non_interactive_without_yes_refuses() {
+    let dir = unique_temp_dir("setup_noyes");
+
+    let out = setup(&dir, &[]);
+
+    assert_eq!(out.status.code(), Some(1), "no --yes in a pipe exits 1");
+    assert!(
+        String::from_utf8_lossy(&out.stderr).contains("--yes"),
+        "stderr asks for --yes: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert!(!dir.join("settings.json").exists(), "nothing written");
+}
+
+#[test]
+fn main_setup_malformed_json_is_surfaced_and_backed_up() {
+    let dir = unique_temp_dir("setup_malformed");
+    fs::write(dir.join("settings.json"), "{ not json").unwrap();
+
+    let out = setup(&dir, &["-y"]);
+
+    assert_eq!(out.status.code(), Some(1));
+    assert!(
+        String::from_utf8_lossy(&out.stderr).contains("not valid JSON"),
+        "stderr: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert_eq!(
+        bak_count(&dir),
+        1,
+        "malformed file backed up before bailing"
+    );
+}
 
 #[test]
 fn main_config_exits_gracefully() {
