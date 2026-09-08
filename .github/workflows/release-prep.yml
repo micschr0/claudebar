@@ -99,13 +99,20 @@ jobs:
           # For a stable release, roll up every commit since the last stable tag
           # (not just since the last beta) so intermediate betas aren't dropped.
           if [[ "$VERSION" != *-beta.* ]]; then
-            last_stable="$(git tag -l | grep -vE -- '-beta\.' | sort -V | tail -1)"
+            last_stable="$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)"
             range="${last_stable:+$last_stable..}"
           else
             range=""
           fi
           if [[ -n "$range" ]]; then
-            git-cliff "$range" --tag "$VERSION" --strip all > "$section"
+            # Stable rollup: exclude beta tags so commits shipped in
+            # intermediate betas land in this release's section. dist only
+            # shows the `## [<version>]` section on the release page — with
+            # the default pattern those commits would sit under a beta
+            # heading and the page would list just the post-beta delta.
+            cfg="$RUNNER_TEMP/cliff-stable.toml"
+            sed 's/^tag_pattern = .*/tag_pattern = "[0-9]+\\\\.[0-9]+\\\\.[0-9]+$"/' cliff.toml > "$cfg"
+            git-cliff -c "$cfg" "$range" --tag "$VERSION" --strip all > "$section"
           else
             git-cliff --unreleased --tag "$VERSION" --strip all > "$section"
           fi
@@ -113,6 +120,21 @@ jobs:
             || { echo "::error::git-cliff produced no entries — nothing to release"; exit 1; }
           grep -q '<!-- next-release -->' CHANGELOG.md
           sed -i "/<!-- next-release -->/r $section" CHANGELOG.md
+          # Defensive: if the range base is ever wrong, git-cliff re-emits
+          # sections for stable tags inside the range; the stale repeats
+          # would make parse-changelog (used by cargo-dist for the release
+          # body) abort on duplicate version headings — silently dropping
+          # the release notes. Keep the first (newest) copy, drop the rest.
+          # Only version-shaped headings key the dedup, so prose, the
+          # compound `## [x] / [y]` heading, and fenced blocks never match.
+          awk '
+            /^## \[[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z]+\.[0-9]+)?\]/ {
+              ver = $0; sub(/\].*/, "", ver)
+              dup = (ver in seen)
+              seen[ver] = 1
+            }
+            !dup { print }
+          ' CHANGELOG.md > CHANGELOG.md.next && mv CHANGELOG.md.next CHANGELOG.md
 
       - name: Commit and open PR
         env:

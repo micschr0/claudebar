@@ -8,23 +8,19 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
-## [2026.8.27](https://github.com/micschr0/claudebar/compare/2026.8.26-beta.1...2026.8.27)
-
-### Fixed
-- Changelog since last stable tag (#113)
-- Move CLAUDEBAR_CHANNEL to bash side of pipe (#111)
-
-## [2026.8.26-beta.1](https://github.com/micschr0/claudebar/compare/2026.7.21...2026.8.26-beta.1)
+## [2026.8.27](https://github.com/micschr0/claudebar/compare/2026.7.21...2026.8.27)
 
 ### Added
 - Add manual release check command (#96)
 - Publish claudebar via npm platform packages (#97)
 
 ### Fixed
+- Changelog since last stable tag (#113)
 - Correct permission input name (#65)
 - Grant statuses permission (#77)
 - Grant workflows permission, fix dead lockfile schedule (#76)
 - Hide style-list glyphs for styles with icons off (#109)
+- Move CLAUDEBAR_CHANNEL to bash side of pipe (#111)
 - Strip cargo-dist target prefix on extract (#105)
 - Strip cargo-dist target prefix when extracting release assets (#100)
 
