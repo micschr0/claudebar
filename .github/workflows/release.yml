@@ -277,6 +277,21 @@ jobs:
         run: |
           # Write and read notes from a file to avoid quoting breaking things
           echo "$ANNOUNCEMENT_BODY" > $RUNNER_TEMP/notes.txt
+          cat >> $RUNNER_TEMP/notes.txt <<'EOF'
+
+          ## More install methods
+
+          ```sh
+          curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash  # verifies SHA256
+          mise use -g github:micschr0/claudebar                                                   # verifies SHA256 + provenance
+          pnpm add -g @micschr0/claudebar                                                         # npm-registry package
+          ```
+
+          Beta channel: `brew install micschr0/tap/claudebar-beta`. Details: README.
+
+          EOF
+
+          # ⚠️ Reapply after 'dist generate'.
 
           gh release create "$RELEASE_TAG" --target "$RELEASE_COMMIT" $PRERELEASE_FLAG --title "$ANNOUNCEMENT_TITLE" --notes-file "$RUNNER_TEMP/notes.txt" artifacts/*
       - name: Prune older prereleases

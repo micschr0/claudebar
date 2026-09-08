@@ -2,7 +2,9 @@
 #
 # Used by `.github/workflows/release-prep.yml`, which runs
 #
-#   git-cliff --unreleased --tag <calver> --strip all > section.md
+#   beta:              git-cliff --unreleased --tag <calver> --strip all > section.md
+#   stable after beta: git-cliff -c <cfg, tag_pattern stable-only> <last-stable>.. --tag <calver> ...
+#
 #   sed -i '/<!-- next-release -->/r section.md' CHANGELOG.md
 #
 # to splice one new section into CHANGELOG.md below the `<!-- next-release -->`
