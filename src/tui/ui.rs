@@ -1178,10 +1178,7 @@ mod tests {
                 a.status = Some((StatusKind::Success, "Saved".to_string()));
             })
         );
-        insta::assert_snapshot!(
-            "pending_reset",
-            frame(100, 30, |a| a.pending_reset = true)
-        );
+        insta::assert_snapshot!("pending_reset", frame(100, 30, |a| a.pending_reset = true));
         insta::assert_snapshot!("help_overlay", frame(100, 30, |a| a.show_help = true));
         insta::assert_snapshot!("too_small", frame(40, 10, |_| {}));
     }

@@ -564,7 +564,10 @@ fn main_setup_writes_status_line_into_a_new_file() {
     assert_eq!(out.status.code(), Some(0), "exit 0 on fresh write");
     let written = fs::read_to_string(dir.join("settings.json")).expect("settings written");
     assert!(written.contains("\"statusLine\""), "key present: {written}");
-    assert!(written.contains("claudebar render"), "command set: {written}");
+    assert!(
+        written.contains("claudebar render"),
+        "command set: {written}"
+    );
     assert!(
         String::from_utf8_lossy(&out.stdout).contains("configured"),
         "stdout confirms: {}",
@@ -582,7 +585,10 @@ fn main_setup_print_shows_diff_and_touches_nothing() {
         String::from_utf8_lossy(&out.stdout).contains("statusLine:"),
         "diff header printed"
     );
-    assert!(!dir.join("settings.json").exists(), "--print writes nothing");
+    assert!(
+        !dir.join("settings.json").exists(),
+        "--print writes nothing"
+    );
 }
 
 #[test]
@@ -670,7 +676,11 @@ fn main_setup_malformed_json_is_surfaced_and_backed_up() {
         "stderr: {}",
         String::from_utf8_lossy(&out.stderr)
     );
-    assert_eq!(bak_count(&dir), 1, "malformed file backed up before bailing");
+    assert_eq!(
+        bak_count(&dir),
+        1,
+        "malformed file backed up before bailing"
+    );
 }
 
 #[test]
