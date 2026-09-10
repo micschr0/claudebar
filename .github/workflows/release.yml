@@ -275,21 +275,79 @@ jobs:
           RELEASE_COMMIT: "${{ github.sha }}"
           RELEASE_TAG: ${{ needs.plan.outputs.tag }}
         run: |
-          # Write and read notes from a file to avoid quoting breaking things
-          echo "$ANNOUNCEMENT_BODY" > $RUNNER_TEMP/notes.txt
-          cat >> $RUNNER_TEMP/notes.txt <<'EOF'
+          # Own the Install section: split dist's body on its deterministic
+          # headings — drop dist's Homebrew-only Install part, keep notes and
+          # the Download table, splice our channel-correct block in between.
+          # Fail-open: without those headings the body passes through whole.
+          cat > "$RUNNER_TEMP/block.md" <<'EOF'
+          ## Install
 
-          ## More install methods
+          Script — verifies SHA256, plus provenance when `gh` is available:
 
-          ```sh
-          curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash  # verifies SHA256
-          mise use -g github:micschr0/claudebar                                                   # verifies SHA256 + provenance
-          pnpm add -g @micschr0/claudebar                                                         # npm-registry package
+          ```bash
+          curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
           ```
 
-          Beta channel: `brew install micschr0/tap/claudebar-beta`. Details: README.
+          <details><summary>Review the script first</summary>
 
+          ```bash
+          curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh -o install.sh
+          claude -p "Audit this script for anything unsafe, then summarize what it does" < install.sh
+          bash install.sh
+          ```
+
+          </details>
+
+          Homebrew — verifies SHA256:
+
+          ```bash
+          brew install micschr0/tap/claudebar
+          ```
+
+          mise (stable channel):
+
+          ```bash
+          mise use -g github:micschr0/claudebar
+          ```
+
+          npm / pnpm (stable channel):
+
+          ```bash
+          pnpm add -g @micschr0/claudebar
+          ```
+
+          Next: `claudebar setup` · What each method verifies: [README → Install](https://github.com/micschr0/claudebar#install)
           EOF
+          if [[ "$PRERELEASE_FLAG" == *--prerelease* ]]; then
+            cat > "$RUNNER_TEMP/block.md" <<'EOF'
+          ## Install
+
+          > [!NOTE]
+          > Prerelease build. Both methods install **this** release; mise and
+          > npm track the latest stable — [README → Install](https://github.com/micschr0/claudebar#install).
+
+          Script — verifies SHA256, plus provenance when `gh` is available:
+
+          ```bash
+          CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+          ```
+
+          Homebrew — verifies SHA256:
+
+          ```bash
+          brew install micschr0/tap/claudebar-beta
+          ```
+
+          Next: `claudebar setup`
+          EOF
+          fi
+          awk -v dl="$RUNNER_TEMP/download.md" '
+            /^## Download / {dlpart=1}
+            dlpart          {print > dl; next}
+            /^## Install /  {inst=1; next}
+            !inst           {print}
+          ' <<<"$ANNOUNCEMENT_BODY" > "$RUNNER_TEMP/notes.txt"
+          cat "$RUNNER_TEMP/block.md" "$RUNNER_TEMP/download.md" >> "$RUNNER_TEMP/notes.txt"
 
           # ⚠️ Reapply after 'dist generate'.
 
