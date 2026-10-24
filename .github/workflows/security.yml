@@ -59,7 +59,7 @@ jobs:
         # to one standard instead of two.
         env:
           SHELLCHECK_OPTS: -S warning
-        run: actionlint -color .github/workflows/*.yml
+        run: actionlint -color -config-file .github/actionlint.yaml .github/workflows/*.yml
 
   bats:
     name: Bats
