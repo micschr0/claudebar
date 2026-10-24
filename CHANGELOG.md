@@ -12,6 +12,7 @@ see `RELEASING.md` for the release ritual.
 
 ### Fixed
 - Beta install command in `install.sh` header and the prerelease release body: `CLAUDEBAR_CHANNEL=beta` placed before `curl` never reaches `bash` in the pipe, so the installer silently fell back to stable
+- npm beta releases use the `beta` distribution tag instead of publishing to the stable `latest` channel
 
 ## [2026.9.9-beta.1](https://github.com/micschr0/claudebar/compare/2026.8.27...2026.9.9-beta.1)
 
