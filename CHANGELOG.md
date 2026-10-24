@@ -11,17 +11,15 @@ see `RELEASING.md` for the release ritual.
 ## [2026.10.24-beta.1](https://github.com/micschr0/claudebar/compare/2026.9.9-beta.1...2026.10.24-beta.1)
 
 ### Fixed
-- Pass beta channel to installer shell (#165)
-- Publish npm betas under beta dist-tag (#166)
+- Pass `CLAUDEBAR_CHANNEL=beta` to the installer shell, not `curl`, so beta installs no longer silently fall back to stable (#165)
+- Publish npm beta releases under the `beta` distribution tag, keeping the stable `latest` channel unchanged (#166)
+
+### Changed
+- Update `serde_json` to 1.0.154, `toml` to 1.1.8, and refresh the dependency lockfile (#156, #163, #164)
 
 ### CI
 - Own the Install section of the release body (#151)
-
-## Unreleased
-
-### Fixed
-- Beta install command in `install.sh` header and the prerelease release body: `CLAUDEBAR_CHANNEL=beta` placed before `curl` never reaches `bash` in the pipe, so the installer silently fell back to stable
-- npm beta releases use the `beta` distribution tag instead of publishing to the stable `latest` channel
+- Update workflow dependencies and move release, install verification, and npm jobs to Ubuntu 26.04 (#159, #161)
 
 ## [2026.9.9-beta.1](https://github.com/micschr0/claudebar/compare/2026.8.27...2026.9.9-beta.1)
 
