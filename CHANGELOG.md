@@ -8,6 +8,15 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.10.24-beta.1](https://github.com/micschr0/claudebar/compare/2026.9.9-beta.1...2026.10.24-beta.1)
+
+### Fixed
+- Pass beta channel to installer shell (#165)
+- Publish npm betas under beta dist-tag (#166)
+
+### CI
+- Own the Install section of the release body (#151)
+
 ## Unreleased
 
 ### Fixed
