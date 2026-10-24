@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # install.sh — one-command installer for claudebar
 # Usage: curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
-# Beta channel (latest prerelease, may be unstable):
-#   CLAUDEBAR_CHANNEL=beta curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
+# Beta channel (latest prerelease, may be unstable) — the env var must sit on
+# the bash side of the pipe: `CLAUDEBAR_CHANNEL=beta curl … | bash` never reaches bash.
+#   curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | CLAUDEBAR_CHANNEL=beta bash
 set -euo pipefail
 
 BIN_DEST="$HOME/.claude/claudebar"
