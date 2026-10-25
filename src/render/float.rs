@@ -25,12 +25,18 @@ use std::path::{Path, PathBuf};
 /// joined by `float_sep`, and writes the result atomically to `float_file`
 /// (expanding a leading `~` via `home`). Best-effort: the float is a side
 /// effect of the status render, so any failure is silently ignored.
-pub fn emit_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>) {
+pub fn emit_float(
+    input: &InputData,
+    cfg: &Config,
+    now: i64,
+    home: Option<&str>,
+    tz_offset_seconds: i32,
+) {
     let path = match resolve_path(&cfg.thresholds.float_file, home) {
         Some(p) => p,
         None => return,
     };
-    let line = render_float(input, cfg, now, home);
+    let line = render_float(input, cfg, now, home, tz_offset_seconds);
     // Best-effort: a float write failure must never break the status line.
     let _ = write_atomic(&path, &line);
 }
@@ -38,7 +44,13 @@ pub fn emit_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>)
 /// Render the float readout to a plain-text string (no I/O). Each segment named
 /// in `float_segments` is rendered with the ASCII style and then stripped of
 /// ANSI color, so the result is independent of the user's configured theme/style.
-fn render_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>) -> String {
+fn render_float(
+    input: &InputData,
+    cfg: &Config,
+    now: i64,
+    home: Option<&str>,
+    tz_offset_seconds: i32,
+) -> String {
     let theme = themes::get(&cfg.theme);
     // The ASCII style is icons-off with ASCII-only glyphs — the cleanest base for
     // a plain-text readout. Colors are stripped afterwards in any case.
@@ -50,7 +62,7 @@ fn render_float(input: &InputData, cfg: &Config, now: i64, home: Option<&str>) -
         th: &cfg.thresholds,
         now,
         home,
-        tz_offset_seconds: 0,
+        tz_offset_seconds,
         // The float readout is a plain-text mirror of the session state; an
         // update badge belongs on the status line only.
         update: None,
@@ -217,13 +229,23 @@ mod tests {
             ..Default::default()
         };
         let cfg = float_cfg("model cost");
-        let line = render_float(&input, &cfg, 0, None);
+        let line = render_float(&input, &cfg, 0, None, 0);
+
         assert!(
             !line.contains('\x1b'),
             "float must contain no ANSI: {line:?}"
         );
         assert!(line.contains("claude-sonnet"));
         assert!(line.contains("1.23"));
+    }
+    #[test]
+    fn clock_uses_injected_local_timezone_offset() {
+        let mut cfg = float_cfg("clock");
+        cfg.thresholds.clock_mode = "24h".into();
+        let input = InputData::default();
+        let utc = render_float(&input, &cfg, 1_800_000_000, None, 0);
+        let local = render_float(&input, &cfg, 1_800_000_000, None, 14_400);
+        assert_ne!(utc, local);
     }
 
     #[test]
@@ -240,7 +262,7 @@ mod tests {
         };
         // Only `model` selected — the `cost` data must NOT appear.
         let cfg = float_cfg("model");
-        let line = render_float(&input, &cfg, 0, None);
+        let line = render_float(&input, &cfg, 0, None, 0);
         assert!(line.contains("claude-sonnet"));
         assert!(!line.contains("9.99"));
         assert!(
@@ -254,7 +276,7 @@ mod tests {
         // No model/context/cost data at all — every selected segment is empty.
         let input = InputData::default();
         let cfg = float_cfg("model context cost");
-        let line = render_float(&input, &cfg, 0, None);
+        let line = render_float(&input, &cfg, 0, None, 0);
         // Context renders "0" at zero tokens (new-user onboarding).
         assert_eq!(
             line, "0",
@@ -270,7 +292,7 @@ mod tests {
             ..Default::default()
         };
         let cfg = float_cfg("model cost");
-        let line = render_float(&input, &cfg, 0, None);
+        let line = render_float(&input, &cfg, 0, None, 0);
         assert_eq!(line, "claude-sonnet");
     }
 
@@ -283,7 +305,7 @@ mod tests {
             ..Default::default()
         };
         let cfg = float_cfg("model bogus not-a-segment");
-        let line = render_float(&input, &cfg, 0, None);
+        let line = render_float(&input, &cfg, 0, None, 0);
         assert_eq!(line, "claude-sonnet");
     }
 
@@ -303,7 +325,7 @@ mod tests {
         };
         let mut cfg = float_cfg("model cost");
         cfg.thresholds.float_sep = "::".into();
-        let line = render_float(&input, &cfg, 0, None);
+        let line = render_float(&input, &cfg, 0, None, 0);
         assert_eq!(line, "m::2.50");
     }
 
@@ -325,7 +347,7 @@ mod tests {
         let mut cfg = float_cfg("model");
         cfg.thresholds.float_file = path.to_string_lossy().into_owned();
 
-        emit_float(&input, &cfg, 0, None);
+        emit_float(&input, &cfg, 0, None, 0);
 
         let written = std::fs::read_to_string(&path).expect("float file should be written");
         assert!(

@@ -1,14 +1,12 @@
 //! Pure helpers shared by segments: injection-hardening and number/time
 //! formatting. No I/O, no color — just string transforms.
 
-/// Strip terminal-control bytes (ESC `\x1b`, BEL `\x07`, CR `\r`, LF `\n`) from a
-/// host-provided string. This blocks ANSI/OSC escape injection through fields
-/// like `cwd`, the git branch name, or the model display name.
+/// Strip terminal-control characters from a host-provided string. This blocks
+/// terminal injection through fields like `cwd`, the git branch name, or model
+/// display name while preserving printable Unicode.
 #[must_use]
 pub fn strip_control(s: &str) -> String {
-    s.chars()
-        .filter(|&c| c != '\x1b' && c != '\x07' && c != '\r' && c != '\n')
-        .collect()
+    s.chars().filter(|&c| !c.is_control()).collect()
 }
 
 /// Fish-style path abbreviation: every component except the last is shortened to
@@ -177,6 +175,11 @@ mod tests {
     fn strips_escape_bytes() {
         let dirty = "ab\x1b[31mcd\x07ef\rgh\nij";
         assert_eq!(strip_control(dirty), "ab[31mcdefghij");
+    }
+
+    #[test]
+    fn strips_controls_but_keeps_unicode() {
+        assert_eq!(strip_control("雪🧭\x08\té\u{200d}"), "雪🧭é\u{200d}");
     }
 
     #[test]

@@ -8,6 +8,11 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## Unreleased
+
+### Fixed
+- Saturate token totals, remove host control characters, detect terminal width correctly, and keep float clocks in local time.
+
 ## [2026.10.24-beta.1](https://github.com/micschr0/claudebar/compare/2026.9.9-beta.1...2026.10.24-beta.1)
 
 ### Fixed
