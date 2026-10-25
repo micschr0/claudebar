@@ -12,6 +12,9 @@ see `RELEASING.md` for the release ritual.
 
 ### Fixed
 - Saturate token totals, remove host control characters, detect terminal width correctly, and keep float clocks in local time.
+- Preserve burn-estimate precision and ignore samples from previous reset windows.
+- Preserve newer prereleases during cleanup and verify the exact requested release without silently building another version; report pinned-install failures without promising a source fallback.
+- Propagate installer file-operation failures instead of reporting successful installation.
 - Quote custom status-line paths, support editor arguments, and keep malformed `setup --print` read-only.
 - Isolate setup regression tests from user configuration and render side effects.
 - Save config atomically, preserve permissions and symlinks, and retain unsaved TUI changes after errors or resets.

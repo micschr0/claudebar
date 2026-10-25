@@ -11,6 +11,22 @@ setup() {
   cd "$BATS_TEST_TMPDIR"
 }
 
+@test "pinned install fails rather than building a different checkout version" {
+  CLAUDEBAR_VERSION=2026.10.24-beta.1 source "$INSTALL"
+  HOME="$BATS_TEST_TMPDIR/home"
+  CLAUDEBAR_SKIP_SETUP=1
+  check_dependencies() { :; }
+  detect_source_dir() { printf '%s' "$REPO_ROOT"; }
+  detect_target() { printf '%s' x86_64-unknown-linux-musl; }
+  install_prebuilt() { return 1; }
+  install_from_source() { touch source-fallback; }
+  link_onto_path() { :; }
+  report_nerd_font() { :; }
+  run main
+  [ "$status" -eq 1 ]
+  [ ! -e source-fallback ]
+}
+
 @test "install.sh is syntactically valid" {
   run bash -n "$INSTALL"
   [ "$status" -eq 0 ]
@@ -51,6 +67,24 @@ setup() {
 }
 
 # ── release JSON parsing ───────────────────────────────────────────────────────
+
+@test "CLAUDEBAR_VERSION pins beta metadata instead of selecting the channel latest" {
+  run env CLAUDEBAR_CHANNEL=beta CLAUDEBAR_VERSION=2026.10.24-beta.1 bash -c '
+    source "$1"
+    api_get() {
+      [ "$1" = "https://api.github.com/repos/micschr0/claudebar/releases/tags/2026.10.24-beta.1" ] || return 1
+      printf "%s" "{\"tag_name\":\"2026.10.24-beta.1\"}"
+    }
+    release_tag "$(fetch_latest_release)"
+  ' bash "$INSTALL"
+  [ "$status" -eq 0 ]
+  [ "$output" = "2026.10.24-beta.1" ]
+}
+
+@test "CLAUDEBAR_VERSION rejects malformed tags" {
+  run env CLAUDEBAR_VERSION='../latest' bash -c "source '$INSTALL'"
+  [ "$status" -ne 0 ]
+}
 
 @test "release_tag extracts the tag" {
   run release_tag '{"tag_name":"v1.2.3"}'
@@ -245,4 +279,69 @@ setup() {
   run install_from_source "$PWD/empty-checkout"
   [ "$status" -eq 1 ]
   [[ "$output" == *"No Cargo.toml"* ]]
+}
+@test "install_from_source fails when installing the built binary fails" {
+  mkdir -p source/target/release
+  touch source/Cargo.toml source/target/release/claudebar
+  cargo() { return 0; }
+  install() { return 1; }
+  run install_from_source "$PWD/source"
+  [ "$status" -eq 1 ]
+  [[ "$output" != *"built and installed"* ]]
+}
+
+@test "install_binary fails to move binary without replacing existing installation" {
+  mkdir workdir
+  printf 'new binary' > workdir/claudebar
+  BIN_DEST="$PWD/claudebar"
+  printf 'old binary' > "$BIN_DEST"
+  mv() { return 1; }
+  run install_binary "$PWD/workdir"
+  [ "$status" -ne 0 ]
+  [ "$(cat "$BIN_DEST")" = "old binary" ]
+}
+
+@test "install_binary fails when chmod fails" {
+  mkdir workdir
+  printf 'new binary' > workdir/claudebar
+  BIN_DEST="$PWD/claudebar"
+  chmod() { return 1; }
+  run install_binary "$PWD/workdir"
+  [ "$status" -ne 0 ]
+  [ "$(cat "$BIN_DEST")" = "new binary" ]
+  [[ "$output" != *"installed"* ]]
+}
+
+@test "prune_prereleases orders beta numbers and preserves newer and unknown tags" {
+  source "$REPO_ROOT/scripts/prune-prereleases.sh"
+  gh() {
+    if [[ "$*" == "release list"* ]]; then
+      printf '%s\n' 2026.10.24-beta.2 2026.10.24-beta.10 2026.10.24-beta.999999999999999999999999 2026.10.25-beta.1 odd-tag 2026.10.23-beta.9
+    else
+      printf '%s\n' "$5" >> deleted
+    fi
+  }
+  prune_prereleases 2026.10.24-beta.10
+  [ "$(cat deleted)" = $'2026.10.24-beta.2\n2026.10.23-beta.9' ]
+}
+
+@test "prune_prereleases on stable current removes older beta, never newer beta" {
+  source "$REPO_ROOT/scripts/prune-prereleases.sh"
+  gh() {
+    if [[ "$*" == "release list"* ]]; then
+      printf '%s\n' 2026.10.24-beta.1 2026.10.24-beta.999999999999999999999999 2026.10.25-beta.1 2026.10.23-beta.9
+    else
+      printf '%s\n' "$5" >> deleted
+    fi
+  }
+  prune_prereleases 2026.10.24
+  [ "$(cat deleted)" = $'2026.10.24-beta.1\n2026.10.24-beta.999999999999999999999999\n2026.10.23-beta.9' ]
+}
+
+@test "prune_prereleases skips unknown current tag" {
+  source "$REPO_ROOT/scripts/prune-prereleases.sh"
+  gh() { printf '%s\n' 2026.10.24-beta.1; }
+  run prune_prereleases nonsense
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"skipping prerelease pruning"* ]]
 }

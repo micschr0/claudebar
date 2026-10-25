@@ -288,7 +288,7 @@ fn seed_burn_file(path: &Path) -> String {
                 "{}\t{:.3}\t{}\n",
                 FIXED_NOW - 600 + i64::from(i) * 100,
                 f64::from(i) * 10.0,
-                FIXED_NOW + 3600
+                1_900_000_000 // Match the five-hour window in the fixtures.
             )
         })
         .collect();
