@@ -7,8 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag to verify (defaults to latest)"
+        description: "Release tag to verify (defaults to latest stable)"
         required: false
+        type: string
 
 permissions: {}
 concurrency:
@@ -16,8 +17,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  resolve-release:
+    name: Resolve release
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          tag="${INPUT_TAG:-${RELEASE_TAG:-}}"
+          if [[ -z "$tag" ]]; then tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName); fi
+          version="${tag#v}"
+          [[ "$version" =~ ^[0-9]{4}\.[0-9]+\.[0-9]+(-beta\.[0-9]+)?$ ]] || { echo "::error::Invalid release tag: $tag"; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
   verify-linux:
     name: Verify Linux
+    needs: resolve-release
     strategy:
       fail-fast: false
       matrix:
@@ -34,6 +58,7 @@ jobs:
       - name: Run install.sh in a clean HOME (no cargo — forces Tier 1)
         env:
           GH_TOKEN: ${{ github.token }}
+          CLAUDEBAR_VERSION: ${{ needs.resolve-release.outputs.version }}
           CLAUDEBAR_TARGET: ${{ matrix.target }}
           CLAUDEBAR_SKIP_SETUP: ${{ matrix.target == 'aarch64-unknown-linux-musl' && '1' || '' }}
           TARGET: ${{ matrix.target }}
@@ -54,6 +79,10 @@ jobs:
           # `curl | bash` usage and catches unbound-variable bugs that only
           # surface without a source file.
           cat install.sh | bash
+          test -x "$HOME/.claude/claudebar"
+          if [ "$(uname -m)" = "x86_64" ] && [[ "$TARGET" == x86_64-* ]]; then
+            test "$("$HOME/.claude/claudebar" --version)" = "claudebar $CLAUDEBAR_VERSION"
+          fi
 
           rm -rf "$HOME/.claude"
           mkdir -p "$HOME"
@@ -66,12 +95,13 @@ jobs:
           # emulation. CLAUDEBAR_TARGET only needs to prove the matching asset
           # downloads, verifies, and extracts; only run it when arch matches.
           if [ "$(uname -m)" = "x86_64" ] && [[ "$TARGET" == x86_64-* ]]; then
-            "$HOME/.claude/claudebar" --version
+            test "$("$HOME/.claude/claudebar" --version)" = "claudebar $CLAUDEBAR_VERSION"
             echo '{}' | "$HOME/.claude/claudebar" render
           fi
 
   verify-macos:
     name: Verify macOS
+    needs: resolve-release
     strategy:
       fail-fast: false
       matrix:
@@ -88,6 +118,7 @@ jobs:
       - name: Run install.sh in a clean HOME (no cargo — forces Tier 1)
         env:
           GH_TOKEN: ${{ github.token }}
+          CLAUDEBAR_VERSION: ${{ needs.resolve-release.outputs.version }}
         run: |
           export HOME="$RUNNER_TEMP/verify-home"
           mkdir -p "$HOME"
@@ -105,6 +136,7 @@ jobs:
           # `curl | bash` usage and catches unbound-variable bugs that only
           # surface without a source file.
           cat install.sh | bash
+          test "$("$HOME/.claude/claudebar" --version)" = "claudebar $CLAUDEBAR_VERSION"
 
           rm -rf "$HOME/.claude"
           mkdir -p "$HOME"
@@ -112,5 +144,5 @@ jobs:
           bash install.sh
 
           test -x "$HOME/.claude/claudebar"
-          "$HOME/.claude/claudebar" --version
+          test "$("$HOME/.claude/claudebar" --version)" = "claudebar $CLAUDEBAR_VERSION"
           echo '{}' | "$HOME/.claude/claudebar" render
