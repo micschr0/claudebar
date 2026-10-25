@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   resolve-release:
+    name: Resolve release
     runs-on: ubuntu-26.04
     timeout-minutes: 30
     permissions:
