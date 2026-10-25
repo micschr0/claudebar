@@ -46,7 +46,7 @@ pub fn render_line(input: &InputData, cfg: &Config, now: i64) -> String {
         newer.as_ref(),
     );
     if cfg.thresholds.float {
-        float::emit_float(input, cfg, now, home.as_deref());
+        float::emit_float(input, cfg, now, home.as_deref(), tz_offset);
     }
     line
 }
@@ -228,12 +228,13 @@ fn terminal_width() -> usize {
         return n;
     }
     // `stty size` prints "rows cols"; the second field is the width.
-    if let Ok(out) = std::process::Command::new("stty")
-        .arg("size")
-        .stdin(std::process::Stdio::null())
-        .stdout(std::process::Stdio::piped())
-        .stderr(std::process::Stdio::null())
-        .output()
+    if let Ok(tty) = std::fs::File::open("/dev/tty")
+        && let Ok(out) = std::process::Command::new("stty")
+            .arg("size")
+            .stdin(std::process::Stdio::from(tty))
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::null())
+            .output()
         && let Some(cols) = String::from_utf8_lossy(&out.stdout)
             .split_whitespace()
             .nth(1)
