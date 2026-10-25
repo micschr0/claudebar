@@ -222,8 +222,8 @@ install_binary() {
   chmod +x "$BIN_DEST"
 }
 
-# Returns 0 on success, 1 on any recoverable failure (falls through to the
-# cargo build tier). Checksum mismatch or an untrusted host is fatal.
+# Returns 0 on success, 1 on a recoverable failure. main decides whether to
+# build from source. Checksum mismatch or an untrusted host is fatal.
 install_prebuilt() {
   local target="$1" workdir="$2"
   local release tag archive url sums_url
@@ -231,7 +231,7 @@ install_prebuilt() {
   release=$(fetch_latest_release)
   tag=$(release_tag "$release")
   if [ -z "$tag" ]; then
-    bold "No prebuilt release found — falling back to cargo build"
+    bold "No prebuilt release found"
     return 1
   fi
 
@@ -239,12 +239,10 @@ install_prebuilt() {
   sums_url=$(find_asset_url "$release" '^(SHA256SUMS\.txt|sha256\.sum)$')
   if [ -z "$url" ]; then
     red "No release asset found for target ${target} in ${tag}"
-    bold "Falling back to cargo build..."
     return 1
   fi
   if [ -z "$sums_url" ]; then
     red "No checksum file found in release ${tag}"
-    bold "Falling back to cargo build..."
     return 1
   fi
   require_github_host "$url" || exit 1
@@ -254,7 +252,6 @@ install_prebuilt() {
   bold "Downloading ${archive}..."
   if ! curl_https "$url" -o "${workdir}/${archive}"; then
     red "Download failed — binary may not exist for this release yet"
-    bold "Falling back to cargo build..."
     return 1
   fi
   curl_https "$sums_url" -o "${workdir}/sha256.sum"
@@ -372,14 +369,19 @@ main() {
   fi
 
   if [ "$installed" -ne 0 ] && [ -z "$RELEASE_VERSION" ]; then
+    bold "Falling back to cargo build..."
     if install_from_source "$src_dir"; then
       installed=0
     fi
   fi
 
   if [ "$installed" -ne 0 ]; then
-    red "No installation method succeeded (no prebuilt binary for this platform and no local cargo build available)."
-    echo "Install Rust (https://rustup.rs) and re-run from a checkout, or wait for a prebuilt release for your platform."
+    if [ -n "$RELEASE_VERSION" ]; then
+      red "Could not install requested release ${RELEASE_VERSION}; source fallback is disabled for pinned installs."
+    else
+      red "No installation method succeeded (no prebuilt binary for this platform and no local cargo build available)."
+      echo "Install Rust (https://rustup.rs) and re-run from a checkout, or wait for a prebuilt release for your platform."
+    fi
     exit 1
   fi
 
