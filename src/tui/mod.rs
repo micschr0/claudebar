@@ -6,6 +6,7 @@ mod preview;
 mod sample;
 mod ui;
 
+use crate::model::ConfigError;
 use app::{App, Dir, Panel, StatusKind, ThresholdField, detail_len, move_segment};
 use crossterm::ExecutableCommand;
 use crossterm::event::{
@@ -20,6 +21,15 @@ use ratatui::backend::CrosstermBackend;
 use std::io::{self, Stdout};
 use std::path::PathBuf;
 use std::time::Duration;
+
+/// Configurator startup and terminal errors.
+#[derive(Debug, thiserror::Error)]
+pub enum TuiError {
+    #[error(transparent)]
+    Config(#[from] ConfigError),
+    #[error("{0}")]
+    Terminal(String),
+}
 
 /// RAII guard: the terminal is restored when this drops, including on panic or
 /// any early return from the event loop.
@@ -54,15 +64,18 @@ impl Drop for TerminalGuard {
 ///
 /// # Errors
 ///
-/// Returns `Err` if the terminal cannot be entered (raw mode, alternate screen,
-/// or mouse capture setup fails) or if the event loop reports a terminal error.
-pub fn run(config_path: Option<PathBuf>) -> Result<(), String> {
-    let config = crate::model::Config::load_or_default(config_path.as_deref());
+/// Returns `TuiError::Config` if loading the config fails, or `TuiError::Terminal`
+/// if the terminal cannot be entered or the event loop reports an error.
+pub fn run(config_path: Option<PathBuf>) -> Result<(), TuiError> {
     let save_path = config_path.or_else(crate::model::Config::default_path);
+    let config = match &save_path {
+        Some(path) => crate::model::Config::load(path)?,
+        None => crate::model::Config::default(),
+    };
     let mut app = App::new(config, save_path);
 
-    let mut guard = TerminalGuard::enter()?;
-    let res = event_loop(&mut guard.terminal, &mut app);
+    let mut guard = TerminalGuard::enter().map_err(TuiError::Terminal)?;
+    let res = event_loop(&mut guard.terminal, &mut app).map_err(TuiError::Terminal);
     drop(guard);
     res
 }
@@ -180,14 +193,8 @@ fn handle_pending_reset(app: &mut App, key: KeyEvent) {
 fn handle_pending_quit(app: &mut App, key: KeyEvent) {
     match key.code {
         KeyCode::Char('s') => {
-            if app.save_path.is_none() {
-                app.pending_quit = false;
-                app.status = Some((
-                    StatusKind::Error,
-                    "no save path (set $HOME or --config)".into(),
-                ));
-            } else {
-                app.save();
+            app.pending_quit = false;
+            if app.save() {
                 app.should_quit = true;
             }
         }
@@ -487,6 +494,24 @@ mod tests {
         App::new(Config::default(), None)
     }
 
+    #[test]
+    fn malformed_config_is_returned_before_entering_terminal() {
+        let path = std::env::temp_dir().join(format!(
+            "claudebar-test-invalid-config-{}.toml",
+            std::process::id()
+        ));
+        std::fs::write(&path, "theme = \"unclosed").unwrap();
+        let result = run(Some(path.clone()));
+        assert!(matches!(
+            result,
+            Err(TuiError::Config(crate::model::ConfigError::Parse(_)))
+        ));
+        assert_eq!(
+            std::fs::read_to_string(&path).unwrap(),
+            "theme = \"unclosed"
+        );
+        std::fs::remove_file(path).unwrap();
+    }
     fn press(app: &mut App, c: char) {
         handle_key(app, KeyEvent::new(KeyCode::Char(c), KeyModifiers::NONE));
     }
@@ -796,6 +821,24 @@ mod tests {
         assert!(b.pending_quit, "it arms the confirmation instead");
         press(&mut b, 'q');
         assert!(b.should_quit, "confirming quits");
+    }
+
+    #[test]
+    fn failed_save_keeps_quit_open_dirty_and_shows_error() {
+        let path = std::env::temp_dir().join(format!(
+            "claudebar-test-save-blocker-{}",
+            std::process::id()
+        ));
+        std::fs::write(&path, "not a directory").unwrap();
+        let mut app = App::new(Config::default(), Some(path.join("config.toml")));
+        app.config.theme = "nord".into();
+        app.request_quit();
+        press(&mut app, 's');
+        assert!(!app.should_quit);
+        assert!(!app.pending_quit);
+        assert!(app.is_dirty());
+        assert!(matches!(app.status, Some((StatusKind::Error, _))));
+        std::fs::remove_file(path).unwrap();
     }
 
     #[test]

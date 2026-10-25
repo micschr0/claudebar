@@ -95,15 +95,12 @@ pub fn default_settings_path() -> Option<PathBuf> {
         })
 }
 
-/// The desired `statusLine` value. With `binary_path: None`, returns the
-/// unchanged default `{"type":"command","command":"claudebar render"}`. With
-/// `binary_path: Some(path)`, builds `{"type":"command","command":"{path} render"}`
-/// instead, so callers (e.g. `install.sh`) can point `statusLine` at an
-/// absolute install location rather than assuming `claudebar` is on `$PATH`.
+/// The desired `statusLine` value. A custom binary path is single-quoted for
+/// the shell, with embedded single quotes escaped; the default remains unchanged.
 #[must_use]
 pub fn desired_status_line(binary_path: Option<&str>) -> Value {
     let command = match binary_path {
-        Some(path) => format!("{path} render"),
+        Some(path) => format!("'{}' render", path.replace('\'', "'\\''")),
         None => STATUSLINE_COMMAND.to_string(),
     };
     serde_json::json!({
@@ -238,8 +235,20 @@ mod tests {
     fn desired_status_line_with_binary_path_override() {
         assert_eq!(
             desired_status_line(Some("some/path")),
-            serde_json::json!({"type":"command","command":"some/path render"})
+            serde_json::json!({"type":"command","command":"'some/path' render"})
         );
+    }
+
+    #[test]
+    fn desired_status_line_quotes_custom_binary_path_for_shell() {
+        assert_eq!(
+            desired_status_line(Some("/tmp/a path/it’s 'unsafe' $;")),
+            serde_json::json!({
+                "type": "command",
+                "command": "'/tmp/a path/it’s '\\''unsafe'\\'' $;' render"
+            })
+        );
+        assert_eq!(desired_status_line(None)["command"], STATUSLINE_COMMAND);
     }
 
     #[test]
