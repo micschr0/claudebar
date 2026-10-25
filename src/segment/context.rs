@@ -27,7 +27,10 @@ pub struct Context;
 impl Segment for Context {
     fn render(&self, ctx: &RenderCtx, out: &mut SegmentWriter) -> bool {
         let cw = &ctx.input.context_window;
-        let total = cw.total_input_tokens.or_default() + cw.total_output_tokens.or_default();
+        let total = cw
+            .total_input_tokens
+            .or_default()
+            .saturating_add(cw.total_output_tokens.or_default());
         let count = fmt_tokens(total);
 
         // The bar + percent only render when a usable percentage is present.
@@ -166,5 +169,11 @@ mod tests {
         let out = render_ctx(Some(42300), Some(0), Some(1000.0));
         assert!(out.contains("42.3k"), "count missing: {out:?}");
         assert!(!out.contains('%'), "should have no percent: {out:?}");
+    }
+
+    #[test]
+    fn token_total_saturates_at_u64_max() {
+        let out = render_ctx(Some(u64::MAX), Some(1), None);
+        assert!(out.contains("18446744073709.6M"), "count missing: {out:?}");
     }
 }
