@@ -209,8 +209,8 @@ install_binary() {
     red "Extracted archive did not contain a claudebar binary"
     return 1
   fi
-  mv "$src" "$BIN_DEST"
-  chmod +x "$BIN_DEST"
+  mv "$src" "$BIN_DEST" || return 1
+  chmod +x "$BIN_DEST" || return 1
 }
 
 # Returns 0 on success, 1 on any recoverable failure (falls through to the
@@ -276,7 +276,7 @@ install_from_source() {
     red "cargo build failed."
     return 1
   fi
-  install -m 0755 "${src_dir}/target/release/claudebar" "$BIN_DEST"
+  install -m 0755 "${src_dir}/target/release/claudebar" "$BIN_DEST" || return 1
   green "claudebar built and installed to ${BIN_DEST}"
 }
 

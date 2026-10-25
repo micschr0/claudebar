@@ -246,3 +246,34 @@ setup() {
   [ "$status" -eq 1 ]
   [[ "$output" == *"No Cargo.toml"* ]]
 }
+@test "install_from_source fails when installing the built binary fails" {
+  mkdir -p source/target/release
+  touch source/Cargo.toml source/target/release/claudebar
+  cargo() { return 0; }
+  install() { return 1; }
+  run install_from_source "$PWD/source"
+  [ "$status" -eq 1 ]
+  [[ "$output" != *"built and installed"* ]]
+}
+
+@test "install_binary fails to move binary without replacing existing installation" {
+  mkdir workdir
+  printf 'new binary' > workdir/claudebar
+  BIN_DEST="$PWD/claudebar"
+  printf 'old binary' > "$BIN_DEST"
+  mv() { return 1; }
+  run install_binary "$PWD/workdir"
+  [ "$status" -ne 0 ]
+  [ "$(cat "$BIN_DEST")" = "old binary" ]
+}
+
+@test "install_binary fails when chmod fails" {
+  mkdir workdir
+  printf 'new binary' > workdir/claudebar
+  BIN_DEST="$PWD/claudebar"
+  chmod() { return 1; }
+  run install_binary "$PWD/workdir"
+  [ "$status" -ne 0 ]
+  [ "$(cat "$BIN_DEST")" = "new binary" ]
+  [[ "$output" != *"installed"* ]]
+}
