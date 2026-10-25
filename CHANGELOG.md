@@ -11,6 +11,7 @@ see `RELEASING.md` for the release ritual.
 ## Unreleased
 
 ### Fixed
+- Preserve burn-estimate precision and ignore samples from previous reset windows.
 - Preserve newer prereleases during cleanup and verify the exact requested release without silently building another version; report pinned-install failures without promising a source fallback.
 - Propagate installer file-operation failures instead of reporting successful installation.
 - Quote custom status-line paths, support editor arguments, and keep malformed `setup --print` read-only.

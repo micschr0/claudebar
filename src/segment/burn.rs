@@ -60,7 +60,7 @@ impl Segment for Burn {
 
         // Compute projection.
         let lookback = i64::from(ctx.th.burn_lookback);
-        let samples = read_samples(ctx.now, lookback);
+        let samples = read_samples(ctx.now, lookback, fh_rst);
         let burn = estimate(
             ctx.now,
             &samples,
@@ -164,10 +164,20 @@ fn linear_slope(samples: &[(i64, f64)]) -> f64 {
     if n < 2.0 {
         return 0.0;
     }
-    let sum_x: f64 = samples.iter().map(|(t, _)| *t as f64).sum();
+    let origin = samples[0].0;
+    let sum_x: f64 = samples
+        .iter()
+        .map(|(t, _)| (i128::from(*t) - i128::from(origin)) as f64)
+        .sum();
     let sum_y: f64 = samples.iter().map(|(_, p)| *p).sum();
-    let sum_xy: f64 = samples.iter().map(|(t, p)| *t as f64 * p).sum();
-    let sum_x2: f64 = samples.iter().map(|(t, _)| (*t as f64).powi(2)).sum();
+    let sum_xy: f64 = samples
+        .iter()
+        .map(|(t, p)| (i128::from(*t) - i128::from(origin)) as f64 * p)
+        .sum();
+    let sum_x2: f64 = samples
+        .iter()
+        .map(|(t, _)| ((i128::from(*t) - i128::from(origin)) as f64).powi(2))
+        .sum();
     let denom = n * sum_x2 - sum_x * sum_x;
     if denom.abs() < 1e-12 {
         return 0.0;
@@ -281,34 +291,38 @@ fn sample(now: i64, pct: f64, resets_at: i64) {
     trim_file(&path);
 }
 
-/// Read samples within the lookback window, return as `[(time, pct)]`.
-fn read_samples(now: i64, lookback: i64) -> Vec<(i64, f64)> {
+/// Read samples within the current reset's lookback window, return `[(time, pct)]`.
+fn read_samples(now: i64, lookback: i64, resets_at: Option<i64>) -> Vec<(i64, f64)> {
+    let Some(resets_at) = resets_at else {
+        return Vec::new();
+    };
     let Some(path) = burn_file() else {
         return Vec::new();
     };
     let Ok(content) = std::fs::read_to_string(&path) else {
         return Vec::new();
     };
-    let cutoff = now - lookback;
+    let cutoff = now.saturating_sub(lookback);
+    parse_samples(&content, cutoff, now, resets_at)
+}
+
+fn parse_samples(content: &str, cutoff: i64, now: i64, resets_at: i64) -> Vec<(i64, f64)> {
     let mut samples = Vec::with_capacity(MAX_ROWS);
     for line in content.lines() {
-        let parts: Vec<&str> = line.split('\t').collect();
-        if parts.len() < 2 {
-            continue;
-        }
-        let Ok(t) = parts[0].parse::<i64>() else {
+        let mut fields = line.split('\t');
+        let (Some(t), Some(p), Some(reset)) = (fields.next(), fields.next(), fields.next()) else {
             continue;
         };
-        let Ok(p) = parts[1].parse::<f64>() else {
+        let (Ok(t), Ok(p), Ok(reset)) = (t.parse::<i64>(), p.parse::<f64>(), reset.parse::<i64>())
+        else {
             continue;
         };
-        if t >= cutoff {
+        if p.is_finite() && t >= cutoff && t <= now && reset == resets_at {
             samples.push((t, p));
         }
     }
     samples
 }
-
 /// Trim the file to the last MAX_ROWS entries.
 fn trim_file(path: &std::path::Path) {
     let Ok(content) = std::fs::read_to_string(path) else {
@@ -630,5 +644,40 @@ mod tests {
 
         assert!(emitted, "burn should render even with far-future reset");
         assert!(!w.is_empty(), "writer should have some content");
+    }
+
+    #[test]
+    fn slope_realistic_epoch_and_translation() {
+        let epoch = 1_700_000_000i64;
+        let samples = [(epoch, 50.0), (epoch + 4, 54.0)];
+        let translated = [(epoch + 1_000_000_000, 50.0), (epoch + 1_000_000_004, 54.0)];
+        for samples in [&samples[..], &translated[..]] {
+            let slope = linear_slope(samples);
+            assert!((slope - 1.0).abs() < 0.001, "expected 1.0, got {slope}");
+            let now = samples.last().unwrap().0;
+            let estimate = estimate(now, samples, Some((54.0, now + 1000)), None, &test_theme());
+            assert_eq!(estimate.state, BurnState::Active);
+            assert_eq!(estimate.eta, "46s");
+        }
+    }
+
+    #[test]
+    fn cache_samples_use_only_current_reset_lookback_and_valid_rows() {
+        let now = 1_700_000_004i64;
+        let content = format!(
+            "{}\t10\t100\n{}\t20\t200\n{}\t50\t200\nbad\t20\t200\n{}\tbad\t200\n{}\t99\n{}\t80\t200\n{}\t54\t200\n",
+            now - 4,
+            now - 3,
+            now - 2,
+            now - 1,
+            now - 1,
+            now - 20,
+            now + 1
+        );
+        let samples = parse_samples(&content, now - 10, now, 200);
+
+        assert_eq!(samples, [(now - 3, 20.0), (now - 2, 50.0)]);
+        let estimate = estimate(now, &samples, Some((54.0, now + 100)), None, &test_theme());
+        assert_eq!(estimate.state, BurnState::Active);
     }
 }
