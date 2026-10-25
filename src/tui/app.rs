@@ -150,7 +150,6 @@ impl App {
     /// Reset config to defaults and send both cursors home.
     pub(crate) fn reset(&mut self) {
         self.config = Config::default();
-        self.saved_config = Config::default();
         self.menu_cursor = 0;
         self.detail_cursor = 0;
         self.focused_panel = Panel::Left;
@@ -158,16 +157,18 @@ impl App {
     }
 
     /// Persist the config to save_path, recording outcome in status.
-    pub(crate) fn save(&mut self) {
+    pub(crate) fn save(&mut self) -> bool {
         match &self.save_path {
             Some(path) => match self.config.save(path) {
                 Ok(()) => {
                     let display = path.display().to_string();
                     self.saved_config = self.config.clone();
                     self.status = Some((StatusKind::Success, format!("saved to {display}")));
+                    true
                 }
                 Err(e) => {
                     self.status = Some((StatusKind::Error, format!("save failed: {e}")));
+                    false
                 }
             },
             None => {
@@ -175,6 +176,7 @@ impl App {
                     StatusKind::Warning,
                     "no save path (set $HOME or --config)".into(),
                 ));
+                false
             }
         }
     }
@@ -457,24 +459,30 @@ mod tests {
     }
 
     #[test]
-    fn reset_restores_defaults_and_cursors() {
-        let mut app = App::new(Config::default(), None);
-        app.config.theme = "dracula".into();
-        app.config.segments.clear();
+    fn reset_is_dirty_until_saved_when_saved_config_was_nondefault() {
+        let saved = Config {
+            theme: "nord".into(),
+            ..Config::default()
+        };
+        let path =
+            std::env::temp_dir().join(format!("claudebar-test-reset-{}.toml", std::process::id()));
+        let mut app = App::new(saved, Some(path.clone()));
         app.reset();
         assert_eq!(app.config, Config::default());
+        assert!(app.is_dirty());
+        assert!(app.save());
         assert!(!app.is_dirty());
+        let _ = std::fs::remove_file(path);
     }
 
     #[test]
     fn save_clears_dirty() {
-        let dir = std::env::temp_dir();
-        let path = dir.join("claudebar_test_save.toml");
+        let path =
+            std::env::temp_dir().join(format!("claudebar-test-save-{}.toml", std::process::id()));
         let mut app = App::new(Config::default(), Some(path.clone()));
-        // Make config dirty.
         app.config.theme = "nord".into();
         assert!(app.is_dirty());
-        app.save();
+        assert!(app.save());
         assert!(!app.is_dirty());
         let _ = std::fs::remove_file(path);
     }

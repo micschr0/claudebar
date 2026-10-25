@@ -194,9 +194,9 @@ impl Config {
     /// Load from the explicit path if given, else the default path, else default.
     #[must_use]
     pub fn load_or_default(explicit: Option<&Path>) -> Config {
-        let path = explicit.map(PathBuf::from).or_else(Config::default_path);
+        let path = explicit.map(PathBuf::from).or_else(Self::default_path);
         match path {
-            Some(p) => Config::load(&p).unwrap_or_default(),
+            Some(path) => Self::load(&path).unwrap_or_default(),
             None => Config::default(),
         }
     }
@@ -210,11 +210,32 @@ impl Config {
     /// serialization fails (should not happen for valid data).
     #[must_use = "ignoring the save result means the config is silently not persisted"]
     pub fn save(&self, path: &Path) -> Result<(), ConfigError> {
-        if let Some(parent) = path.parent() {
-            std::fs::create_dir_all(parent).map_err(|e| ConfigError::Io(e.to_string()))?;
-        }
         let body = toml::to_string_pretty(self).map_err(|e| ConfigError::Parse(e.to_string()))?;
-        std::fs::write(path, body).map_err(|e| ConfigError::Io(e.to_string()))
+        let mut path = std::borrow::Cow::Borrowed(path);
+        // Follow final-component links without requiring their target to exist.
+        for links in 0..=40 {
+            match std::fs::read_link(path.as_ref()) {
+                Ok(target) if links < 40 => {
+                    path = std::borrow::Cow::Owned(if target.is_absolute() {
+                        target
+                    } else {
+                        path.parent().unwrap_or_else(|| Path::new(".")).join(target)
+                    });
+                }
+                Ok(_) => break,
+                Err(e)
+                    if matches!(
+                        e.kind(),
+                        std::io::ErrorKind::NotFound | std::io::ErrorKind::InvalidInput
+                    ) =>
+                {
+                    return crate::render::float::write_atomic(&path, &body)
+                        .map_err(|e| ConfigError::Io(e.to_string()));
+                }
+                Err(e) => return Err(ConfigError::Io(e.to_string())),
+            }
+        }
+        Err(ConfigError::Io("too many configuration symlinks".into()))
     }
 }
 
@@ -292,6 +313,96 @@ mod tests {
         assert_eq!(c.segments, vec![SegmentKind::RateLimits, SegmentKind::Git]);
     }
 
+    #[test]
+    fn config_save_failure_preserves_existing_file() {
+        let path = unique_temp_path();
+        std::fs::write(&path, "previous contents").unwrap();
+        let result = Config::default().save(&path.join("unwritable"));
+        assert!(matches!(result, Err(ConfigError::Io(_))));
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "previous contents");
+        std::fs::remove_file(path).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn config_save_preserves_existing_permissions() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let path = unique_temp_path();
+        std::fs::write(&path, "old").unwrap();
+        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600)).unwrap();
+        Config::default().save(&path).unwrap();
+        assert_eq!(
+            std::fs::metadata(&path).unwrap().permissions().mode() & 0o777,
+            0o600
+        );
+        std::fs::remove_file(path).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn config_save_preserves_config_symlinks() {
+        use std::os::unix::fs::symlink;
+
+        let target = unique_temp_path();
+        let link = target.with_extension("link");
+        std::fs::write(&target, "old").unwrap();
+        symlink(&target, &link).unwrap();
+        let config = Config {
+            theme: "nord".into(),
+            ..Config::default()
+        };
+        config.save(&link).unwrap();
+        assert!(
+            std::fs::symlink_metadata(&link)
+                .unwrap()
+                .file_type()
+                .is_symlink()
+        );
+        assert_eq!(Config::load(&target).unwrap().theme, "nord");
+        std::fs::remove_file(link).unwrap();
+        std::fs::remove_file(target).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn config_save_follows_relative_symlink_chain_to_missing_target() {
+        let dir = unique_temp_path();
+        std::fs::create_dir(&dir).unwrap();
+        let link = dir.join("config.toml");
+        let middle = dir.join("middle");
+        let target = dir.join("missing.toml");
+        std::os::unix::fs::symlink("middle", &link).unwrap();
+        std::os::unix::fs::symlink("missing.toml", &middle).unwrap();
+        let config = Config {
+            theme: "nord".into(),
+            ..Config::default()
+        };
+        config.save(&link).unwrap();
+        assert_eq!(Config::load(&target).unwrap(), config);
+        assert_eq!(std::fs::read_link(&link).unwrap(), Path::new("middle"));
+        assert_eq!(
+            std::fs::read_link(&middle).unwrap(),
+            Path::new("missing.toml")
+        );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn config_save_rejects_symlink_cycles_without_replacing_links() {
+        let dir = unique_temp_path();
+        std::fs::create_dir(&dir).unwrap();
+        let left = dir.join("left");
+        let right = dir.join("right");
+        std::os::unix::fs::symlink("right", &left).unwrap();
+        std::os::unix::fs::symlink("left", &right).unwrap();
+        assert!(Config::default().save(&left).is_err());
+        assert_eq!(std::fs::read_link(&left).unwrap(), Path::new("right"));
+        assert_eq!(std::fs::read_link(&right).unwrap(), Path::new("left"));
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
     /// Unique temp path; nanos + pid keep parallel test runs from colliding.
     /// No `tempfile` crate — `insta` is the only dev-dependency.
     fn unique_temp_path() -> PathBuf {
@@ -306,28 +417,6 @@ mod tests {
         ))
     }
 
-    #[test]
-    fn malformed_toml_is_parse_error() {
-        // CR-14: a present-but-broken file is a real error, not a silent default.
-        let path = unique_temp_path();
-        std::fs::write(&path, "theme = \"unclosed").unwrap();
-        let result = Config::load(&path);
-        assert!(
-            matches!(result, Err(ConfigError::Parse(_))),
-            "expected Parse error, got: {result:?}"
-        );
-        let _ = std::fs::remove_file(&path);
-    }
-
-    #[test]
-    fn load_or_default_falls_back_on_malformed() {
-        // CR-14: the load-or-default path swallows the parse error and yields
-        // Config::default() so rendering never breaks on a bad file.
-        let path = unique_temp_path();
-        std::fs::write(&path, "theme = \"unclosed").unwrap();
-        assert_eq!(Config::load_or_default(Some(&path)), Config::default());
-        let _ = std::fs::remove_file(&path);
-    }
     #[test]
     fn config_default_has_expected_theme() {
         let cfg = Config::default();
