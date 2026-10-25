@@ -100,6 +100,12 @@ Or via the script:
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | CLAUDEBAR_CHANNEL=beta bash
 ```
 
+To install a specific release, set `CLAUDEBAR_VERSION` on the bash side of the pipe (without the leading `v`):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | CLAUDEBAR_VERSION=2026.7.6-beta.1 bash
+```
+
 `micschr0/tap/claudebar` always tracks stable; `claudebar-beta` follows the latest prerelease. Back to stable:
 
 ```bash

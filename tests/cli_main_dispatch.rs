@@ -496,9 +496,10 @@ fn main_edit_reports_missing_editor() {
         .expect("failed to run claudebar edit");
 
     assert_eq!(output.status.code(), Some(1), "edit should exit 1");
+    let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(
-        String::from_utf8_lossy(&output.stderr).contains("failed to launch"),
-        "stderr should report the launch failure"
+        stderr.contains("claudebar-no-such-editor-xyz"),
+        "stderr should identify the editor: {stderr}"
     );
 
     let _ = fs::remove_file(&path);

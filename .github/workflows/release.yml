@@ -359,14 +359,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.release-app-token.outputs.token }}
           RELEASE_TAG: ${{ needs.plan.outputs.tag }}
-        run: |
-          gh release list --json tagName,isPrerelease -q \
-            '.[] | select(.isPrerelease) | .tagName' \
-            | { grep -vFx "$RELEASE_TAG" || true; } \
-            | while IFS= read -r tag; do
-                echo "pruning older prerelease: $tag"
-                gh release delete --yes --cleanup-tag "$tag" || true
-              done
+        run: scripts/prune-prereleases.sh
 
   # Stable → claudebar.rb, prerelease → claudebar@beta.rb. Never in same commit → brew upgrade can't bounce stable users to beta. ⚠️ Reapply after 'dist generate'.
 

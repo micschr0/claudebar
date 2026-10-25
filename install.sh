@@ -8,14 +8,23 @@ set -euo pipefail
 
 BIN_DEST="$HOME/.claude/claudebar"
 RELEASE_CHANNEL="${CLAUDEBAR_CHANNEL:-stable}"
-case "$RELEASE_CHANNEL" in
-  stable) RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases/latest" ;;
-  beta)   RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases" ;;
-  *)
-    printf '\033[31mUnknown CLAUDEBAR_CHANNEL: %s (expected: stable, beta)\033[0m\n' "$RELEASE_CHANNEL" >&2
+RELEASE_VERSION="${CLAUDEBAR_VERSION:-}"
+if [ -n "$RELEASE_VERSION" ]; then
+  [[ "$RELEASE_VERSION" =~ ^[0-9]{4}\.[0-9]+\.[0-9]+(-beta\.[0-9]+)?$ ]] || {
+    printf '\033[31mInvalid CLAUDEBAR_VERSION: %s\n' "$RELEASE_VERSION" >&2
     exit 1
-    ;;
-esac
+  }
+  RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases/tags/${RELEASE_VERSION}"
+else
+  case "$RELEASE_CHANNEL" in
+    stable) RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases/latest" ;;
+    beta)   RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases" ;;
+    *)
+      printf '\033[31mUnknown CLAUDEBAR_CHANNEL: %s (expected: stable, beta)\033[0m\n' "$RELEASE_CHANNEL" >&2
+      exit 1
+      ;;
+  esac
+fi
 
 red()   { printf '\033[31m%s\033[0m\n' "$*"; }
 green() { printf '\033[32m%s\033[0m\n' "$*"; }
@@ -96,7 +105,7 @@ fetch_latest_release() {
     LATEST_RELEASE_JSON=$(api_get "$RELEASE_API")
     # beta channel hits the /releases list (newest first, includes prereleases);
     # stable hits /releases/latest, which is already a single object.
-    if [ "$RELEASE_CHANNEL" = "beta" ]; then
+    if [ -z "$RELEASE_VERSION" ] && [ "$RELEASE_CHANNEL" = "beta" ]; then
       LATEST_RELEASE_JSON=$(printf '%s' "$LATEST_RELEASE_JSON" | jq -c '.[0] // empty')
     fi
   fi
@@ -209,12 +218,12 @@ install_binary() {
     red "Extracted archive did not contain a claudebar binary"
     return 1
   fi
-  mv "$src" "$BIN_DEST"
-  chmod +x "$BIN_DEST"
+  mv "$src" "$BIN_DEST" || return 1
+  chmod +x "$BIN_DEST" || return 1
 }
 
-# Returns 0 on success, 1 on any recoverable failure (falls through to the
-# cargo build tier). Checksum mismatch or an untrusted host is fatal.
+# Returns 0 on success, 1 on a recoverable failure. main decides whether to
+# build from source. Checksum mismatch or an untrusted host is fatal.
 install_prebuilt() {
   local target="$1" workdir="$2"
   local release tag archive url sums_url
@@ -222,7 +231,7 @@ install_prebuilt() {
   release=$(fetch_latest_release)
   tag=$(release_tag "$release")
   if [ -z "$tag" ]; then
-    bold "No prebuilt release found — falling back to cargo build"
+    bold "No prebuilt release found"
     return 1
   fi
 
@@ -230,12 +239,10 @@ install_prebuilt() {
   sums_url=$(find_asset_url "$release" '^(SHA256SUMS\.txt|sha256\.sum)$')
   if [ -z "$url" ]; then
     red "No release asset found for target ${target} in ${tag}"
-    bold "Falling back to cargo build..."
     return 1
   fi
   if [ -z "$sums_url" ]; then
     red "No checksum file found in release ${tag}"
-    bold "Falling back to cargo build..."
     return 1
   fi
   require_github_host "$url" || exit 1
@@ -245,7 +252,6 @@ install_prebuilt() {
   bold "Downloading ${archive}..."
   if ! curl_https "$url" -o "${workdir}/${archive}"; then
     red "Download failed — binary may not exist for this release yet"
-    bold "Falling back to cargo build..."
     return 1
   fi
   curl_https "$sums_url" -o "${workdir}/sha256.sum"
@@ -276,7 +282,7 @@ install_from_source() {
     red "cargo build failed."
     return 1
   fi
-  install -m 0755 "${src_dir}/target/release/claudebar" "$BIN_DEST"
+  install -m 0755 "${src_dir}/target/release/claudebar" "$BIN_DEST" || return 1
   green "claudebar built and installed to ${BIN_DEST}"
 }
 
@@ -362,15 +368,20 @@ main() {
     bold "No prebuilt binary for $(uname -s)/$(uname -m) — skipping download"
   fi
 
-  if [ "$installed" -ne 0 ]; then
+  if [ "$installed" -ne 0 ] && [ -z "$RELEASE_VERSION" ]; then
+    bold "Falling back to cargo build..."
     if install_from_source "$src_dir"; then
       installed=0
     fi
   fi
 
   if [ "$installed" -ne 0 ]; then
-    red "No installation method succeeded (no prebuilt binary for this platform and no local cargo build available)."
-    echo "Install Rust (https://rustup.rs) and re-run from a checkout, or wait for a prebuilt release for your platform."
+    if [ -n "$RELEASE_VERSION" ]; then
+      red "Could not install requested release ${RELEASE_VERSION}; source fallback is disabled for pinned installs."
+    else
+      red "No installation method succeeded (no prebuilt binary for this platform and no local cargo build available)."
+      echo "Install Rust (https://rustup.rs) and re-run from a checkout, or wait for a prebuilt release for your platform."
+    fi
     exit 1
   fi
 
