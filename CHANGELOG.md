@@ -8,6 +8,11 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## Unreleased
+
+### Fixed
+- Preserve newer prereleases during cleanup and verify the exact requested release without silently building another version.
+
 ## [2026.10.24-beta.1](https://github.com/micschr0/claudebar/compare/2026.9.9-beta.1...2026.10.24-beta.1)
 
 ### Fixed

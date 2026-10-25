@@ -8,14 +8,23 @@ set -euo pipefail
 
 BIN_DEST="$HOME/.claude/claudebar"
 RELEASE_CHANNEL="${CLAUDEBAR_CHANNEL:-stable}"
-case "$RELEASE_CHANNEL" in
-  stable) RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases/latest" ;;
-  beta)   RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases" ;;
-  *)
-    printf '\033[31mUnknown CLAUDEBAR_CHANNEL: %s (expected: stable, beta)\033[0m\n' "$RELEASE_CHANNEL" >&2
+RELEASE_VERSION="${CLAUDEBAR_VERSION:-}"
+if [ -n "$RELEASE_VERSION" ]; then
+  [[ "$RELEASE_VERSION" =~ ^[0-9]{4}\.[0-9]+\.[0-9]+(-beta\.[0-9]+)?$ ]] || {
+    printf '\033[31mInvalid CLAUDEBAR_VERSION: %s\n' "$RELEASE_VERSION" >&2
     exit 1
-    ;;
-esac
+  }
+  RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases/tags/${RELEASE_VERSION}"
+else
+  case "$RELEASE_CHANNEL" in
+    stable) RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases/latest" ;;
+    beta)   RELEASE_API="https://api.github.com/repos/micschr0/claudebar/releases" ;;
+    *)
+      printf '\033[31mUnknown CLAUDEBAR_CHANNEL: %s (expected: stable, beta)\033[0m\n' "$RELEASE_CHANNEL" >&2
+      exit 1
+      ;;
+  esac
+fi
 
 red()   { printf '\033[31m%s\033[0m\n' "$*"; }
 green() { printf '\033[32m%s\033[0m\n' "$*"; }
@@ -96,7 +105,7 @@ fetch_latest_release() {
     LATEST_RELEASE_JSON=$(api_get "$RELEASE_API")
     # beta channel hits the /releases list (newest first, includes prereleases);
     # stable hits /releases/latest, which is already a single object.
-    if [ "$RELEASE_CHANNEL" = "beta" ]; then
+    if [ -z "$RELEASE_VERSION" ] && [ "$RELEASE_CHANNEL" = "beta" ]; then
       LATEST_RELEASE_JSON=$(printf '%s' "$LATEST_RELEASE_JSON" | jq -c '.[0] // empty')
     fi
   fi
@@ -362,7 +371,7 @@ main() {
     bold "No prebuilt binary for $(uname -s)/$(uname -m) — skipping download"
   fi
 
-  if [ "$installed" -ne 0 ]; then
+  if [ "$installed" -ne 0 ] && [ -z "$RELEASE_VERSION" ]; then
     if install_from_source "$src_dir"; then
       installed=0
     fi
