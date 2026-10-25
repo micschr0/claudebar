@@ -90,8 +90,21 @@ the `## [<version>]` section as the GitHub Release body.
    marker, then amend it into the release commit:
 
    ```bash
+   # beta release (delta since the last tag):
    git-cliff --unreleased --tag 2026.6.25 --strip all > /tmp/section.md
+
+   # stable release with betas in between — roll up everything since the last
+   # stable tag. Beta tags are excluded via a patched tag_pattern, otherwise
+   # those commits would sit under beta headings and dist (which shows only
+   # the `## [<version>]` section on the release page) would list just the
+   # post-beta delta.
+   sed 's/^tag_pattern = .*/tag_pattern = "[0-9]+\\\\.[0-9]+\\\\.[0-9]+$"/' cliff.toml > /tmp/cliff-stable.toml
+   git-cliff -c /tmp/cliff-stable.toml <last-stable>.. --tag 2026.6.25 --strip all > /tmp/section.md
+
    sed -i '/<!-- next-release -->/r /tmp/section.md' CHANGELOG.md
+   # drop duplicate version headings the insert may have created (keep first)
+   awk '/^## \[[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z]+\.[0-9]+)?\]/{v=$0;sub(/\].*/,"",v);d=(v in s);s[v]=1}!d' \
+     CHANGELOG.md > /tmp/cl.md && mv /tmp/cl.md CHANGELOG.md
    git add CHANGELOG.md && git commit --amend --no-edit
    ```
 

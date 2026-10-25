@@ -1,0 +1,14 @@
+---
+source: src/tui/ui.rs
+expression: "frame(40, 10, |_| {})"
+---
+"Terminal too small (min 80×20)          "
+"                                        "
+"                                        "
+"                                        "
+"                                        "
+"                                        "
+"                                        "
+"                                        "
+"                                        "
+"                                        "

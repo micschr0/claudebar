@@ -21,6 +21,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read  # explicit — job perms override workflow perms
       pages: write        # required by actions/deploy-pages

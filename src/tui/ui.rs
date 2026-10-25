@@ -1132,4 +1132,54 @@ mod tests {
             );
         }
     }
+
+    // ── Full-frame snapshots ─────────────────────────────────────────────────
+    // draw() has no logic worth unit-testing in isolation; a rendered frame per
+    // state is the regression net. TestBackend is headless, so this needs no
+    // real terminal. Accept changes with `cargo insta review`.
+
+    fn frame(w: u16, h: u16, mutate: impl FnOnce(&mut App)) -> String {
+        use ratatui::{Terminal, backend::TestBackend};
+        let mut app = App::new(Config::default(), None);
+        mutate(&mut app);
+        let mut term = Terminal::new(TestBackend::new(w, h)).unwrap();
+        term.draw(|f| draw(f, &app)).unwrap();
+        term.backend().to_string()
+    }
+
+    #[test]
+    fn draw_snapshots() {
+        insta::assert_snapshot!("default", frame(100, 30, |_| {}));
+        insta::assert_snapshot!(
+            "theme_section",
+            frame(100, 30, |a| {
+                a.focused_panel = Panel::Right;
+                a.menu_cursor = 1;
+            })
+        );
+        insta::assert_snapshot!(
+            "thresholds_section",
+            frame(100, 30, |a| {
+                a.focused_panel = Panel::Right;
+                a.menu_cursor = 3;
+            })
+        );
+        insta::assert_snapshot!(
+            "reorder_mode",
+            frame(100, 30, |a| {
+                a.focused_panel = Panel::Right;
+                a.reorder_mode = true;
+            })
+        );
+        insta::assert_snapshot!(
+            "dirty_with_status",
+            frame(100, 30, |a| {
+                a.config.theme = "gruvbox".to_string();
+                a.status = Some((StatusKind::Success, "Saved".to_string()));
+            })
+        );
+        insta::assert_snapshot!("pending_reset", frame(100, 30, |a| a.pending_reset = true));
+        insta::assert_snapshot!("help_overlay", frame(100, 30, |a| a.show_help = true));
+        insta::assert_snapshot!("too_small", frame(40, 10, |_| {}));
+    }
 }

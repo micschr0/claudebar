@@ -8,23 +8,63 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
-## [2026.8.27](https://github.com/micschr0/claudebar/compare/2026.8.26-beta.1...2026.8.27)
+## [2026.10.24-beta.1](https://github.com/micschr0/claudebar/compare/2026.9.9-beta.1...2026.10.24-beta.1)
 
 ### Fixed
-- Changelog since last stable tag (#113)
-- Move CLAUDEBAR_CHANNEL to bash side of pipe (#111)
+- Pass `CLAUDEBAR_CHANNEL=beta` to the installer shell, not `curl`, so beta installs no longer silently fall back to stable (#165)
+- Publish npm beta releases under the `beta` distribution tag, keeping the stable `latest` channel unchanged (#166)
 
-## [2026.8.26-beta.1](https://github.com/micschr0/claudebar/compare/2026.7.21...2026.8.26-beta.1)
+### Changed
+- Update `serde_json` to 1.0.154, `toml` to 1.1.8, and refresh the dependency lockfile (#156, #163, #164)
+
+### CI
+- Own the Install section of the release body (#151)
+- Update workflow dependencies and move release, install verification, and npm jobs to Ubuntu 26.04 (#159, #161)
+
+## [2026.9.9-beta.1](https://github.com/micschr0/claudebar/compare/2026.8.27...2026.9.9-beta.1)
+
+### Added
+- Dots bar style + update-notice segment (#119)
+
+### Fixed
+- Authenticate github api call in verify-install (#118)
+- Complete stable changelog rollup, dedup guard, install block (#144)
+
+### Changed
+- Coerce numbers via serde_json::Value
+- Generate theme and style registries from one list
+- Measure width with unicode-width
+- Remove dead flat-list model, test key dispatch
+- Share duration, path and ansi-strip helpers
+- Store the mark in one file
+
+### Documentation
+- Add code wiki (#117)
+- Link openwiki from readme footer (#138)
+- Link openwiki from readme footer (#146)
+- Update OpenWiki (#122)
+
+### Testing
+- Byte-exact render matrix regression net
+- Tui full-frame goldens, cli setup/edit coverage (#145)
+
+### CI
+- Drop unused coverage HTML, add job timeouts (#143)
+- Lint scripts with ruff (#124)
+
+## [2026.8.27](https://github.com/micschr0/claudebar/compare/2026.7.21...2026.8.27)
 
 ### Added
 - Add manual release check command (#96)
 - Publish claudebar via npm platform packages (#97)
 
 ### Fixed
+- Changelog since last stable tag (#113)
 - Correct permission input name (#65)
 - Grant statuses permission (#77)
 - Grant workflows permission, fix dead lockfile schedule (#76)
 - Hide style-list glyphs for styles with icons off (#109)
+- Move CLAUDEBAR_CHANNEL to bash side of pipe (#111)
 - Strip cargo-dist target prefix on extract (#105)
 - Strip cargo-dist target prefix when extracting release assets (#100)
 
