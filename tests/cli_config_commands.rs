@@ -24,6 +24,8 @@ fn bin() -> Command {
 fn setup(path: &Path, args: &[&str]) -> Output {
     bin()
         .arg("setup")
+        .arg("--config")
+        .arg(path.with_extension("toml"))
         .arg("--settings-path")
         .arg(path)
         .args(args)

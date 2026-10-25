@@ -12,6 +12,7 @@ see `RELEASING.md` for the release ritual.
 
 ### Fixed
 - Quote custom status-line paths, support editor arguments, and keep malformed `setup --print` read-only.
+- Isolate setup regression tests from user configuration and render side effects.
 
 ## [2026.10.24-beta.1](https://github.com/micschr0/claudebar/compare/2026.9.9-beta.1...2026.10.24-beta.1)
 
