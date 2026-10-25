@@ -29,9 +29,12 @@ fn unique_temp_path(name: &str) -> PathBuf {
 /// sibling files (e.g. `setup`'s `.bak-*` backups).
 fn unique_temp_dir(name: &str) -> PathBuf {
     let n = TEST_COUNTER.fetch_add(1, Ordering::Relaxed);
-    let dir = std::env::temp_dir().join(format!("claudebar_test_{name}_{n}"));
-    let _ = fs::remove_dir_all(&dir);
-    fs::create_dir_all(&dir).expect("mkdir temp");
+    let dir = std::env::temp_dir().join(format!(
+        "claudebar_test_{name}_{}_{}",
+        std::process::id(),
+        n
+    ));
+    fs::create_dir(&dir).expect("mkdir unique temp");
     dir
 }
 
@@ -158,7 +161,6 @@ fn main_init_writes_file_with_force() {
 }
 
 // -- list tests -------------------------------------------------------------
-// Note: Accept exit code 101 due to pre-existing clap debug-assertion bug.
 
 #[test]
 fn main_list_lists_themes() {
@@ -167,14 +169,7 @@ fn main_list_lists_themes() {
         .output()
         .expect("failed to run claudebar list");
 
-    let code = output.status.code();
-    assert!(
-        code == Some(0) || code == Some(101),
-        "list should exit 0 or 101 (clap bug), got: {code:?}"
-    );
-    if code == Some(101) {
-        return;
-    }
+    assert_eq!(output.status.code(), Some(0), "list should exit 0");
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
 
@@ -200,14 +195,11 @@ fn main_list_lists_segments_with_flag() {
         .output()
         .expect("failed to run claudebar list --segments");
 
-    let code = output.status.code();
-    assert!(
-        code == Some(0) || code == Some(101),
-        "list --segments should exit 0 or 101 (clap bug), got: {code:?}"
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "list --segments should exit 0"
     );
-    if code == Some(101) {
-        return;
-    }
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
 
@@ -334,7 +326,6 @@ fn main_doctor_reports_diagnostics() {
 }
 
 // -- completions test -------------------------------------------------------
-// Note: Accept exit code 101 due to same clap bug (affects all subcommands).
 
 #[test]
 fn main_completions_bash_emits_script() {
@@ -344,14 +335,11 @@ fn main_completions_bash_emits_script() {
         .output()
         .expect("failed to run claudebar completions bash");
 
-    let code = output.status.code();
-    assert!(
-        code == Some(0) || code == Some(101),
-        "completions bash should exit 0 or 101 (clap bug), got: {code:?}"
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "completions bash should exit 0"
     );
-    if code == Some(101) {
-        return;
-    }
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
 
@@ -507,30 +495,47 @@ fn main_edit_reports_missing_editor() {
 // -- update test ---------------------------------------------------------
 
 #[test]
-fn main_update_check_never_exits_two_when_offline() {
-    // The sandbox has no network, so `fetch_latest()` fails — that is the
-    // error path we want to cover. `--check` must still not exit 2, and the
-    // failed attempt is stamped into an isolated cache dir, not the real one.
-    let cache = std::env::temp_dir().join(format!(
-        "claudebar_update_cache_{}",
-        TEST_COUNTER.fetch_add(1, Ordering::Relaxed)
-    ));
-    let _ = fs::remove_dir_all(&cache);
+fn main_update_check_records_offline_failure_in_isolated_config() {
+    let config_home = unique_temp_dir("update_config");
+    let empty_path = unique_temp_dir("update_empty_path");
 
     let output = bin()
         .arg("update")
         .arg("--check")
-        .env("XDG_CACHE_HOME", &cache)
+        .env("XDG_CONFIG_HOME", &config_home)
+        .env("PATH", &empty_path)
         .output()
         .expect("failed to run claudebar update --check");
 
-    let code = output.status.code();
+    assert_eq!(
+        output.status.code(),
+        Some(1),
+        "failed update --check exits 1"
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(
-        code == Some(0) || code == Some(1),
-        "update --check must never exit 2, got: {code:?}"
+        stderr.contains("claudebar:"),
+        "expected update error, got: {stderr}"
+    );
+    assert!(
+        stderr.contains("curl"),
+        "expected missing curl diagnostic, got: {stderr}"
     );
 
-    let _ = fs::remove_dir_all(&cache);
+    let cache = config_home.join("claudebar/update-check.json");
+    let body = fs::read_to_string(&cache).expect("failed update attempt recorded");
+    let cache: serde_json::Value = serde_json::from_str(&body).expect("valid update cache JSON");
+    assert!(
+        cache["checked_at"].as_i64().is_some(),
+        "checked_at recorded: {cache}"
+    );
+    assert!(
+        cache["latest"].is_null(),
+        "failed check has no latest version: {cache}"
+    );
+
+    let _ = fs::remove_dir_all(&config_home);
+    let _ = fs::remove_dir_all(&empty_path);
 }
 
 // -- setup tests --------------------------------------------------------
