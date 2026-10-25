@@ -131,14 +131,31 @@ fn resolve_path(path: &str, home: Option<&str>) -> Option<PathBuf> {
 ///
 /// Returns the underlying [`std::io::Error`]; the caller treats it as best-effort.
 pub(crate) fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
+    use std::io::Write;
+
     let parent = path.parent().unwrap_or_else(|| Path::new("."));
     std::fs::create_dir_all(parent)?;
+    let permissions = std::fs::metadata(path)
+        .ok()
+        .map(|metadata| metadata.permissions());
     let name = path
         .file_name()
         .and_then(|n| n.to_str())
         .unwrap_or("claudebar-float");
     let tmp = parent.join(format!(".{name}.{}.tmp", std::process::id()));
-    if let Err(e) = std::fs::write(&tmp, content) {
+    let mut options = std::fs::OpenOptions::new();
+    options.write(true).create_new(true);
+    #[cfg(unix)]
+    std::os::unix::fs::OpenOptionsExt::mode(&mut options, 0o600);
+    let mut file = options.open(&tmp)?;
+    let result = (|| {
+        if let Some(permissions) = permissions {
+            file.set_permissions(permissions)?;
+        }
+        file.write_all(content.as_bytes())
+    })();
+    drop(file);
+    if let Err(e) = result {
         let _ = std::fs::remove_file(&tmp);
         return Err(e);
     }
@@ -153,7 +170,7 @@ pub(crate) fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::{emit_float, parse_segment, render_float, resolve_path, strip_ansi};
+    use super::{emit_float, parse_segment, render_float, resolve_path, strip_ansi, write_atomic};
     use crate::model::input::{Coerce, CostInfo, Model as ModelData};
     use crate::model::{Config, InputData, SegmentKind};
     use std::path::PathBuf;
@@ -164,6 +181,39 @@ mod tests {
         cfg.thresholds.float = true;
         cfg.thresholds.float_segments = segs.to_string();
         cfg
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn atomic_writer_refuses_preexisting_staging_symlink() {
+        use std::os::unix::fs::symlink;
+
+        let dir = std::env::temp_dir().join(format!(
+            "claudebar-atomic-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        std::fs::create_dir(&dir).unwrap();
+        let target = dir.join("target");
+        let sentinel = dir.join("sentinel");
+        let staging = dir.join(format!(".target.{}.tmp", std::process::id()));
+        std::fs::write(&sentinel, "untouched").unwrap();
+        symlink(&sentinel, &staging).unwrap();
+
+        assert!(write_atomic(&target, "replacement").is_err());
+        assert_eq!(std::fs::read_to_string(&sentinel).unwrap(), "untouched");
+        assert!(
+            std::fs::symlink_metadata(&staging)
+                .unwrap()
+                .file_type()
+                .is_symlink()
+        );
+        std::fs::remove_file(staging).unwrap();
+        std::fs::remove_file(sentinel).unwrap();
+        std::fs::remove_dir(dir).unwrap();
     }
 
     #[test]
