@@ -245,7 +245,7 @@ fn run_setup(
     let mut settings = match claudebar::setup::load_settings(&path) {
         Ok(s) => s,
         Err(claudebar::setup::SetupError::Parse(msg)) => {
-            if existed {
+            if existed && !print {
                 match claudebar::setup::backup_settings(&path, now) {
                     Ok(backup_path) => {
                         println!(
@@ -594,7 +594,18 @@ fn run_edit(cli: &Cli) -> ExitCode {
         .or_else(|| std::env::var("VISUAL").ok())
         .unwrap_or_else(|| String::from("vi"));
 
-    let status = std::process::Command::new(&editor).arg(&path).status();
+    // Editor variables follow shell command conventions: allow flags/quotes,
+    // but pass the config path as a positional argument rather than shell text.
+    let status = std::process::Command::new("sh")
+        .arg("-c")
+        .arg(
+            "editor=$1; path=$2; eval \"set -- $editor\" || exit 127; \
+             [ \"$#\" -gt 0 ] || exit 127; \"$@\" \"$path\"",
+        )
+        .arg("claudebar-edit")
+        .arg(&editor)
+        .arg(&path)
+        .status();
 
     match status {
         Ok(s) if s.success() => ExitCode::SUCCESS,
