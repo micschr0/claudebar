@@ -8,6 +8,19 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.10.25-beta.1](https://github.com/micschr0/claudebar/compare/2026.10.24-beta.1...2026.10.25-beta.1)
+
+### Fixed
+- Handle quoted paths and editor arguments safely (#171)
+- Harden input and preserve terminal context (#175)
+- Preserve newer betas and verify exact releases (#173)
+- Prevent configuration data loss (#170)
+- Propagate binary installation failures (#172)
+- Stabilize estimates and isolate reset windows (#174)
+
+### Testing
+- Reject panics and isolate update failures (#176)
+
 ## Unreleased
 
 ### Fixed
