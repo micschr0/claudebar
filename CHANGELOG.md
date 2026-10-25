@@ -10,6 +10,12 @@ see `RELEASING.md` for the release ritual.
 
 ## Unreleased
 
+### Fixed
+- Propagate installer file-operation failures instead of reporting successful installation.
+- Quote custom status-line paths, support editor arguments, and keep malformed `setup --print` read-only.
+- Isolate setup regression tests from user configuration and render side effects.
+- Save config atomically, preserve permissions and symlinks, and retain unsaved TUI changes after errors or resets.
+
 ### Testing
 - Reject CLI panics and isolate update checks from the network and real user configuration.
 
