@@ -8,6 +8,11 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.10.29-beta.1](https://github.com/micschr0/claudebar/compare/2026.10.25-beta.1...2026.10.29-beta.1)
+
+### Fixed
+- Finish audit follow-ups (#182)
+
 ## [2026.10.25-beta.1](https://github.com/micschr0/claudebar/compare/2026.10.24-beta.1...2026.10.25-beta.1)
 
 ### Fixed
