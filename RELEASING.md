@@ -67,6 +67,11 @@ The normal path is automated by `.github/workflows/release-prep.yml`:
 The tag push then runs `release.yml` exactly as before. `dist` autodetects `CHANGELOG.md` and uses
 the `## [<version>]` section as the GitHub Release body.
 
+**[SPEC]** Homebrew publishing validates the generated formula in a temporary local tap
+before pushing it to `micschr0/homebrew-tap`. The workflow explicitly trusts only that
+formula with `brew trust --formula`; it keeps the `brew info` load check fatal.
+Reapply this custom publisher logic after `dist generate`.
+
 ### Manual fallback
 
 **[SPEC]** If the workflow is unavailable, do the same steps by hand:
