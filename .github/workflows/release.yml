@@ -463,8 +463,10 @@ jobs:
             tap_dir="$(brew --repository micschr0/tap)/Formula"
             mkdir -p "$tap_dir"
             cp "$target" "$tap_dir/"
+            # Trust only our generated formula in the temporary validation tap.
+            brew trust --formula "micschr0/tap/$(basename "$target" .rb)"
             if ! brew info --formula "micschr0/tap/$(basename "$target" .rb)" >/dev/null; then
-              echo "::error::formula failed to load — class/filename mismatch in $target" >&2
+              echo "::error::formula failed to load: $target" >&2
               exit 1
             fi
             git add "$target"
