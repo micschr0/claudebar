@@ -1,7 +1,6 @@
 //! Composition: turn (input × config) into one ANSI status line.
 //!
-//! `render_line` is the single entrypoint shared by the hook and the TUI
-//! preview — there is no second rendering code path.
+//! `render_with` composes both the hook output and the TUI preview.
 
 pub mod bar;
 pub mod float;
@@ -28,14 +27,10 @@ pub fn render_line(input: &InputData, cfg: &Config, now: i64) -> String {
     // check is due, and rendering the badge. Keeps the badge current without
     // the render ever blocking on the network — a detached child does the
     // check, at most once a day.
-    let newer = if cfg.segments.contains(&SegmentKind::UpdateNotice) {
-        let cached = crate::update::read_cache();
-        crate::update::refresh_in_background(now, cached.as_ref());
-        newer_than(cached.and_then(|c| c.latest), env!("CARGO_PKG_VERSION"))
-    } else {
-        None
-    };
-    let line = render_ctx(
+    let cached = crate::update::read_cache();
+    crate::update::refresh_in_background(now, cached.as_ref());
+    let newer = newer_than(cached.and_then(|c| c.latest), env!("CARGO_PKG_VERSION"));
+    let line = render_with(
         input,
         cfg,
         &theme,
@@ -51,36 +46,12 @@ pub fn render_line(input: &InputData, cfg: &Config, now: i64) -> String {
     line
 }
 
-/// Lower-level entry that takes resolved theme/style/home directly — used by the
-/// TUI preview (which already holds them) and by tests (deterministic `home`).
+/// Render with resolved theme, style, home, timezone, and update state.
+/// `update` must already be newer than this binary; `None` suppresses the notice
+/// without reading the update cache.
 #[must_use]
-pub fn render_with(
-    input: &InputData,
-    cfg: &Config,
-    theme: &Theme,
-    style: &Style,
-    now: i64,
-    home: Option<&str>,
-    tz_offset_seconds: i32,
-) -> String {
-    let newer = cached_update(cfg);
-    render_ctx(
-        input,
-        cfg,
-        theme,
-        style,
-        now,
-        home,
-        tz_offset_seconds,
-        newer.as_ref(),
-    )
-}
-
-/// Build the [`RenderCtx`] and lay it out. Split from [`render_with`] so
-/// [`render_line`] can supply an update version it has already resolved
-/// instead of paying for a second cache read.
 #[allow(clippy::too_many_arguments)]
-fn render_ctx(
+pub fn render_with(
     input: &InputData,
     cfg: &Config,
     theme: &Theme,
@@ -108,13 +79,9 @@ fn render_ctx(
     }
 }
 
-/// The cached release newer than this binary, or `None` — including whenever
-/// the `update-notice` segment is disabled, which is what keeps the cache read
-/// off everyone else's render path.
-fn cached_update(cfg: &Config) -> Option<crate::update::Version> {
-    if !cfg.segments.contains(&SegmentKind::UpdateNotice) {
-        return None;
-    }
+/// The cached release newer than this binary, if any.
+#[cfg(feature = "tui")]
+pub(crate) fn cached_update() -> Option<crate::update::Version> {
     newer_than(
         crate::update::read_cache()?.latest,
         env!("CARGO_PKG_VERSION"),
@@ -135,7 +102,12 @@ fn newer_than(
 fn render_fixed(ctx: &RenderCtx, cfg: &Config, theme: &Theme, style: &Style) -> String {
     let mut line = String::with_capacity(256);
     let mut first = true;
-    for kind in &cfg.segments {
+    for kind in cfg
+        .segments
+        .iter()
+        .filter(|&&kind| kind != SegmentKind::UpdateNotice)
+        .chain(std::iter::once(&SegmentKind::UpdateNotice))
+    {
         let mut w = SegmentWriter::new(theme, style);
         let emitted = kind.as_segment().render(ctx, &mut w);
         if emitted && !w.is_empty() {
@@ -160,6 +132,8 @@ fn render_auto(ctx: &RenderCtx, cfg: &Config, theme: &Theme, style: &Style) -> S
     let segments: Vec<String> = cfg
         .segments
         .iter()
+        .filter(|&&kind| kind != SegmentKind::UpdateNotice)
+        .chain(std::iter::once(&SegmentKind::UpdateNotice))
         .filter_map(|kind| {
             let mut w = SegmentWriter::new(theme, style);
             let emitted = kind.as_segment().render(ctx, &mut w);
@@ -346,7 +320,16 @@ mod tests {
         cfg.thresholds.max_lines = 3;
         let theme = themes::get("tokyo-night");
         let style = styles::get("powerline");
-        let line = render_with(&input, &cfg, &theme, &style, FIXED_NOW, Some("/home/me"), 0);
+        let line = render_with(
+            &input,
+            &cfg,
+            &theme,
+            &style,
+            FIXED_NOW,
+            Some("/home/me"),
+            0,
+            None,
+        );
 
         assert!(
             line.contains('\n'),
@@ -378,24 +361,24 @@ mod tests {
     }
 
     #[test]
-    fn cached_update_is_none_when_the_segment_is_disabled() {
-        let cfg = Config::default();
-        assert!(!cfg.segments.contains(&SegmentKind::UpdateNotice));
-        assert_eq!(cached_update(&cfg), None);
-    }
-
-    #[test]
-    fn render_with_empty_home_does_not_panic() {
+    fn update_notice_is_automatic_and_legacy_entries_do_not_duplicate_it() {
         let input = InputData::default();
-        let cfg = Config::default();
         let theme = themes::get("tokyo-night");
         let style = styles::get("powerline");
-        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-            let _ = render_with(&input, &cfg, &theme, &style, FIXED_NOW, None, 0);
-        }));
-        assert!(
-            result.is_ok(),
-            "render_with should not panic when home is None"
-        );
+        let version = crate::update::Version::parse("2099.1.1").unwrap();
+        for layout in ["fixed", "auto"] {
+            let mut cfg = Config::default();
+            cfg.thresholds.layout = layout.into();
+            cfg.segments.clear();
+            let render = |cfg: &Config, update| {
+                render_with(&input, cfg, &theme, &style, FIXED_NOW, None, 0, update)
+            };
+            assert_eq!(render(&cfg, None), "");
+            let automatic = render(&cfg, Some(&version));
+            assert!(automatic.contains("2099.1.1"));
+            cfg.segments = vec![SegmentKind::UpdateNotice, SegmentKind::UpdateNotice];
+            assert_eq!(render(&cfg, Some(&version)), automatic);
+            assert_eq!(render(&cfg, None), "");
+        }
     }
 }

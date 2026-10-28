@@ -85,8 +85,9 @@ fn event_loop(
     app: &mut App,
 ) -> Result<(), String> {
     loop {
+        let update = crate::render::cached_update();
         terminal
-            .draw(|f| ui::draw(f, app))
+            .draw(|f| ui::draw(f, app, update.as_ref()))
             .map_err(|e| format!("draw: {e}"))?;
 
         if event::poll(Duration::from_millis(200)).map_err(|e| format!("poll: {e}"))? {
@@ -713,6 +714,47 @@ mod tests {
         press(&mut a, 'k');
         assert_eq!(a.config.segments[0], moved, "and back up again");
         assert_eq!(a.detail_cursor, 0);
+    }
+
+    #[test]
+    fn legacy_update_notices_do_not_shift_reorder_targets() {
+        let mut a = App::new(
+            Config {
+                segments: vec![
+                    SegmentKind::UpdateNotice,
+                    SegmentKind::Directory,
+                    SegmentKind::Model,
+                    SegmentKind::UpdateNotice,
+                    SegmentKind::Cost,
+                ],
+                ..Config::default()
+            },
+            None,
+        );
+        assert!(
+            !a.is_dirty(),
+            "normalizing a legacy config must not prompt to save"
+        );
+        press_all(&mut a, "1jmj");
+        assert_eq!(
+            a.config.segments,
+            vec![
+                SegmentKind::Directory,
+                SegmentKind::Cost,
+                SegmentKind::Model
+            ]
+        );
+        assert_eq!(a.detail_cursor, 2);
+        press(&mut a, 'k');
+        assert_eq!(
+            a.config.segments,
+            vec![
+                SegmentKind::Directory,
+                SegmentKind::Model,
+                SegmentKind::Cost
+            ]
+        );
+        assert_eq!(a.detail_cursor, 1);
     }
 
     #[test]

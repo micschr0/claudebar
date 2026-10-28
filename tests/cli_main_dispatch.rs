@@ -262,8 +262,8 @@ style = "unicode""#;
 }
 
 #[test]
-fn main_sync_leaves_update_notice_opt_in() {
-    let path = unique_temp_path("sync-opt-in");
+fn main_sync_does_not_add_automatic_update_notice() {
+    let path = unique_temp_path("sync-automatic-notice");
     let _ = fs::remove_file(&path);
     fs::write(&path, br#"segments = ["directory", "git"]"#).expect("failed to write test config");
 
@@ -276,20 +276,20 @@ fn main_sync_leaves_update_notice_opt_in() {
     assert_eq!(output.status.code(), Some(0));
 
     let synced = fs::read_to_string(&path).expect("config readable after sync");
-    // Every other new segment is pure formatting and gets added as usual...
+    // Configurable segments still get added as usual.
     assert!(
         synced.contains("clock") && synced.contains("burn"),
         "sync should still add ordinary new segments, got: {synced}"
     );
-    // ...but the one that spawns a daily network check stays opt-in.
+    // The automatic notice is not a configurable segment.
     assert!(
         !synced.contains("update-notice"),
-        "sync must not enable the background update check, got: {synced}"
+        "sync must not add the automatic update notice, got: {synced}"
     );
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(
-        stdout.contains("update-notice"),
-        "sync should mention the segment it skipped, got: {stdout}"
+        !stdout.contains("update-notice"),
+        "sync should not offer the automatic notice as a segment, got: {stdout}"
     );
 
     let _ = fs::remove_file(&path);

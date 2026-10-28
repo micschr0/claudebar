@@ -123,7 +123,7 @@ Colors shift as usage crosses **50%** and **80%**:
 
 <img src="screenshots/strip-overlimit.png" width="860" alt="Over limit: past the threshold">
 
-All segments. Four are off by default (dev-context, burn, clock, update-notice):
+All segments. Three are off by default (dev-context, burn, clock):
 
 <img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock, update notice">
 
@@ -180,17 +180,16 @@ claudebar update
 # Install/update: https://github.com/micschr0/claudebar#installation
 ```
 
-Add the `update-notice` segment to see the result inline, as an "↑ 2026.8.20"
-badge on the statusline. It is off by default and stays that way — `claudebar
-sync`, which adds segments introduced by newer versions, deliberately skips this
-one and only tells you it exists. Add it to `segments` yourself to enable it.
+When a newer stable release is available, an "↑ VERSION" notice automatically
+appears at the end of the statusline. It disappears when you are up to date;
+there is no segment to enable or configure. Existing `update-notice` entries
+remain compatible and do not produce duplicate notices. The configurator removes
+these obsolete entries when you save.
 
-Enabling it opts into a background check, started at most once every 24 hours by
-a detached child process that writes a small cache next to your config file. The
-statusline itself only reads that cache and never waits for the check. With the
-segment disabled the render path does no network or cache I/O at all; an
-explicit `claudebar update` still writes the cache, since that is you asking for
-a check.
+A detached background process checks at most once every 24 hours and writes a
+small cache next to your config file. The statusline only reads that cache and
+never waits for the network. Run `claudebar update` to check immediately.
+Updates are not installed automatically.
 
 Exit codes: `0` = up to date, `1` = check failed (e.g. no network), `2` = update
 available. In `set -e` shells or `&&`-chains, where exit `2` reads as an error,

@@ -75,7 +75,10 @@ pub(crate) struct App {
 
 impl App {
     /// Build state from a loaded config and its resolved save path.
-    pub(crate) fn new(config: Config, save_path: Option<PathBuf>) -> App {
+    pub(crate) fn new(mut config: Config, save_path: Option<PathBuf>) -> App {
+        config
+            .segments
+            .retain(|kind| *kind != SegmentKind::UpdateNotice);
         let saved_config = config.clone();
 
         // Swatch cache built in themes::NAMES order — draw_list() indexes by themes::NAMES position.
@@ -184,7 +187,7 @@ impl App {
     /// Segment rows as the right panel lists them: enabled ones in
     /// `config.segments` order, then the rest in `SegmentKind::ALL` order.
     pub(crate) fn segment_display_order(&self) -> Vec<SegmentKind> {
-        let mut order: Vec<SegmentKind> = self.config.segments.clone();
+        let mut order = self.config.segments.clone();
         order.extend(
             SegmentKind::ALL
                 .iter()

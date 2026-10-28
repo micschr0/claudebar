@@ -23,6 +23,10 @@ see `RELEASING.md` for the release ritual.
 
 ## Unreleased
 
+### Changed
+- Show update notices automatically at the end of the statusline; legacy `update-notice` entries remain readable and are removed when saving in the configurator
+- Pass update state explicitly to `render_with`, keeping render and TUI snapshots independent of the local update cache
+
 ### Fixed
 - Saturate token totals, remove host control characters, detect terminal width correctly, and keep float clocks in local time.
 - Preserve burn-estimate precision and ignore samples from previous reset windows.
@@ -31,6 +35,7 @@ see `RELEASING.md` for the release ritual.
 - Quote custom status-line paths, support editor arguments, and keep malformed `setup --print` read-only.
 - Isolate setup regression tests from user configuration and render side effects.
 - Save config atomically, preserve permissions and symlinks, and retain unsaved TUI changes after errors or resets.
+- Keep TUI reorder targets and cursor positions correct when loading legacy `update-notice` entries
 
 ### Testing
 - Reject CLI panics and isolate update checks from the network and real user configuration.

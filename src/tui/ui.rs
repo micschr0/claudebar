@@ -52,7 +52,7 @@ fn panel_block(title: &str, active: bool) -> Block<'_> {
 }
 
 /// Top-level draw entrypoint — three-zone split-pane layout.
-pub fn draw(f: &mut Frame, app: &App) {
+pub fn draw(f: &mut Frame, app: &App, update: Option<&crate::update::Version>) {
     // Size guard: split-pane needs at least 80 cols and 20 rows.
     if f.area().width < 80 || f.area().height < 20 {
         f.render_widget(
@@ -94,7 +94,7 @@ pub fn draw(f: &mut Frame, app: &App) {
 
     draw_left_panel(f, app, left_area);
     draw_right_panel(f, app, right_area);
-    draw_preview(f, app, preview_area);
+    draw_preview(f, app, preview_area, update);
     draw_status(f, app, status_area);
     draw_hint(f, app, hint_area);
 
@@ -584,7 +584,7 @@ fn render_threshold_row(
 
 // ── Preview block ─────────────────────────────────────────────────────────────
 
-fn draw_preview(f: &mut Frame, app: &App, area: Rect) {
+fn draw_preview(f: &mut Frame, app: &App, area: Rect, update: Option<&crate::update::Version>) {
     let sample = app.current_sample();
     let title = format!(" Preview — {} ", sample.name);
     let block = Block::default()
@@ -601,7 +601,7 @@ fn draw_preview(f: &mut Frame, app: &App, area: Rect) {
                 .add_modifier(Modifier::DIM),
         ));
 
-    if app.config.segments.is_empty() {
+    if app.config.segments.is_empty() && update.is_none() {
         let msg = Paragraph::new(Line::from(vec![
             Span::raw("No segments enabled — "),
             Span::styled(
@@ -617,7 +617,7 @@ fn draw_preview(f: &mut Frame, app: &App, area: Rect) {
         return;
     }
 
-    let text = preview::render(&app.config, sample);
+    let text = preview::render(&app.config, sample, update);
     let para = Paragraph::new(text).block(block);
     f.render_widget(para, area);
 }
@@ -1143,8 +1143,23 @@ mod tests {
         let mut app = App::new(Config::default(), None);
         mutate(&mut app);
         let mut term = Terminal::new(TestBackend::new(w, h)).unwrap();
-        term.draw(|f| draw(f, &app)).unwrap();
+        term.draw(|f| draw(f, &app, None)).unwrap();
         term.backend().to_string()
+    }
+
+    #[test]
+    fn update_notice_is_visible_without_configured_segments() {
+        let app = App::new(
+            Config {
+                segments: Vec::new(),
+                ..Config::default()
+            },
+            None,
+        );
+        let update = crate::update::Version::parse("2099.1.1").unwrap();
+        let mut term = ratatui::Terminal::new(ratatui::backend::TestBackend::new(100, 30)).unwrap();
+        term.draw(|f| draw(f, &app, Some(&update))).unwrap();
+        assert!(term.backend().to_string().contains("2099.1.1"));
     }
 
     #[test]

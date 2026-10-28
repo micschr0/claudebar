@@ -4,7 +4,7 @@ expression: "frame(100, 30, |a| { a.focused_panel = Panel::Right; a.menu_cursor 
 ---
 "                                                                                                    "
 "╭ Menu ────────────────────╮╭ Thresholds ──────────────────────────────────────────────────────────╮"
-"│ ○ Segments  8/12         ││  ~ warn            50%   [1–79]                                      │"
+"│ ○ Segments  8/11         ││  ~ warn            50%   [1–79]                                      │"
 "│ ○ Theme  tokyo-night     ││  ~ crit            80%   [51–99]                                     │"
 "│ ○ Style  powerline       ││  ~ weekly show at  75%   [1–99]                                      │"
 "│ ● Thresholds             ││  ~ bar width        6    [2–20]                                      │"
@@ -24,7 +24,7 @@ expression: "frame(100, 30, |a| { a.focused_panel = Panel::Right; a.menu_cursor 
 "│                          ││                                                                      │"
 "│                          ││                                                                      │"
 "│                          ││                                                                      │"
-"│                          ││ Theme: tokyo-night  Style: powerline  Segs: 8/12  Warn: 50%  Crit: 80│"
+"│                          ││ Theme: tokyo-night  Style: powerline  Segs: 8/11  Warn: 50%  Crit: 80│"
 "╰──────────────────────────╯╰──────────────────────────────────────────────────────────────────────╯"
 "┌ Preview — typical ───────────────────────────────────────────────────────────────────────────────┐"
 "│ ~/p/claude-code-statusline  ◈ Opus 4.8  high  󰍛 ━━━━╌╌ 67% 󰰩 42.3k  󰔟 ━━╌╌╌╌ 48% ↺ 2h46m     │"

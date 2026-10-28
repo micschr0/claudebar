@@ -21,7 +21,16 @@ fn render_fixture(json: &str) -> String {
     let cfg = Config::default();
     let theme = themes::get(&cfg.theme);
     let style = styles::get(&cfg.style);
-    let line = render_with(&input, &cfg, &theme, &style, FIXED_NOW, Some("/home/me"), 0);
+    let line = render_with(
+        &input,
+        &cfg,
+        &theme,
+        &style,
+        FIXED_NOW,
+        Some("/home/me"),
+        0,
+        None,
+    );
     // Readable, and proves no raw ESC from host strings leaks through (every
     // ESC in the output is one we emitted as a color code).
     line.replace('\x1b', "\\e")
@@ -46,7 +55,16 @@ fn render_combo(json: &str, theme_name: &str, style_name: &str) -> String {
     };
     let theme = themes::get(theme_name);
     let style = styles::get(style_name);
-    let line = render_with(&input, &cfg, &theme, &style, FIXED_NOW, Some("/home/me"), 0);
+    let line = render_with(
+        &input,
+        &cfg,
+        &theme,
+        &style,
+        FIXED_NOW,
+        Some("/home/me"),
+        0,
+        None,
+    );
     line.replace('\x1b', "\\e")
 }
 
@@ -101,7 +119,16 @@ fn injection_no_control_byte_leak() {
     let cfg = Config::default();
     let theme = themes::get(&cfg.theme);
     let style = styles::get(&cfg.style);
-    let rendered = render_with(&input, &cfg, &theme, &style, FIXED_NOW, Some("/home/me"), 0);
+    let rendered = render_with(
+        &input,
+        &cfg,
+        &theme,
+        &style,
+        FIXED_NOW,
+        Some("/home/me"),
+        0,
+        None,
+    );
 
     // Strip the renderer's own SGR sequences (`\x1b[` … `m`) by hand, so we do
     // not take a direct dependency on the `regex` crate.

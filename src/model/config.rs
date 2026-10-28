@@ -27,12 +27,13 @@ pub enum SegmentKind {
     Lines,
     Duration,
     Burn,
+    // Retained for reading existing configurations; the notice is automatic.
     UpdateNotice,
 }
 
 impl SegmentKind {
     /// All segments in canonical order.
-    pub const ALL: [SegmentKind; 12] = [
+    pub const ALL: [SegmentKind; 11] = [
         SegmentKind::Directory,
         SegmentKind::Git,
         SegmentKind::Model,
@@ -44,7 +45,6 @@ impl SegmentKind {
         SegmentKind::Duration,
         SegmentKind::Burn,
         SegmentKind::Clock,
-        SegmentKind::UpdateNotice,
     ];
 
     pub const DEFAULT: [SegmentKind; 8] = [
