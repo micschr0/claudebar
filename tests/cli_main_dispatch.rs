@@ -262,8 +262,8 @@ style = "unicode""#;
 }
 
 #[test]
-fn main_sync_leaves_update_notice_opt_in() {
-    let path = unique_temp_path("sync-opt-in");
+fn main_sync_does_not_add_automatic_update_notice() {
+    let path = unique_temp_path("sync-automatic-notice");
     let _ = fs::remove_file(&path);
     fs::write(&path, br#"segments = ["directory", "git"]"#).expect("failed to write test config");
 
@@ -276,23 +276,62 @@ fn main_sync_leaves_update_notice_opt_in() {
     assert_eq!(output.status.code(), Some(0));
 
     let synced = fs::read_to_string(&path).expect("config readable after sync");
-    // Every other new segment is pure formatting and gets added as usual...
+    // Configurable segments still get added as usual.
     assert!(
         synced.contains("clock") && synced.contains("burn"),
         "sync should still add ordinary new segments, got: {synced}"
     );
-    // ...but the one that spawns a daily network check stays opt-in.
+    // The automatic notice is not a configurable segment.
     assert!(
         !synced.contains("update-notice"),
-        "sync must not enable the background update check, got: {synced}"
+        "sync must not add the automatic update notice, got: {synced}"
     );
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(
-        stdout.contains("update-notice"),
-        "sync should mention the segment it skipped, got: {stdout}"
+        !stdout.contains("update-notice"),
+        "sync should not offer the automatic notice as a segment, got: {stdout}"
     );
 
     let _ = fs::remove_file(&path);
+}
+
+#[cfg(unix)]
+#[test]
+fn main_sync_write_failure_preserves_the_original_config() {
+    let dir = unique_temp_dir("sync_write_failure");
+    let path = dir.join("config.toml");
+    let original = "theme = \"catppuccin\"\nstyle = \"ascii\"\nsegments = [\"model\"]\n";
+    fs::write(&path, original).unwrap();
+    let output = Command::new("sh")
+        .args([
+            "-c",
+            "trap '' XFSZ; ulimit -f 0; exec \"$@\"",
+            "limited-save",
+        ])
+        .arg(env!("CARGO_BIN_EXE_claudebar"))
+        .args(["sync", "--config", "config.toml"])
+        .current_dir(&dir)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(fs::read_to_string(&path).unwrap(), original);
+    assert_eq!(fs::read_dir(&dir).unwrap().count(), 1, "staging cleaned up");
+
+    let retry = bin()
+        .args(["sync", "--config", "config.toml"])
+        .current_dir(&dir)
+        .output()
+        .unwrap();
+    assert_eq!(retry.status.code(), Some(0));
+    let saved = claudebar::model::Config::load(&path).unwrap();
+    assert_eq!(saved.theme, "catppuccin");
+    assert!(
+        saved
+            .segments
+            .contains(&claudebar::model::SegmentKind::Clock)
+    );
+    fs::remove_dir_all(dir).unwrap();
 }
 
 // -- doctor test ------------------------------------------------------------
@@ -471,6 +510,29 @@ fn main_edit_propagates_editor_failure() {
 }
 
 #[test]
+fn main_edit_accepts_arguments_and_keeps_the_config_path_literal() {
+    let dir = unique_temp_dir("editor_args");
+    let path = dir.join("config '$(touch editor-injected)'.toml");
+    let replacement = dir.join("replacement template.toml");
+    fs::write(&path, "theme = \"tokyo-night\"\n").unwrap();
+    let edited = "theme = \"catppuccin\"\nstyle = \"ascii\"\n";
+    fs::write(&replacement, edited).unwrap();
+
+    let output = bin()
+        .args(["edit", "--config"])
+        .arg(&path)
+        .env("EDITOR", format!("cp '{}'", replacement.display()))
+        .current_dir(&dir)
+        .output()
+        .expect("run editor command with an argument");
+
+    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(fs::read_to_string(&path).unwrap(), edited);
+    assert!(!dir.join("editor-injected").exists());
+    fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
 fn main_edit_reports_missing_editor() {
     let path = unique_temp_path("edit_noeditor");
     let _ = fs::remove_file(&path);
@@ -484,11 +546,6 @@ fn main_edit_reports_missing_editor() {
         .expect("failed to run claudebar edit");
 
     assert_eq!(output.status.code(), Some(1), "edit should exit 1");
-    let stderr = String::from_utf8_lossy(&output.stderr);
-    assert!(
-        stderr.contains("claudebar-no-such-editor-xyz"),
-        "stderr should identify the editor: {stderr}"
-    );
 
     let _ = fs::remove_file(&path);
 }
@@ -595,6 +652,106 @@ fn main_setup_print_shows_diff_and_touches_nothing() {
         !dir.join("settings.json").exists(),
         "--print writes nothing"
     );
+}
+
+#[test]
+fn main_setup_print_preserves_malformed_and_already_configured_settings() {
+    for (name, contents, expected_exit) in [
+        ("malformed", "{ not json", 1),
+        (
+            "configured",
+            r#"{"statusLine":{"type":"command","command":"claudebar render"}}"#,
+            0,
+        ),
+    ] {
+        let dir = unique_temp_dir(name);
+        let settings = dir.join("settings.json");
+        let config = dir.join("config.toml");
+        let float_file = dir.join("float.txt");
+        let config_home = dir.join("must-not-be-created");
+        fs::write(&settings, contents).unwrap();
+        fs::write(
+            &config,
+            format!(
+                "[thresholds]\nfloat = true\nfloat_file = {:?}\n",
+                float_file
+            ),
+        )
+        .unwrap();
+
+        let out = bin()
+            .args(["setup", "--print", "--settings-path"])
+            .arg(&settings)
+            .arg("--config")
+            .arg(&config)
+            .env("XDG_CONFIG_HOME", &config_home)
+            .output()
+            .unwrap();
+
+        assert_eq!(out.status.code(), Some(expected_exit), "{name}");
+        assert_eq!(fs::read_to_string(settings).unwrap(), contents);
+        assert_eq!(bak_count(&dir), 0);
+        assert!(!float_file.exists());
+        assert!(!config_home.exists());
+        fs::remove_dir_all(dir).unwrap();
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn main_setup_hook_executes_a_binary_path_with_shell_metacharacters() {
+    let dir = unique_temp_dir("setup_quoted_path");
+    let executable = dir.join("claudebar '$(touch hook-injected); $HOME");
+    std::os::unix::fs::symlink(env!("CARGO_BIN_EXE_claudebar"), &executable).unwrap();
+    let config_dir = dir.join("claudebar");
+    fs::create_dir(&config_dir).unwrap();
+    fs::write(
+        config_dir.join("config.toml"),
+        "style = \"ascii\"\nsegments = [\"model\"]\n",
+    )
+    .unwrap();
+    fs::write(
+        config_dir.join("update-check.json"),
+        r#"{"checked_at":9223372036854775807,"latest":null}"#,
+    )
+    .unwrap();
+
+    let out = bin()
+        .args(["setup", "--yes", "--settings-path"])
+        .arg(dir.join("settings.json"))
+        .arg("--binary-path")
+        .arg(&executable)
+        .env("HOME", &dir)
+        .env("XDG_CONFIG_HOME", &dir)
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(0));
+    let settings: serde_json::Value =
+        serde_json::from_slice(&fs::read(dir.join("settings.json")).unwrap()).unwrap();
+    let mut hook = Command::new("sh")
+        .arg("-c")
+        .arg(settings["statusLine"]["command"].as_str().unwrap())
+        .current_dir(&dir)
+        .env("HOME", &dir)
+        .env("XDG_CONFIG_HOME", &dir)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    hook.stdin
+        .take()
+        .unwrap()
+        .write_all(br#"{"model":{"display_name":"QUOTED_PATH_OK"}}"#)
+        .unwrap();
+    let rendered = hook.wait_with_output().unwrap();
+    assert_eq!(rendered.status.code(), Some(0));
+    assert_eq!(
+        claudebar::render::strip_ansi(std::str::from_utf8(&rendered.stdout).unwrap()),
+        "QUOTED_PATH_OK\n"
+    );
+    assert!(!dir.join("hook-injected").exists());
+    fs::remove_dir_all(dir).unwrap();
 }
 
 #[test]

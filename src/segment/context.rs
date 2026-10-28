@@ -87,7 +87,7 @@ mod tests {
         };
         let theme = themes::get(&cfg.theme);
         let style = styles::get(&cfg.style);
-        render_with(&input, &cfg, &theme, &style, 0, None, 0)
+        render_with(&input, &cfg, &theme, &style, 0, None, 0, None)
     }
 
     #[test]
@@ -116,6 +116,12 @@ mod tests {
             out.contains("\x1b[38;5;117m"),
             "token color missing: {out:?}"
         );
+    }
+
+    #[test]
+    fn token_sum_saturates_instead_of_wrapping() {
+        let out = render_ctx(Some(u64::MAX), Some(1), None);
+        assert!(crate::render::strip_ansi(&out).ends_with("18446744073709.6M"));
     }
 
     #[test]

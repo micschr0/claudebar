@@ -280,14 +280,21 @@ setup() {
   [ "$status" -eq 1 ]
   [[ "$output" == *"No Cargo.toml"* ]]
 }
-@test "install_from_source fails when installing the built binary fails" {
-  mkdir -p source/target/release
-  touch source/Cargo.toml source/target/release/claudebar
-  cargo() { return 0; }
-  install() { return 1; }
-  run install_from_source "$PWD/source"
-  [ "$status" -eq 1 ]
-  [[ "$output" != *"built and installed"* ]]
+
+@test "install_from_source reports destination failure when called conditionally" {
+  mkdir -p checkout/target/release bin
+  touch checkout/Cargo.toml
+  printf '#!/usr/bin/env bash\nexit 0\n' > checkout/target/release/claudebar
+  printf '#!/usr/bin/env bash\nexit 0\n' > bin/cargo
+  chmod +x checkout/target/release/claudebar bin/cargo
+  touch blocked
+  run env PATH="$PWD/bin:$PATH" bash -c '
+    source "$1"
+    BIN_DEST="$2"
+    if install_from_source "$3"; then exit 0; else exit 1; fi
+  ' _ "$INSTALL" "$PWD/blocked/claudebar" "$PWD/checkout"
+  [ "$status" -ne 0 ]
+  [ ! -e blocked/claudebar ]
 }
 
 @test "install_binary fails to move binary without replacing existing installation" {
@@ -344,4 +351,19 @@ setup() {
   run prune_prereleases nonsense
   [ "$status" -eq 0 ]
   [[ "$output" == *"skipping prerelease pruning"* ]]
+}
+
+@test "install_from_source succeeds when destination is installable" {
+  mkdir -p checkout/target/release bin destination
+  touch checkout/Cargo.toml
+  printf '#!/usr/bin/env bash\nexit 0\n' > checkout/target/release/claudebar
+  printf '#!/usr/bin/env bash\nexit 0\n' > bin/cargo
+  chmod +x checkout/target/release/claudebar bin/cargo
+  run env PATH="$PWD/bin:$PATH" bash -c '
+    source "$1"
+    BIN_DEST="$2"
+    if install_from_source "$3"; then exit 0; else exit 1; fi
+  ' _ "$INSTALL" "$PWD/destination/claudebar" "$PWD/checkout"
+  [ "$status" -eq 0 ]
+  [ -x destination/claudebar ]
 }

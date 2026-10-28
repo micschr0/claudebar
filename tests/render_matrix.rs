@@ -27,8 +27,7 @@
 //!   widest line here is 128 columns, so a generous width makes the wrap path
 //!   silently never execute.
 //! - `CLAUDEBAR_BURN_FILE` — seeded read-only (see `seed_burn_file`).
-//! - `XDG_CONFIG_HOME` — redirected so the `update-notice` badge reads a seeded
-//!   cache instead of whatever this machine happens to have.
+//! - `update` — passed explicitly so the badge ignores the machine's cache.
 //! - `CLAUDEBAR_LIMIT_SYNC_DIR` — redirected; the store is off by default but a
 //!   stray real one must not leak in.
 //!
@@ -83,14 +82,12 @@ fn render_matrix_is_byte_identical() {
 
     let burn_file = tmp.join("burn-5h.tsv");
     let burn_seed = seed_burn_file(&burn_file);
-    seed_update_cache(&tmp);
 
     // SAFETY: this file holds exactly one `#[test]`, so the test binary is
     // single-threaded here and nothing else reads the environment concurrently.
     unsafe {
         std::env::set_var("CLAUDEBAR_BURN_FILE", &burn_file);
         std::env::set_var("CLAUDEBAR_LIMIT_SYNC_DIR", tmp.join("limit-sync"));
-        std::env::set_var("XDG_CONFIG_HOME", &tmp);
         // Belt and braces: `clock_mode` is pinned per variant, but this keeps
         // the locale out of the picture entirely.
         std::env::set_var("LC_ALL", "C");
@@ -215,6 +212,7 @@ fn row(
 
     let theme = themes::get(theme_name);
     let style = styles::get(style_name);
+    let update = claudebar::update::Version::parse("2999.1.1").unwrap();
     let line = render_with(
         input,
         &cfg,
@@ -223,6 +221,7 @@ fn row(
         FIXED_NOW,
         Some(FIXED_HOME),
         FIXED_TZ,
+        Some(&update),
     );
 
     format!(
@@ -279,8 +278,8 @@ fn escape(line: &str) -> String {
 /// sample on *every* one of the thousands of renders, so each row depends on
 /// how many ran before it.
 ///
-/// Five samples 100s apart rising 10%→50% give a clean +0.1 %/s slope, which
-/// puts the segment in its `active` state with a computable ETA.
+/// Five samples 100s apart rising 10%→50% use the fixtures' five-hour reset.
+/// Their +0.1 %/s slope puts the segment in its active state with a known ETA.
 fn seed_burn_file(path: &Path) -> String {
     let seed: String = (1..=5u32)
         .map(|i| {
@@ -301,19 +300,6 @@ fn seed_burn_file(path: &Path) -> String {
     }
 
     seed
-}
-
-/// Seed the update-check cache with an unreachably high version so the
-/// `update-notice` badge renders in every row. Left unseeded the segment emits
-/// nothing and the badge path goes untested.
-fn seed_update_cache(xdg_config_home: &Path) {
-    let dir = xdg_config_home.join("claudebar");
-    fs::create_dir_all(&dir).expect("config dir");
-    fs::write(
-        dir.join("update-check.json"),
-        format!(r#"{{"checked_at":{FIXED_NOW},"latest":"2999.1.1"}}"#),
-    )
-    .expect("seed update cache");
 }
 
 /// Assert the two things this golden depends on that cannot be pinned from

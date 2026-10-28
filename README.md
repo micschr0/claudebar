@@ -111,6 +111,8 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 ```bash
 brew uninstall micschr0/tap/claudebar-beta && brew install micschr0/tap/claudebar
 ```
+
+For npm/pnpm, install `@micschr0/claudebar@beta` for prereleases; `@latest` stays on stable releases.
 </details>
 
 ## What it looks like
@@ -123,7 +125,7 @@ Colors shift as usage crosses **50%** and **80%**:
 
 <img src="screenshots/strip-overlimit.png" width="860" alt="Over limit: past the threshold">
 
-All segments. Four are off by default (dev-context, burn, clock, update-notice):
+All segments. Three are off by default (dev-context, burn, clock):
 
 <img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock, update notice">
 
@@ -134,6 +136,9 @@ claudebar config
 ```
 
 Full-screen TUI: live preview, theme and style pickers, threshold sliders. `?` for keys, `s` saves, `q` quits.
+
+The configurator refuses malformed or unreadable TOML. Saves replace the config
+atomically; a failed save keeps your edits open and displays the error.
 
 <img src="screenshots/config-tui.png" width="860" alt="claudebar TUI configurator with live preview, theme picker, and thresholds">
 
@@ -151,6 +156,9 @@ warn = 50   # bar turns yellow
 crit = 80   # bar turns red
 ```
 
+`claudebar edit` uses `$EDITOR`, then `$VISUAL`, then `vi`. Editor arguments and
+quoting are supported, for example `EDITOR='code --wait' claudebar edit`.
+
 ## CLI reference
 
 | Command | Action |
@@ -163,6 +171,9 @@ crit = 80   # bar turns red
 | `claudebar update` | Check for a newer claudebar release (manual; never runs during rendering) |
 
 More commands and flags: `claudebar --help`.
+
+`claudebar setup --print` previews the settings change without writing files,
+including when the existing settings are malformed or already configured.
 
 ### Checking for updates
 
@@ -180,17 +191,16 @@ claudebar update
 # Install/update: https://github.com/micschr0/claudebar#installation
 ```
 
-Add the `update-notice` segment to see the result inline, as an "↑ 2026.8.20"
-badge on the statusline. It is off by default and stays that way — `claudebar
-sync`, which adds segments introduced by newer versions, deliberately skips this
-one and only tells you it exists. Add it to `segments` yourself to enable it.
+When a newer stable release is available, an "↑ VERSION" notice automatically
+appears at the end of the statusline. It disappears when you are up to date;
+there is no segment to enable or configure. Existing `update-notice` entries
+remain compatible and do not produce duplicate notices. The configurator removes
+these obsolete entries when you save.
 
-Enabling it opts into a background check, started at most once every 24 hours by
-a detached child process that writes a small cache next to your config file. The
-statusline itself only reads that cache and never waits for the check. With the
-segment disabled the render path does no network or cache I/O at all; an
-explicit `claudebar update` still writes the cache, since that is you asking for
-a check.
+A detached background process checks at most once every 24 hours and writes a
+small cache next to your config file. The statusline only reads that cache and
+never waits for the network. Run `claudebar update` to check immediately.
+Updates are not installed automatically.
 
 Exit codes: `0` = up to date, `1` = check failed (e.g. no network), `2` = update
 available. In `set -e` shells or `&&`-chains, where exit `2` reads as an error,

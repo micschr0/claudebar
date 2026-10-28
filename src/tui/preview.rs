@@ -16,7 +16,11 @@ pub const FIXED_NOW: i64 = 1_899_990_000;
 pub const PREVIEW_HOME: &str = "/home/me";
 
 /// Render `sample` under `cfg` and convert the ANSI output to a ratatui `Text`.
-pub fn render(cfg: &Config, sample: &Sample) -> Text<'static> {
+pub fn render(
+    cfg: &Config,
+    sample: &Sample,
+    update: Option<&crate::update::Version>,
+) -> Text<'static> {
     let theme = themes::get(&cfg.theme);
     let style = styles::get(&cfg.style);
     let ansi = render_with(
@@ -27,6 +31,7 @@ pub fn render(cfg: &Config, sample: &Sample) -> Text<'static> {
         FIXED_NOW,
         Some(PREVIEW_HOME),
         0, // TUI preview is deterministic; always UTC
+        update,
     );
     ansi.into_text()
         .unwrap_or_else(|_| Text::raw(ansi.replace('\u{1b}', "")))

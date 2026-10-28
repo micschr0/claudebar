@@ -102,7 +102,7 @@ mod tests {
         };
         let theme = themes::get(&cfg.theme);
         let style = styles::get(&cfg.style);
-        render_with(&input, &cfg, &theme, &style, 0, None, 0)
+        render_with(&input, &cfg, &theme, &style, 0, None, 0, None)
     }
 
     /// PR #42 with review_state "changes_requested" → renders ✗ indicator.
@@ -181,7 +181,7 @@ mod tests {
         };
         let theme = themes::get(&cfg.theme);
         let style = styles::get(&cfg.style);
-        let out = render_with(&input, &cfg, &theme, &style, 0, None, 0);
+        let out = render_with(&input, &cfg, &theme, &style, 0, None, 0, None);
         assert_eq!(out, "");
     }
 }
