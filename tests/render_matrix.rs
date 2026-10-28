@@ -278,8 +278,8 @@ fn escape(line: &str) -> String {
 /// sample on *every* one of the thousands of renders, so each row depends on
 /// how many ran before it.
 ///
-/// Five samples 100s apart rising 10%→50% give a clean +0.1 %/s slope, which
-/// puts the segment in its `active` state with a computable ETA.
+/// Five samples 100s apart rising 10%→50% use the fixtures' five-hour reset.
+/// Their +0.1 %/s slope puts the segment in its active state with a known ETA.
 fn seed_burn_file(path: &Path) -> String {
     let seed: String = (1..=5u32)
         .map(|i| {

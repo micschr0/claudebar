@@ -111,6 +111,8 @@ curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh 
 ```bash
 brew uninstall micschr0/tap/claudebar-beta && brew install micschr0/tap/claudebar
 ```
+
+For npm/pnpm, install `@micschr0/claudebar@beta` for prereleases; `@latest` stays on stable releases.
 </details>
 
 ## What it looks like
@@ -135,6 +137,9 @@ claudebar config
 
 Full-screen TUI: live preview, theme and style pickers, threshold sliders. `?` for keys, `s` saves, `q` quits.
 
+The configurator refuses malformed or unreadable TOML. Saves replace the config
+atomically; a failed save keeps your edits open and displays the error.
+
 <img src="screenshots/config-tui.png" width="860" alt="claudebar TUI configurator with live preview, theme picker, and thresholds">
 
 <img src="screenshots/config-tui-style.png" width="860" alt="claudebar TUI style picker with live preview for each style">
@@ -151,6 +156,9 @@ warn = 50   # bar turns yellow
 crit = 80   # bar turns red
 ```
 
+`claudebar edit` uses `$EDITOR`, then `$VISUAL`, then `vi`. Editor arguments and
+quoting are supported, for example `EDITOR='code --wait' claudebar edit`.
+
 ## CLI reference
 
 | Command | Action |
@@ -163,6 +171,9 @@ crit = 80   # bar turns red
 | `claudebar update` | Check for a newer claudebar release (manual; never runs during rendering) |
 
 More commands and flags: `claudebar --help`.
+
+`claudebar setup --print` previews the settings change without writing files,
+including when the existing settings are malformed or already configured.
 
 ### Checking for updates
 

@@ -282,7 +282,10 @@ install_from_source() {
     red "cargo build failed."
     return 1
   fi
-  install -m 0755 "${src_dir}/target/release/claudebar" "$BIN_DEST" || return 1
+  if ! install -m 0755 "${src_dir}/target/release/claudebar" "$BIN_DEST"; then
+    red "Failed to install claudebar to ${BIN_DEST}."
+    return 1
+  fi
   green "claudebar built and installed to ${BIN_DEST}"
 }
 

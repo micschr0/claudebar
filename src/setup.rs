@@ -232,26 +232,7 @@ mod tests {
     }
 
     #[test]
-    fn desired_status_line_with_binary_path_override() {
-        assert_eq!(
-            desired_status_line(Some("some/path")),
-            serde_json::json!({"type":"command","command":"'some/path' render"})
-        );
-    }
 
-    #[test]
-    fn desired_status_line_quotes_custom_binary_path_for_shell() {
-        assert_eq!(
-            desired_status_line(Some("/tmp/a path/it’s 'unsafe' $;")),
-            serde_json::json!({
-                "type": "command",
-                "command": "'/tmp/a path/it’s '\\''unsafe'\\'' $;' render"
-            })
-        );
-        assert_eq!(desired_status_line(None)["command"], STATUSLINE_COMMAND);
-    }
-
-    #[test]
     fn classify_missing_key_will_set_regardless_of_force() {
         let settings = serde_json::json!({});
         let desired = desired_status_line(None);

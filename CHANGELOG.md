@@ -36,6 +36,8 @@ see `RELEASING.md` for the release ritual.
 - Isolate setup regression tests from user configuration and render side effects.
 - Save config atomically, preserve permissions and symlinks, and retain unsaved TUI changes after errors or resets.
 - Keep TUI reorder targets and cursor positions correct when loading legacy `update-notice` entries
+- Keep `setup --print` write-free for malformed and already-configured settings
+- Use exclusive atomic staging files and preserve config permissions under a stricter umask.
 
 ### Testing
 - Reject CLI panics and isolate update checks from the network and real user configuration.

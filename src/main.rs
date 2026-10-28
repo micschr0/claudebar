@@ -271,7 +271,9 @@ fn run_setup(
     match claudebar::setup::classify(&settings, &desired, force) {
         claudebar::setup::Outcome::AlreadyConfigured => {
             println!("claudebar: statusLine already configured — nothing to do.");
-            print_setup_preview(cli);
+            if !print {
+                print_setup_preview(cli);
+            }
             ExitCode::SUCCESS
         }
         claudebar::setup::Outcome::Conflict { existing } => {

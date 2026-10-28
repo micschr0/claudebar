@@ -176,7 +176,7 @@ impl App {
             },
             None => {
                 self.status = Some((
-                    StatusKind::Warning,
+                    StatusKind::Error,
                     "no save path (set $HOME or --config)".into(),
                 ));
                 false

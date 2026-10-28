@@ -866,21 +866,63 @@ mod tests {
     }
 
     #[test]
-    fn failed_save_keeps_quit_open_dirty_and_shows_error() {
-        let path = std::env::temp_dir().join(format!(
-            "claudebar-test-save-blocker-{}",
-            std::process::id()
+    fn malformed_config_is_rejected_before_terminal_setup() {
+        let dir = std::env::temp_dir().join(format!(
+            "claudebar-tui-invalid-{}-{}",
+            std::process::id(),
+            line!()
         ));
-        std::fs::write(&path, "not a directory").unwrap();
-        let mut app = App::new(Config::default(), Some(path.join("config.toml")));
-        app.config.theme = "nord".into();
-        app.request_quit();
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("config.toml");
+        std::fs::write(&path, "theme = \"unclosed").unwrap();
+
+        assert!(matches!(run(Some(path.clone())), Err(TuiError::Config(_))));
+        assert_eq!(
+            std::fs::read_to_string(&path).unwrap(),
+            "theme = \"unclosed"
+        );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn failed_save_and_quit_keeps_edits() {
+        let mut app = app();
+        let dir =
+            std::env::temp_dir().join(format!("claudebar-tui-failed-save-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("blocked"), "not a directory").unwrap();
+        app.save_path = Some(dir.join("blocked/config.toml"));
+        press(&mut app, '2');
+        press(&mut app, 'j');
+        press(&mut app, 'q');
+        assert!(app.pending_quit);
+
         press(&mut app, 's');
         assert!(!app.should_quit);
         assert!(!app.pending_quit);
         assert!(app.is_dirty());
         assert!(matches!(app.status, Some((StatusKind::Error, _))));
-        std::fs::remove_file(path).unwrap();
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn successful_save_and_quit_exits() {
+        let dir = std::env::temp_dir().join(format!(
+            "claudebar-tui-save-{}-{}",
+            std::process::id(),
+            line!()
+        ));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("config.toml");
+        let mut app = App::new(Config::default(), Some(path.clone()));
+        press(&mut app, '2');
+        press(&mut app, 'j');
+        press(&mut app, 'q');
+        press(&mut app, 's');
+        assert!(app.should_quit);
+        assert!(!app.is_dirty());
+        assert_eq!(crate::model::Config::load(&path).unwrap(), app.config);
+        std::fs::remove_dir_all(dir).unwrap();
     }
 
     #[test]

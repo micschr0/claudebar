@@ -2,10 +2,13 @@
 //! window hits 100% at the recent burn rate.
 //! On each render where `burn` is in the segment list, a sample
 //! `(now, pct, resets_at)` is appended to a local TSV cache file.
-//! A linear regression over the recent lookback window
-//! (`thresholds.burn_lookback`, default 600s) yields a slope (pct/sec). The
-//! ETA is `(100 - current_pct) / slope` — the projected time until the
+//! A linear regression over the recent lookback window and current five-hour
+//! reset (`thresholds.burn_lookback`, default 600s) yields a slope (pct/sec).
+//! The ETA is `(100 - current_pct) / slope` — the projected time until the
 //! window hits 100%.
+//!
+//! Samples from previous five-hour windows are excluded, even when timestamps
+//! fall inside the lookback period.
 //!
 //! States:
 //!   - `warming` — no samples yet (fresh install). Shows dim `↗ …`
@@ -158,26 +161,22 @@ fn estimate(
 }
 
 /// Linear regression slope (pct/sec) over samples in the lookback window.
-/// Uses least squares: slope = (n·Σxy − Σx·Σy) / (n·Σx² − (Σx)²).
+/// Uses centered timestamps so epoch-sized values do not erase small
+/// differences in the least-squares denominator.
 fn linear_slope(samples: &[(i64, f64)]) -> f64 {
     let n = samples.len() as f64;
     if n < 2.0 {
         return 0.0;
     }
     let origin = samples[0].0;
-    let sum_x: f64 = samples
-        .iter()
-        .map(|(t, _)| (i128::from(*t) - i128::from(origin)) as f64)
-        .sum();
-    let sum_y: f64 = samples.iter().map(|(_, p)| *p).sum();
-    let sum_xy: f64 = samples
-        .iter()
-        .map(|(t, p)| (i128::from(*t) - i128::from(origin)) as f64 * p)
-        .sum();
-    let sum_x2: f64 = samples
-        .iter()
-        .map(|(t, _)| ((i128::from(*t) - i128::from(origin)) as f64).powi(2))
-        .sum();
+    let (mut sum_x, mut sum_y, mut sum_xy, mut sum_x2) = (0.0, 0.0, 0.0, 0.0);
+    for &(timestamp, pct) in samples {
+        let x = (i128::from(timestamp) - i128::from(origin)) as f64;
+        sum_x += x;
+        sum_y += pct;
+        sum_xy += x * pct;
+        sum_x2 += x * x;
+    }
     let denom = n * sum_x2 - sum_x * sum_x;
     if denom.abs() < 1e-12 {
         return 0.0;
@@ -291,7 +290,7 @@ fn sample(now: i64, pct: f64, resets_at: i64) {
     trim_file(&path);
 }
 
-/// Read samples within the current reset's lookback window, return `[(time, pct)]`.
+/// Read samples from the current five-hour window within the lookback period.
 fn read_samples(now: i64, lookback: i64, resets_at: Option<i64>) -> Vec<(i64, f64)> {
     let Some(resets_at) = resets_at else {
         return Vec::new();
@@ -302,22 +301,24 @@ fn read_samples(now: i64, lookback: i64, resets_at: Option<i64>) -> Vec<(i64, f6
     let Ok(content) = std::fs::read_to_string(&path) else {
         return Vec::new();
     };
-    let cutoff = now.saturating_sub(lookback);
-    parse_samples(&content, cutoff, now, resets_at)
+    parse_samples(&content, now, lookback, resets_at)
 }
 
-fn parse_samples(content: &str, cutoff: i64, now: i64, resets_at: i64) -> Vec<(i64, f64)> {
+fn parse_samples(content: &str, now: i64, lookback: i64, resets_at: i64) -> Vec<(i64, f64)> {
+    let cutoff = now.saturating_sub(lookback);
     let mut samples = Vec::with_capacity(MAX_ROWS);
     for line in content.lines() {
-        let mut fields = line.split('\t');
-        let (Some(t), Some(p), Some(reset)) = (fields.next(), fields.next(), fields.next()) else {
-            continue;
-        };
-        let (Ok(t), Ok(p), Ok(reset)) = (t.parse::<i64>(), p.parse::<f64>(), reset.parse::<i64>())
+        let mut parts = line.split('\t');
+        let (Some(t), Some(p), Some(rst), None) =
+            (parts.next(), parts.next(), parts.next(), parts.next())
         else {
             continue;
         };
-        if p.is_finite() && t >= cutoff && t <= now && reset == resets_at {
+        let (Ok(t), Ok(p), Ok(rst)) = (t.parse::<i64>(), p.parse::<f64>(), rst.parse::<i64>())
+        else {
+            continue;
+        };
+        if t >= cutoff && t <= now && rst == resets_at && p.is_finite() {
             samples.push((t, p));
         }
     }
@@ -346,6 +347,35 @@ mod tests {
     fn test_theme() -> Theme {
         let config = Config::default();
         themes::get(&config.theme)
+    }
+
+    #[test]
+    fn slope_handles_epoch_timestamps_and_eta() {
+        let samples = [(1_800_000_000, 50.0), (1_800_000_004, 54.0)];
+        assert!((linear_slope(&samples) - 1.0).abs() < 0.001);
+        let theme = test_theme();
+        let est = estimate(
+            1_800_000_004,
+            &samples,
+            Some((54.0, 1_800_000_100)),
+            None,
+            &theme,
+        );
+        assert_eq!(est.eta, "46s");
+    }
+
+    #[test]
+    fn samples_ignore_other_resets_and_invalid_rows() {
+        let current = "96\t40\t200\n98\t42\t200\n100\t44\t200\n";
+        let mixed = format!("95\t99\t100\n{current}101\t45\t200\n99\tNaN\t200\n99\t43\n");
+        let mixed_samples = parse_samples(&mixed, 100, 10, 200);
+        let current_samples = parse_samples(current, 100, 10, 200);
+        assert_eq!(mixed_samples, current_samples);
+        let theme = test_theme();
+        assert_eq!(
+            estimate(100, &mixed_samples, Some((44.0, 200)), None, &theme).eta,
+            "56s"
+        );
     }
 
     #[test]
@@ -463,7 +493,7 @@ mod tests {
         let mut content = String::new();
         for i in 0..10i64 {
             let pct = 40.0 + i as f64; // 40→49 over 9 seconds
-            content.push_str(&format!("{now}\t{pct:.3}\t2100\n"));
+            content.push_str(&format!("{now}\t{pct:.3}\t{}\n", now + 200));
         }
         std::fs::write(&burn_path, &content).expect("write samples file");
 
@@ -674,7 +704,7 @@ mod tests {
             now - 20,
             now + 1
         );
-        let samples = parse_samples(&content, now - 10, now, 200);
+        let samples = parse_samples(&content, now, 10, 200);
 
         assert_eq!(samples, [(now - 3, 20.0), (now - 2, 50.0)]);
         let estimate = estimate(now, &samples, Some((54.0, now + 100)), None, &test_theme());

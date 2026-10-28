@@ -201,7 +201,7 @@ impl Config {
         }
     }
 
-    /// Serialize to pretty TOML, creating parent dirs.
+    /// Atomically save pretty TOML, preserving existing data if writing fails.
     ///
     /// # Errors
     ///
@@ -463,5 +463,33 @@ mod tests {
             vec![SegmentKind::Git, SegmentKind::DevContext]
         );
         let _ = std::fs::remove_file(&path);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn save_updates_symlink_target_and_preserves_permissions() {
+        use std::os::unix::fs::{PermissionsExt, symlink};
+
+        let dir = unique_temp_path();
+        std::fs::create_dir_all(&dir).unwrap();
+        let target = dir.join("target.toml");
+        std::fs::write(&target, "old").unwrap();
+        std::fs::set_permissions(&target, std::fs::Permissions::from_mode(0o640)).unwrap();
+        let link = dir.join("config.toml");
+        symlink("target.toml", &link).unwrap();
+
+        Config::default().save(&link).unwrap();
+        assert!(
+            std::fs::symlink_metadata(&link)
+                .unwrap()
+                .file_type()
+                .is_symlink()
+        );
+        assert_eq!(
+            std::fs::metadata(&target).unwrap().permissions().mode() & 0o777,
+            0o640
+        );
+        assert_eq!(Config::load(&target).unwrap(), Config::default());
+        std::fs::remove_dir_all(dir).unwrap();
     }
 }

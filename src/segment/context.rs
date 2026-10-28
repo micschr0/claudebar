@@ -119,6 +119,12 @@ mod tests {
     }
 
     #[test]
+    fn token_sum_saturates_instead_of_wrapping() {
+        let out = render_ctx(Some(u64::MAX), Some(1), None);
+        assert!(crate::render::strip_ansi(&out).ends_with("18446744073709.6M"));
+    }
+
+    #[test]
     fn below_warn_uses_ok_color() {
         // bar_ok = 114 in tokyo-night.
         let out = render_ctx(Some(1000), Some(0), Some(10.0));

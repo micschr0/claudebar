@@ -16,6 +16,9 @@ use crate::model::{Config, InputData, SegmentKind};
 use crate::render::SegmentWriter;
 use crate::segment::RenderCtx;
 use crate::{styles, themes};
+use std::fs::{self, OpenOptions};
+use std::io::Write;
+use std::os::unix::fs::{OpenOptionsExt, PermissionsExt};
 use std::path::{Path, PathBuf};
 
 /// Emit the plain-text float readout for `input` under `cfg`.
@@ -134,50 +137,64 @@ fn resolve_path(path: &str, home: Option<&str>) -> Option<PathBuf> {
     }
 }
 
-/// Write `content` to `path` atomically: create parent dirs, write to a sibling
-/// temp file, then rename over the target (a same-filesystem rename is atomic on
-/// POSIX). The temp file is tagged with the process id so concurrent writers do
-/// not clobber each other's staging files.
+/// Atomically replace a file, following valid symlinks and preserving its permissions.
+/// Exclusive staging files keep concurrent writers from clobbering each other.
 ///
 /// # Errors
 ///
-/// Returns the underlying [`std::io::Error`]; the caller treats it as best-effort.
+/// Returns an I/O error without replacing the destination if staging or rename fails.
 pub(crate) fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
-    use std::io::Write;
-
-    let parent = path.parent().unwrap_or_else(|| Path::new("."));
-    std::fs::create_dir_all(parent)?;
-    let permissions = std::fs::metadata(path)
-        .ok()
-        .map(|metadata| metadata.permissions());
-    let name = path
+    let destination = match fs::symlink_metadata(path) {
+        Ok(metadata) if metadata.file_type().is_symlink() => fs::canonicalize(path)?,
+        Ok(_) => path.to_path_buf(),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => path.to_path_buf(),
+        Err(error) => return Err(error),
+    };
+    let parent = destination
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+        .unwrap_or_else(|| Path::new("."));
+    fs::create_dir_all(parent)?;
+    let name = destination
         .file_name()
         .and_then(|n| n.to_str())
         .unwrap_or("claudebar-float");
-    let tmp = parent.join(format!(".{name}.{}.tmp", std::process::id()));
-    let mut options = std::fs::OpenOptions::new();
-    options.write(true).create_new(true);
-    #[cfg(unix)]
-    std::os::unix::fs::OpenOptionsExt::mode(&mut options, 0o600);
-    let mut file = options.open(&tmp)?;
+    let permissions = fs::metadata(&destination)
+        .ok()
+        .map(|metadata| metadata.permissions());
+    let mut counter = 0_u64;
+    let (tmp, mut file) = loop {
+        let tmp = parent.join(format!(".{name}.{}.{}.tmp", std::process::id(), counter));
+        match OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(
+                permissions
+                    .as_ref()
+                    .map_or(0o666, |permissions| permissions.mode() & 0o7777),
+            )
+            .open(&tmp)
+        {
+            Ok(file) => break (tmp, file),
+            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+                counter = counter.wrapping_add(1);
+            }
+            Err(error) => return Err(error),
+        }
+    };
     let result = (|| {
+        file.write_all(content.as_bytes())?;
         if let Some(permissions) = permissions {
             file.set_permissions(permissions)?;
         }
-        file.write_all(content.as_bytes())
+        file.sync_all()?;
+        drop(file);
+        fs::rename(&tmp, &destination)
     })();
-    drop(file);
-    if let Err(e) = result {
-        let _ = std::fs::remove_file(&tmp);
-        return Err(e);
+    if result.is_err() {
+        let _ = fs::remove_file(tmp);
     }
-    match std::fs::rename(&tmp, path) {
-        Ok(()) => Ok(()),
-        Err(e) => {
-            let _ = std::fs::remove_file(&tmp);
-            Err(e)
-        }
-    }
+    result
 }
 
 #[cfg(test)]
@@ -197,7 +214,7 @@ mod tests {
 
     #[cfg(unix)]
     #[test]
-    fn atomic_writer_refuses_preexisting_staging_symlink() {
+    fn atomic_writer_skips_preexisting_staging_symlink() {
         use std::os::unix::fs::symlink;
 
         let dir = std::env::temp_dir().join(format!(
@@ -211,11 +228,12 @@ mod tests {
         std::fs::create_dir(&dir).unwrap();
         let target = dir.join("target");
         let sentinel = dir.join("sentinel");
-        let staging = dir.join(format!(".target.{}.tmp", std::process::id()));
+        let staging = dir.join(format!(".target.{}.0.tmp", std::process::id()));
         std::fs::write(&sentinel, "untouched").unwrap();
         symlink(&sentinel, &staging).unwrap();
 
-        assert!(write_atomic(&target, "replacement").is_err());
+        write_atomic(&target, "replacement").unwrap();
+        assert_eq!(std::fs::read_to_string(&target).unwrap(), "replacement");
         assert_eq!(std::fs::read_to_string(&sentinel).unwrap(), "untouched");
         assert!(
             std::fs::symlink_metadata(&staging)
@@ -223,9 +241,7 @@ mod tests {
                 .file_type()
                 .is_symlink()
         );
-        std::fs::remove_file(staging).unwrap();
-        std::fs::remove_file(sentinel).unwrap();
-        std::fs::remove_dir(dir).unwrap();
+        std::fs::remove_dir_all(dir).unwrap();
     }
 
     #[test]
