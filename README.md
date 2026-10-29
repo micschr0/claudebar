@@ -2,132 +2,113 @@
 
 <img src="assets/logo.svg" width="240" alt="claudebar">
 
-**A powerline statusline for Claude Code: segments, themes, and a live TUI configurator in a single native binary.**
+Keep an eye on context usage, rate limits, Git status, and cost while you work in Claude Code.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/rust.yml?style=flat-square&label=CI)](https://github.com/micschr0/claudebar/actions/workflows/rust.yml) [![Release](https://img.shields.io/github/v/release/micschr0/claudebar?style=flat-square&label=release)](https://github.com/micschr0/claudebar/releases/latest) [![Downloads](https://img.shields.io/github/downloads/micschr0/claudebar/total?style=flat-square&label=downloads)](https://github.com/micschr0/claudebar/releases) [![Security](https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/security.yml?style=flat-square&label=Security)](https://github.com/micschr0/claudebar/actions/workflows/security.yml) [![Provenance: attested](https://img.shields.io/badge/provenance-attested-2ea44f?style=flat-square)](SECURITY.md#verifying-a-release) [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos-lightgrey?style=flat-square)](CLAUDE.md) [![Rust 2024](https://img.shields.io/badge/rust-2024-%23CE422B?style=flat-square)](Cargo.toml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+[![CI][ci-badge]][ci-url] [![Release][release-badge]][release-url] [![Provenance][provenance-badge]][verification-url] [![MIT license][license-badge]][license-url]
 
-**[Documentation & live demo](https://micschr0.github.io/claudebar/)**
+[Install](#install) · [Configure](#configure) · [Demo & theme gallery](https://micschr0.github.io/claudebar/)
 
 </div>
 
-<img src="screenshots/normal.png" alt="claudebar statusline pinned at the bottom of a Claude Code session">
+![claudebar below a Claude Code conversation, showing project, model, context usage, rate limits, and session cost](screenshots/normal.png)
 
 ## Install
 
-> [!NOTE]
-> Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/), or switch to the `ascii` style.
-> On macOS: `brew install --cask font-hack-nerd-font` (the font used in the screenshots).
+claudebar runs on macOS and Linux, on Intel/AMD64 and ARM64.
+Prebuilt binaries need no Rust toolchain.
+
+Powerline icons need a [Nerd Font](https://www.nerdfonts.com/).
+Without one, select `ascii` in the configurator.
+
+### Install script
+
+Requires Bash, curl, and jq. Git is needed for the Git segment.
+
+> [!IMPORTANT]
+> The script installs claudebar and configures Claude Code automatically,
+> replacing any existing `statusLine` setting.
+> Package-manager installations use an interactive setup instead.
 
 ```bash
-# verifies SHA256, plus build provenance when gh is available
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
 ```
 
-**Homebrew**
+Restart Claude Code. The statusline appears on the next turn.
+
+You can check the installation without starting Claude Code:
+
 ```bash
-# verifies SHA256
-brew install micschr0/tap/claudebar
+~/.claude/claudebar smoke
 ```
 
-**mise**
-```bash
-# verifies SHA256 and build provenance automatically
-mise use -g github:micschr0/claudebar
-```
+[Review the script](install.sh) before running it.
 
-**pnpm**
-```bash
-# same per-platform package, installable with any npm-registry package manager
-pnpm add -g @micschr0/claudebar
-```
+### Package managers
 
-Then wire it into Claude Code. It shows a diff, asks before writing, and backs up the old file:
+Choose one:
+
+| Package manager | Install |
+|---|---|
+| Homebrew | `brew install micschr0/tap/claudebar` |
+| mise | `mise use -g github:micschr0/claudebar` |
+| pnpm | `pnpm add -g @micschr0/claudebar` |
+
+Then configure Claude Code:
 
 ```bash
 claudebar setup
 ```
 
-<details><summary>What each install method verifies</summary>
+Setup shows a diff, asks before writing, and backs up the previous
+settings file. Restart Claude Code afterward.
 
-Every method checks the SHA256 of the downloaded archive. Only some also verify [build provenance](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds), which proves that this repo's `release.yml` built the binary. A matching hash on its own does not.
+### Release verification
 
-| Method | SHA256 | Build provenance |
-|---|---|---|
-| `install.sh` | ✓ fatal on mismatch | ~ needs `gh`, authenticated |
-| Homebrew | ✓ | ✗ |
-| `mise` | ✓ | ✓ automatic |
-| npm / pnpm | ✓ (ships verified binary) | ✗ |
-| `claudebar-installer.sh` (hosted) | ✓ | ✗ |
+SHA256 checksums detect changed downloads. Build provenance identifies
+the workflow that built the binary.
 
-<sub>✓ verified, ~ conditional, ✗ not checked</sub>
+| Method | Verification |
+|---|---|
+| Script | Checks SHA256; also checks provenance when `gh` is installed and authenticated |
+| mise | Checks SHA256 and provenance automatically |
+| Homebrew | Checks SHA256, without build provenance |
+| npm/pnpm | Ship the release binaries; installation does not verify their GitHub build provenance |
 
-> [!NOTE]
-> The npm/pnpm packages ship the **already-attested** release binaries (built and
-> provenance-signed by `release.yml`, then repackaged unchanged). The package itself
-> carries no [npm registry provenance](https://docs.npmjs.com/generating-provenance-statements/),
-> since that would attest the repackaging workflow rather than the build. What
-> `install.sh` checks is the `release.yml` provenance on the binaries themselves.
+The script stops on a checksum mismatch. A provenance failure produces
+a warning.
 
-`install.sh` treats a checksum mismatch as fatal; a provenance error only warns. It scopes trust to `release.yml` via `gh attestation verify --signer-workflow`. To verify a download by hand:
+[Manual release verification](SECURITY.md#verifying-a-release)
 
-```bash
-gh attestation verify claudebar-x86_64-unknown-linux-musl.tar.gz \
-  --repo micschr0/claudebar \
-  --signer-workflow micschr0/claudebar/.github/workflows/release.yml
-```
-</details>
+## Session information
 
-<details><summary>Review the script first</summary>
+claudebar can show:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh -o install.sh
-claude -p "Audit this script for anything unsafe, then summarize what it does" < install.sh
-bash install.sh
-```
-</details>
+- Context-window usage with token counts and color-coded bars.
+- 5-hour and 7-day rate-limit usage with reset countdowns, when
+  Claude Code supplies the data.
+- Working directory, Git branch, working-tree status, active model,
+  and reasoning effort.
+- Session cost, elapsed time, and lines changed.
 
-<details><summary>Beta channel</summary>
+There are 11 selectable segments, 16 themes, and 8 styles. You can
+toggle and reorder segments in the configurator. Segments without
+usable data stay hidden.
 
-Prereleases (tagged e.g. `2026.7.6-beta.1`) ship to a separate Homebrew formula, so `brew upgrade` keeps stable users on stable:
+claudebar uses Claude Code's status line and leaves your shell prompt
+unchanged.
 
-```bash
-brew install micschr0/tap/claudebar-beta
-```
+### Usage colors
 
-Or via the script:
+The default warning thresholds are 50% and 80%.
+Both are configurable.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | CLAUDEBAR_CHANNEL=beta bash
-```
+High usage:
 
-To install a specific release, set `CLAUDEBAR_VERSION` on the bash side of the pipe (without the leading `v`):
+![High usage with warning colors](screenshots/strip-critical.png)
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | CLAUDEBAR_VERSION=2026.7.6-beta.1 bash
-```
+Over limit:
 
-`micschr0/tap/claudebar` always tracks stable; `claudebar-beta` follows the latest prerelease. Back to stable:
-
-```bash
-brew uninstall micschr0/tap/claudebar-beta && brew install micschr0/tap/claudebar
-```
-
-For npm/pnpm, install `@micschr0/claudebar@beta` for prereleases; `@latest` stays on stable releases.
-</details>
-
-## What it looks like
-
-Colors shift as usage crosses **50%** and **80%**:
-
-<img src="screenshots/strip-normal.png" width="860" alt="Normal: calm baseline">
-
-<img src="screenshots/strip-critical.png" width="860" alt="Critical: a rate limit is approaching">
-
-<img src="screenshots/strip-overlimit.png" width="860" alt="Over limit: past the threshold">
-
-All segments. Three are off by default (dev-context, burn, clock):
-
-<img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock, update notice">
+![Usage beyond the limit, highlighted in red](screenshots/strip-overlimit.png)
 
 ## Configure
 
@@ -135,16 +116,25 @@ All segments. Three are off by default (dev-context, burn, clock):
 claudebar config
 ```
 
-Full-screen TUI: live preview, theme and style pickers, threshold sliders. `?` for keys, `s` saves, `q` quits.
+The configurator previews changes as you select themes and styles,
+reorder segments, or adjust thresholds. Press `?` for help, `s` to save,
+and `q` to quit.
 
-The configurator refuses malformed or unreadable TOML. Saves replace the config
-atomically; a failed save keeps your edits open and displays the error.
+![claudebar configurator showing segment selection and a live preview](screenshots/config-tui.png)
 
-<img src="screenshots/config-tui.png" width="860" alt="claudebar TUI configurator with live preview, theme picker, and thresholds">
+Eight segments are enabled by default. Development context, burn, and
+clock are optional.
 
-<img src="screenshots/config-tui-style.png" width="860" alt="claudebar TUI style picker with live preview for each style">
+[Theme and style gallery](https://micschr0.github.io/claudebar/#gallery-grid)
 
-Or edit the TOML at `~/.config/claudebar/config.toml` directly (`claudebar edit`):
+### Edit the config file
+
+```bash
+claudebar edit
+```
+
+The config file is at `$XDG_CONFIG_HOME/claudebar/config.toml`,
+or `~/.config/claudebar/config.toml` when XDG_CONFIG_HOME is unset.
 
 ```toml
 theme = "tokyo-night"
@@ -152,74 +142,111 @@ style = "powerline"
 segments = ["directory", "git", "model", "context", "lines", "rate-limits", "cost", "duration"]
 
 [thresholds]
-warn = 50   # bar turns yellow
-crit = 80   # bar turns red
+warn = 50
+crit = 80
 ```
 
-`claudebar edit` uses `$EDITOR`, then `$VISUAL`, then `vi`. Editor arguments and
-quoting are supported, for example `EDITOR='code --wait' claudebar edit`.
+`claudebar edit` uses `$EDITOR`, then `$VISUAL`, then `vi`.
+Editor arguments are supported: `EDITOR='code --wait' claudebar edit`.
 
-## CLI reference
+The configurator refuses malformed or unreadable config files.
+It saves atomically and keeps your edits open if saving fails.
 
-| Command | Action |
+## Commands
+
+| Command | Purpose |
 |---|---|
-| `claudebar` / `claudebar render` | Read session JSON from stdin, write ANSI statusline to stdout |
-| `claudebar config` | Launch the TUI configurator |
-| `claudebar setup` | Wire claudebar into Claude Code's `settings.json` |
-| `claudebar list` | List built-in themes and styles |
-| `claudebar doctor` | Diagnose font, git, config, and PATH issues |
-| `claudebar update` | Check for a newer claudebar release (manual; never runs during rendering) |
+| `claudebar smoke` | Render a built-in sample |
+| `claudebar doctor` | Diagnose font, Git, config, and PATH issues |
+| `claudebar list` | List themes and styles |
+| `claudebar list --list-segments` | List selectable segments |
+| `claudebar sync` | Add newly introduced segments to your config |
+| `claudebar setup --print` | Preview Claude Code settings without writing |
+| `claudebar render` | Read session JSON from stdin and write the statusline |
 
-More commands and flags: `claudebar --help`.
+Run `claudebar --help` for more commands and flags.
 
-`claudebar setup --print` previews the settings change without writing files,
-including when the existing settings are malformed or already configured.
+If icons appear as boxes or broken characters, select `ascii` in the
+configurator. If your shell cannot find `claudebar` after a script
+install, use `~/.claude/claudebar` and check your PATH.
 
-### Checking for updates
+## Updates
 
-`claudebar update` compares your installed version against the newest GitHub
-release. You run it yourself, and the render path never blocks on the network,
-so the statusline cannot stall on it.
+A background process checks for new releases at most once a day.
+When a newer stable version is available, claudebar shows an update
+notice. Rendering reads a local cache and never waits for the network.
 
-It compares against the newest **stable** release. Pass `--channel beta` to
-include prereleases.
+Check immediately with:
 
 ```bash
 claudebar update
-# claudebar 2026.8.15 (stable channel)
-# Update available: 2026.8.16 (stable)
-# Install/update: https://github.com/micschr0/claudebar#installation
 ```
 
-When a newer stable release is available, an "↑ VERSION" notice automatically
-appears at the end of the statusline. It disappears when you are up to date;
-there is no segment to enable or configure. Existing `update-notice` entries
-remain compatible and do not produce duplicate notices. The configurator removes
-these obsolete entries when you save.
+Updates are not installed automatically. Use your original installation
+method to upgrade.
 
-A detached background process checks at most once every 24 hours and writes a
-small cache next to your config file. The statusline only reads that cache and
-never waits for the network. Run `claudebar update` to check immediately.
-Updates are not installed automatically.
+For scripts, `claudebar update --check` returns `0` on a successful
+check even when an update is available. Without `--check`, an available
+update returns `2`. A failed check returns `1`.
 
-Exit codes: `0` = up to date, `1` = check failed (e.g. no network), `2` = update
-available. In `set -e` shells or `&&`-chains, where exit `2` reads as an error,
-add `--check`: it still prints the result but exits `0` on success.
+### Beta channel
+
+Beta releases may be unstable. Stable installations stay on stable
+unless you select beta.
+
+| Method | Install beta |
+|---|---|
+| Homebrew | `brew install micschr0/tap/claudebar-beta` |
+| pnpm | `pnpm add -g @micschr0/claudebar@beta` |
+
+With the script:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | CLAUDEBAR_CHANNEL=beta bash
+```
+
+To install a specific release, set `CLAUDEBAR_VERSION` on the bash side
+of the pipe, without the leading `v`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | CLAUDEBAR_VERSION=2026.7.6-beta.1 bash
+```
+
+To return to stable with Homebrew, uninstall `claudebar-beta` and
+install `micschr0/tap/claudebar`. For npm/pnpm, use `@latest`.
+
+Check for beta updates with `claudebar update --channel beta`.
 
 ## Uninstall
 
+Use the method you installed with:
+
 ```bash
 brew uninstall claudebar
-# or: rm ~/.claude/claudebar   # script install
-# or: pnpm remove -g @micschr0/claudebar   # npm / pnpm install
+# or: pnpm remove -g @micschr0/claudebar
+# or, for the script install: rm ~/.claude/claudebar
 ```
 
-Then remove the `statusLine` entry from `~/.claude/settings.json`, and `~/.config/claudebar/` if you want the config gone too.
+For a script install, also remove the command symlink created by the
+installer. For the Homebrew beta, uninstall `claudebar-beta`.
 
----
+Remove the `statusLine` entry from `~/.claude/settings.json`.
+You can keep the claudebar config for a later installation or remove
+its configuration directory.
 
-**More:** [documentation & live demo](https://micschr0.github.io/claudebar/) · [build from source](https://micschr0.github.io/claudebar/#build) · [contributing](CONTRIBUTING.md) · [contributing a theme](CONTRIBUTING-themes.md) · [internals wiki](openwiki/index.md) · [changelog](CHANGELOG.md) · [verifying releases](SECURITY.md#verifying-a-release) · [report an issue](https://github.com/micschr0/claudebar/issues)
+[Demo & gallery](https://micschr0.github.io/claudebar/) ·
+[Contributing](CONTRIBUTING.md) ·
+[Create a theme](CONTRIBUTING-themes.md) ·
+[Internals](openwiki/index.md) ·
+[Changelog](CHANGELOG.md) ·
+[Report an issue](https://github.com/micschr0/claudebar/issues) ·
+[MIT license](LICENSE)
 
-## License
-
-[MIT](LICENSE)
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/micschr0/claudebar/rust.yml?style=flat-square&label=CI
+[ci-url]: https://github.com/micschr0/claudebar/actions/workflows/rust.yml
+[release-badge]: https://img.shields.io/github/v/release/micschr0/claudebar?style=flat-square&label=release
+[release-url]: https://github.com/micschr0/claudebar/releases/latest
+[provenance-badge]: https://img.shields.io/badge/provenance-attested-2ea44f?style=flat-square
+[verification-url]: SECURITY.md#verifying-a-release
+[license-badge]: https://img.shields.io/badge/License-MIT-blue?style=flat-square
+[license-url]: LICENSE
