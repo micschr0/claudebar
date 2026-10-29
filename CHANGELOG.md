@@ -8,6 +8,11 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.10.29-beta.2](https://github.com/micschr0/claudebar/compare/2026.10.29-beta.1...2026.10.29-beta.2)
+
+### Fixed
+- Trust generated Homebrew formula before validation (#184)
+
 ## [2026.10.29-beta.1](https://github.com/micschr0/claudebar/compare/2026.10.25-beta.1...2026.10.29-beta.1)
 
 ### Fixed
