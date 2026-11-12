@@ -4,7 +4,9 @@
   "prCreation": "immediate",
   "rebaseWhen": "auto",
   "labels": ["dependencies"],
-  "dependencyDashboard": true,
+  "dependencyDashboard": {
+    "enabled": true
+  },
   "platformAutomerge": true,
   "timezone": "Europe/Berlin",
   "cargo": {
