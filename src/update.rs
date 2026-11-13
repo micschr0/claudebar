@@ -179,7 +179,13 @@ pub fn fetch_latest(channel: Channel) -> Result<Latest, UpdateError> {
         Channel::Beta => {
             let releases: Vec<Release> = serde_json::from_slice(&fetch_url(RELEASES_URL)?)
                 .map_err(|e| UpdateError::Parse(e.to_string()))?;
-            let stable = stable_result.ok();
+            let stable = stable_result.ok().or_else(|| {
+                releases
+                    .iter()
+                    .filter_map(|r| Version::parse(&r.tag_name))
+                    .filter(|v| !v.is_prerelease())
+                    .max()
+            });
             let overall = releases
                 .iter()
                 .filter_map(|r| Version::parse(&r.tag_name))
