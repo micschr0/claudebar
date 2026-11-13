@@ -596,6 +596,49 @@ fn main_update_check_records_offline_failure_in_isolated_config() {
     let _ = fs::remove_dir_all(&empty_path);
 }
 
+#[cfg(unix)]
+#[test]
+fn update_channels_handle_many_betas_and_missing_stable() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = unique_temp_dir("update_channels");
+    let curl = dir.join("curl");
+    let betas = (1..=30)
+        .map(|n| format!(r#"{{"tag_name":"2999.1.1-beta.{n}"}}"#))
+        .collect::<Vec<_>>()
+        .join(",");
+    let script = format!(
+        "#!/bin/sh\ncase \"$*\" in\n  */latest) printf '%s' '{{\"tag_name\":\"2998.1.1\"}}' ;;\n  *) printf '%s' '[{betas}]' ;;\nesac\n"
+    );
+    fs::write(&curl, script).unwrap();
+    fs::set_permissions(&curl, fs::Permissions::from_mode(0o755)).unwrap();
+    let run = |args: &[&str]| {
+        bin()
+            .args(args)
+            .env("PATH", &dir)
+            .env("XDG_CONFIG_HOME", &dir)
+            .output()
+            .unwrap()
+    };
+    let stable = run(&["update"]);
+    assert_eq!(stable.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&stable.stdout).contains("2998.1.1 (stable)"));
+    let beta = run(&["update", "--channel", "beta"]);
+    assert_eq!(beta.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&beta.stdout).contains("2999.1.1-beta.30 (prerelease)"));
+    assert_eq!(run(&["update", "--check"]).status.code(), Some(0));
+    fs::write(&curl, format!("#!/bin/sh\ncase \"$*\" in\n  */latest) exit 22 ;;\n  *) printf '%s' '[{betas}]' ;;\nesac\n")).unwrap();
+    let beta_without_stable = run(&["update", "--channel", "beta"]);
+    assert_eq!(beta_without_stable.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&beta_without_stable.stdout).contains("2999.1.1-beta.30"));
+    let failed = run(&["update", "--check"]);
+    assert_eq!(failed.status.code(), Some(1));
+    let cache: serde_json::Value =
+        serde_json::from_slice(&fs::read(dir.join("claudebar/update-check.json")).unwrap())
+            .unwrap();
+    assert_eq!(cache["latest"], "2998.1.1");
+    let _ = fs::remove_dir_all(dir);
+}
+
 // -- setup tests --------------------------------------------------------
 // `run_setup` wires `statusLine` into Claude Code's settings.json. `--settings-path`
 // bypasses $HOME resolution. Stdin is not a TTY here, so the interactive y/N
