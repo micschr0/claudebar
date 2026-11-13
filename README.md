@@ -129,6 +129,11 @@ All segments. Three are off by default (dev-context, burn, clock):
 
 <img src="screenshots/segment-pills.png" width="860" alt="Every claudebar segment: directory, git, model, context, dev-context, rate limits, lines, cost, burn, duration, clock, update notice">
 
+The optional `burn` segment projects only the five-hour window from recent usage
+samples (`5h ⇢ …`); `5h ✓` means no recent increase was measured. An exhausted
+weekly limit overrides this with a red `7d exhausted`. Weekly usage and reset
+countdowns remain in `rate-limits`; burn does not project a weekly ETA.
+
 ## Configure
 
 ```bash
