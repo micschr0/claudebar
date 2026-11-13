@@ -626,7 +626,7 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
         .map(|d| d.as_secs() as i64)
         .unwrap_or(0);
 
-    let latest = match claudebar::update::fetch_latest() {
+    let latest = match claudebar::update::fetch_latest(channel) {
         Ok(l) => l,
         Err(e) => {
             // Stamp the failed attempt so a background refresh backs off for a
@@ -646,13 +646,17 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
     };
 
     // The cache always records the newest *stable* release, independent of the
-    // channel this invocation reported on. With no stable release at all there
-    // is nothing to record — caching `overall` here would badge stable-channel
-    // users toward a prerelease.
-    claudebar::update::write_cache(now, latest.stable.as_ref());
+    // channel this invocation reported on. Preserve the last known stable if a
+    // beta-channel check could not fetch the stable endpoint.
+    let cached = claudebar::update::read_cache().and_then(|c| c.latest);
+    claudebar::update::write_cache(now, latest.stable.as_ref().or(cached.as_ref()));
 
     println!("claudebar {installed} ({channel} channel)");
     match claudebar::update::recommend(&installed, &latest, channel) {
+        claudebar::update::Recommendation::Unavailable => {
+            eprintln!("claudebar: no stable release is available");
+            ExitCode::FAILURE
+        }
         claudebar::update::Recommendation::UpToDate => {
             println!("You are on the latest {channel} release.");
             ExitCode::SUCCESS

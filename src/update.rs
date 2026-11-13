@@ -4,7 +4,7 @@
 //! Updating is an explicit command with its own exit codes, so a script or the
 //! user can find out whether a newer release exists and how to install it.
 //!
-//! Version source: the GitHub releases API (`releases?per_page=30`), which is
+//! Version source: the GitHub releases API, which is
 //! the channel `install.sh` and the Homebrew tap publish to. claudebar ships
 //! prereleases (CalVer `...-beta.N`) on a separate channel, so the comparison
 //! is **channel-aware**: by default we compare against the newest *stable*
@@ -135,7 +135,7 @@ struct Release {
 /// The newest releases we found.
 #[derive(Debug, Clone)]
 pub struct Latest {
-    /// Newest release across all channels (stable and prerelease).
+    /// Newest release among the recent releases and the latest stable.
     pub overall: Version,
     /// Newest stable (non-prerelease) release, if any.
     pub stable: Option<Version>,
@@ -153,6 +153,7 @@ pub enum UpdateError {
 }
 
 const RELEASES_URL: &str = "https://api.github.com/repos/micschr0/claudebar/releases?per_page=30";
+const STABLE_URL: &str = "https://api.github.com/repos/micschr0/claudebar/releases/latest";
 
 /// Fetch the latest release information from the GitHub releases API.
 ///
@@ -163,9 +164,61 @@ const RELEASES_URL: &str = "https://api.github.com/repos/micschr0/claudebar/rele
 ///
 /// Returns [`UpdateError::Network`] when `curl` is unavailable, exits
 /// non-zero, or cannot reach the registry within the timeout. Returns
-/// [`UpdateError::Parse`] when the response is not a JSON list of releases
-/// or contains no parseable CalVer tag.
-pub fn fetch_latest() -> Result<Latest, UpdateError> {
+/// [`UpdateError::Parse`] when the response is malformed or contains no usable
+/// release for the requested channel.
+pub fn fetch_latest(channel: Channel) -> Result<Latest, UpdateError> {
+    match channel {
+        Channel::Stable => {
+            let stable = fetch_stable()?;
+            Ok(Latest {
+                overall: stable.clone(),
+                stable: Some(stable),
+            })
+        }
+        Channel::Beta => {
+            let (stable_result, releases_result) = std::thread::scope(|scope| {
+                let stable = scope.spawn(fetch_stable);
+                let releases = fetch_url(RELEASES_URL);
+                (stable.join(), releases)
+            });
+            let stable_result = stable_result.unwrap_or_else(|_| {
+                Err(UpdateError::Network(
+                    "stable release check failed".to_string(),
+                ))
+            });
+            let releases: Vec<Release> = serde_json::from_slice(&releases_result?)
+                .map_err(|e| UpdateError::Parse(e.to_string()))?;
+            let stable = stable_result.ok().or_else(|| {
+                releases
+                    .iter()
+                    .filter_map(|r| Version::parse(&r.tag_name))
+                    .filter(|v| !v.is_prerelease())
+                    .max()
+            });
+            let overall = releases
+                .iter()
+                .filter_map(|r| Version::parse(&r.tag_name))
+                .chain(stable.iter().cloned())
+                .max()
+                .ok_or_else(|| UpdateError::Parse("no parseable releases found".to_string()))?;
+            Ok(Latest { overall, stable })
+        }
+    }
+}
+
+fn fetch_stable() -> Result<Version, UpdateError> {
+    parse_stable(&fetch_url(STABLE_URL)?)
+}
+
+fn parse_stable(body: &[u8]) -> Result<Version, UpdateError> {
+    let release: Release =
+        serde_json::from_slice(body).map_err(|e| UpdateError::Parse(e.to_string()))?;
+    Version::parse(&release.tag_name)
+        .filter(|v| !v.is_prerelease())
+        .ok_or_else(|| UpdateError::Parse("no valid stable release found".to_string()))
+}
+
+fn fetch_url(url: &str) -> Result<Vec<u8>, UpdateError> {
     let output = Command::new("curl")
         .args([
             "--fail",
@@ -174,11 +227,10 @@ pub fn fetch_latest() -> Result<Latest, UpdateError> {
             "--location",
             "--max-time",
             "15",
-            RELEASES_URL,
+            url,
         ])
         .output()
         .map_err(|e| UpdateError::Network(e.to_string()))?;
-
     if !output.status.success() {
         let hint = String::from_utf8_lossy(&output.stderr).trim().to_string();
         return Err(UpdateError::Network(if hint.is_empty() {
@@ -187,32 +239,7 @@ pub fn fetch_latest() -> Result<Latest, UpdateError> {
             hint
         }));
     }
-
-    let releases: Vec<Release> =
-        serde_json::from_slice(&output.stdout).map_err(|e| UpdateError::Parse(e.to_string()))?;
-
-    let mut versions: Vec<Version> = Vec::with_capacity(releases.len());
-    for r in releases {
-        if let Some(v) = Version::parse(&r.tag_name) {
-            versions.push(v);
-        }
-    }
-
-    let overall = versions
-        .iter()
-        .max()
-        .ok_or_else(|| UpdateError::Parse("no parseable releases found".to_string()))?;
-
-    let stable = versions
-        .iter()
-        .filter(|v| !v.is_prerelease())
-        .max()
-        .cloned();
-
-    Ok(Latest {
-        overall: overall.clone(),
-        stable,
-    })
+    Ok(output.stdout)
 }
 
 /// A day between background update checks.
@@ -335,6 +362,8 @@ pub fn refresh_in_background(now: i64, cached: Option<&CachedCheck>) {
 pub enum Recommendation {
     /// Installed version is already the newest available.
     UpToDate,
+    /// No stable release could be determined.
+    Unavailable,
     /// A newer release exists.
     Update {
         version: Version,
@@ -349,12 +378,14 @@ pub enum Recommendation {
 /// the requested [`Channel`].
 ///
 /// On the `Stable` channel we compare against the newest stable release (the
-/// default install path) and only fall back to a prerelease if no stable
-/// release exists yet. On the `Beta` channel we compare against the newest
-/// release across all channels.
+/// default install path). On the `Beta` channel we compare against the newest
+/// release among the recent releases and latest stable.
 pub fn recommend(current: &Version, latest: &Latest, channel: Channel) -> Recommendation {
     let target = match channel {
-        Channel::Stable => latest.stable.as_ref().unwrap_or(&latest.overall),
+        Channel::Stable => match latest.stable.as_ref() {
+            Some(stable) => stable,
+            None => return Recommendation::Unavailable,
+        },
         Channel::Beta => &latest.overall,
     };
     if current >= target {
@@ -566,19 +597,30 @@ mod tests {
     }
 
     #[test]
-    fn stable_channel_falls_back_to_overall_when_no_stable_exists() {
-        // Only prereleases exist: Stable falls back to the newest overall.
+    fn stable_channel_never_recommends_beta_when_stable_is_missing() {
         let latest = Latest {
             overall: v("2026.8.15-beta.1"),
             stable: None,
         };
         assert_eq!(
             recommend(&v("2026.7.21"), &latest, Channel::Stable),
-            Recommendation::Update {
-                version: v("2026.8.15-beta.1"),
-                is_beta: true,
-                stable: None,
-            }
+            Recommendation::Unavailable
         );
+    }
+
+    #[test]
+    fn stable_endpoint_rejects_missing_invalid_and_prerelease_tags() {
+        assert_eq!(
+            parse_stable(br#"{"tag_name":"2026.8.20"}"#).unwrap(),
+            v("2026.8.20")
+        );
+        for body in [
+            br#"{}"#.as_slice(),
+            br#"{"tag_name":"2026.8.20-beta.1"}"#,
+            br#"{"tag_name":"invalid"}"#,
+            b"not json",
+        ] {
+            assert!(parse_stable(body).is_err());
+        }
     }
 }
