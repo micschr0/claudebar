@@ -167,17 +167,26 @@ const STABLE_URL: &str = "https://api.github.com/repos/micschr0/claudebar/releas
 /// [`UpdateError::Parse`] when the response is malformed or contains no usable
 /// release for the requested channel.
 pub fn fetch_latest(channel: Channel) -> Result<Latest, UpdateError> {
-    let stable_result = fetch_stable();
     match channel {
         Channel::Stable => {
-            let stable = stable_result?;
+            let stable = fetch_stable()?;
             Ok(Latest {
                 overall: stable.clone(),
                 stable: Some(stable),
             })
         }
         Channel::Beta => {
-            let releases: Vec<Release> = serde_json::from_slice(&fetch_url(RELEASES_URL)?)
+            let (stable_result, releases_result) = std::thread::scope(|scope| {
+                let stable = scope.spawn(fetch_stable);
+                let releases = fetch_url(RELEASES_URL);
+                (stable.join(), releases)
+            });
+            let stable_result = stable_result.unwrap_or_else(|_| {
+                Err(UpdateError::Network(
+                    "stable release check failed".to_string(),
+                ))
+            });
+            let releases: Vec<Release> = serde_json::from_slice(&releases_result?)
                 .map_err(|e| UpdateError::Parse(e.to_string()))?;
             let stable = stable_result.ok().or_else(|| {
                 releases

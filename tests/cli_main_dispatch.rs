@@ -643,6 +643,47 @@ fn update_channels_handle_many_betas_and_missing_stable() {
     let _ = fs::remove_dir_all(dir);
 }
 
+#[cfg(unix)]
+#[test]
+fn beta_fetches_stable_and_releases_concurrently() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = unique_temp_dir("update_parallel");
+    let curl = dir.join("curl");
+    fs::write(
+        &curl,
+        r#"#!/bin/sh
+case "$*" in
+  */latest)
+    : > "$XDG_CONFIG_HOME/stable-started"
+    i=0
+    while [ ! -f "$XDG_CONFIG_HOME/list-started" ]; do
+      [ "$i" -lt 50 ] || exit 22
+      /bin/sleep 0.1
+      i=$((i + 1))
+    done
+    printf '%s' '{"tag_name":"2998.1.1"}' ;;
+  *)
+    : > "$XDG_CONFIG_HOME/list-started"
+    printf '%s' '[{"tag_name":"2999.1.1-beta.1"}]' ;;
+esac
+"#,
+    )
+    .unwrap();
+    fs::set_permissions(&curl, fs::Permissions::from_mode(0o755)).unwrap();
+    let output = bin()
+        .args(["update", "--channel", "beta"])
+        .env("PATH", &dir)
+        .env("XDG_CONFIG_HOME", &dir)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    let cache: serde_json::Value =
+        serde_json::from_slice(&fs::read(dir.join("claudebar/update-check.json")).unwrap())
+            .unwrap();
+    assert_eq!(cache["latest"], "2998.1.1");
+    let _ = fs::remove_dir_all(dir);
+}
+
 // -- setup tests --------------------------------------------------------
 // `run_setup` wires `statusLine` into Claude Code's settings.json. `--settings-path`
 // bypasses $HOME resolution. Stdin is not a TTY here, so the interactive y/N
