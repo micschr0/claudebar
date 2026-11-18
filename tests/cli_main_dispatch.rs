@@ -639,7 +639,64 @@ fn update_channels_handle_many_betas_and_missing_stable() {
     let cache: serde_json::Value =
         serde_json::from_slice(&fs::read(dir.join("claudebar/update-check.json")).unwrap())
             .unwrap();
+    assert_eq!(cache["latest"], "2998.1.1");
+    fs::remove_file(dir.join("claudebar/update-check.json")).unwrap();
+    assert_eq!(run(&["update", "--channel", "beta"]).status.code(), Some(2));
+    let cache: serde_json::Value =
+        serde_json::from_slice(&fs::read(dir.join("claudebar/update-check.json")).unwrap())
+            .unwrap();
     assert_eq!(cache["latest"], "2998.3.1");
+    let _ = fs::remove_dir_all(dir);
+}
+
+#[cfg(unix)]
+#[test]
+fn beta_update_preserves_cache_only_when_stable_endpoint_fails() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = unique_temp_dir("update_stable_cache");
+    let curl = dir.join("curl");
+    fs::write(
+        &curl,
+        "#!/bin/sh\ncase \"$*\" in\n  */latest) exit 22 ;;\n  *) printf '%s' '[{\"tag_name\":\"2999.1.1-beta.1\"},{\"tag_name\":\"2998.1.1\"}]' ;;\nesac\n",
+    )
+    .unwrap();
+    fs::set_permissions(&curl, fs::Permissions::from_mode(0o755)).unwrap();
+    let cache_path = dir.join("claudebar/update-check.json");
+    fs::create_dir_all(cache_path.parent().unwrap()).unwrap();
+    fs::write(&cache_path, r#"{"checked_at":1,"latest":"2998.2.1"}"#).unwrap();
+    let run = || {
+        bin()
+            .args(["update", "--channel", "beta"])
+            .env("PATH", &dir)
+            .env("XDG_CONFIG_HOME", &dir)
+            .output()
+            .unwrap()
+    };
+    let cached_version = || {
+        serde_json::from_slice::<serde_json::Value>(&fs::read(&cache_path).unwrap()).unwrap()
+            ["latest"]
+            .as_str()
+            .unwrap()
+            .to_owned()
+    };
+    assert_eq!(run().status.code(), Some(2));
+    assert_eq!(cached_version(), "2998.2.1");
+
+    fs::write(
+        &curl,
+        "#!/bin/sh\ncase \"$*\" in\n  */latest) printf '%s' '{\"tag_name\":\"2998.1.1\"}' ;;\n  *) printf '%s' '[{\"tag_name\":\"2999.1.1-beta.1\"}]' ;;\nesac\n",
+    )
+    .unwrap();
+    assert_eq!(run().status.code(), Some(2));
+    assert_eq!(cached_version(), "2998.1.1");
+
+    fs::write(
+        &curl,
+        "#!/bin/sh\ncase \"$*\" in\n  */latest) exit 22 ;;\n  *) printf '%s' '[{\"tag_name\":\"2999.1.1-beta.1\"},{\"tag_name\":\"2998.2.1\"}]' ;;\nesac\n",
+    )
+    .unwrap();
+    assert_eq!(run().status.code(), Some(2));
+    assert_eq!(cached_version(), "2998.1.1");
     let _ = fs::remove_dir_all(dir);
 }
 

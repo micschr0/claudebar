@@ -626,7 +626,9 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
         .map(|d| d.as_secs() as i64)
         .unwrap_or(0);
 
-    let latest = match claudebar::update::fetch_latest(channel) {
+    let (latest, stable_authoritative) = match claudebar::update::fetch_latest_with_stable_status(
+        channel,
+    ) {
         Ok(l) => l,
         Err(e) => {
             // Stamp the failed attempt so a background refresh backs off for a
@@ -649,7 +651,12 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
     // channel this invocation reported on. Preserve the last known stable if a
     // beta-channel check could not fetch the stable endpoint.
     let cached = claudebar::update::read_cache().and_then(|c| c.latest);
-    claudebar::update::write_cache(now, latest.stable.as_ref().or(cached.as_ref()));
+    let stable = if stable_authoritative {
+        latest.stable.as_ref()
+    } else {
+        cached.as_ref().or(latest.stable.as_ref())
+    };
+    claudebar::update::write_cache(now, stable);
 
     println!("claudebar {installed} ({channel} channel)");
     match claudebar::update::recommend(&installed, &latest, channel) {

@@ -167,13 +167,25 @@ const STABLE_URL: &str = "https://api.github.com/repos/micschr0/claudebar/releas
 /// [`UpdateError::Parse`] when the response is malformed or contains no usable
 /// release for the requested channel.
 pub fn fetch_latest(channel: Channel) -> Result<Latest, UpdateError> {
+    fetch_latest_with_stable_status(channel).map(|(latest, _)| latest)
+}
+
+/// Fetch releases and report whether the stable endpoint succeeded.
+///
+/// # Errors
+///
+/// Returns the same errors as [`fetch_latest`].
+pub fn fetch_latest_with_stable_status(channel: Channel) -> Result<(Latest, bool), UpdateError> {
     match channel {
         Channel::Stable => {
             let stable = fetch_stable()?;
-            Ok(Latest {
-                overall: stable.clone(),
-                stable: Some(stable),
-            })
+            Ok((
+                Latest {
+                    overall: stable.clone(),
+                    stable: Some(stable),
+                },
+                true,
+            ))
         }
         Channel::Beta => {
             let (stable_result, releases_result) = std::thread::scope(|scope| {
@@ -188,6 +200,7 @@ pub fn fetch_latest(channel: Channel) -> Result<Latest, UpdateError> {
             });
             let releases: Vec<Release> = serde_json::from_slice(&releases_result?)
                 .map_err(|e| UpdateError::Parse(e.to_string()))?;
+            let stable_authoritative = stable_result.is_ok();
             let stable = stable_result.ok().or_else(|| {
                 releases
                     .iter()
@@ -201,7 +214,7 @@ pub fn fetch_latest(channel: Channel) -> Result<Latest, UpdateError> {
                 .chain(stable.iter().cloned())
                 .max()
                 .ok_or_else(|| UpdateError::Parse("no parseable releases found".to_string()))?;
-            Ok(Latest { overall, stable })
+            Ok((Latest { overall, stable }, stable_authoritative))
         }
     }
 }
