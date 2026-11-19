@@ -197,8 +197,7 @@ pub fn backup_settings(path: &Path, now: i64) -> Result<PathBuf, SetupError> {
 }
 
 /// Serialize `value` as pretty JSON (plus a trailing newline) and write it to
-/// `path` atomically, creating parent directories as needed. Existing Unix
-/// permissions and valid symlinks are preserved; dangling symlinks are errors.
+/// `path`, creating parent directories as needed.
 ///
 /// # Errors
 ///
@@ -207,10 +206,13 @@ pub fn backup_settings(path: &Path, now: i64) -> Result<PathBuf, SetupError> {
 /// near-impossible serialization failure.
 #[must_use = "ignoring the save result means settings.json is silently not persisted"]
 pub fn save_settings(path: &Path, value: &Value) -> Result<(), SetupError> {
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| SetupError::Io(e.to_string()))?;
+    }
     let mut body =
         serde_json::to_string_pretty(value).map_err(|e| SetupError::Parse(e.to_string()))?;
     body.push('\n');
-    crate::render::float::write_atomic(path, &body).map_err(|e| SetupError::Io(e.to_string()))
+    std::fs::write(path, body).map_err(|e| SetupError::Io(e.to_string()))
 }
 
 #[cfg(test)]
@@ -328,21 +330,28 @@ mod tests {
     }
 
     #[test]
-    fn save_replaces_settings_and_keeps_backup() {
+    fn save_preserves_inode_hardlink_and_backup() {
         use std::os::unix::fs::MetadataExt;
 
         let path = unique_temp_path();
+        let hardlink = path.with_extension("hardlink");
         std::fs::write(&path, "{\"otherKey\":true}").unwrap();
+        std::fs::hard_link(&path, &hardlink).unwrap();
         let inode = std::fs::metadata(&path).unwrap().ino();
         let backup = backup_settings(&path, 42).unwrap();
         save_settings(&path, &serde_json::json!({"otherKey": true, "new": 1})).unwrap();
-        assert_ne!(std::fs::metadata(&path).unwrap().ino(), inode);
+        assert_eq!(std::fs::metadata(&path).unwrap().ino(), inode);
+        assert_eq!(
+            load_settings(&hardlink).unwrap(),
+            serde_json::json!({"otherKey": true, "new": 1})
+        );
         assert_eq!(
             std::fs::read_to_string(&backup).unwrap(),
             "{\"otherKey\":true}"
         );
         assert!(std::fs::read_to_string(&path).unwrap().ends_with('\n'));
         std::fs::remove_file(path).unwrap();
+        std::fs::remove_file(hardlink).unwrap();
         std::fs::remove_file(backup).unwrap();
     }
 
@@ -354,13 +363,16 @@ mod tests {
         std::fs::create_dir(&dir).unwrap();
         let target = dir.join("target.json");
         let link = dir.join("settings.json");
+        let middle = dir.join("middle");
         std::fs::write(&target, "{}").unwrap();
         std::fs::set_permissions(&target, std::fs::Permissions::from_mode(0o640)).unwrap();
-        symlink("target.json", &link).unwrap();
+        symlink("middle", &link).unwrap();
+        symlink("target.json", &middle).unwrap();
         let value = serde_json::json!({"new": 1});
         save_settings(&link, &value).unwrap();
+        assert_eq!(std::fs::read_link(&link).unwrap(), PathBuf::from("middle"));
         assert_eq!(
-            std::fs::read_link(&link).unwrap(),
+            std::fs::read_link(middle).unwrap(),
             PathBuf::from("target.json")
         );
         assert_eq!(load_settings(&target).unwrap(), value);
@@ -372,44 +384,51 @@ mod tests {
     }
 
     #[test]
-    fn save_rejects_dangling_symlink_without_replacing_it() {
+    fn save_creates_missing_target_and_preserves_symlink_chain() {
         use std::os::unix::fs::symlink;
 
         let dir = unique_temp_path();
         std::fs::create_dir(&dir).unwrap();
         let path = dir.join("settings.json");
-        symlink("missing.json", &path).unwrap();
+        let middle = dir.join("middle");
+        symlink("middle", &path).unwrap();
+        symlink(dir.join("missing.json"), &middle).unwrap();
+        let value = serde_json::json!({"new": 1});
+        save_settings(&path, &value).unwrap();
+        assert_eq!(std::fs::read_link(&path).unwrap(), PathBuf::from("middle"));
+        assert_eq!(
+            std::fs::read_link(&middle).unwrap(),
+            dir.join("missing.json")
+        );
+        assert_eq!(load_settings(&dir.join("missing.json")).unwrap(), value);
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn save_rejects_symlink_cycle_without_replacing_links() {
+        use std::os::unix::fs::symlink;
+
+        let dir = unique_temp_path();
+        std::fs::create_dir(&dir).unwrap();
+        let path = dir.join("settings.json");
+        let middle = dir.join("middle");
+        symlink("middle", &path).unwrap();
+        symlink("settings.json", &middle).unwrap();
         assert!(matches!(
             save_settings(&path, &serde_json::json!({})),
             Err(SetupError::Io(_))
         ));
+        assert_eq!(std::fs::read_link(&path).unwrap(), PathBuf::from("middle"));
         assert_eq!(
-            std::fs::read_link(&path).unwrap(),
-            PathBuf::from("missing.json")
+            std::fs::read_link(&middle).unwrap(),
+            PathBuf::from("settings.json")
         );
-        assert!(!dir.join("missing.json").exists());
-        assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 1);
+        assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 2);
         std::fs::remove_dir_all(dir).unwrap();
     }
 
     #[test]
-    fn save_failed_staging_preserves_existing_settings() {
-        let dir = unique_temp_path();
-        std::fs::create_dir(&dir).unwrap();
-        // A legal destination name whose staging suffix exceeds NAME_MAX.
-        let path = dir.join("s".repeat(250));
-        std::fs::write(&path, "{}").unwrap();
-        assert!(matches!(
-            save_settings(&path, &serde_json::json!({"new": 1})),
-            Err(SetupError::Io(_))
-        ));
-        assert_eq!(std::fs::read_to_string(&path).unwrap(), "{}");
-        assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 1);
-        std::fs::remove_dir_all(dir).unwrap();
-    }
-
-    #[test]
-    fn save_failed_rename_preserves_destination_and_cleans_staging() {
+    fn save_rejects_directory_destination_without_changing_it() {
         let dir = unique_temp_path();
         let path = dir.join("settings.json");
         std::fs::create_dir_all(&path).unwrap();

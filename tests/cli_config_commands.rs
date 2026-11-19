@@ -34,6 +34,24 @@ fn setup(path: &Path, args: &[&str]) -> Output {
 }
 
 #[test]
+fn setup_creates_missing_symlink_target() {
+    let dir = temp_dir("dangling_settings");
+    let settings = dir.join("settings.json");
+    let target = dir.join("target.json");
+    std::os::unix::fs::symlink("target.json", &settings).unwrap();
+    let out = setup(&settings, &["-y"]);
+    assert!(
+        out.status.success(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert_eq!(fs::read_link(&settings).unwrap(), Path::new("target.json"));
+    let written: serde_json::Value = serde_json::from_slice(&fs::read(target).unwrap()).unwrap();
+    assert_eq!(written["statusLine"]["command"], "claudebar render");
+    fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
 fn setup_quoted_binary_path_executes_with_spaces_apostrophe_and_metacharacters() {
     let dir = temp_dir("binary");
     let executable = dir.join("bin 'safe' $; name");
