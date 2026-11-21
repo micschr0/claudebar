@@ -647,15 +647,13 @@ fn run_update(check: bool, channel: claudebar::update::Channel) -> ExitCode {
         }
     };
 
-    // The cache always records the newest *stable* release, independent of the
-    // channel this invocation reported on. Preserve the last known stable if a
-    // beta-channel check could not fetch the stable endpoint, unless the release
-    // list contains a newer stable version.
+    // The cache records a stable release regardless of the requested channel.
+    // Preserve the last known value if the stable endpoint is unavailable.
     let cached = claudebar::update::read_cache().and_then(|c| c.latest);
     let stable = if stable_authoritative {
         latest.stable.as_ref()
     } else {
-        cached.as_ref().max(latest.stable.as_ref())
+        cached.as_ref().or(latest.stable.as_ref())
     };
     claudebar::update::write_cache(now, stable);
 
