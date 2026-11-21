@@ -18,6 +18,12 @@
 > Powerline glyphs need a [Nerd Font](https://www.nerdfonts.com/), or switch to the `ascii` style.
 > On macOS: `brew install --cask font-hack-nerd-font` (the font used in the screenshots).
 
+> [!WARNING]
+> The install script automatically runs setup without asking and replaces a different
+> `statusLine` in Claude Code's settings. It backs up an existing settings file before
+> changing it. To skip setup, use `CLAUDEBAR_SKIP_SETUP=1 bash` on the right side of
+> the pipe; you can then preview a manual setup with `claudebar setup --print`.
+
 ```bash
 # verifies SHA256, plus build provenance when gh is available
 curl -fsSL https://raw.githubusercontent.com/micschr0/claudebar/main/install.sh | bash
@@ -41,7 +47,9 @@ mise use -g github:micschr0/claudebar
 pnpm add -g @micschr0/claudebar
 ```
 
-Then wire it into Claude Code. It shows a diff, asks before writing, and backs up the old file:
+For package-manager installs, wire it into Claude Code separately. When a change
+can be applied, setup shows a diff and asks for confirmation. It backs up an
+existing settings file before writing; a different `statusLine` requires `--force`:
 
 ```bash
 claudebar setup
@@ -172,8 +180,9 @@ quoting are supported, for example `EDITOR='code --wait' claudebar edit`.
 
 More commands and flags: `claudebar --help`.
 
-`claudebar setup --print` previews the settings change without writing files,
-including when the existing settings are malformed or already configured.
+`claudebar setup --print` previews the settings change without writing files.
+It can fail if the existing settings are malformed or contain a conflicting
+`statusLine`.
 
 ### Checking for updates
 
