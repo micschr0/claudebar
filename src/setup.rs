@@ -8,6 +8,8 @@
 //! Handling conventions, rather than silently degrading to a default.
 
 use serde_json::Value;
+use std::io::Write;
+use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Path, PathBuf};
 
 /// The command wired into `statusLine`. A fixed constant, never built by
@@ -198,6 +200,7 @@ pub fn backup_settings(path: &Path, now: i64) -> Result<PathBuf, SetupError> {
 
 /// Serialize `value` as pretty JSON (plus a trailing newline) and write it to
 /// `path`, creating parent directories as needed.
+/// New files request mode 0600; umask and inherited ACLs affect access.
 ///
 /// # Errors
 ///
@@ -212,7 +215,14 @@ pub fn save_settings(path: &Path, value: &Value) -> Result<(), SetupError> {
     let mut body =
         serde_json::to_string_pretty(value).map_err(|e| SetupError::Parse(e.to_string()))?;
     body.push('\n');
-    std::fs::write(path, body).map_err(|e| SetupError::Io(e.to_string()))
+    std::fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .mode(0o600)
+        .open(path)
+        .and_then(|mut file| file.write_all(body.as_bytes()))
+        .map_err(|e| SetupError::Io(e.to_string()))
 }
 
 #[cfg(test)]
