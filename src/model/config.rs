@@ -229,7 +229,7 @@ impl Config {
                         std::io::ErrorKind::NotFound | std::io::ErrorKind::InvalidInput
                     ) =>
                 {
-                    return crate::render::float::write_atomic(&path, &body)
+                    return crate::render::float::write_atomic_with_mode(&path, &body, 0o600)
                         .map_err(|e| ConfigError::Io(e.to_string()));
                 }
                 Err(e) => return Err(ConfigError::Io(e.to_string())),
@@ -380,6 +380,11 @@ mod tests {
         };
         config.save(&link).unwrap();
         assert_eq!(Config::load(&target).unwrap(), config);
+        use std::os::unix::fs::PermissionsExt;
+        assert_eq!(
+            std::fs::metadata(&target).unwrap().permissions().mode() & 0o077,
+            0
+        );
         assert_eq!(std::fs::read_link(&link).unwrap(), Path::new("middle"));
         assert_eq!(
             std::fs::read_link(&middle).unwrap(),

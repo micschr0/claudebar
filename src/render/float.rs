@@ -144,6 +144,10 @@ fn resolve_path(path: &str, home: Option<&str>) -> Option<PathBuf> {
 ///
 /// Returns an I/O error without replacing the destination if staging or rename fails.
 pub(crate) fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
+    write_atomic_with_mode(path, content, 0o666)
+}
+
+pub(crate) fn write_atomic_with_mode(path: &Path, content: &str, mode: u32) -> std::io::Result<()> {
     let destination = match fs::symlink_metadata(path) {
         Ok(metadata) if metadata.file_type().is_symlink() => fs::canonicalize(path)?,
         Ok(_) => path.to_path_buf(),
@@ -171,7 +175,7 @@ pub(crate) fn write_atomic(path: &Path, content: &str) -> std::io::Result<()> {
             .mode(
                 permissions
                     .as_ref()
-                    .map_or(0o666, |permissions| permissions.mode() & 0o7777),
+                    .map_or(mode, |permissions| permissions.mode() & 0o7777),
             )
             .open(&tmp)
         {
@@ -240,6 +244,29 @@ mod tests {
                 .unwrap()
                 .file_type()
                 .is_symlink()
+        );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn atomic_writer_preserves_float_creation_and_existing_modes() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let dir = std::env::temp_dir().join(format!("claudebar-float-mode-{}", std::process::id()));
+        std::fs::create_dir(&dir).unwrap();
+        let reference = dir.join("reference");
+        let target = dir.join("float");
+        std::fs::write(&reference, "").unwrap();
+        write_atomic(&target, "new").unwrap();
+        assert_eq!(
+            std::fs::metadata(&target).unwrap().permissions().mode() & 0o777,
+            std::fs::metadata(&reference).unwrap().permissions().mode() & 0o777
+        );
+        std::fs::set_permissions(&target, std::fs::Permissions::from_mode(0o640)).unwrap();
+        write_atomic(&target, "updated").unwrap();
+        assert_eq!(
+            std::fs::metadata(&target).unwrap().permissions().mode() & 0o777,
+            0o640
         );
         std::fs::remove_dir_all(dir).unwrap();
     }
