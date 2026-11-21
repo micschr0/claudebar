@@ -34,6 +34,157 @@ fn setup(path: &Path, args: &[&str]) -> Output {
 }
 
 #[test]
+fn setup_creates_settings_with_private_mode_respecting_umask() {
+    for (mask, expected) in [("000", 0o600), ("200", 0o400)] {
+        let dir = temp_dir(mask);
+        let settings = dir.join("settings.json");
+        let output = Command::new("sh")
+            .arg("-c")
+            .arg("umask \"$1\"; exec \"$2\" setup --config \"$3\" --settings-path \"$4\" -y")
+            .arg("sh")
+            .arg(mask)
+            .arg(env!("CARGO_BIN_EXE_claudebar"))
+            .arg(dir.join("config.toml"))
+            .arg(&settings)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(
+            fs::metadata(&settings).unwrap().permissions().mode() & 0o777,
+            expected
+        );
+        fs::remove_dir_all(dir).unwrap();
+    }
+}
+
+#[cfg(target_os = "linux")]
+mod acl_tests {
+    use super::*;
+    use std::ffi::{CStr, CString, c_char, c_int, c_void};
+    use std::os::unix::{ffi::OsStrExt, fs::MetadataExt};
+
+    unsafe extern "C" {
+        fn setxattr(
+            path: *const c_char,
+            name: *const c_char,
+            value: *const c_void,
+            size: usize,
+            flags: c_int,
+        ) -> c_int;
+        fn getxattr(
+            path: *const c_char,
+            name: *const c_char,
+            value: *mut c_void,
+            size: usize,
+        ) -> isize;
+    }
+
+    fn acl(uid: u32, user: u16, mask: u16) -> Vec<u8> {
+        let mut bytes = 2_u32.to_le_bytes().to_vec();
+        for (tag, permissions, id) in [
+            (1_u16, user, u32::MAX),
+            (2, 4, uid),
+            (4, 4, u32::MAX),
+            (16, mask, u32::MAX),
+            (32, 0, u32::MAX),
+        ] {
+            bytes.extend(tag.to_le_bytes());
+            bytes.extend(permissions.to_le_bytes());
+            bytes.extend(id.to_le_bytes());
+        }
+        bytes
+    }
+
+    fn set_acl(path: &Path, name: &CStr, value: &[u8]) -> std::io::Result<()> {
+        let path = CString::new(path.as_os_str().as_bytes()).unwrap();
+        // SAFETY: All pointers are valid for the duration of the call.
+        let result = unsafe {
+            setxattr(
+                path.as_ptr(),
+                name.as_ptr(),
+                value.as_ptr().cast(),
+                value.len(),
+                0,
+            )
+        };
+        if result == 0 {
+            Ok(())
+        } else {
+            Err(std::io::Error::last_os_error())
+        }
+    }
+
+    fn read_acl(path: &Path) -> Vec<u8> {
+        let path = CString::new(path.as_os_str().as_bytes()).unwrap();
+        let mut value = vec![0; 44];
+        // SAFETY: The buffer is writable and its length is passed to getxattr.
+        let size = unsafe {
+            getxattr(
+                path.as_ptr(),
+                c"system.posix_acl_access".as_ptr(),
+                value.as_mut_ptr().cast(),
+                value.len(),
+            )
+        };
+        assert_eq!(size, 44, "getxattr: {}", std::io::Error::last_os_error());
+        value
+    }
+
+    #[test]
+    fn setup_preserves_existing_acl_and_restricts_inherited_acl() {
+        let dir = temp_dir("acl");
+        let existing = dir.join("existing.json");
+        fs::write(&existing, "{}").unwrap();
+        let uid = fs::metadata(&existing).unwrap().uid();
+        let existing_acl = acl(uid, 6, 4);
+        if let Err(error) = set_acl(&existing, c"system.posix_acl_access", &existing_acl) {
+            if error.kind() == std::io::ErrorKind::Unsupported {
+                eprintln!("ACL test skipped: filesystem does not support POSIX ACLs: {error}");
+                fs::remove_dir_all(dir).unwrap();
+                return;
+            }
+            panic!("setting access ACL failed: {error}");
+        }
+        assert_eq!(read_acl(&existing), existing_acl);
+        let before = fs::metadata(&existing).unwrap();
+        let output = setup(&existing, &["-y"]);
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let after = fs::metadata(&existing).unwrap();
+        assert_eq!(
+            (after.dev(), after.ino(), after.mode()),
+            (before.dev(), before.ino(), before.mode())
+        );
+        assert_eq!(read_acl(&existing), existing_acl);
+
+        let inherited = dir.join("inherited");
+        fs::create_dir(&inherited).unwrap();
+        set_acl(&inherited, c"system.posix_acl_default", &acl(uid, 7, 4))
+            .expect("setting default ACL on ACL-capable filesystem");
+        let new_file = inherited.join("settings.json");
+        let output = setup(&new_file, &["-y"]);
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(
+            fs::metadata(&new_file).unwrap().permissions().mode() & 0o777,
+            0o600
+        );
+        assert_eq!(read_acl(&new_file), acl(uid, 6, 0));
+        fs::remove_dir_all(dir).unwrap();
+    }
+}
+
+#[test]
 fn init_creates_private_config_with_permissive_umask() {
     let dir = temp_dir("private_config");
     for (mask, expected) in [("000", 0o600), ("200", 0o400)] {
@@ -71,6 +222,10 @@ fn setup_creates_missing_symlink_target() {
         String::from_utf8_lossy(&out.stderr)
     );
     assert_eq!(fs::read_link(&settings).unwrap(), Path::new("target.json"));
+    assert_eq!(
+        fs::metadata(&target).unwrap().permissions().mode() & 0o177,
+        0
+    );
     let written: serde_json::Value = serde_json::from_slice(&fs::read(target).unwrap()).unwrap();
     assert_eq!(written["statusLine"]["command"], "claudebar render");
     fs::remove_dir_all(dir).unwrap();
