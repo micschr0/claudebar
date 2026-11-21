@@ -304,6 +304,22 @@ mod tests {
         assert!(line.contains("claude-sonnet"));
         assert!(line.contains("1.23"));
     }
+
+    #[test]
+    fn burn_float_shows_exhaustion_and_weekly_priority() {
+        let cfg = float_cfg("burn");
+        let five_hour: InputData =
+            serde_json::from_str(r#"{"rate_limits":{"five_hour":{"used_percentage":100}}}"#)
+                .unwrap();
+        assert_eq!(render_float(&five_hour, &cfg, 10, None, 0), "5h exhausted");
+
+        let both: InputData = serde_json::from_str(
+            r#"{"rate_limits":{"five_hour":{"used_percentage":100},"seven_day":{"used_percentage":100}}}"#,
+        )
+        .unwrap();
+        assert_eq!(render_float(&both, &cfg, 10, None, 0), "7d exhausted");
+    }
+
     #[test]
     fn clock_uses_injected_local_timezone_offset() {
         let mut cfg = float_cfg("clock");

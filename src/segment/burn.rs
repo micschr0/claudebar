@@ -11,16 +11,18 @@
 //! fall inside the lookback period.
 //!
 //! States:
-//!   - `warming` — no samples yet (fresh install). Shows dim `↗ …`
-//!   - `idle`    — slope is zero or negative (stopped burning). Shows dim `↗ ✓`
+//!   - `warming` — no samples yet (fresh install). Shows dim `↗ 5h …`
+//!   - `idle`    — slope is zero or negative (stopped burning). Shows dim `↗ 5h ✓`
 //!   - `active`  — slope > 0. Shows colored `↗ {label} ⇢ {eta}`:
 //!       - red    — ETA < time-until-reset (would run dry before window resets)
 //!       - yellow — ETA close to reset (within 20% margin)
 //!       - green  — ETA > time-until-reset (window resets with room to spare)
 //!
-//! The label tells which limit binds: `5h` (five-hour) or `7d` (seven-day),
-//! whichever will hit 100% sooner. `5h` only appears when there's enough
-//! burn to register a slope; otherwise `7d` binds by default.
+//! Projections describe only the `5h` window. An exhausted weekly limit takes
+//! precedence as red `↗ 7d exhausted`. An exhausted 5h limit without a usable
+//! slope shows red `↗ 5h exhausted`, including when its reset is missing.
+//! Without 5h data, `7d` shows weekly urgency without an ETA.
+//! No weekly history is recorded or projected.
 //!
 //! The cache file lives at `$XDG_CACHE_HOME/claudebar/burn-5h.tsv` (fallback
 //! `~/.cache/claudebar/burn-5h.tsv`). It is trimmed to ~1500 rows on write.
@@ -67,8 +69,8 @@ impl Segment for Burn {
         let burn = estimate(
             ctx.now,
             &samples,
-            fh_pct.zip(fh_rst),
-            wd_pct.zip(wd_rst),
+            fh_pct.map(|pct| (pct, fh_rst)),
+            wd_pct.map(|pct| (pct, wd_rst)),
             ctx.theme,
         );
 
@@ -96,11 +98,35 @@ enum BurnState {
 fn estimate(
     now: i64,
     samples: &[(i64, f64)],
-    fh: Option<(f64, i64)>,
-    wd: Option<(f64, i64)>,
+    fh: Option<(f64, Option<i64>)>,
+    wd: Option<(f64, Option<i64>)>,
     theme: &Theme,
 ) -> BurnEstimate {
-    if let Some((pct, rst)) = fh {
+    // A measured weekly exhaustion overrides any reassuring 5h projection.
+    if let Some((pct, _)) = wd
+        && pct >= 100.0
+    {
+        return BurnEstimate {
+            state: BurnState::Active,
+            label: "7d exhausted",
+            eta: String::new(),
+            color: theme.burn,
+        };
+    }
+
+    if let Some((pct, rst)) = fh
+        && pct >= 100.0
+        && (rst.is_none() || linear_slope(samples) <= 0.0)
+    {
+        return BurnEstimate {
+            state: BurnState::Active,
+            label: "5h exhausted",
+            eta: String::new(),
+            color: theme.burn,
+        };
+    }
+
+    if let Some((pct, Some(rst))) = fh {
         if samples.is_empty() {
             return BurnEstimate {
                 state: BurnState::Warming,
@@ -143,7 +169,7 @@ fn estimate(
                 color: theme.dim,
             };
         }
-        let color = urgency_color_stateless(pct, Some(rst), now, theme);
+        let color = urgency_color_stateless(pct, rst, now, theme);
         return BurnEstimate {
             state: BurnState::Active,
             label: "7d",
@@ -222,18 +248,26 @@ fn render_burn(ctx: &RenderCtx, out: &mut SegmentWriter, burn: &BurnEstimate) {
         BurnState::Warming => {
             out.colored_with(burn.color, |w| {
                 w.icon(glyph);
+                if !burn.label.is_empty() {
+                    w.raw(burn.label);
+                    w.raw(" ");
+                }
                 w.raw("…");
             });
         }
         BurnState::Idle => {
             out.colored_with(burn.color, |w| {
                 w.icon(glyph);
+                if !burn.label.is_empty() {
+                    w.raw(burn.label);
+                    w.raw(" ");
+                }
                 w.raw("✓");
             });
         }
         BurnState::Active => {
             if burn.eta.is_empty() {
-                // 7d stateless: just show the label.
+                // Stateless or exhausted: just show the label.
                 out.colored_with(burn.color, |w| {
                     w.icon(glyph);
                     w.raw(burn.label);
@@ -357,7 +391,7 @@ mod tests {
         let est = estimate(
             1_800_000_004,
             &samples,
-            Some((54.0, 1_800_000_100)),
+            Some((54.0, Some(1_800_000_100))),
             None,
             &theme,
         );
@@ -373,7 +407,7 @@ mod tests {
         assert_eq!(mixed_samples, current_samples);
         let theme = test_theme();
         assert_eq!(
-            estimate(100, &mixed_samples, Some((44.0, 200)), None, &theme).eta,
+            estimate(100, &mixed_samples, Some((44.0, Some(200))), None, &theme).eta,
             "56s"
         );
     }
@@ -441,7 +475,7 @@ mod tests {
     #[test]
     fn estimate_warming_when_no_samples() {
         let theme = test_theme();
-        let est = estimate(0, &[], Some((50.0, 10800)), None, &theme);
+        let est = estimate(0, &[], Some((50.0, Some(10800))), None, &theme);
         assert_eq!(est.state, BurnState::Warming);
         assert_eq!(est.label, "5h");
     }
@@ -451,8 +485,103 @@ mod tests {
         // Single sample → slope=0 → idle.
         let theme = test_theme();
         let samples = vec![(0, 50.0)];
-        let est = estimate(0, &samples, Some((50.0, 10800)), None, &theme);
+        let est = estimate(0, &samples, Some((50.0, Some(10800))), None, &theme);
         assert_eq!(est.state, BurnState::Idle);
+    }
+
+    #[test]
+    fn five_hour_exhaustion_without_usable_history_is_not_idle() {
+        let theme = test_theme();
+        for samples in [
+            &[][..],
+            &[(0, 100.0)][..],
+            &[(0, 100.0), (10, 100.0)][..],
+            &[(0, 101.0), (10, 100.0)][..],
+        ] {
+            let est = estimate(10, samples, Some((100.0, Some(100))), None, &theme);
+            assert_eq!(est.state, BurnState::Active);
+            assert_eq!(est.label, "5h exhausted");
+            assert_eq!(est.color, theme.burn);
+            assert!(est.eta.is_empty());
+        }
+    }
+
+    #[test]
+    fn five_hour_exhaustion_boundary_does_not_change_below_100() {
+        let theme = test_theme();
+        let below = estimate(10, &[(10, 99.9)], Some((99.9, Some(100))), None, &theme);
+        assert_eq!(below.state, BurnState::Idle);
+        assert_eq!(below.label, "5h");
+        let above = estimate(10, &[(10, 101.0)], Some((101.0, Some(100))), None, &theme);
+        assert_eq!(above.label, "5h exhausted");
+        assert_eq!(above.color, theme.burn);
+    }
+
+    #[test]
+    fn five_hour_exhaustion_renders_without_reset() {
+        let input: InputData =
+            serde_json::from_str(r#"{"rate_limits":{"five_hour":{"used_percentage":100}}}"#)
+                .unwrap();
+        let config = Config::default();
+        let theme = test_theme();
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 10,
+            home: None,
+            tz_offset_seconds: 0,
+            update: None,
+        };
+        let mut out = SegmentWriter::new(&theme, &style);
+        assert!(Burn.render(&ctx, &mut out));
+        assert!(out.as_str().contains("5h exhausted"), "{}", out.as_str());
+        assert!(!out.as_str().contains('✓'));
+    }
+
+    #[test]
+    fn weekly_exhaustion_takes_priority_when_five_hour_reset_is_missing() {
+        let input: InputData = serde_json::from_str(
+            r#"{"rate_limits":{"five_hour":{"used_percentage":100},"seven_day":{"used_percentage":100}}}"#,
+        )
+        .unwrap();
+        let config = Config::default();
+        let theme = test_theme();
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 10,
+            home: None,
+            tz_offset_seconds: 0,
+            update: None,
+        };
+        let mut out = SegmentWriter::new(&theme, &style);
+        assert!(Burn.render(&ctx, &mut out));
+        assert!(out.as_str().contains("7d exhausted"), "{}", out.as_str());
+        assert!(!out.as_str().contains("5h exhausted"));
+    }
+
+    #[test]
+    fn five_hour_exhaustion_with_increasing_history_keeps_zero_eta() {
+        let theme = test_theme();
+        let est = estimate(
+            10,
+            &[(0, 99.0), (10, 100.0)],
+            Some((100.0, Some(100))),
+            None,
+            &theme,
+        );
+        assert_eq!(est.state, BurnState::Active);
+        assert_eq!(est.label, "5h");
+        assert_eq!(est.eta, "0s");
+        assert_eq!(est.color, theme.burn);
     }
 
     #[test]
@@ -460,7 +589,7 @@ mod tests {
         // 10 samples, 1 pct/sec: at t=0 pct=50, at t=9 pct=59.
         let theme = test_theme();
         let samples: Vec<(i64, f64)> = (0..10).map(|i| (i, 50.0 + i as f64)).collect();
-        let est = estimate(9, &samples, Some((59.0, 10800)), None, &theme);
+        let est = estimate(9, &samples, Some((59.0, Some(10800))), None, &theme);
         assert_eq!(est.state, BurnState::Active);
         assert_eq!(est.label, "5h");
         assert!(!est.eta.is_empty(), "expected non-empty ETA: {:?}", est.eta);
@@ -470,15 +599,98 @@ mod tests {
         // Slope=1 pct/sec, pct=90 → ETA=10s. Reset in 200s → red (run dry first).
         let theme = test_theme();
         let samples = vec![(0, 80.0), (10, 90.0)];
-        let est = estimate(10, &samples, Some((90.0, 210)), None, &theme);
+        let est = estimate(10, &samples, Some((90.0, Some(210))), None, &theme);
         assert_eq!(est.state, BurnState::Active);
         assert_eq!(est.color, theme.burn); // red
     }
     #[test]
+    fn exhausted_weekly_limit_overrides_all_five_hour_states() {
+        let theme = test_theme();
+        for samples in [&[][..], &[(0, 10.0)][..], &[(0, 9.0), (10, 10.0)][..]] {
+            for reset in [None, Some(600_000)] {
+                for pct in [100.0, 105.0] {
+                    let est = estimate(
+                        10,
+                        samples,
+                        Some((10.0, Some(100))),
+                        Some((pct, reset)),
+                        &theme,
+                    );
+                    assert_eq!(est.state, BurnState::Active);
+                    assert_eq!(est.label, "7d exhausted");
+                    assert_eq!(est.color, theme.burn);
+                    assert!(est.eta.is_empty(), "weekly exhaustion has no projected ETA");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn weekly_exhaustion_renders_without_reset_time() {
+        let input: InputData =
+            serde_json::from_str(r#"{"rate_limits":{"seven_day":{"used_percentage":100}}}"#)
+                .unwrap();
+        let config = Config::default();
+        let theme = test_theme();
+        let style = styles::get(&config.style);
+        let th = Thresholds::default();
+        let ctx = RenderCtx {
+            input: &input,
+            theme: &theme,
+            style: &style,
+            th: &th,
+            now: 10,
+            home: None,
+            tz_offset_seconds: 0,
+            update: None,
+        };
+        let mut out = SegmentWriter::new(&theme, &style);
+        assert!(Burn.render(&ctx, &mut out));
+        assert!(out.as_str().contains("7d exhausted"));
+        assert!(!out.as_str().contains('⇢'));
+
+        // Warming and idle markers must identify which window they describe.
+        for samples in [&[][..], &[(0, 10.0)][..]] {
+            let est = estimate(10, samples, Some((10.0, Some(100))), None, &theme);
+            let mut out = SegmentWriter::new(&theme, &style);
+            render_burn(&ctx, &mut out, &est);
+            assert!(out.as_str().contains("5h"));
+        }
+    }
+
+    #[test]
+    fn both_windows_exhausted_show_weekly_exhaustion_without_eta() {
+        let est = estimate(
+            10,
+            &[(0, 99.0), (10, 100.0)],
+            Some((100.0, Some(100))),
+            Some((100.0, Some(600_000))),
+            &test_theme(),
+        );
+        assert_eq!(est.label, "7d exhausted");
+        assert!(est.eta.is_empty());
+    }
+
+    #[test]
+    fn weekly_below_exhaustion_keeps_five_hour_projection() {
+        let theme = test_theme();
+        let est = estimate(
+            10,
+            &[(0, 9.0), (10, 10.0)],
+            Some((10.0, Some(100))),
+            Some((99.9, Some(600_000))),
+            &theme,
+        );
+        assert_eq!(est.label, "5h");
+        assert_eq!(est.color, theme.bar_ok);
+        assert!(!est.eta.is_empty());
+    }
+
+    #[test]
     fn estimate_falls_back_to_7d() {
         // No 5h data → 7d stateless.
         let theme = test_theme();
-        let est = estimate(0, &[], None, Some((80.0, 600_000)), &theme);
+        let est = estimate(0, &[], None, Some((80.0, Some(600_000))), &theme);
         assert_eq!(est.state, BurnState::Active);
         assert_eq!(est.label, "7d");
     }
@@ -551,7 +763,7 @@ mod tests {
     fn estimate_7d_warming_when_pct_zero() {
         // 7d window with 0% pct → Warming, label "7d".
         let theme = test_theme();
-        let est = estimate(0, &[], None, Some((0.0, 600_000)), &theme);
+        let est = estimate(0, &[], None, Some((0.0, Some(600_000))), &theme);
         assert_eq!(est.state, BurnState::Warming);
         assert_eq!(est.label, "7d");
     }
@@ -685,7 +897,13 @@ mod tests {
             let slope = linear_slope(samples);
             assert!((slope - 1.0).abs() < 0.001, "expected 1.0, got {slope}");
             let now = samples.last().unwrap().0;
-            let estimate = estimate(now, samples, Some((54.0, now + 1000)), None, &test_theme());
+            let estimate = estimate(
+                now,
+                samples,
+                Some((54.0, Some(now + 1000))),
+                None,
+                &test_theme(),
+            );
             assert_eq!(estimate.state, BurnState::Active);
             assert_eq!(estimate.eta, "46s");
         }
@@ -707,7 +925,13 @@ mod tests {
         let samples = parse_samples(&content, now, 10, 200);
 
         assert_eq!(samples, [(now - 3, 20.0), (now - 2, 50.0)]);
-        let estimate = estimate(now, &samples, Some((54.0, now + 100)), None, &test_theme());
+        let estimate = estimate(
+            now,
+            &samples,
+            Some((54.0, Some(now + 100))),
+            None,
+            &test_theme(),
+        );
         assert_eq!(estimate.state, BurnState::Active);
     }
 }
