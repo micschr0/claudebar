@@ -639,7 +639,7 @@ fn update_channels_handle_many_betas_and_missing_stable() {
     let cache: serde_json::Value =
         serde_json::from_slice(&fs::read(dir.join("claudebar/update-check.json")).unwrap())
             .unwrap();
-    assert_eq!(cache["latest"], "2998.1.1");
+    assert_eq!(cache["latest"], "2998.3.1");
     fs::remove_file(dir.join("claudebar/update-check.json")).unwrap();
     assert_eq!(run(&["update", "--channel", "beta"]).status.code(), Some(2));
     let cache: serde_json::Value =
@@ -696,7 +696,19 @@ fn beta_update_preserves_cache_only_when_stable_endpoint_fails() {
     )
     .unwrap();
     assert_eq!(run().status.code(), Some(2));
-    assert_eq!(cached_version(), "2998.1.1");
+    assert_eq!(cached_version(), "2998.2.1");
+
+    fs::write(
+        &curl,
+        "#!/bin/sh\ncase \"$*\" in\n  */latest) exit 22 ;;\n  *) printf '%s' '[{\"tag_name\":\"2999.1.1-beta.1\"}]' ;;\nesac\n",
+    )
+    .unwrap();
+    assert_eq!(run().status.code(), Some(2));
+    assert_eq!(cached_version(), "2998.2.1");
+    fs::remove_file(&cache_path).unwrap();
+    assert_eq!(run().status.code(), Some(2));
+    let cache: serde_json::Value = serde_json::from_slice(&fs::read(&cache_path).unwrap()).unwrap();
+    assert!(cache["latest"].is_null());
     let _ = fs::remove_dir_all(dir);
 }
 
