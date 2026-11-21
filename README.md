@@ -181,8 +181,9 @@ including when the existing settings are malformed or already configured.
 release. You run it yourself, and the render path never blocks on the network,
 so the statusline cannot stall on it.
 
-It compares against the newest **stable** release. Pass `--channel beta` to
-include prereleases.
+It compares against GitHub’s latest **stable** release, matching `install.sh`.
+If no stable release can be fetched, the check fails instead of recommending a
+prerelease. Pass `--channel beta` to include prereleases.
 
 ```bash
 claudebar update
