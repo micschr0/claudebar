@@ -185,6 +185,31 @@ mod acl_tests {
 }
 
 #[test]
+fn init_creates_private_config_with_permissive_umask() {
+    let dir = temp_dir("private_config");
+    for (mask, expected) in [("000", 0o600), ("200", 0o400)] {
+        let config = dir.join(format!("{mask}.toml"));
+        let output = Command::new("sh")
+            .args(["-c", "umask \"$1\"; shift; exec \"$@\"", "sh", mask])
+            .arg(env!("CARGO_BIN_EXE_claudebar"))
+            .args(["init", "--config"])
+            .arg(&config)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(
+            fs::metadata(&config).unwrap().permissions().mode() & 0o777,
+            expected
+        );
+    }
+    fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
 fn setup_creates_missing_symlink_target() {
     let dir = temp_dir("dangling_settings");
     let settings = dir.join("settings.json");
