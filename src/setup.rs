@@ -54,15 +54,28 @@ fn font_directories(home: Option<&Path>) -> Vec<PathBuf> {
 }
 
 fn directory_has_nerd_font(path: &Path) -> bool {
-    let Ok(entries) = std::fs::read_dir(path) else {
-        return false;
-    };
-    entries.flatten().any(|entry| {
-        let name = entry.file_name().to_string_lossy().to_lowercase();
-        (name.ends_with(".ttf") || name.ends_with(".otf"))
-            && name.contains("nerd")
-            && entry.path().is_file()
-    })
+    let mut pending = vec![path.to_path_buf()];
+    while let Some(dir) = pending.pop() {
+        let Ok(entries) = std::fs::read_dir(dir) else {
+            continue;
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            // Do not descend into directory symlinks, which can form cycles.
+            if entry.file_type().is_ok_and(|kind| kind.is_dir()) {
+                pending.push(path);
+                continue;
+            }
+            let name = entry.file_name().to_string_lossy().to_lowercase();
+            if (name.ends_with(".ttf") || name.ends_with(".otf"))
+                && name.contains("nerd")
+                && path.is_file()
+            {
+                return true;
+            }
+        }
+    }
+    false
 }
 
 /// Errors surfaced when reading, parsing, or writing settings.json.
@@ -491,6 +504,25 @@ mod tests {
             assert!(directory_has_nerd_font(&dir));
             std::fs::remove_file(path).unwrap();
         }
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn font_fallback_finds_fonts_in_subdirectories_without_following_directory_links() {
+        let dir = unique_temp_path();
+        let fonts = dir.join("Library/Fonts");
+        let nested = fonts.join("collection");
+        let outside = dir.join("outside");
+        std::fs::create_dir_all(&nested).unwrap();
+        std::fs::create_dir(&outside).unwrap();
+        let font = outside.join("TestNerdFont.ttf");
+        std::fs::write(&font, "").unwrap();
+        std::os::unix::fs::symlink(&outside, nested.join("linked-directory")).unwrap();
+        std::os::unix::fs::symlink(&fonts, nested.join("cycle")).unwrap();
+        assert!(!directory_has_nerd_font(&fonts));
+
+        std::os::unix::fs::symlink(&font, nested.join("TestNerdFont.ttf")).unwrap();
+        assert!(directory_has_nerd_font(&fonts));
         std::fs::remove_dir_all(dir).unwrap();
     }
 
