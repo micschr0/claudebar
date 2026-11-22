@@ -8,6 +8,22 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.11.22-beta.2](https://github.com/micschr0/claudebar/compare/2026.10.29-beta.2...2026.11.22-beta.2)
+
+### Fixed
+- Use supported macOS ARM runner (#208)
+- Align stable update checks with installer (#193)
+- Correct pinned action version comments (#196)
+- Create private TOML config files (#200)
+- Create private settings files (#201)
+- Detect fonts in nested directories (#206)
+- Preserve stable cache on endpoint failure (#202)
+- Protect settings and show exhausted weekly limits (#191)
+- Update OpenWiki action pin (#192)
+
+### Documentation
+- Warn about status line replacement (#198)
+
 ## [2026.11.22-beta.1](https://github.com/micschr0/claudebar/compare/2026.10.29-beta.2...2026.11.22-beta.1)
 
 ### Fixed
