@@ -8,6 +8,11 @@ see `RELEASING.md` for the release ritual.
 
 <!-- next-release -->
 
+## [2026.11.22-beta.2](https://github.com/micschr0/claudebar/compare/2026.11.22-beta.1...2026.11.22-beta.2)
+
+### Fixed
+- Use supported macOS ARM runner (#208)
+
 ## [2026.11.22-beta.1](https://github.com/micschr0/claudebar/compare/2026.10.29-beta.2...2026.11.22-beta.1)
 
 ### Fixed
