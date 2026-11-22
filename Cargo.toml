@@ -90,8 +90,8 @@ ci = ["github"]
 allow-dirty = ["ci"]
 hosting = ["github"]
 
-# Pin only the ARM macOS build to macos-14. The Intel macOS build uses dist's default
+# Pin only the ARM macOS build to macos-15. The Intel macOS build uses dist's default
 # runner image (its old fixed pin was dropped — GitHub is retiring that hosted runner).
 # linux musl targets default to an ubuntu runner — left unset.
 [workspace.metadata.dist.github-custom-runners]
-aarch64-apple-darwin = "macos-14"
+aarch64-apple-darwin = "macos-15"
