@@ -34,7 +34,7 @@ time = { version = "0.3", default-features = false, features = ["std", "formatti
 # TUI-only (feature-gated, never linked on the render hot path)
 ratatui = { version = "0.30", optional = true }
 crossterm = { version = "0.29", optional = true }
-ansi-to-tui = { version = "8", optional = true }
+ansi-to-tui = { version = "9", optional = true }
 
 [dev-dependencies]
 insta = { version = "1", features = ["filters", "glob"] }
